@@ -1,0 +1,27 @@
+---
+title: Phone numbers
+---
+
+Manage phone numbers for UnleashX.
+
+## List phone numbers
+
+```
+GET https://api.tryunleashx.com/v2/phone-number/all
+Headers:
+  Authorization: Bearer <api_key>
+```
+
+## Purchase a phone number
+
+```
+POST https://api.tryunleashx.com/v2/phone-number/purchase
+Headers:
+  Authorization: Bearer <api_key>
+  Content-Type: application/json
+Body:
+  {
+    "country": "US",
+    "area_code": "415"
+  }
+``` 

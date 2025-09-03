@@ -1,0 +1,20 @@
+---
+title: Batches
+---
+
+Create and manage batch calling campaigns.
+
+## Create batch
+
+```
+POST https://api.tryunleashx.com/v2/batch
+Headers:
+  Authorization: Bearer <api_key>
+  Content-Type: application/json
+Body:
+  {
+    "name": "Follow-up campaign",
+    "agent_id": "<uuid>",
+    "recipients": ["+10123456789", "+11234567890"]
+  }
+``` 

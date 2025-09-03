@@ -1,0 +1,27 @@
+---
+title: Agent APIs
+---
+
+Manage agents in UnleashX.
+
+## List agents
+
+```
+GET https://api.tryunleashx.com/v2/agent/all
+Headers:
+  Authorization: Bearer <api_key>
+```
+
+## Create agent
+
+```
+POST https://api.tryunleashx.com/v2/agent
+Headers:
+  Authorization: Bearer <api_key>
+  Content-Type: application/json
+Body:
+  {
+    "name": "Sales Assistant",
+    "language": "en"
+  }
+``` 

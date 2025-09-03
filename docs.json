@@ -31,9 +31,7 @@
           {
             "group": "Enterprise",
             "pages": [
-              "enterprise/enterprise-plan",
-              "enterprise/on-prem-deployments",
-              "enterprise/data-residency"
+              "enterprise/enterprise-plan"
             ]
           },
           {
@@ -76,7 +74,7 @@
             ]
           },
           {
-            "group": "Phone calls using Bolna",
+            "group": "Phone calls using UnleashX",
             "pages": [
               "phone-calls/supported-telephony",
               "phone-calls/purchase-phone-numbers",
@@ -100,26 +98,8 @@
               "playground/agent-setup",
               "playground/agent-executions"
             ]
-          },
-          {
-            "group": "Essentials",
-            "pages": [
-              "essentials/navigation",
-              "essentials/settings",
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
-            ]
-          },
-          {
-            "group": "AI tools",
-            "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
-            ]
           }
+          
         ]
       },
       {
@@ -132,12 +112,19 @@
             ]
           },
           {
-            "group": "Endpoint examples",
+            "group": "Core APIs",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "api-reference/agent",
+              "api-reference/making-phone-calls",
+              "api-reference/executions-and-calls",
+              "api-reference/phone-numbers",
+              "api-reference/inbound-agents",
+              "api-reference/batches",
+              "api-reference/knowledgebases",
+              "api-reference/providers",
+              "api-reference/sub-accounts",
+              "api-reference/voice",
+              "api-reference/user"
             ]
           }
         ]
@@ -173,30 +160,11 @@
           }
         ]
       }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Community",
-          "href": "https://mintlify.com/community",
-          "icon": "slack"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
-    }
+    ]
   },
   "logo": {
-  "light": "/logo/light.png",
-  "dark": "/logo/dark.png"
+  "light": "/logo/dark.png",
+  "dark": "/logo/ligh.png"
   },
   "navbar": {
     "links": [

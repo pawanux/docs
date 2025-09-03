@@ -1,0 +1,21 @@
+---
+title: Making phone calls
+---
+
+Initiate outbound calls with UnleashX.
+
+## Make a call
+
+```
+POST https://api.tryunleashx.com/v2/call
+Headers:
+  Authorization: Bearer <api_key>
+  Content-Type: application/json
+Body:
+  {
+    "agent_id": "<uuid>",
+    "recipient_phone_number": "+10123456789",
+    "from_phone_number": "+19876543007",
+    "user_data": { "order_id": "12345" }
+  }
+``` 
