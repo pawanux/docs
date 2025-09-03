@@ -17,4 +17,17 @@ Body:
     "agent_id": "<uuid>",
     "recipients": ["+10123456789", "+11234567890"]
   }
+```
+
+### Try it (curl)
+
+```bash
+curl -X POST 'https://api.tryunleashx.com/v2/batch' \
+  -H 'Authorization: Bearer <api_key>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "name": "Follow-up campaign",
+    "agent_id": "<uuid>",
+    "recipients": ["+10123456789", "+11234567890"]
+  }'
 ``` 

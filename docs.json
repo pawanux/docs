@@ -164,13 +164,13 @@
   },
   "logo": {
   "light": "/logo/dark.png",
-  "dark": "/logo/ligh.png"
+  "dark": "/logo/light.png"
   },
   "navbar": {
     "links": [
       {
         "label": "Status",
-        "href": "https://status.unleashx.ai"
+        "href": "https://unleashx.statuspage.io/"
       },
       {
         "label": "Support",

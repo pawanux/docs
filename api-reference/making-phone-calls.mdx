@@ -18,4 +18,18 @@ Body:
     "from_phone_number": "+19876543007",
     "user_data": { "order_id": "12345" }
   }
+```
+
+### Try it (curl)
+
+```bash
+curl -X POST 'https://api.tryunleashx.com/v2/call' \
+  -H 'Authorization: Bearer <api_key>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "agent_id": "<uuid>",
+    "recipient_phone_number": "+10123456789",
+    "from_phone_number": "+19876543007",
+    "user_data": { "order_id": "12345" }
+  }'
 ``` 

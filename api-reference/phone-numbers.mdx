@@ -12,6 +12,13 @@ Headers:
   Authorization: Bearer <api_key>
 ```
 
+### Try it (curl)
+
+```bash
+curl -X GET 'https://api.tryunleashx.com/v2/phone-number/all' \
+  -H 'Authorization: Bearer <api_key>'
+```
+
 ## Purchase a phone number
 
 ```
@@ -24,4 +31,16 @@ Body:
     "country": "US",
     "area_code": "415"
   }
+```
+
+### Try it (curl)
+
+```bash
+curl -X POST 'https://api.tryunleashx.com/v2/phone-number/purchase' \
+  -H 'Authorization: Bearer <api_key>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "country": "US",
+    "area_code": "415"
+  }'
 ``` 
