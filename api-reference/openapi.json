@@ -9,19 +9,32 @@
     { "url": "https://api.tryunleashx.com/v2" }
   ],
   "security": [ { "bearerAuth": [] } ],
+  "tags": [
+    { "name": "Agent" },
+    { "name": "Making phone calls" },
+    { "name": "Executions & calls data" },
+    { "name": "Phone numbers" },
+    { "name": "Inbound Agents" },
+    { "name": "Batches" },
+    { "name": "Knowledgebases" },
+    { "name": "Providers" },
+    { "name": "Sub accounts" },
+    { "name": "Voice" },
+    { "name": "User" }
+  ],
   "paths": {
     "/agent/all": {
       "get": {
         "summary": "List agents",
         "description": "Returns all agents",
-        "responses": {
-          "200": { "description": "OK" }
-        }
+        "tags": ["Agent"],
+        "responses": { "200": { "description": "OK" } }
       }
     },
     "/agent": {
       "post": {
         "summary": "Create agent",
+        "tags": ["Agent"],
         "requestBody": {
           "required": true,
           "content": {
@@ -37,14 +50,13 @@
             }
           }
         },
-        "responses": {
-          "201": { "description": "Created" }
-        }
+        "responses": { "201": { "description": "Created" } }
       }
     },
     "/call": {
       "post": {
         "summary": "Make a call",
+        "tags": ["Making phone calls"],
         "requestBody": {
           "required": true,
           "content": {
@@ -62,20 +74,20 @@
             }
           }
         },
-        "responses": {
-          "200": { "description": "OK" }
-        }
+        "responses": { "200": { "description": "OK" } }
       }
     },
     "/call/all": {
       "get": {
         "summary": "List calls",
+        "tags": ["Executions & calls data"],
         "responses": { "200": { "description": "OK" } }
       }
     },
     "/call/{call_id}": {
       "get": {
         "summary": "Get call by ID",
+        "tags": ["Executions & calls data"],
         "parameters": [
           { "name": "call_id", "in": "path", "required": true, "schema": { "type": "string" } }
         ],
@@ -83,11 +95,16 @@
       }
     },
     "/phone-number/all": {
-      "get": { "summary": "List phone numbers", "responses": { "200": { "description": "OK" } } }
+      "get": {
+        "summary": "List phone numbers",
+        "tags": ["Phone numbers"],
+        "responses": { "200": { "description": "OK" } }
+      }
     },
     "/phone-number/purchase": {
       "post": {
         "summary": "Purchase a phone number",
+        "tags": ["Phone numbers"],
         "requestBody": {
           "required": true,
           "content": {
@@ -107,11 +124,16 @@
       }
     },
     "/inbound-agent/all": {
-      "get": { "summary": "List inbound agents", "responses": { "200": { "description": "OK" } } }
+      "get": {
+        "summary": "List inbound agents",
+        "tags": ["Inbound Agents"],
+        "responses": { "200": { "description": "OK" } }
+      }
     },
     "/batch": {
       "post": {
         "summary": "Create batch",
+        "tags": ["Batches"],
         "requestBody": {
           "required": true,
           "content": {
@@ -132,19 +154,39 @@
       }
     },
     "/knowledgebase/all": {
-      "get": { "summary": "List knowledgebases", "responses": { "200": { "description": "OK" } } }
+      "get": {
+        "summary": "List knowledgebases",
+        "tags": ["Knowledgebases"],
+        "responses": { "200": { "description": "OK" } }
+      }
     },
     "/provider/all": {
-      "get": { "summary": "List providers", "responses": { "200": { "description": "OK" } } }
+      "get": {
+        "summary": "List providers",
+        "tags": ["Providers"],
+        "responses": { "200": { "description": "OK" } }
+      }
     },
     "/sub-account/all": {
-      "get": { "summary": "List sub accounts", "responses": { "200": { "description": "OK" } } }
+      "get": {
+        "summary": "List sub accounts",
+        "tags": ["Sub accounts"],
+        "responses": { "200": { "description": "OK" } }
+      }
     },
     "/voice/all": {
-      "get": { "summary": "List voices", "responses": { "200": { "description": "OK" } } }
+      "get": {
+        "summary": "List voices",
+        "tags": ["Voice"],
+        "responses": { "200": { "description": "OK" } }
+      }
     },
     "/user/me": {
-      "get": { "summary": "Get current user", "responses": { "200": { "description": "OK" } } }
+      "get": {
+        "summary": "Get current user",
+        "tags": ["User"],
+        "responses": { "200": { "description": "OK" } }
+      }
     }
   },
   "components": {

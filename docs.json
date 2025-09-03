@@ -109,11 +109,12 @@
           {
             "group": "API documentation",
             "pages": [
-              "api-reference/introduction"
+              "api-reference/introduction",
+              "api-reference/pagination"
             ]
           },
           {
-            "group": "Core APIs",
+            "group": "Current APIs",
             "pages": [
               "api-reference/agent",
               "api-reference/making-phone-calls",
@@ -140,23 +141,6 @@
               "integrations/transcribers",
               "integrations/large-language-models",
               "integrations/synthesizers-voices"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "Examples & Tutorials",
-        "groups": [
-          {
-            "group": "Tutorials",
-            "pages": [
-              "quickstart"
-            ]
-          },
-          {
-            "group": "Snippets",
-            "pages": [
-              "snippets/snippet-intro"
             ]
           }
         ]
