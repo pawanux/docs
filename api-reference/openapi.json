@@ -1,27 +1,15 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "UnleashX API",
-    "version": "2.0.0",
-    "description": "UnleashX Voice AI HTTP API"
+    "title": "UnleashX - Build human like conversations | Voice Agents | Automations | AI Workforce",
+    "version": "1.0.0",
+    "description": "UnleashX - Your home for human like conversations"
   },
   "servers": [
-    { "url": "https://api.tryunleashx.com/v2" }
+    { "url": "https://api.tryunleashx.com/v1/" }
   ],
   "security": [ { "bearerAuth": [] } ],
-  "tags": [
-    { "name": "Agent" },
-    { "name": "Making phone calls" },
-    { "name": "Executions & calls data" },
-    { "name": "Phone numbers" },
-    { "name": "Inbound Agents" },
-    { "name": "Batches" },
-    { "name": "Knowledgebases" },
-    { "name": "Providers" },
-    { "name": "Sub accounts" },
-    { "name": "Voice" },
-    { "name": "User" }
-  ],
+  
   "paths": {
     "/agent/all": {
       "get": {
