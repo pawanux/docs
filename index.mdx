@@ -1,97 +1,61 @@
 ---
 title: "Introduction"
-description: "Welcome to the new home for your documentation"
+description: "Your complete platform for Voice AI orchestration with UnleashX"
 ---
 
-## Setting up
+# Your Complete Platform for Voice AI Orchestration
 
-Get your documentation site up and running in minutes.
+From customer service to recruitment, and everything in between. Voice Agents built on UnleashX handle thousands of inbound and outbound calls every minute.
 
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
+<Card title="Get started" icon="rocket" href="/quickstart" horizontal>
+  Go from idea to live calls in minutes, not weeks.
 </Card>
 
-## Make it yours
+## Power for devs. Simplicity for all.
 
-Design a docs site that looks great and empowers your users.
+Whether you prefer no-code simplicity or full developer control, UnleashX meets you where you are. Build powerful voice agents with clicks or code.
 
 <Columns cols={2}>
-  <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
-  >
-    Edit your docs locally and preview them in real time.
+  <Card title="API documentation" icon="terminal" href="/api-reference/introduction">
+    Integrate UnleashX using our HTTP APIs in your apps and workflows.
   </Card>
-  <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
+  <Card title="Playground" icon="beaker" href="/playground/agent-setup">
+    Configure, test, and iterate on agents instantly.
   </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
+  <Card title="Phone calls" icon="phone" href="/phone-calls/supported-telephony">
+    Set up telephony, purchase numbers, and make/receive calls.
   </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
-  >
-    Auto-generate API documentation from OpenAPI specifications.
+  <Card title="Features" icon="puzzle-piece" href="/features/connect-providers">
+    Explore guardrails, knowledgebases, variables, model switching, and more.
   </Card>
 </Columns>
 
-## Create beautiful pages
+## Example: Trigger a call via API
 
-Everything you need to create world-class documentation.
+```python
+import requests
 
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
-  </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
-  </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
+url = "https://api.unleashx.ai/call"
 
-## Need inspiration?
+payload = {
+  "agent_id": "123e4567-e89b-12d3-a456-426655440000",
+  "recipient_phone_number": "+10123456789",
+  "from_phone_number": "+19876543007",
+  "user_data": {"variable1": "value1"}
+}
 
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
+headers = {
+  "Authorization": "Bearer <token>",
+  "Content-Type": "application/json"
+}
+
+response = requests.post(url, json=payload, headers=headers)
+print(response.text)
+```
+
+## Multilingual, low-latency, enterprise-ready
+
+- Natural conversations with <300ms latency
+- 10+ languages supported
+- Connect ASR, LLM, and TTS models
+- Enterprise pricing, on‑prem deployments, and regional data residency

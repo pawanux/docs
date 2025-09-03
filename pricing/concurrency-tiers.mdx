@@ -2,4 +2,21 @@
 title: Concurrency tiers
 ---
 
-Overview of concurrency tiers. 
+UnleashX provides concurrency tiers to support parallel call capacity.
+
+## What is concurrency?
+
+The number of calls your agents can handle simultaneously.
+
+## Tiers (illustrative)
+
+- Dev: up to 5 concurrent calls — ideal for testing
+- Standard: up to 50 concurrent calls — pilots and small teams
+- Scale: up to 200 concurrent calls — production workloads
+- Enterprise: 200+ concurrent calls — custom SLAs and burst capacity
+
+## Best practices
+
+- Start low, observe metrics, then scale gradually
+- Use queueing and backoff for bursty workloads
+- Monitor average and p95 call durations to size tiers 
