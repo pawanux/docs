@@ -91,13 +91,6 @@
             "pages": [
               "resources/faqs"
             ]
-          },
-          {
-            "group": "Using Bolna Playground",
-            "pages": [
-              "playground/agent-setup",
-              "playground/agent-executions"
-            ]
           }
           
         ]
@@ -111,22 +104,6 @@
             "pages": [
               "api-reference/introduction",
               "api-reference/pagination"
-            ]
-          },
-          {
-            "group": "Current APIs",
-            "pages": [
-              "api-reference/agent",
-              "api-reference/making-phone-calls",
-              "api-reference/executions-and-calls",
-              "api-reference/phone-numbers",
-              "api-reference/inbound-agents",
-              "api-reference/batches",
-              "api-reference/knowledgebases",
-              "api-reference/providers",
-              "api-reference/sub-accounts",
-              "api-reference/voice",
-              "api-reference/user"
             ]
           }
         ]
