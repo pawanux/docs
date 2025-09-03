@@ -11,7 +11,7 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Documentation",
         "groups": [
           {
             "group": "Getting started",
@@ -22,15 +22,90 @@
             ]
           },
           {
-            "group": "Customization",
+            "group": "Pricing",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
+              "pricing/call-pricing",
+              "pricing/concurrency-tiers"
             ]
           },
           {
-            "group": "Writing content",
+            "group": "Enterprise",
             "pages": [
+              "enterprise/enterprise-plan",
+              "enterprise/on-prem-deployments",
+              "enterprise/data-residency"
+            ]
+          },
+          {
+            "group": "Multilingual Voice agents",
+            "pages": [
+              "multilingual-voice-agents/supported-languages",
+              "multilingual-voice-agents/prompts-for-non-english"
+            ]
+          },
+          {
+            "group": "Voice AI Agent Function calls",
+            "pages": [
+              "voice-agent-function-calls/introduction",
+              "voice-agent-function-calls/transfer-calls",
+              "voice-agent-function-calls/check-calendar-slots",
+              "voice-agent-function-calls/book-calendar-slots",
+              "voice-agent-function-calls/custom-function-calls"
+            ]
+          },
+          {
+            "group": "Features",
+            "pages": [
+              "features/connect-providers",
+              "features/import-voices",
+              "features/clone-your-voice",
+              "features/adding-variables",
+              "features/extract-structured-data",
+              "features/implementing-guardrails",
+              "features/add-your-server-url",
+              "features/using-knowledgebases",
+              "features/multi-agent-prompt"
+            ]
+          },
+          {
+            "group": "Advance customizations",
+            "pages": [
+              "advance-customizations/identify-incoming-callers",
+              "advance-customizations/using-custom-llms",
+              "advance-customizations/capturing-precise-transcripts"
+            ]
+          },
+          {
+            "group": "Phone calls using Bolna",
+            "pages": [
+              "phone-calls/supported-telephony",
+              "phone-calls/purchase-phone-numbers",
+              "phone-calls/making-outgoing-calls",
+              "phone-calls/receive-incoming-calls",
+              "phone-calls/batch-calling",
+              "phone-calls/hangup-termination",
+              "phone-calls/list-of-call-status",
+              "phone-calls/list-of-hangup-call-status"
+            ]
+          },
+          {
+            "group": "Resources",
+            "pages": [
+              "resources/faqs"
+            ]
+          },
+          {
+            "group": "Using Bolna Playground",
+            "pages": [
+              "playground/agent-setup",
+              "playground/agent-executions"
+            ]
+          },
+          {
+            "group": "Essentials",
+            "pages": [
+              "essentials/navigation",
+              "essentials/settings",
               "essentials/markdown",
               "essentials/code",
               "essentials/images",
@@ -73,36 +148,27 @@
           {
             "group": "Integrations",
             "pages": [
-              "integrations/introduction"
-            ]
-          },
-          {
-            "group": "Endpoint examples",
-            "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "integrations/introduction",
+              "integrations/transcribers",
+              "integrations/large-language-models",
+              "integrations/synthesizers-voices"
             ]
           }
         ]
       },
       {
-        "tab": "Changelog",
+        "tab": "Examples & Tutorials",
         "groups": [
           {
-            "group": "Changelog",
+            "group": "Tutorials",
             "pages": [
-              "change-log/introduction"
+              "quickstart"
             ]
           },
           {
-            "group": "Endpoint examples",
+            "group": "Snippets",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "snippets/snippet-intro"
             ]
           }
         ]
@@ -129,11 +195,15 @@
     }
   },
   "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+  "light": "/logo/light.png",
+  "dark": "/logo/dark.png"
   },
   "navbar": {
     "links": [
+      {
+        "label": "Status",
+        "href": "#"
+      },
       {
         "label": "Support",
         "href": "mailto:hi@mintlify.com"
