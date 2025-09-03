@@ -104,6 +104,7 @@
       },
       {
         "tab": "API reference",
+        "openapi": "api-reference/openapi.json",
         "groups": [
           {
             "group": "API documentation",
@@ -170,7 +171,7 @@
     "links": [
       {
         "label": "Status",
-        "href": "https://unleashx.statuspage.io/"
+        "href": "https://status.unleashx.ai"
       },
       {
         "label": "Support",

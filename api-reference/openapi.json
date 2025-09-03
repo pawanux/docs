@@ -1,217 +1,155 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "OpenAPI Plant Store",
-    "description": "A sample API that uses a plant store as an example to demonstrate features in the OpenAPI specification",
-    "license": {
-      "name": "MIT"
-    },
-    "version": "1.0.0"
+    "title": "UnleashX API",
+    "version": "2.0.0",
+    "description": "UnleashX Voice AI HTTP API"
   },
   "servers": [
-    {
-      "url": "https://api.tryunleashx.com"
-    }
+    { "url": "https://api.tryunleashx.com/v2" }
   ],
-  "security": [
-    {
-      "bearerAuth": []
-    }
-  ],
+  "security": [ { "bearerAuth": [] } ],
   "paths": {
-    "/plants": {
+    "/agent/all": {
       "get": {
-        "description": "Returns all plants from the system that the user has access to",
-        "parameters": [
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "The maximum number of results to return",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
+        "summary": "List agents",
+        "description": "Returns all agents",
         "responses": {
-          "200": {
-            "description": "Plant response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Plant"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "description": "Creates a new plant in the store",
-        "requestBody": {
-          "description": "Plant to add to the store",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NewPlant"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "plant response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Plant"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
+          "200": { "description": "OK" }
         }
       }
     },
-    "/plants/{id}": {
-      "delete": {
-        "description": "Deletes a single plant based on the ID supplied",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "ID of plant to delete",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Plant deleted",
-            "content": {}
-          },
-          "400": {
-            "description": "unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  },
-  "webhooks": {
-    "/plant/webhook": {
+    "/agent": {
       "post": {
-        "description": "Information about a new plant added to the store",
+        "summary": "Create agent",
         "requestBody": {
-          "description": "Plant added to the store",
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NewPlant"
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "language": { "type": "string" }
+                },
+                "required": ["name"]
               }
             }
           }
         },
         "responses": {
-          "200": {
-            "description": "Return a 200 status to indicate that the data was received successfully"
-          }
+          "201": { "description": "Created" }
         }
       }
+    },
+    "/call": {
+      "post": {
+        "summary": "Make a call",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "agent_id": { "type": "string", "format": "uuid" },
+                  "recipient_phone_number": { "type": "string" },
+                  "from_phone_number": { "type": "string" },
+                  "user_data": { "type": "object", "additionalProperties": true }
+                },
+                "required": ["agent_id", "recipient_phone_number"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "OK" }
+        }
+      }
+    },
+    "/call/all": {
+      "get": {
+        "summary": "List calls",
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/call/{call_id}": {
+      "get": {
+        "summary": "Get call by ID",
+        "parameters": [
+          { "name": "call_id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "OK" }, "404": { "description": "Not Found" } }
+      }
+    },
+    "/phone-number/all": {
+      "get": { "summary": "List phone numbers", "responses": { "200": { "description": "OK" } } }
+    },
+    "/phone-number/purchase": {
+      "post": {
+        "summary": "Purchase a phone number",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "country": { "type": "string" },
+                  "area_code": { "type": "string" }
+                },
+                "required": ["country"]
+              }
+            }
+          }
+        },
+        "responses": { "201": { "description": "Created" } }
+      }
+    },
+    "/inbound-agent/all": {
+      "get": { "summary": "List inbound agents", "responses": { "200": { "description": "OK" } } }
+    },
+    "/batch": {
+      "post": {
+        "summary": "Create batch",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "agent_id": { "type": "string", "format": "uuid" },
+                  "recipients": { "type": "array", "items": { "type": "string" } }
+                },
+                "required": ["name", "agent_id", "recipients"]
+              }
+            }
+          }
+        },
+        "responses": { "201": { "description": "Created" } }
+      }
+    },
+    "/knowledgebase/all": {
+      "get": { "summary": "List knowledgebases", "responses": { "200": { "description": "OK" } } }
+    },
+    "/provider/all": {
+      "get": { "summary": "List providers", "responses": { "200": { "description": "OK" } } }
+    },
+    "/sub-account/all": {
+      "get": { "summary": "List sub accounts", "responses": { "200": { "description": "OK" } } }
+    },
+    "/voice/all": {
+      "get": { "summary": "List voices", "responses": { "200": { "description": "OK" } } }
+    },
+    "/user/me": {
+      "get": { "summary": "Get current user", "responses": { "200": { "description": "OK" } } }
     }
   },
   "components": {
-    "schemas": {
-      "Plant": {
-        "required": [
-          "name"
-        ],
-        "type": "object",
-        "properties": {
-          "name": {
-            "description": "The name of the plant",
-            "type": "string"
-          },
-          "tag": {
-            "description": "Tag to specify the type",
-            "type": "string"
-          }
-        }
-      },
-      "NewPlant": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Plant"
-          },
-          {
-            "required": [
-              "id"
-            ],
-            "type": "object",
-            "properties": {
-              "id": {
-                "description": "Identification number of the plant",
-                "type": "integer",
-                "format": "int64"
-              }
-            }
-          }
-        ]
-      },
-      "Error": {
-        "required": [
-          "error",
-          "message"
-        ],
-        "type": "object",
-        "properties": {
-          "error": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "message": {
-            "type": "string"
-          }
-        }
-      }
-    },
     "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer"
-      }
+      "bearerAuth": { "type": "http", "scheme": "bearer" }
     }
   }
 }
