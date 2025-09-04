@@ -11,14 +11,6 @@
   "security": [ { "bearerAuth": [] } ],
   
   "paths": {
-    "/agent/all": {
-      "get": {
-        "summary": "List agents",
-        "description": "Returns all agents",
-        "tags": ["Agent"],
-        "responses": { "200": { "description": "OK" } }
-      }
-    },
     "/agent": {
       "post": {
         "summary": "Create agent",
@@ -39,6 +31,69 @@
           }
         },
         "responses": { "201": { "description": "Created" } }
+      }
+    },
+    "/agent/update": {
+      "post": {
+        "summary": "Update agent",
+        "tags": ["Agent"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "agent_id": { "type": "string", "format": "uuid" },
+                  "name": { "type": "string" },
+                  "language": { "type": "string" }
+                },
+                "required": ["agent_id"]
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/agent/delete": {
+      "post": {
+        "summary": "Delete agent",
+        "tags": ["Agent"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "agent_id": { "type": "string", "format": "uuid" }
+                },
+                "required": ["agent_id"]
+              }
+            }
+          }
+        },
+        "responses": { "204": { "description": "Deleted" } }
+      }
+    },
+    "/agent/activity-logs": {
+      "get": {
+        "summary": "Get agent activity logs",
+        "tags": ["Agent"],
+        "parameters": [
+          { "name": "agent_id", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "limit", "in": "query", "required": false, "schema": { "type": "integer" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/agent/all": {
+      "get": {
+        "summary": "List agents",
+        "description": "Returns all agents",
+        "tags": ["Agent"],
+        "responses": { "200": { "description": "OK" } }
       }
     },
     "/call": {

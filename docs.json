@@ -107,9 +107,17 @@
             ]
           },
           {
+            "group": "Agents",
+            "pages": [
+              "api-reference/agents/create-agent",
+              "api-reference/agents/update-agent",
+              "api-reference/agents/delete-agent",
+              "api-reference/agents/agent-activity-logs"
+            ]
+          },
+          {
             "group": "APIs",
             "pages": [
-              "api-reference/agent",
               "api-reference/voice-ai",
               "api-reference/phone-numbers",
               "api-reference/voices",
