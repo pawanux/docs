@@ -223,6 +223,191 @@
       }
     },
 
+    "/chat-agent": {
+      "post": {
+        "summary": "Create chat agent",
+        "tags": ["Chatbots"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "language": { "type": "string" },
+                  "prompt": { "type": "string" }
+                },
+                "required": ["name"]
+              }
+            }
+          }
+        },
+        "responses": { "201": { "description": "Created" } }
+      }
+    },
+    "/chat-agent/update": {
+      "post": {
+        "summary": "Update chat agent",
+        "tags": ["Chatbots"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "chat_agent_id": { "type": "string", "format": "uuid" },
+                  "name": { "type": "string" },
+                  "language": { "type": "string" },
+                  "prompt": { "type": "string" }
+                },
+                "required": ["chat_agent_id"]
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/chat-agent/delete": {
+      "post": {
+        "summary": "Delete chat agent",
+        "tags": ["Chatbots"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "chat_agent_id": { "type": "string", "format": "uuid" }
+                },
+                "required": ["chat_agent_id"]
+              }
+            }
+          }
+        },
+        "responses": { "204": { "description": "Deleted" } }
+      }
+    },
+    "/chat-agent/all": {
+      "get": {
+        "summary": "List chat agents",
+        "tags": ["Chatbots"],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/chat-agent/conversations": {
+      "get": {
+        "summary": "Get chat agent conversations",
+        "tags": ["Chatbots"],
+        "parameters": [
+          { "name": "chat_agent_id", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "limit", "in": "query", "required": false, "schema": { "type": "integer" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/conversations": {
+      "get": {
+        "summary": "Get conversations",
+        "tags": ["Chatbots"],
+        "parameters": [
+          { "name": "conversation_id", "in": "query", "required": false, "schema": { "type": "string" } },
+          { "name": "limit", "in": "query", "required": false, "schema": { "type": "integer" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+
+    "/form": {
+      "post": {
+        "summary": "Create form",
+        "tags": ["Forms"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "fields": { "type": "array", "items": { "type": "object" } },
+                  "description": { "type": "string" }
+                },
+                "required": ["name", "fields"]
+              }
+            }
+          }
+        },
+        "responses": { "201": { "description": "Created" } }
+      }
+    },
+    "/form/update": {
+      "post": {
+        "summary": "Update form",
+        "tags": ["Forms"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "form_id": { "type": "string", "format": "uuid" },
+                  "name": { "type": "string" },
+                  "fields": { "type": "array", "items": { "type": "object" } },
+                  "description": { "type": "string" }
+                },
+                "required": ["form_id"]
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/form/delete": {
+      "post": {
+        "summary": "Delete form",
+        "tags": ["Forms"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "form_id": { "type": "string", "format": "uuid" }
+                },
+                "required": ["form_id"]
+              }
+            }
+          }
+        },
+        "responses": { "204": { "description": "Deleted" } }
+      }
+    },
+    "/form/all": {
+      "get": {
+        "summary": "List forms",
+        "tags": ["Forms"],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/form/data": {
+      "get": {
+        "summary": "Get form data",
+        "tags": ["Forms"],
+        "parameters": [
+          { "name": "form_id", "in": "query", "required": false, "schema": { "type": "string" } },
+          { "name": "limit", "in": "query", "required": false, "schema": { "type": "integer" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+
     "/call": {
       "post": {
         "summary": "Make a call",

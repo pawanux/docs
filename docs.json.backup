@@ -139,27 +139,6 @@
               "api-reference/call-logs/get-call-history",
               "api-reference/call-logs/delete-call-history"
             ]
-          },
-          {
-            "group": "Chatbots",
-            "pages": [
-              "api-reference/chatbots/create-chat-agent",
-              "api-reference/chatbots/update-chat-agent",
-              "api-reference/chatbots/delete-chat-agent",
-              "api-reference/chatbots/chatbot-list",
-              "api-reference/chatbots/list-conversations",
-              "api-reference/chatbots/conversations"
-            ]
-          },
-          {
-            "group": "Forms",
-            "pages": [
-              "api-reference/forms/create-form",
-              "api-reference/forms/update-form",
-              "api-reference/forms/delete-form",
-              "api-reference/forms/list-forms",
-              "api-reference/forms/list-form-data"
-            ]
           }
         ]
       },
