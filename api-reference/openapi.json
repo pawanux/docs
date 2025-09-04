@@ -88,14 +88,141 @@
         "responses": { "200": { "description": "OK" } }
       }
     },
-    "/agent/all": {
-      "get": {
-        "summary": "List agents",
-        "description": "Returns all agents",
-        "tags": ["Agent"],
+
+    "/voice-agent": {
+      "post": {
+        "summary": "Create voice agent",
+        "tags": ["Voice AI"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "language": { "type": "string" }
+                },
+                "required": ["name"]
+              }
+            }
+          }
+        },
+        "responses": { "201": { "description": "Created" } }
+      }
+    },
+    "/voice-agent/update": {
+      "post": {
+        "summary": "Update voice agent",
+        "tags": ["Voice AI"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "voice_agent_id": { "type": "string", "format": "uuid" },
+                  "name": { "type": "string" },
+                  "language": { "type": "string" }
+                },
+                "required": ["voice_agent_id"]
+              }
+            }
+          }
+        },
         "responses": { "200": { "description": "OK" } }
       }
     },
+    "/voice-agent/delete": {
+      "post": {
+        "summary": "Delete voice agent",
+        "tags": ["Voice AI"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "voice_agent_id": { "type": "string", "format": "uuid" }
+                },
+                "required": ["voice_agent_id"]
+              }
+            }
+          }
+        },
+        "responses": { "204": { "description": "Deleted" } }
+      }
+    },
+    "/voice-agent/all": {
+      "get": {
+        "summary": "List voice agents",
+        "tags": ["Voice AI"],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/voice-agent/activity-logs": {
+      "get": {
+        "summary": "Get voice agent activity logs",
+        "tags": ["Voice AI"],
+        "parameters": [
+          { "name": "voice_agent_id", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "limit", "in": "query", "required": false, "schema": { "type": "integer" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+
+    "/phone-number/all": {
+      "get": {
+        "summary": "List phone numbers",
+        "tags": ["Phone Numbers"],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/phone-number/import": {
+      "post": {
+        "summary": "Import phone numbers",
+        "tags": ["Phone Numbers"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "numbers": { "type": "array", "items": { "type": "string" } }
+                },
+                "required": ["numbers"]
+              }
+            }
+          }
+        },
+        "responses": { "201": { "description": "Imported" } }
+      }
+    },
+
+    "/call-logs": {
+      "get": {
+        "summary": "Get call logs",
+        "tags": ["Call Logs"],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/call-history": {
+      "get": {
+        "summary": "Get call history",
+        "tags": ["Call Logs"],
+        "responses": { "200": { "description": "OK" } }
+      },
+      "delete": {
+        "summary": "Delete call history",
+        "tags": ["Call Logs"],
+        "responses": { "204": { "description": "Deleted" } }
+      }
+    },
+
     "/call": {
       "post": {
         "summary": "Make a call",
@@ -137,35 +264,7 @@
         "responses": { "200": { "description": "OK" }, "404": { "description": "Not Found" } }
       }
     },
-    "/phone-number/all": {
-      "get": {
-        "summary": "List phone numbers",
-        "tags": ["Phone numbers"],
-        "responses": { "200": { "description": "OK" } }
-      }
-    },
-    "/phone-number/purchase": {
-      "post": {
-        "summary": "Purchase a phone number",
-        "tags": ["Phone numbers"],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "country": { "type": "string" },
-                  "area_code": { "type": "string" }
-                },
-                "required": ["country"]
-              }
-            }
-          }
-        },
-        "responses": { "201": { "description": "Created" } }
-      }
-    },
+
     "/inbound-agent/all": {
       "get": {
         "summary": "List inbound agents",
