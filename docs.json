@@ -100,10 +100,25 @@
         "openapi": "api-reference/openapi.json",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "API Documentation",
             "pages": [
               "api-reference/introduction",
-              "api-reference/pagination"
+              "api-reference/authentication"
+            ]
+          },
+          {
+            "group": "APIs",
+            "pages": [
+              "api-reference/agent",
+              "api-reference/voice-ai",
+              "api-reference/phone-numbers",
+              "api-reference/voices",
+              "api-reference/call-logs",
+              "api-reference/chatbots",
+              "api-reference/forms",
+              "api-reference/workflows",
+              "api-reference/workspaces",
+              "api-reference/users"
             ]
           }
         ]
