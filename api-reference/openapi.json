@@ -408,6 +408,92 @@
       }
     },
 
+    "/workflow/all": {
+      "get": {
+        "summary": "List workflows",
+        "tags": ["Workflows"],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/workflow": {
+      "get": {
+        "summary": "Get workflow",
+        "tags": ["Workflows"],
+        "parameters": [
+          { "name": "workflow_id", "in": "query", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "OK" }, "404": { "description": "Not Found" } }
+      }
+    },
+
+    "/user": {
+      "post": {
+        "summary": "Create user",
+        "tags": ["Users"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "email": { "type": "string", "format": "email" },
+                  "role": { "type": "string" }
+                },
+                "required": ["name", "email"]
+              }
+            }
+          }
+        },
+        "responses": { "201": { "description": "Created" } }
+      },
+      "get": {
+        "summary": "Get user",
+        "tags": ["Users"],
+        "parameters": [
+          { "name": "user_id", "in": "query", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "OK" }, "404": { "description": "Not Found" } }
+      }
+    },
+    "/user/all": {
+      "get": {
+        "summary": "List users",
+        "tags": ["Users"],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/user/delete": {
+      "post": {
+        "summary": "Delete user",
+        "tags": ["Users"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user_id": { "type": "string", "format": "uuid" }
+                },
+                "required": ["user_id"]
+              }
+            }
+          }
+        },
+        "responses": { "204": { "description": "Deleted" } }
+      }
+    },
+
+    "/workspace/all": {
+      "get": {
+        "summary": "List workspaces",
+        "tags": ["Workspaces"],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+
     "/call": {
       "post": {
         "summary": "Make a call",
@@ -504,7 +590,7 @@
     "/voice/all": {
       "get": {
         "summary": "List voices",
-        "tags": ["Voice"],
+        "tags": ["Voices"],
         "responses": { "200": { "description": "OK" } }
       }
     },

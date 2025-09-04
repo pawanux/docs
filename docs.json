@@ -133,6 +133,12 @@
             ]
           },
           {
+            "group": "Voices",
+            "pages": [
+              "api-reference/voices/list-voices"
+            ]
+          },
+          {
             "group": "Call Logs",
             "pages": [
               "api-reference/call-logs/get-call-logs",
@@ -159,6 +165,28 @@
               "api-reference/forms/delete-form",
               "api-reference/forms/list-forms",
               "api-reference/forms/list-form-data"
+            ]
+          },
+          {
+            "group": "Workflows",
+            "pages": [
+              "api-reference/workflows/workflow-list",
+              "api-reference/workflows/workflow"
+            ]
+          },
+          {
+            "group": "Workspaces",
+            "pages": [
+              "api-reference/workspaces/list-workspaces"
+            ]
+          },
+          {
+            "group": "Users",
+            "pages": [
+              "api-reference/users/create-user",
+              "api-reference/users/get-user",
+              "api-reference/users/list-user",
+              "api-reference/users/delete-user"
             ]
           }
         ]
