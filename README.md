@@ -1,44 +1,74 @@
-# Mintlify Starter Kit
+# UnleashX Documentation
 
-Use the starter kit to get your docs deployed and ready to customize.
+Welcome to the UnleashX documentation! UnleashX is your home for human-like conversations powered by advanced AI voice agents, automations, and AI workforce solutions.
 
-Click the green **Use this template** button at the top of this repo to copy the Mintlify starter kit. The starter kit contains examples with
+## What is UnleashX?
 
-- Guide pages
-- Navigation
-- Customizations
-- API reference pages
-- Use of popular components
+UnleashX enables you to build sophisticated voice AI agents that can handle complex conversations, automate workflows, and provide intelligent customer interactions. Our platform combines cutting-edge AI technology with easy-to-use tools to help you create, deploy, and manage voice agents at scale.
 
-**[Follow the full quickstart guide](https://starter.mintlify.com/quickstart)**
+## Key Features
+
+- **Human-like Conversations**: Create voice agents that sound natural and engaging
+- **Voice AI Agents**: Build sophisticated conversational AI with function calling capabilities
+- **Phone Integration**: Make and receive calls with supported telephony providers
+- **Multilingual Support**: Deploy agents in multiple languages
+- **Advanced Customizations**: Customize LLMs, implement guardrails, and more
+- **Enterprise Ready**: Scale your voice AI solutions with enterprise features
+
+## Quick Start
+
+1. **Connect Your Account**: Sign up and get your API key
+2. **Configure Your Agent**: Set up your voice agent with custom prompts and settings
+3. **Click to Call**: Start making calls and receiving conversations
+
+## API Reference
+
+Our comprehensive API documentation includes:
+
+- **Agents**: Create, update, and manage voice agents
+- **Voice AI**: Advanced voice agent capabilities and function calls
+- **Phone Numbers**: Manage phone numbers and telephony
+- **Call Logs**: Track and analyze call data
+- **Chatbots**: Text-based conversational agents
+- **Forms**: Data collection and form management
+- **Workflows**: Automation and workflow management
+- **Workspaces**: Team and workspace management
+- **Users**: User management and permissions
+
+## Getting Help
+
+- **Documentation**: Browse our comprehensive guides and tutorials
+- **API Reference**: Explore our interactive API documentation
+- **Support**: Contact us at hello@unleashx.ai
+- **Status**: Check our system status at status.unleashx.ai
 
 ## Development
 
-Install the [Mintlify CLI](https://www.npmjs.com/package/mint) to preview your documentation changes locally. To install, use the following command:
+Install the [Mintlify CLI](https://www.npmjs.com/package/mint) to preview your documentation changes locally:
 
-```
+```bash
 npm i -g mint
 ```
 
-Run the following command at the root of your documentation, where your `docs.json` is located:
+Run the development server:
 
-```
+```bash
 mint dev
 ```
 
 View your local preview at `http://localhost:3000`.
 
-## Publishing changes
+## Publishing Changes
 
-Install our GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app) to propagate changes from your repo to your deployment. Changes are deployed to production automatically after pushing to the default branch.
+Changes are automatically deployed to production when you push to the main branch. Our GitHub integration ensures your documentation stays up-to-date.
 
-## Need help?
+## Resources
 
-### Troubleshooting
+- [UnleashX Dashboard](https://tryunleashx.com)
+- [API Documentation](https://docs.unleashx.ai)
+- [Status Page](https://status.unleashx.ai)
+- [Support](mailto:hello@unleashx.ai)
 
-- If your dev environment isn't running: Run `mint update` to ensure you have the most recent version of the CLI.
-- If a page loads as a 404: Make sure you are running in a folder with a valid `docs.json`.
+---
 
-### Resources
-- [Mintlify documentation](https://mintlify.com/docs)
-- [Mintlify community](https://mintlify.com/community)
+Built with ❤️ by the UnleashX team
