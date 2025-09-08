@@ -192,15 +192,25 @@
         ]
       },
       {
-        "tab": "Integrations",
+        "tab": "Changelog",
         "groups": [
           {
-            "group": "Integrations",
+            "group": "Changelog",
             "pages": [
-              "integrations/introduction",
-              "integrations/transcribers",
-              "integrations/large-language-models",
-              "integrations/synthesizers-voices"
+              "changelog/releases"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "FAQs",
+        "groups": [
+          {
+            "group": "Frequently Asked Questions",
+            "pages": [
+              "faqs/general",
+              "faqs/api",
+              "faqs/billing"
             ]
           }
         ]

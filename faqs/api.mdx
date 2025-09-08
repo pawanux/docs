@@ -1,0 +1,108 @@
+---
+title: "API FAQs"
+description: "Frequently asked questions about UnleashX API and integration"
+---
+
+# API FAQs
+
+## How do I get started with the API?
+
+1. **Get Your API Key**: Sign up and generate your API key from the dashboard
+2. **Read the Documentation**: Check our comprehensive API reference
+3. **Try the Interactive Playground**: Test API calls directly in the documentation
+4. **Start Building**: Use our SDKs or make direct HTTP requests
+
+## What authentication method do you use?
+
+We use Bearer Token authentication. Include your API key in the Authorization header:
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+     https://api.tryunleashx.com/v1/agent/all
+```
+
+## What's the API rate limit?
+
+Our API rate limits are:
+- **Free Plan**: 100 requests per minute
+- **Pro Plan**: 1,000 requests per minute
+- **Enterprise Plan**: Custom limits based on your needs
+
+Rate limits are applied per API key and reset every minute.
+
+## What data formats do you support?
+
+We support:
+- **Request/Response**: JSON
+- **File Uploads**: Multipart form data
+- **Webhooks**: JSON payloads
+- **Data Export**: JSON, CSV
+
+## How do I handle webhooks?
+
+1. **Set up your endpoint**: Create a webhook URL that can receive POST requests
+2. **Configure in dashboard**: Add your webhook URL in the dashboard settings
+3. **Verify signatures**: Use our signature verification to ensure authenticity
+4. **Handle events**: Process incoming webhook events in your application
+
+## What webhook events are available?
+
+We support webhooks for:
+- Call started/completed
+- Agent responses
+- Error events
+- User interactions
+- System notifications
+
+## Can I test API calls without making real calls?
+
+Yes! We provide:
+- **Sandbox Environment**: Test API calls without charges
+- **Mock Responses**: Simulated responses for development
+- **Interactive Playground**: Try API calls directly in documentation
+- **SDK Examples**: Code samples in multiple languages
+
+## How do I handle errors?
+
+Our API returns standard HTTP status codes:
+- **200**: Success
+- **201**: Created
+- **400**: Bad Request
+- **401**: Unauthorized
+- **404**: Not Found
+- **429**: Rate Limited
+- **500**: Server Error
+
+Error responses include detailed error messages and error codes.
+
+## What SDKs do you provide?
+
+We offer official SDKs for:
+- **Python**: `pip install unleashx`
+- **Node.js**: `npm install unleashx`
+- **PHP**: `composer require unleashx/unleashx`
+- **Ruby**: `gem install unleashx`
+
+## How do I track API usage?
+
+You can monitor your API usage through:
+- **Dashboard Analytics**: Real-time usage statistics
+- **API Response Headers**: Rate limit information in responses
+- **Webhook Events**: Usage notifications
+- **Monthly Reports**: Detailed usage breakdowns
+
+## Can I use the API for bulk operations?
+
+Yes! We support:
+- **Batch API calls**: Process multiple requests efficiently
+- **Bulk data import**: Import large datasets
+- **Concurrent requests**: Handle multiple operations simultaneously
+- **Async processing**: Long-running operations with status tracking
+
+## How do I get help with API integration?
+
+- **Documentation**: Comprehensive guides and examples
+- **Interactive Playground**: Test API calls in your browser
+- **Support Email**: hello@unleashx.ai
+- **Community Forum**: Connect with other developers
+- **GitHub Examples**: Open source integration examples
