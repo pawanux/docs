@@ -205,6 +205,20 @@
             ]
           }
         ]
+      },
+      {
+        "tab": "Integrations",
+        "groups": [
+          {
+            "group": "Integrations",
+            "pages": [
+              "integrations/introduction",
+              "integrations/transcribers",
+              "integrations/large-language-models",
+              "integrations/synthesizers-voices"
+            ]
+          }
+        ]
       }
     ]
   },
