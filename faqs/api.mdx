@@ -106,3 +106,55 @@ Yes! We support:
 - **Support Email**: hello@unleashx.ai
 - **Community Forum**: Connect with other developers
 - **GitHub Examples**: Open source integration examples
+
+## Workflow API Integration
+
+### Custom API Configuration
+The Custom API integration allows you to configure API endpoints, authentication methods, and data mapping for any external system. You can specify HTTP methods (GET, POST, PUT, DELETE), define request headers, set authentication parameters including API keys and OAuth tokens, and map workflow data to API parameters.
+
+### Authentication Handling
+Authentication handling supports multiple methods including API key authentication, OAuth 2.0 token flows, and basic authentication with username/password combinations. The workflow system manages authentication automatically, including token refresh for OAuth integrations.
+
+### Data Exchange and Transformation
+Workflows can send data to external APIs and process the responses for use in subsequent automation steps. Response data becomes available as variables throughout the workflow, enabling sophisticated data-driven automation.
+
+### Error Handling
+Error handling capabilities ensure workflows respond appropriately when API calls fail or return unexpected results. You can configure retry attempts, fallback actions, and error notifications to maintain workflow reliability.
+
+### Real-time Integration with Webhooks
+The Webhook integration enables real-time bidirectional communication between UnleashX and external systems. Your workflows can send webhooks to notify other systems when important events occur, while also receiving webhook data to trigger UnleashX automations.
+
+## Workflow Data Sources
+
+### Cloud-Based Business Applications
+- **Google Workspace**: Sheets, Forms, Drive, Docs, Calendar, Gmail, Analytics
+- **Microsoft Office**: Outlook email and calendar data
+- **Customer Relationship Management**: HubSpot with comprehensive data access
+- **Communication Platforms**: Slack, Discord, WhatsApp
+- **Database Systems**: Airtable, Notion
+- **Specialized Services**: LinkedIn, HeyGen, Web Search
+
+### Custom Data Sources via API
+The Custom API integration enables connection to any data source that provides programmatic access, including proprietary databases, industry-specific applications, and unique business systems.
+
+## Workflow Notification Capabilities
+
+### Email Notifications
+Gmail and Outlook integrations enable workflows to send personalized email notifications based on workflow triggers and conditions.
+
+### Team Communication Alerts
+Slack integration provides real-time notifications through direct messages, channel posts, and custom formatted alerts.
+
+### Escalation and Priority Notifications
+Workflows can implement sophisticated escalation procedures where initial notifications go to primary contacts, then automatically escalate to managers if responses aren't received within specified timeframes.
+
+## Workflow Error Handling
+
+### Conditional Error Detection
+The If/Else node system enables workflows to detect and respond to various error conditions using string, number, boolean, and array conditions.
+
+### Integration Failure Management
+When external API calls fail or return error responses, workflows can detect these conditions through response code evaluation and content analysis.
+
+### Recovery and Retry Mechanisms
+Conditional logic enables workflows to implement sophisticated retry mechanisms when temporary failures occur, including circuit breaker patterns to prevent cascading failures.
