@@ -426,6 +426,14 @@
       }
     },
 
+    "/workspace/all": {
+      "get": {
+        "summary": "List workspaces",
+        "tags": ["Workspaces"],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+
     "/user": {
       "post": {
         "summary": "Create user",
@@ -486,107 +494,6 @@
       }
     },
 
-    "/workspace/all": {
-      "get": {
-        "summary": "List workspaces",
-        "tags": ["Workspaces"],
-        "responses": { "200": { "description": "OK" } }
-      }
-    },
-
-    "/call": {
-      "post": {
-        "summary": "Make a call",
-        "tags": ["Making phone calls"],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "agent_id": { "type": "string", "format": "uuid" },
-                  "recipient_phone_number": { "type": "string" },
-                  "from_phone_number": { "type": "string" },
-                  "user_data": { "type": "object", "additionalProperties": true }
-                },
-                "required": ["agent_id", "recipient_phone_number"]
-              }
-            }
-          }
-        },
-        "responses": { "200": { "description": "OK" } }
-      }
-    },
-    "/call/all": {
-      "get": {
-        "summary": "List calls",
-        "tags": ["Executions & calls data"],
-        "responses": { "200": { "description": "OK" } }
-      }
-    },
-    "/call/{call_id}": {
-      "get": {
-        "summary": "Get call by ID",
-        "tags": ["Executions & calls data"],
-        "parameters": [
-          { "name": "call_id", "in": "path", "required": true, "schema": { "type": "string" } }
-        ],
-        "responses": { "200": { "description": "OK" }, "404": { "description": "Not Found" } }
-      }
-    },
-
-    "/inbound-agent/all": {
-      "get": {
-        "summary": "List inbound agents",
-        "tags": ["Inbound Agents"],
-        "responses": { "200": { "description": "OK" } }
-      }
-    },
-    "/batch": {
-      "post": {
-        "summary": "Create batch",
-        "tags": ["Batches"],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "name": { "type": "string" },
-                  "agent_id": { "type": "string", "format": "uuid" },
-                  "recipients": { "type": "array", "items": { "type": "string" } }
-                },
-                "required": ["name", "agent_id", "recipients"]
-              }
-            }
-          }
-        },
-        "responses": { "201": { "description": "Created" } }
-      }
-    },
-    "/knowledgebase/all": {
-      "get": {
-        "summary": "List knowledgebases",
-        "tags": ["Knowledgebases"],
-        "responses": { "200": { "description": "OK" } }
-      }
-    },
-    "/provider/all": {
-      "get": {
-        "summary": "List providers",
-        "tags": ["Providers"],
-        "responses": { "200": { "description": "OK" } }
-      }
-    },
-    "/sub-account/all": {
-      "get": {
-        "summary": "List sub accounts",
-        "tags": ["Sub accounts"],
-        "responses": { "200": { "description": "OK" } }
-      }
-    },
     "/voice/all": {
       "get": {
         "summary": "List voices",
@@ -594,6 +501,7 @@
         "responses": { "200": { "description": "OK" } }
       }
     },
+
     "/user/me": {
       "get": {
         "summary": "Get current user",

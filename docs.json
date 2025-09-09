@@ -179,6 +179,15 @@
             "pages": [
               "api-reference/workspaces/list-workspaces"
             ]
+          },
+          {
+            "group": "Users",
+            "pages": [
+              "api-reference/users/create-user",
+              "api-reference/users/get-user",
+              "api-reference/users/list-user",
+              "api-reference/users/delete-user"
+            ]
           }
         ]
       },
@@ -202,20 +211,6 @@
               "faqs/general",
               "faqs/api",
               "faqs/billing"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "Integrations",
-        "groups": [
-          {
-            "group": "Integrations",
-            "pages": [
-              "integrations/introduction",
-              "integrations/transcribers",
-              "integrations/large-language-models",
-              "integrations/synthesizers-voices"
             ]
           }
         ]
@@ -263,6 +258,7 @@
     }
   },
   "sidebar": {
-    "collapsible": true
+    "collapsible": true,
+    "collapsibleGroups": true
   }
 }
