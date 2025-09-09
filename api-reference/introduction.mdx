@@ -1,35 +1,150 @@
 ---
 title: 'API Introduction'
-description: 'Authenticate and use UnleashX Voice AI APIs'
+description: 'Build powerful voice AI applications with UnleashX APIs'
 ---
 
-Use and leverage UnleashX Voice AI using APIs through HTTP requests from any language in your applications and workflows.
+# UnleashX API Documentation
 
-UnleashX APIs feature consistent, resource‑oriented URLs, accept application/json request bodies, return JSON responses, and use standard HTTP response codes, authentication, and HTTP verbs.
+Welcome to the UnleashX API! Our comprehensive API enables you to build sophisticated voice AI applications, manage conversational agents, and integrate human-like conversations into your workflows.
 
-## Authentication
+## What is UnleashX?
 
-- Login to the dashboard at `https://platform.unleashx.ai`
+UnleashX is a cutting-edge platform that empowers developers to create, deploy, and manage AI-powered voice agents that can engage in natural, human-like conversations. Our APIs provide everything you need to build intelligent voice applications at scale.
+
+## Key Features
+
+- **Voice AI Agents**: Create sophisticated conversational AI with natural speech synthesis
+- **Phone Integration**: Make and receive calls with supported telephony providers
+- **Chatbots**: Build text-based conversational agents for web and messaging platforms
+- **Workflow Automation**: Design complex automation workflows with our API
+- **Real-time Analytics**: Track performance and optimize your agents
+- **Multilingual Support**: Deploy agents in 50+ languages
+- **Enterprise Ready**: Scale your applications with enterprise-grade infrastructure
+
+## Getting Started
+
+### 1. Authentication
+
+- Login to the dashboard at `https://tryunleashx.com`
 - Navigate to the Developers tab
 - Click `Generate a new API Key`
 - Save your API Key securely (it is shown only once)
 
-### Using the API key
+### 2. Using the API Key
 
 Include your API key as a Bearer token in the Authorization header:
 
-```
-Authorization: Bearer <api_key>
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+     https://api.tryunleashx.com/v1/agent/all
 ```
 
-### Example authenticated request
+### 3. Base URL
+
+All API requests should be made to:
 
 ```
-GET https://api.unleashx.ai/agent/all
-Headers:
-  Authorization: Bearer <api_key>
+https://api.tryunleashx.com/v1/
 ```
+
+## API Design
+
+UnleashX APIs feature:
+
+- **RESTful Design**: Consistent, resource-oriented URLs
+- **JSON Format**: Accept `application/json` request bodies and return JSON responses
+- **Standard HTTP**: Use standard HTTP response codes, authentication, and verbs
+- **Rate Limiting**: Built-in rate limiting to ensure fair usage
+- **Webhooks**: Real-time event notifications for your applications
+
+## Quick Start Example
+
+Here's a simple example to create your first voice agent:
+
+```bash
+curl -X POST https://api.tryunleashx.com/v1/agent \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "My First Agent",
+    "language": "en-US",
+    "prompt": "You are a helpful customer service assistant."
+  }'
+```
+
+## Response Format
+
+All API responses follow a consistent format:
+
+```json
+{
+  "success": true,
+  "data": {
+    // Response data here
+  },
+  "message": "Operation completed successfully"
+}
+```
+
+## Error Handling
+
+The API uses standard HTTP status codes:
+
+- `200` - Success
+- `201` - Created
+- `400` - Bad Request
+- `401` - Unauthorized
+- `404` - Not Found
+- `429` - Rate Limited
+- `500` - Server Error
 
 ## Pagination
 
-Standard cursor‑based pagination is supported on list endpoints unless otherwise specified in the endpoint documentation.
+Standard cursor-based pagination is supported on list endpoints:
+
+```json
+{
+  "data": [...],
+  "pagination": {
+    "next_cursor": "eyJpZCI6MTIzfQ==",
+    "has_more": true
+  }
+}
+```
+
+## Rate Limits
+
+- **Free Plan**: 100 requests per minute
+- **Pro Plan**: 1,000 requests per minute
+- **Enterprise Plan**: Custom limits
+
+## SDKs and Libraries
+
+We provide official SDKs for popular programming languages:
+
+- **Python**: `pip install unleashx`
+- **Node.js**: `npm install unleashx`
+- **PHP**: `composer require unleashx/unleashx`
+- **Ruby**: `gem install unleashx`
+
+## Support
+
+Need help? We're here to assist:
+
+- **Documentation**: Comprehensive guides and examples
+- **Interactive Playground**: Test API calls directly in your browser
+- **Support Email**: hello@unleashx.ai
+- **Community Forum**: Connect with other developers
+
+## Next Steps
+
+Ready to start building? Check out our:
+
+1. [Authentication Guide](/api-reference/authentication) - Learn about API keys and security
+2. [Agent Management](/api-reference/agents) - Create and manage voice agents
+3. [Voice AI](/api-reference/voice-ai) - Advanced voice agent capabilities
+4. [Interactive Playground](/api-reference) - Try API calls in your browser
+
+---
+
+*Start building the future of conversational AI with UnleashX!*

@@ -19,8 +19,8 @@ Whether you prefer no-code simplicity or full developer control, UnleashX meets 
   <Card title="API documentation" icon="terminal" href="/api-reference/introduction">
     Integrate UnleashX using our HTTP APIs in your apps and workflows.
   </Card>
-  <Card title="Playground" icon="beaker" href="/playground/agent-setup">
-    Configure, test, and iterate on agents instantly.
+  <Card title="Playground" icon="beaker" href="/api-reference">
+    Configure, test, and iterate on agents instantly with our interactive API playground.
   </Card>
   <Card title="Phone calls" icon="phone" href="/phone-calls/supported-telephony">
     Set up telephony, purchase numbers, and make/receive calls.
@@ -35,7 +35,7 @@ Whether you prefer no-code simplicity or full developer control, UnleashX meets 
 ```python
 import requests
 
-url = "https://api.unleashx.ai/call"
+url = "https://api.tryunleashx.com/v1/call"
 
 payload = {
   "agent_id": "123e4567-e89b-12d3-a456-426655440000",
@@ -45,7 +45,7 @@ payload = {
 }
 
 headers = {
-  "Authorization": "Bearer <token>",
+  "Authorization": "Bearer YOUR_API_KEY",
   "Content-Type": "application/json"
 }
 
@@ -55,7 +55,37 @@ print(response.text)
 
 ## Multilingual, low-latency, enterprise-ready
 
-- Natural conversations with <300ms latency
-- 10+ languages supported
+- Natural conversations with under 300ms latency
+- 50+ languages supported
 - Connect ASR, LLM, and TTS models
-- Enterprise pricing, on‑prem deployments, and regional data residency
+- Enterprise pricing, on-premises deployments, and regional data residency
+
+## Why Choose UnleashX?
+
+### 🚀 **Rapid Deployment**
+Get your voice agents up and running in minutes, not weeks. Our intuitive platform and comprehensive APIs make it easy to go from concept to production.
+
+### 🎯 **Human-like Conversations**
+Create voice agents that sound natural and engaging. Our advanced AI technology delivers conversations that feel authentic and build genuine connections.
+
+### 📈 **Scale with Confidence**
+From startup to enterprise, UnleashX grows with you. Handle thousands of concurrent calls with our robust, scalable infrastructure.
+
+### 🔧 **Developer-Friendly**
+Powerful APIs, comprehensive documentation, and interactive playgrounds. Build exactly what you need with the tools you love.
+
+### �� **Global Reach**
+Deploy voice agents in 50+ languages and reach customers worldwide. Our multilingual support ensures your agents can communicate effectively anywhere.
+
+## Get Started Today
+
+Ready to transform your customer interactions? Start building with UnleashX:
+
+1. **Sign up** for a free account at [tryunleashx.com](https://tryunleashx.com)
+2. **Create** your first voice agent in minutes
+3. **Deploy** and start making calls
+4. **Scale** as your business grows
+
+---
+
+*Join thousands of developers building the future of conversational AI with UnleashX.*
