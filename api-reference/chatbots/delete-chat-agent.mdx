@@ -1,27 +1,27 @@
 ---
-title: Delete Chat Chat Agent
-openapi: "api-reference/openapi.json POST /chat-chat agent/delete"
+title: Delete Chat Agent
+openapi: "api-reference/openapi.json POST /chat-agent/delete"
 ---
 
-# Delete Chat Chat Agent
+# Delete Chat Agent
 
-Chat chat agent deletion in the system is implemented as a **soft delete** mechanism. When a chat chat agent is deleted, it is not physically removed from the database. Instead, the chat chat agent's status is set to `2` (deleted), and the chat chat agent is marked as inactive. This approach preserves data integrity, maintains audit trails, and allows for potential recovery.
+Chat agent deletion in the system is implemented as a **soft delete** mechanism. When a chat agent is deleted, it is not physically removed from the database. Instead, the chat agent's status is set to `2` (deleted), and the chat agent is marked as inactive. This approach preserves data integrity, maintains audit trails, and allows for potential recovery.
 
 ## Deletion Endpoint
 
-**Endpoint:** `POST /api/chat agent/status`
+**Endpoint:** `POST /api/agent/status`
 
 **Authentication:** Standard authentication (no Super Admin required)
 
-**Controller:** `src/controllers/chat agentbuild/chat agentController.js` - `updateChat AgentStatus`
+**Controller:** `src/controllers/agentbuild/agentController.js` - `updateAgentStatus`
 
-**Location:** ```2469:2597:src/controllers/chat agentbuild/chat agentController.js```
+**Location:** ```2469:2597:src/controllers/agentbuild/agentController.js```
 
 ## Request Structure
 
 ```json
 {
-  "chat agent_id": 123,
+  "agent_id": 123,
   "status": 2  // 2 = Deleted
 }
 ```
@@ -30,7 +30,7 @@ Chat chat agent deletion in the system is implemented as a **soft delete** mecha
 
 ### 1. Transaction Initialization
 
-**Location:** ```2470:2470:src/controllers/chat agentbuild/chat agentController.js```
+**Location:** ```2470:2470:src/controllers/agentbuild/agentController.js```
 
 - A database transaction is started to ensure atomicity
 - All deletion operations are performed within this transaction
@@ -38,98 +38,98 @@ Chat chat agent deletion in the system is implemented as a **soft delete** mecha
 
 ### 2. Validation
 
-**Location:** ```2477:2499:src/controllers/chat agentbuild/chat agentController.js```
+**Location:** ```2477:2499:src/controllers/agentbuild/agentController.js```
 
 1. **Required Fields Validation:**
-   - Validates `chat agent_id` is provided
+   - Validates `agent_id` is provided
    - Validates `status` is provided
 
-2. **Chat Agent Existence Check:**
-   - Checks if chat agent exists in database
-   - Verifies chat agent belongs to the user's workspace
-   - Throws "Chat Agent not found" error if chat agent doesn't exist
+2. **Agent Existence Check:**
+   - Checks if agent exists in database
+   - Verifies agent belongs to the user's workspace
+   - Throws "Agent not found" error if agent doesn't exist
 
 ### 3. Status Update
 
-**Location:** ```2525:2536:src/controllers/chat agentbuild/chat agentController.js```
+**Location:** ```2525:2536:src/controllers/agentbuild/agentController.js```
 
-- Updates chat agent `STATUS` field to `2` (deleted)
+- Updates agent `STATUS` field to `2` (deleted)
 - Updates `UPDATED_BY` with current user ID
 - Updates `UPDATED_ON` with current timestamp
-- Stores old chat agent data for change tracking
+- Stores old agent data for change tracking
 
 ### 4. External Service Cleanup
 
-When an chat agent is deleted (status = 2), the system performs cleanup operations with external services:
+When an agent is deleted (status = 2), the system performs cleanup operations with external services:
 
 #### 4.1. Millis AI Platform Deletion
 
-**Location:** ```2537:2558:src/controllers/chat agentbuild/chat agentController.js```
+**Location:** ```2537:2558:src/controllers/agentbuild/agentController.js```
 
 **Process:**
-1. Parses chat agent metadata to extract `platform_chat agent_id`
-2. Extracts `platform_chat agent_id` from:
+1. Parses agent metadata to extract `platform_agent_id`
+2. Extracts `platform_agent_id` from:
    ```javascript
-   chat agentMetadata?.successful_platform_integrations?.millis_ai?.platform_chat agent_id
+   agentMetadata?.successful_platform_integrations?.millis_ai?.platform_agent_id
    ```
-3. If `platform_chat agent_id` exists:
-   - Calls Millis AI API DELETE endpoint: `https://api-west.millis.ai/chat agents/{chat agent_id}`
-   - Deletes chat agent from Millis AI platform
+3. If `platform_agent_id` exists:
+   - Calls Millis AI API DELETE endpoint: `https://api-west.millis.ai/agents/{agent_id}`
+   - Deletes agent from Millis AI platform
 4. **Error Handling:**
    - Errors are logged but don't break the deletion process
    - Deletion continues even if external API call fails
-   - Error message: "Failed to delete chat agent from Millis AI"
+   - Error message: "Failed to delete agent from Millis AI"
 
 #### 4.2. Knowledge Base Deletion from AI Service
 
-**Location:** ```2559:2561:src/controllers/chat agentbuild/chat agentController.js```
+**Location:** ```2559:2561:src/controllers/agentbuild/agentController.js```
 
-**Function:** `deleteKnowledgeToAI(auth, chat agentId)`
+**Function:** `deleteKnowledgeToAI(auth, agentId)`
 
-**Location:** ```4397:4417:src/controllers/chat agentbuild/chat agentController.js```
+**Location:** ```4397:4417:src/controllers/agentbuild/agentController.js```
 
 **Process:**
 1. Calls AI service endpoint: `${process.env.AI_SOURCE_BASE_URL}/knowledge-base/delete`
 2. Sends deletion request with:
    - `company_id`
    - `workspace_id`
-   - `chat agent_id`
-3. Removes chat agent's knowledge base from AI service
+   - `agent_id`
+3. Removes agent's knowledge base from AI service
 4. **Error Handling:**
    - Errors are thrown and logged
    - Deletion process continues (errors don't rollback transaction)
 
 ### 5. Change Tracking
 
-**Location:** ```2569:2575:src/controllers/chat agentbuild/chat agentController.js```
+**Location:** ```2569:2575:src/controllers/agentbuild/agentController.js```
 
 - Tracks status change in change history
 - Records old status and new status (2 = deleted)
-- Stores user information, timestamp, IP address, and user chat agent
+- Stores user information, timestamp, IP address, and user agent
 - **Error Handling:**
   - Change tracking errors are logged but don't break deletion
   - Deletion continues even if tracking fails
 
 ### 6. Transaction Commit
 
-**Location:** ```2580:2580:src/controllers/chat agentbuild/chat agentController.js```
+**Location:** ```2580:2580:src/controllers/agentbuild/agentController.js```
 
 - Commits database transaction
 - All changes are persisted
-- Chat Agent is now marked as deleted in the database
+- Agent is now marked as deleted in the database
 
 ### 7. Response
 
-**Location:** ```2583:2591:src/controllers/chat agentbuild/chat agentController.js```
+**Location:** ```2583:2591:src/controllers/agentbuild/agentController.js```
 
 **Success Response:**
 
 ```json
 {
-  "message": "Chat Agent Deleted Successfully",
+  "message": "Agent Deleted Successfully",
   "data": {
     "id": 123,
-    "name": "Chat Agent Name",
+    "name": "Agent Name",
     "status": 2
   }
 }
@@ -139,91 +139,91 @@ When an chat agent is deleted (status = 2), the system performs cleanup operatio
 
 ### What is Soft Delete?
 
-Soft delete means the chat agent record remains in the database but is marked as deleted. The chat agent is not physically removed from the database.
+Soft delete means the agent record remains in the database but is marked as deleted. The agent is not physically removed from the database.
 
 **Benefits:**
 - **Data Preservation:** Historical data is maintained
-- **Audit Trail:** Complete record of all chat agents and their history
-- **Recovery:** Deleted chat agents can potentially be restored
+- **Audit Trail:** Complete record of all agents and their history
+- **Recovery:** Deleted agents can potentially be restored
 - **Referential Integrity:** Related records remain intact
 - **Analytics:** Historical data can be analyzed
 
 ### How Soft Delete Works
 
 1. **Status Field:**
-   - Chat Agent `STATUS` field is set to `2` (deleted)
-   - All other chat agent data remains unchanged
+   - Agent `STATUS` field is set to `2` (deleted)
+   - All other agent data remains unchanged
 
 2. **Query Filtering:**
-   - All queries filter out deleted chat agents using: `STATUS: { [Op.ne]: 2 }`
-   - Deleted chat agents are excluded from:
-     - Chat Agent lists
-     - Chat Agent searches
-     - Chat Agent selections
-     - Public chat agent listings
+   - All queries filter out deleted agents using: `STATUS: { [Op.ne]: 2 }`
+   - Deleted agents are excluded from:
+     - Agent lists
+     - Agent searches
+     - Agent selections
+     - Public agent listings
 
 3. **Related Records:**
    - Related records (knowledge base, tools, configurations) are **NOT** automatically deleted
-   - They remain in the database but are associated with a deleted chat agent
-   - Some queries may filter these out based on chat agent status
+   - They remain in the database but are associated with a deleted agent
+   - Some queries may filter these out based on agent status
 
 ## What Happens to Related Data
 
-### 1. Chat Agent Configuration
+### 1. Agent Configuration
 
 **Status:** Remains in database
-- `Chat AgentConfiguration` records remain unchanged
-- Associated with deleted chat agent via `AGENT_ID`
+- `AgentConfiguration` records remain unchanged
+- Associated with deleted agent via `AGENT_ID`
 - Not automatically deleted
 
 ### 2. Knowledge Base
 
 **Status:** Remains in database, deleted from AI service
-- `Chat AgentKnowledgebase` records remain in database
+- `AgentKnowledgebase` records remain in database
 - Knowledge base files remain in cloud storage
 - **Deleted from AI service** (via `deleteKnowledgeToAI` function)
 - Files are not removed from cloud storage
 
-### 3. Tools and Sub-chat agents
+### 3. Tools and Sub-agents
 
 **Status:** Remain in database
-- `Chat AgentAppTools` records remain unchanged
-- Tools and sub-chat agents remain associated with deleted chat agent
+- `AgentAppTools` records remain unchanged
+- Tools and sub-agents remain associated with deleted agent
 - Not automatically deleted
 
 ### 4. Calling Numbers
 
 **Status:** Remain in database
-- `Chat AgentCallingNumbers` records remain unchanged
-- Phone numbers remain associated with deleted chat agent
+- `AgentCallingNumbers` records remain unchanged
+- Phone numbers remain associated with deleted agent
 - Not automatically deleted
 
 ### 5. Denied Words
 
 **Status:** Remain in database
-- `Chat AgentDeniedWords` records remain unchanged
-- Denied words remain associated with deleted chat agent
+- `AgentDeniedWords` records remain unchanged
+- Denied words remain associated with deleted agent
 - Not automatically deleted
 
 ### 6. Dispositions
 
 **Status:** Remain in database
-- `Chat AgentDisposition` records remain unchanged
-- Dispositions remain associated with deleted chat agent
+- `AgentDisposition` records remain unchanged
+- Dispositions remain associated with deleted agent
 - Not automatically deleted
 
 ### 7. Guardrails
 
 **Status:** Remain in database
 - Guardrail settings remain unchanged
-- Associated with deleted chat agent
+- Associated with deleted agent
 - Not automatically deleted
 
 ### 8. Metadata
 
 **Status:** Remain in database
 - Metadata configurations remain unchanged
-- Associated with deleted chat agent
+- Associated with deleted agent
 - Not automatically deleted
 
 ### 9. Change History
@@ -237,14 +237,14 @@ Soft delete means the chat agent record remains in the database but is marked as
 
 ### 1. Millis AI Platform
 
-**Action:** Chat Agent is deleted from Millis AI platform
+**Action:** Agent is deleted from Millis AI platform
 
-**Endpoint:** `DELETE https://api-west.millis.ai/chat agents/{platform_chat agent_id}`
+**Endpoint:** `DELETE https://api-west.millis.ai/agents/{platform_agent_id}`
 
 **Process:**
-1. Extracts `platform_chat agent_id` from chat agent metadata
+1. Extracts `platform_agent_id` from agent metadata
 2. Calls DELETE endpoint
-3. Removes chat agent from Millis AI platform
+3. Removes agent from Millis AI platform
 
 **Error Handling:**
 - Errors are logged but don't break deletion
@@ -262,14 +262,14 @@ Soft delete means the chat agent record remains in the database but is marked as
 {
   "company_id": "123",
   "workspace_id": "456",
-  "chat agent_id": "789"
+  "agent_id": "789"
 }
 ```
 
 **Process:**
 1. Calls AI service deletion endpoint
-2. Removes all knowledge base data for the chat agent
-3. Chat Agent can no longer access knowledge base in AI service
+2. Removes all knowledge base data for the agent
+3. Agent can no longer access knowledge base in AI service
 
 **Error Handling:**
 - Errors are thrown and logged
@@ -277,9 +277,9 @@ Soft delete means the chat agent record remains in the database but is marked as
 
 ## Query Filtering
 
-### How Deleted Chat Agents are Filtered
+### How Deleted Agents are Filtered
 
-All queries that retrieve chat agents filter out deleted chat agents:
+All queries that retrieve agents filter out deleted agents:
 
 **Pattern Used:**
 
@@ -289,39 +289,39 @@ STATUS: { [Op.ne]: 2 }  // Not equal to 2 (deleted)
 
 **Examples:**
 
-1. **Chat Agent List:**
+1. **Agent List:**
 
    ```javascript
    where: {
      WORKSPACE_ID: auth.workspace_id,
-     STATUS: { [Op.ne]: 2 }  // Excludes deleted chat agents
+     STATUS: { [Op.ne]: 2 }  // Excludes deleted agents
    }
    ```
 
-2. **Chat Agent Search:**
+2. **Agent Search:**
 
    ```javascript
    where: {
      AGENT_NAME: { [Op.like]: '%search%' },
-     STATUS: { [Op.ne]: 2 }  // Excludes deleted chat agents
+     STATUS: { [Op.ne]: 2 }  // Excludes deleted agents
    }
    ```
 
-3. **Public Chat Agents:**
+3. **Public Agents:**
 
    ```javascript
    where: {
      AGENT_PRIVACY: 1,
-     STATUS: { [Op.ne]: 2 }  // Excludes deleted chat agents
+     STATUS: { [Op.ne]: 2 }  // Excludes deleted agents
    }
    ```
 
-4. **Chat Agent Details:**
+4. **Agent Details:**
 
    ```javascript
    where: {
-     ID: chat agent_id,
-     STATUS: { [Op.ne]: 2 }  // Excludes deleted chat agents
+     ID: agent_id,
+     STATUS: { [Op.ne]: 2 }  // Excludes deleted agents
    }
    ```
 
@@ -329,9 +329,9 @@ STATUS: { [Op.ne]: 2 }  // Not equal to 2 (deleted)
 
 ### Chat Agent Status Values
 
-- **1 (Published):** Chat Agent is active and available for use
-- **2 (Deleted):** Chat Agent is soft-deleted (marked as deleted, not removed from database)
-- **3 (Unpublished):** Chat Agent is inactive but not deleted
+- **1 (Published):** Agent is active and available for use
+- **2 (Deleted):** Agent is soft-deleted (marked as deleted, not removed from database)
+- **3 (Unpublished):** Agent is inactive but not deleted
 
 ### Status Transitions
 
@@ -342,32 +342,32 @@ STATUS: { [Op.ne]: 2 }  // Not equal to 2 (deleted)
 - Status 2 → Status 1 (Published) - Can be restored
 - Status 2 → Status 3 (Unpublished) - Can be restored
 
-**Note:** The system allows restoring deleted chat agents by updating their status back to 1 or 3.
+**Note:** The system allows restoring deleted agents by updating their status back to 1 or 3.
 
 ## Error Handling
 
 ### 1. Transaction Rollback
 
-**Location:** ```2593:2596:src/controllers/chat agentbuild/chat agentController.js```
+**Location:** ```2593:2596:src/controllers/agentbuild/agentController.js```
 
 - If any critical error occurs, the entire transaction is rolled back
-- Chat Agent status is not updated
+- Agent status is not updated
 - All database changes are reverted
 - Ensures data consistency
 
 ### 2. Validation Errors
 
-- **Missing chat agent_id:** Throws validation error
+- **Missing agent_id:** Throws validation error
 - **Missing status:** Throws validation error
-- **Chat Agent not found:** Throws "Chat Agent not found" error
-- **Chat Agent belongs to different workspace:** Throws "Chat Agent not found" error
+- **Agent not found:** Throws "Agent not found" error
+- **Agent belongs to different workspace:** Throws "Agent not found" error
 
 ### 3. External Service Errors
 
 **Millis AI API Errors:**
-- Errors are logged: "Failed to delete chat agent from Millis AI"
+- Errors are logged: "Failed to delete agent from Millis AI"
 - Deletion continues even if external API fails
-- Chat Agent is still marked as deleted in database
+- Agent is still marked as deleted in database
 
 **AI Service Errors:**
 - Errors are thrown and logged
@@ -376,22 +376,22 @@ STATUS: { [Op.ne]: 2 }  // Not equal to 2 (deleted)
 
 ### 4. Change Tracking Errors
 
-- Errors are logged: "Error tracking chat agent status change"
+- Errors are logged: "Error tracking agent status change"
 - Deletion continues even if tracking fails
-- Chat Agent is still marked as deleted
+- Agent is still marked as deleted
 
 ## Recovery and Restoration
 
-### Can Deleted Chat Agents be Restored?
+### Can Deleted Agents be Restored?
 
 **Yes**, deleted chat agents can be restored by updating their status:
 
 **Restore to Published:**
 
 ```json
-POST /api/chat agent/status
+POST /api/agent/status
 {
-  "chat agent_id": 123,
+  "agent_id": 123,
   "status": 1  // Restore to published
 }
 ```
@@ -399,9 +399,9 @@ POST /api/chat agent/status
 **Restore to Unpublished:**
 
 ```json
-POST /api/chat agent/status
+POST /api/agent/status
 {
-  "chat agent_id": 123,
+  "agent_id": 123,
   "status": 3  // Restore to unpublished
 }
 ```
@@ -409,11 +409,11 @@ POST /api/chat agent/status
 ### What Happens on Restoration?
 
 1. **Database:**
-   - Chat Agent status is updated to 1 or 3
-   - Chat Agent becomes visible in queries again
+   - Agent status is updated to 1 or 3
+   - Agent becomes visible in queries again
 
 2. **External Services:**
-   - Millis AI: Chat Agent is NOT automatically recreated
+   - Millis AI: Agent is NOT automatically recreated
    - AI Service: Knowledge base is NOT automatically restored
    - Manual intervention may be required for external services
 
@@ -425,17 +425,17 @@ POST /api/chat agent/status
 
 ### Main Deletion Handler
 
-```2469:2597:src/controllers/chat agentbuild/chat agentController.js
-module.exports.updateChat AgentStatus = async (req, res, next) => {
-  // Chat Agent status update handler
+```2469:2597:src/controllers/agentbuild/agentController.js
+module.exports.updateAgentStatus = async (req, res, next) => {
+  // Agent status update handler
   // Handles deletion when status = 2
 }
 ```
 
 ### Status Update
 
-```2525:2536:src/controllers/chat agentbuild/chat agentController.js
-await db.Chat AgentDetails.update(
+```2525:2536:src/controllers/agentbuild/agentController.js
+await db.AgentDetails.update(
   {
     STATUS: postData.status == 2 ? 2 : postData.status,
     // ...
@@ -445,26 +445,26 @@ await db.Chat AgentDetails.update(
 
 ### Millis AI Deletion
 
-```2537:2558:src/controllers/chat agentbuild/chat agentController.js
+```2537:2558:src/controllers/agentbuild/agentController.js
 if (postData.status == 2) {
-  // Call Millis AI API to delete chat agent
-  // Extract platform_chat agent_id from metadata
-  // DELETE https://api-west.millis.ai/chat agents/{chat agent_id}
+  // Call Millis AI API to delete agent
+  // Extract platform_agent_id from metadata
+  // DELETE https://api-west.millis.ai/agents/{agent_id}
 }
 ```
 
 ### Knowledge Base Deletion
 
-```2559:2561:src/controllers/chat agentbuild/chat agentController.js
+```2559:2561:src/controllers/agentbuild/agentController.js
 if (postData.status == 2) {
-  deleteKnowledgeToAI(auth, chat agent.ID);
+  deleteKnowledgeToAI(auth, agent.ID);
 }
 ```
 
 ### Delete Knowledge Base Function
 
-```4397:4417:src/controllers/chat agentbuild/chat agentController.js
-const deleteKnowledgeToAI = async (auth, chat agentId) => {
+```4397:4417:src/controllers/agentbuild/agentController.js
+const deleteKnowledgeToAI = async (auth, agentId) => {
   // Deletes knowledge base from AI service
   // POST ${AI_SOURCE_BASE_URL}/knowledge-base/delete
 }
@@ -474,9 +474,9 @@ const deleteKnowledgeToAI = async (auth, chat agentId) => {
 
 ### 1. Pre-Deletion Checks
 
-Before deleting an chat agent, consider:
-- **Active Usage:** Check if chat agent is currently in use
-- **Dependencies:** Verify no critical workflows depend on the chat agent
+Before deleting an agent, consider:
+- **Active Usage:** Check if agent is currently in use
+- **Dependencies:** Verify no critical workflows depend on the agent
 - **Backup:** Ensure important data is backed up if needed
 
 ### 2. Post-Deletion Actions
@@ -504,7 +504,7 @@ If restoration might be needed:
 ### 1. Authorization
 
 - Standard authentication required (not Super Admin)
-- Users can only delete chat agents in their workspace
+- Users can only delete agents in their workspace
 - Cross-workspace deletion is prevented
 
 ### 2. Audit Trail
@@ -535,13 +535,13 @@ If restoration might be needed:
 
 ### 3. Storage
 
-- Deleted chat agents still consume database storage
+- Deleted agents still consume database storage
 - Knowledge base files remain in cloud storage
 - No automatic cleanup of storage
 
 ## Troubleshooting
 
-### Chat Agent Still Visible After Deletion
+### Agent Still Visible After Deletion
 
 **Possible Causes:**
 1. Transaction not committed
@@ -558,7 +558,7 @@ If restoration might be needed:
 **Possible Causes:**
 1. External API call failed
 2. Network issues
-3. Invalid platform_chat agent_id
+3. Invalid platform_agent_id
 
 **Solutions:**
 1. Check logs for API errors
@@ -569,20 +569,20 @@ If restoration might be needed:
 
 **Possible Causes:**
 1. AI service API call failed
-2. Invalid chat agent_id
+2. Invalid agent_id
 3. Service unavailable
 
 **Solutions:**
 1. Check logs for API errors
-2. Verify chat agent_id is correct
+2. Verify agent_id is correct
 3. Retry deletion or manual cleanup
 
 ## Notes
 
-- Deletion is a soft delete - chat agent remains in database
+- Deletion is a soft delete - agent remains in database
 - All related data is preserved
 - External services are cleaned up (with error handling)
-- Deleted chat agents can be restored
+- Deleted agents can be restored
 - Complete audit trail is maintained
-- Queries automatically filter out deleted chat agents
+- Queries automatically filter out deleted agents
 - No physical data removal occurs

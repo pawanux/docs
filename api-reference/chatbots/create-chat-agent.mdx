@@ -1,21 +1,21 @@
 ---
-title: Create Chat Chat Agent
-openapi: "api-reference/openapi.json POST /chat-chat agent"
+title: Create Chat Agent
+openapi: "api-reference/openapi.json POST /chat-agent"
 ---
 
-# Create Chat Chat Agent
+# Create Chat Agent
 
-The chat chat agent creation system allows users to create and configure AI chat chat agents with comprehensive settings including basic details, configuration, knowledge base, calling numbers, denied words, dispositions, guardrails, and metadata. The system supports both creating new chat chat agents and updating existing ones through a single unified endpoint.
+The chat agent creation system allows users to create and configure AI chat agents with comprehensive settings including basic details, configuration, knowledge base, calling numbers, denied words, dispositions, guardrails, and metadata. The system supports both creating new chat agents and updating existing ones through a single unified endpoint.
 
 ## API Endpoint
 
-**Endpoint:** `POST /api/chat agent/createchat agentorupdate`
+**Endpoint:** `POST /api/agent/createagentorupdate`
 
 **Authentication:** Requires Super Admin authentication (`checkSuperAdmin` middleware)
 
-**Route File:** `src/routes/chat agentBuild.js`
+**Route File:** `src/routes/agentBuild.js`
 
-**Controller:** `src/controllers/chat agentbuild/chat agentController.js` - `createOrUpdateCompleteChat Agent`
+**Controller:** `src/controllers/agentbuild/agentController.js` - `createOrUpdateCompleteAgent`
 
 ## Request Structure
 
@@ -24,17 +24,17 @@ The endpoint accepts a `multipart/form-data` request with the following structur
 ```json
 {
   "basic_details": {
-    "chat agent_id": 123,                    // Optional: Required for updates
-    "chat agent_name": "Customer Support",   // Required for new chat agents
-    "description": "Chat Agent description",
+    "agent_id": 123,                    // Optional: Required for updates
+    "agent_name": "Customer Support",   // Required for new agents
+    "description": "Agent description",
     "category": 1,
     "purpose": 1,
-    "chat agent_type": 1,                    // 1=Voice, 2=Chat, 3=Telephony, 4=General
+    "agent_type": 1,                    // 1=Voice, 2=Chat, 3=Telephony, 4=General
     "chatbot_name": "Support Bot",
     "chatbot_welcome_message": "Welcome!",
     "chatbot_image": "image_url",       // Can be uploaded as file
-    "chat agent_privacy": 0,                 // 0=Private, 1=Public
-    "chat agent_prompt": "You are a helpful assistant...",
+    "agent_privacy": 0,                 // 0=Private, 1=Public
+    "agent_prompt": "You are a helpful assistant...",
     "voice_id": "KYiVPerWcenyBTIvWbfY",
     "voice_provider": 1,
     "transcriber_provider": 2,
@@ -44,20 +44,20 @@ The endpoint accepts a `multipart/form-data` request with the following structur
     "instruction_sensitivity": "medium"
   },
   "configuration": {
-    "chat agent_id": 123,                    // Required
+    "agent_id": 123,                    // Required
     "context_awareness": true,
     "memory_recall": true,
     "sentiment_analysis": true,
     "interruption_handling": true,
-    "chat agent_terminate_instruction": "...",
-    "chat agent_terminate_messages": "..."
+    "agent_terminate_instruction": "...",
+    "agent_terminate_messages": "..."
   },
   "knowledge_base": {
-    "chat agent_id": 123,                    // Required
+    "agent_id": 123,                    // Required
     "tools": [
       { "id": 1, "isEnabled": true }
     ],
-    "sub_chat agents": [
+    "sub_agents": [
       { "id": 2, "isEnabled": true }
     ],
     "text_knowledge_bases": [
@@ -66,7 +66,7 @@ The endpoint accepts a `multipart/form-data` request with the following structur
   },
   "phone_numbers": ["+1234567890"],
   "denials": {
-    "chat agent_id": 123,
+    "agent_id": 123,
     "denied_words": ["word1", "word2"],
     "denied_topics": ["topic1", "topic2"]
   },
@@ -74,7 +74,7 @@ The endpoint accepts a `multipart/form-data` request with the following structur
     "dispositions": [...]
   },
   "guardrails": {
-    "chat agent_id": 123,
+    "agent_id": 123,
     ...
   },
   "metadata_config": {
@@ -90,7 +90,7 @@ The endpoint accepts a `multipart/form-data` request with the following structur
 
 ## Process Flow
 
-The chat agent creation/update process follows these steps in sequence:
+The agent creation/update process follows these steps in sequence:
 
 ### 1. Transaction Initialization
 
@@ -100,40 +100,40 @@ The chat agent creation/update process follows these steps in sequence:
 
 ### 2. Basic Details Processing
 
-**Function:** `createOrUpdateChat Agent(req, transaction)`
+**Function:** `createOrUpdateAgent(req, transaction)`
 
-**Location:** ```177:509:src/controllers/chat agentbuild/chat agentController.js```
+**Location:** ```177:509:src/controllers/agentbuild/agentController.js```
 
 #### For New Chat Agents:
 
 1. **Validation:**
-   - Validates `chat agent_name` is provided
-   - Checks for duplicate chat agent names in the workspace
-   - Auto-increments name if duplicate found (e.g., "Chat Agent Name (1)")
+   - Validates `agent_name` is provided
+   - Checks for duplicate agent names in the workspace
+   - Auto-increments name if duplicate found (e.g., "Agent Name (1)")
 
 2. **Category Processing:**
    - If category ID is provided, fetches category description from predefined lists
    - Stores category information as JSON
 
-3. **Chat Agent Data Construction:**
-   - Builds chat agent data object with provided fields
+3. **Agent Data Construction:**
+   - Builds agent data object with provided fields
    - Sets default values:
      - `AGENT_MODEL`: 11
      - `MODEL_VERSION`: 55
      - `AGENT_PRIVACY`: 0 (Private)
      - `STATUS`: 3
-   - Sets default voice ID if not provided: `"KYiVPerWcenyBTIvWbfY"` (Sia - Friendly Customer Care Chat Agent)
+   - Sets default voice ID if not provided: `"KYiVPerWcenyBTIvWbfY"` (Sia - Friendly Customer Care Agent)
    - Sets default transcriber provider: 2
    - Sets default transcriber model: 16
    - Sets default voice provider: 1
 
-4. **Chat Agent Creation:**
-   - Creates chat agent record in `Chat AgentDetails` table
+4. **Agent Creation:**
+   - Creates agent record in `AgentDetails` table
    - Generates unique `AGENT_UID` using UUID v4
    - Sets `CREATED_BY` and `CREATED_ON` timestamps
 
 5. **Token Generation:**
-   - Generates JWT token for chat agent authentication
+   - Generates JWT token for agent authentication
    - Token payload includes:
      - `AGENT_ID`
      - `USER_ID`
@@ -141,105 +141,105 @@ The chat agent creation/update process follows these steps in sequence:
      - `WORKSPACE_ID`
      - `CREATED_ON`
      - `AUTH_UPDATE_AT`
-   - Updates chat agent record with generated token
+   - Updates agent record with generated token
 
 6. **Change Tracking:**
-   - Tracks chat agent creation in change history
+   - Tracks agent creation in change history
 
 #### For Existing Chat Agents (Updates):
 
 1. **Validation:**
-   - Validates `chat agent_id` is provided
-   - Fetches existing chat agent record
+   - Validates `agent_id` is provided
+   - Fetches existing agent record
 
-2. **Chat Agent Behavior Handling:**
+2. **Agent Behavior Handling:**
    - Merges behavior fields (tone, style, instruction_sensitivity) with existing values
    - Preserves existing behavior if not all fields are updated
 
 3. **Token Refresh:**
-   - Retrieves or generates new chat agent token
+   - Retrieves or generates new agent token
 
 4. **Update Processing:**
-   - Updates chat agent record with new data
+   - Updates agent record with new data
    - Tracks changes in change history
 
 ### 3. Chatbot Image Upload
 
-**Location:** ```2328:2336:src/controllers/chat agentbuild/chat agentController.js```
+**Location:** ```2328:2336:src/controllers/agentbuild/agentController.js```
 
 - Extracts chatbot image from uploaded files
-- Uploads to S3/cloud storage with path: `{company_id}/chat agent/chatbot_image/{chat agent_id}`
+- Uploads to S3/cloud storage with path: `{company_id}/agent/chatbot_image/{agent_id}`
 - Updates `basic_details.chatbot_image` with file directory path
 - Removes image file from `req.files` array (to prevent it from being processed as knowledge base file)
 
 ### 4. Configuration Update
 
-**Function:** `updateChat AgentConfig(req, transaction)`
+**Function:** `updateAgentConfig(req, transaction)`
 
-**Location:** ```606:850:src/controllers/chat agentbuild/chat agentController.js```
+**Location:** ```606:850:src/controllers/agentbuild/agentController.js```
 
 **Process:**
-1. Validates `chat agent_id` is provided
-2. Checks if chat agent exists
-3. Finds or creates `Chat AgentConfiguration` record
+1. Validates `agent_id` is provided
+2. Checks if agent exists
+3. Finds or creates `AgentConfiguration` record
 4. Updates configuration fields:
    - Context awareness
    - Memory recall
    - Sentiment analysis
    - Interruption handling
    - Voice settings
-   - Chat Agent terminate instructions
+   - Agent terminate instructions
    - Ambient noise detection
    - And other configuration options
 5. Tracks configuration changes in change history
 
 ### 5. Knowledge Base Update
 
-**Function:** `updateChat AgentKnowledgebase(req, transaction)`
+**Function:** `updateAgentKnowledgebase(req, transaction)`
 
-**Location:** ```858:1205:src/controllers/chat agentbuild/chat agentController.js```
+**Location:** ```858:1205:src/controllers/agentbuild/agentController.js```
 
 **Process:**
 1. **Validation:**
-   - Validates `chat agent_id` is provided
-   - Checks chat agent exists and is not deleted
+   - Validates `agent_id` is provided
+   - Checks agent exists and is not deleted
 
 2. **Training Status Reset:**
-   - Sets chat agent `TRAINED` status to 0 (not trained)
+   - Sets agent `TRAINED` status to 0 (not trained)
 
-3. **Tools and Sub-chat agents:**
+3. **Tools and Sub-agents:**
    - Processes tools array (TYPE: 1)
-   - Processes sub-chat agents array (TYPE: 2)
-   - Stores in `Chat AgentAppTools` table
-   - Updates existing tools/sub-chat agents or creates new ones
+   - Processes sub-agents array (TYPE: 2)
+   - Stores in `AgentAppTools` table
+   - Updates existing tools/sub-agents or creates new ones
 
 4. **File Knowledge Bases:**
    - Validates uploaded files:
      - Maximum 3 files
      - Maximum 10MB per file
      - Allowed types: PDF, DOC, DOCX, XLSX, CSV
-   - Uploads files to cloud storage: `{company_id}/chat agent/knowledge_base/{chat agent_id}`
-   - Creates `Chat AgentKnowledgebase` records (KNOWLEDGEBASE_TYPE: 1 for files)
+   - Uploads files to cloud storage: `{company_id}/agent/knowledge_base/{agent_id}`
+   - Creates `AgentKnowledgebase` records (KNOWLEDGEBASE_TYPE: 1 for files)
 
 5. **Text Knowledge Bases:**
    - Processes text-based knowledge bases
-   - Creates `Chat AgentKnowledgebase` records (KNOWLEDGEBASE_TYPE: 2 for text)
+   - Creates `AgentKnowledgebase` records (KNOWLEDGEBASE_TYPE: 2 for text)
 
 6. **Change Tracking:**
    - Tracks knowledge base changes
 
 ### 6. Calling Numbers
 
-**Function:** `saveChat AgentCallingNumbersHelper(chat agentId, phoneNumbers, auth, transaction)`
+**Function:** `saveAgentCallingNumbersHelper(agentId, phoneNumbers, auth, transaction)`
 
-**Location:** ```5208:5240:src/controllers/chat agentbuild/chat agentController.js```
+**Location:** ```5208:5240:src/controllers/agentbuild/agentController.js```
 
 **Process:**
-1. Removes existing calling numbers for the chat agent
+1. Removes existing calling numbers for the agent
 2. For each phone number:
    - Finds provider details by phone number
-   - Creates `Chat AgentCallingNumbers` record with:
-     - Chat Agent ID
+   - Creates `AgentCallingNumbers` record with:
+     - Agent ID
      - Phone number
      - Context ID
      - Number context
@@ -247,82 +247,82 @@ The chat agent creation/update process follows these steps in sequence:
 
 ### 7. Denied Words
 
-**Function:** `updateChat AgentDeniedWords(req, transaction)`
+**Function:** `updateAgentDeniedWords(req, transaction)`
 
-**Location:** ```5577:5673:src/controllers/chat agentbuild/chat agentController.js```
+**Location:** ```5577:5673:src/controllers/agentbuild/agentController.js```
 
 **Process:**
-1. Validates `chat agent_id` is provided
-2. Checks chat agent exists and belongs to workspace
+1. Validates `agent_id` is provided
+2. Checks agent exists and belongs to workspace
 3. Processes `denied_words` array (TYPE: 'word')
 4. Processes `denied_topics` array (TYPE: 'topic')
-5. Creates `Chat AgentDeniedWords` records via bulk create
+5. Creates `AgentDeniedWords` records via bulk create
 6. Tracks changes in change history
 
 ### 8. Dispositions
 
 **Function:** `dispositionController.createOrUpdateDisposition(req, res, next)`
 
-**Location:** ```2392:2401:src/controllers/chat agentbuild/chat agentController.js```
+**Location:** ```2392:2401:src/controllers/agentbuild/agentController.js```
 
 **Process:**
-- Updates chat agent dispositions configuration
+- Updates agent dispositions configuration
 - Handled by disposition controller
 
 ### 9. Guardrails
 
 **Function:** `guardrailController.createOrUpdateGuardrailSettings(req, res, next)`
 
-**Location:** ```2403:2414:src/controllers/chat agentbuild/chat agentController.js```
+**Location:** ```2403:2414:src/controllers/agentbuild/agentController.js```
 
 **Process:**
-- Updates chat agent guardrail settings
+- Updates agent guardrail settings
 - Handled by guardrail controller
 
 ### 10. Metadata Configuration
 
-**Function:** `flowhelper.saveChat AgentMetadataConfig(req, transaction)`
+**Function:** `flowhelper.saveAgentMetadataConfig(req, transaction)`
 
-**Location:** ```2416:2440:src/controllers/chat agentbuild/chat agentController.js```
+**Location:** ```2416:2440:src/controllers/agentbuild/agentController.js```
 
 **Process:**
 1. Processes metadata input array
 2. Processes metadata output array
-3. Saves chat agent metadata configuration
+3. Saves agent metadata configuration
 
 ### 11. Transaction Commit
 
-**Location:** ```2442:2442:src/controllers/chat agentbuild/chat agentController.js```
+**Location:** ```2442:2442:src/controllers/agentbuild/agentController.js```
 
 - Commits database transaction
 - All changes are persisted
 
-### 12. Chat Agent Sync
+### 12. Agent Sync
 
-**Function:** `syncChat Agent(auth, req, chat agentId)`
+**Function:** `syncAgent(auth, req, agentId)`
 
-**Location:** ```548:597:src/controllers/chat agentbuild/chat agentController.js```
+**Location:** ```548:597:src/controllers/agentbuild/agentController.js```
 
 **Process:**
-1. Retrieves chat agent token
-2. Calls `chat agentKnowledgeBaseUpdate` to sync knowledge base with AI service
-3. For chat agent type 3 (Telephony), calls external chat agent API
-4. Syncs chat agent configuration with AI service
+1. Retrieves agent token
+2. Calls `agentKnowledgeBaseUpdate` to sync knowledge base with AI service
+3. For agent type 3 (Telephony), calls external agent API
+4. Syncs agent configuration with AI service
 
 **Note:** Sync operations run asynchronously after transaction commit to avoid blocking the response
 
 ## Database Tables Involved
 
-1. **Chat AgentDetails** - Main chat agent information
-2. **Chat AgentConfiguration** - Chat Agent abilities and settings
-3. **Chat AgentKnowledgebase** - Knowledge base files and text
-4. **Chat AgentAppTools** - Tools and sub-chat agents
-5. **Chat AgentCallingNumbers** - Phone numbers associated with chat agent
-6. **Chat AgentDeniedWords** - Denied words and topics
-7. **Chat AgentDispositions** - Disposition configurations
-8. **Chat AgentGuardrails** - Guardrail settings
-9. **Chat AgentMetadata** - Metadata input/output configurations
-10. **ChangeHistory** - Tracks all changes made to chat agents
+1. **AgentDetails** - Main agent information
+2. **AgentConfiguration** - Agent abilities and settings
+3. **AgentKnowledgebase** - Knowledge base files and text
+4. **AgentAppTools** - Tools and sub-agents
+5. **AgentCallingNumbers** - Phone numbers associated with agent
+6. **AgentDeniedWords** - Denied words and topics
+7. **AgentDispositions** - Disposition configurations
+8. **AgentGuardrails** - Guardrail settings
+9. **AgentMetadata** - Metadata input/output configurations
+10. **ChangeHistory** - Tracks all changes made to agents
 
 ## External Integrations
 
@@ -332,16 +332,16 @@ The chat agent creation/update process follows these steps in sequence:
 - **Purpose:** Syncs knowledge base files with AI service
 - **Trigger:** After knowledge base update
 
-### 2. AI Service Chat Agent Sync
+### 2. AI Service Agent Sync
 
 - **Endpoint:** `${process.env.AI_BASE_URL}/chat/api/sync-knowledgebase`
-- **Purpose:** Syncs chat agent configuration with AI service
-- **Trigger:** After chat agent creation/update
+- **Purpose:** Syncs agent configuration with AI service
+- **Trigger:** After agent creation/update
 
-### 3. External Chat Agent API (Type 3 Chat Agents)
+### 3. External Agent API (Type 3 Agents)
 
-- **Purpose:** Updates chat agent metadata for telephony chat agents
-- **Trigger:** For chat agent type 3 (Telephony)
+- **Purpose:** Updates agent metadata for telephony agents
+- **Trigger:** For agent type 3 (Telephony)
 
 ## Error Handling
 
@@ -352,11 +352,11 @@ The chat agent creation/update process follows these steps in sequence:
 2. **Validation Errors:**
    - Missing required fields throw validation errors
    - Invalid file types/sizes throw errors
-   - Non-existent chat agents throw errors
+   - Non-existent agents throw errors
 
 3. **Change Tracking Errors:**
    - Change tracking errors are logged but don't break the main operation
-   - Chat Agent creation/update continues even if tracking fails
+   - Agent creation/update continues even if tracking fails
 
 4. **Sync Errors:**
    - Sync operations run asynchronously
@@ -369,9 +369,9 @@ The chat agent creation/update process follows these steps in sequence:
 
 ```json
 {
-  "message": "Chat Agent updated successfully",
+  "message": "Agent updated successfully",
   "data": {
-    "chat agent_id": 123
+    "agent_id": 123
   }
 }
 ```
@@ -386,41 +386,41 @@ The chat agent creation/update process follows these steps in sequence:
 1. **Atomic Operations:** All operations are wrapped in a database transaction
 2. **Change Tracking:** All changes are tracked in change history
 3. **File Upload Support:** Supports chatbot images and knowledge base files
-4. **Flexible Updates:** Can update individual sections or complete chat agent
-5. **Name Deduplication:** Automatically handles duplicate chat agent names
+4. **Flexible Updates:** Can update individual sections or complete agent
+5. **Name Deduplication:** Automatically handles duplicate agent names
 6. **Default Values:** Sets sensible defaults for missing fields
-7. **Async Sync:** Chat Agent sync happens asynchronously after commit
+7. **Async Sync:** Agent sync happens asynchronously after commit
 
 ## Code References
 
 ### Main Entry Point
 
-```2315:2461:src/controllers/chat agentbuild/chat agentController.js
-module.exports.createOrUpdateCompleteChat Agent = async (req, res, next) => {
-  // Main chat agent creation/update handler
+```2315:2461:src/controllers/agentbuild/agentController.js
+module.exports.createOrUpdateCompleteAgent = async (req, res, next) => {
+  // Main agent creation/update handler
 }
 ```
 
 ### Basic Details Handler
 
-```177:509:src/controllers/chat agentbuild/chat agentController.js
-const createOrUpdateChat Agent = async (req, transaction) => {
-  // Handles chat agent basic details creation/update
+```177:509:src/controllers/agentbuild/agentController.js
+const createOrUpdateAgent = async (req, transaction) => {
+  // Handles agent basic details creation/update
 }
 ```
 
 ### Configuration Handler
 
-```606:850:src/controllers/chat agentbuild/chat agentController.js
-const updateChat AgentConfig = async (req, transaction) => {
-  // Handles chat agent configuration
+```606:850:src/controllers/agentbuild/agentController.js
+const updateAgentConfig = async (req, transaction) => {
+  // Handles agent configuration
 }
 ```
 
 ### Knowledge Base Handler
 
-```858:1205:src/controllers/chat agentbuild/chat agentController.js
-const updateChat AgentKnowledgebase = async (req, transaction) => {
+```858:1205:src/controllers/agentbuild/agentController.js
+const updateAgentKnowledgebase = async (req, transaction) => {
   // Handles knowledge base updates
 }
 ```
@@ -428,8 +428,8 @@ const updateChat AgentKnowledgebase = async (req, transaction) => {
 ## Notes
 
 - All operations require Super Admin authentication
-- Chat Agent ID is required for updates, optional for creation
+- Agent ID is required for updates, optional for creation
 - Knowledge base files are limited to 3 files, 10MB each
 - Supported file types: PDF, DOC, DOCX, XLSX, CSV
-- Chat Agent sync happens asynchronously after successful creation/update
+- Agent sync happens asynchronously after successful creation/update
 - Change history is tracked for audit purposes

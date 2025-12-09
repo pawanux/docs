@@ -1,49 +1,49 @@
 ---
-title: Update Chat Chat Agent
-openapi: "api-reference/openapi.json POST /chat-chat agent/update"
+title: Update Chat Agent
+openapi: "api-reference/openapi.json POST /chat-agent/update"
 ---
 
-# Update Chat Chat Agent
+# Update Chat Agent
 
-The chat chat agent update system provides multiple endpoints and mechanisms to update existing chat chat agents. Updates can be performed on complete chat agents, individual components (status, knowledge base, denied words, dispositions), or specific fields. All update operations maintain data integrity through transactions and change tracking.
+The chat agent update system provides multiple endpoints and mechanisms to update existing chat agents. Updates can be performed on complete agents, individual components (status, knowledge base, denied words, dispositions), or specific fields. All update operations maintain data integrity through transactions and change tracking.
 
 ## Update Endpoints
 
 ### 1. Complete Chat Agent Update
 
-**Endpoint:** `POST /api/chat agent/createchat agentorupdate`
+**Endpoint:** `POST /api/agent/createagentorupdate`
 
 **Authentication:** Requires Super Admin authentication (`checkSuperAdmin` middleware)
 
-**Route File:** `src/routes/chat agentBuild.js`
+**Route File:** `src/routes/agentBuild.js`
 
-**Controller:** `src/controllers/chat agentbuild/chat agentController.js` - `createOrUpdateCompleteChat Agent`
+**Controller:** `src/controllers/agentbuild/agentController.js` - `createOrUpdateCompleteAgent`
 
-**Key Difference from Creation:** When `chat agent_id` is provided in `basic_details`, the system performs an update instead of creation.
+**Key Difference from Creation:** When `agent_id` is provided in `basic_details`, the system performs an update instead of creation for chat agents.
 
 #### Request Structure
 
 ```json
 {
   "basic_details": {
-    "chat agent_id": 123,                    // REQUIRED for updates
-    "chat agent_name": "Updated Name",
+    "agent_id": 123,                    // REQUIRED for updates
+    "agent_name": "Updated Name",
     "description": "Updated description",
-    "chat agent_prompt": "Updated prompt",
+    "agent_prompt": "Updated prompt",
     "tone": "professional",
     "style": "conversational",
     "instruction_sensitivity": "medium"
     // ... other fields to update
   },
   "configuration": {
-    "chat agent_id": 123,
+    "agent_id": 123,
     "context_awareness": true,
     // ... other config fields
   },
   "knowledge_base": {
-    "chat agent_id": 123,
+    "agent_id": 123,
     "tools": [...],
-    "sub_chat agents": [...]
+    "sub_agents": [...]
   }
   // ... other sections
 }
@@ -51,29 +51,29 @@ The chat chat agent update system provides multiple endpoints and mechanisms to 
 
 #### Update Process Flow
 
-**Location:** ```2315:2461:src/controllers/chat agentbuild/chat agentController.js```
+**Location:** ```2315:2461:src/controllers/agentbuild/agentController.js```
 
 1. **Transaction Initialization**
    - Starts database transaction
 
 2. **Basic Details Update**
 
-   **Function:** `createOrUpdateChat Agent(req, transaction)` - Update Branch
+   **Function:** `createOrUpdateAgent(req, transaction)` - Update Branch
 
-   **Location:** ```372:438:src/controllers/chat agentbuild/chat agentController.js```
+   **Location:** ```372:438:src/controllers/agentbuild/agentController.js```
 
    **Process:**
-   - Validates `chat agent_id` is provided
-   - Fetches existing chat agent record
-   - **Chat Agent Behavior Handling:**
-     - Retrieves current chat agent behavior (tone, style, instruction_sensitivity)
+   - Validates `agent_id` is provided
+   - Fetches existing agent record
+   - **Agent Behavior Handling:**
+     - Retrieves current agent behavior (tone, style, instruction_sensitivity)
      - Merges new behavior values with existing ones
      - Preserves existing behavior fields if not all are updated
      - Example: If only `tone` is updated, `style` and `instruction_sensitivity` are preserved
-   - Retrieves or generates chat agent token
-   - Generates `AGENT_UID` if missing (for legacy chat agents)
-   - Stores old chat agent data for change tracking
-   - Updates chat agent record with new data
+   - Retrieves or generates agent token
+   - Generates `AGENT_UID` if missing (for legacy agents)
+   - Stores old agent data for change tracking
+   - Updates agent record with new data
    - Tracks changes in change history
 
 3. **Chatbot Image Update**
@@ -81,21 +81,21 @@ The chat chat agent update system provides multiple endpoints and mechanisms to 
    - Uploads to same directory structure
 
 4. **Configuration Update**
-   - Updates or creates chat agent configuration
+   - Updates or creates agent configuration
    - Only updates fields that are provided
    - Tracks configuration changes
 
 5. **Knowledge Base Update**
-   - **Tools and Sub-chat agents:**
-     - Compares existing tools/sub-chat agents with new ones
+   - **Tools and Sub-agents:**
+     - Compares existing tools/sub-agents with new ones
      - Updates existing entries (enabled/disabled status)
-     - Creates new entries for new tools/sub-chat agents
+     - Creates new entries for new tools/sub-agents
      - Removes entries that are no longer in the list
    - **File Knowledge Bases:**
      - Adds new files (up to 3 files, 10MB each)
      - Existing files remain unless explicitly removed
    - **Training Status:**
-     - Resets chat agent `TRAINED` status to 0 when knowledge base is updated
+     - Resets agent `TRAINED` status to 0 when knowledge base is updated
 
 6. **Other Component Updates**
    - Calling numbers (replaces existing)
@@ -107,8 +107,8 @@ The chat chat agent update system provides multiple endpoints and mechanisms to 
 7. **Transaction Commit**
    - Commits all changes atomically
 
-8. **Chat Agent Sync**
-   - Syncs updated chat agent with AI service asynchronously
+8. **Agent Sync**
+   - Syncs updated agent with AI service asynchronously
 
 #### Key Update Behaviors
 
@@ -125,8 +125,8 @@ The chat chat agent update system provides multiple endpoints and mechanisms to 
    // Result: { tone: "professional", style: "casual", instruction_sensitivity: "high" }
    ```
 
-3. **Tools/Sub-chat agents Update Logic:**
-   - Existing tools/sub-chat agents are matched by `APP_LOCATION` (ID)
+3. **Tools/Sub-agents Update Logic:**
+   - Existing tools/sub-agents are matched by `APP_LOCATION` (ID)
    - If tool exists: Updates `IS_ENABLED` and `STATUS`
    - If tool doesn't exist: Creates new entry
    - Tools not in the update list remain unchanged
@@ -138,19 +138,19 @@ The chat chat agent update system provides multiple endpoints and mechanisms to 
 
 ### 2. Update Chat Agent Status
 
-**Endpoint:** `POST /api/chat agent/status`
+**Endpoint:** `POST /api/agent/status`
 
 **Authentication:** Standard authentication (no Super Admin required)
 
-**Controller:** `src/controllers/chat agentbuild/chat agentController.js` - `updateChat AgentStatus`
+**Controller:** `src/controllers/agentbuild/agentController.js` - `updateAgentStatus`
 
-**Location:** ```2469:2597:src/controllers/chat agentbuild/chat agentController.js```
+**Location:** ```2469:2597:src/controllers/agentbuild/agentController.js```
 
 #### Request Structure
 
 ```json
 {
-  "chat agent_id": 123,
+  "agent_id": 123,
   "status": 1  // 1=Published, 2=Deleted, 3=Unpublished
 }
 ```
@@ -158,24 +158,24 @@ The chat chat agent update system provides multiple endpoints and mechanisms to 
 #### Process Flow
 
 1. **Validation:**
-   - Validates `chat agent_id` and `status` are provided
-   - Checks chat agent exists and belongs to workspace
+   - Validates `agent_id` and `status` are provided
+   - Checks agent exists and belongs to workspace
 
 2. **Publish Validation (Status = 1):**
-   - For chat agent type 3 (Telephony):
+   - For agent type 3 (Telephony):
      - Validates at least one phone number is assigned
      - Throws error if no phone numbers found
-   - For other chat agent types:
-     - Validates chat agent type is set
+   - For other agent types:
+     - Validates agent type is set
 
 3. **Status Update:**
-   - Updates chat agent status in database
+   - Updates agent status in database
    - Stores old data for change tracking
 
 4. **Special Handling for Deletion (Status = 2):**
-   - Calls Millis AI API to delete chat agent from external platform
+   - Calls Millis AI API to delete agent from external platform
    - Deletes knowledge base from AI service
-   - Extracts `platform_chat agent_id` from `AGENT_METADATA`
+   - Extracts `platform_agent_id` from `AGENT_METADATA`
 
 5. **Change Tracking:**
    - Tracks status change in change history
@@ -184,10 +184,10 @@ The chat chat agent update system provides multiple endpoints and mechanisms to 
 
    ```json
    {
-     "message": "Chat Agent Published Successfully", // or "Unpublished" or "Deleted"
+     "message": "Agent Published Successfully", // or "Unpublished" or "Deleted"
      "data": {
        "id": 123,
-       "name": "Chat Agent Name",
+       "name": "Agent Name",
        "status": 1
      }
    }
@@ -195,19 +195,19 @@ The chat chat agent update system provides multiple endpoints and mechanisms to 
 
 #### Status Values
 
-- **1 (Published):** Chat Agent is active and available for use
-- **2 (Deleted):** Chat Agent is soft-deleted (marked as deleted, not removed from database)
-- **3 (Unpublished):** Chat Agent is inactive but not deleted
+- **1 (Published):** Agent is active and available for use
+- **2 (Deleted):** Agent is soft-deleted (marked as deleted, not removed from database)
+- **3 (Unpublished):** Agent is inactive but not deleted
 
 ### 3. Update Knowledge Base Status
 
-**Endpoint:** `POST /api/chat agent/updateKnowledgeBaseStatus`
+**Endpoint:** `POST /api/agent/updateKnowledgeBaseStatus`
 
 **Authentication:** Requires Super Admin authentication
 
-**Controller:** `src/controllers/chat agentbuild/chat agentController.js` - `updateKnowledgeBaseStatus`
+**Controller:** `src/controllers/agentbuild/agentController.js` - `updateKnowledgeBaseStatus`
 
-**Location:** ```3464:3549:src/controllers/chat agentbuild/chat agentController.js```
+**Location:** ```3464:3549:src/controllers/agentbuild/agentController.js```
 
 #### Request Structure
 
@@ -224,16 +224,16 @@ The chat chat agent update system provides multiple endpoints and mechanisms to 
    - Validates `knowledge_base_id` and `status` are provided
    - Checks knowledge base exists and belongs to workspace
 
-2. **Chat Agent Validation:**
-   - Verifies associated chat agent exists and is not deleted
+2. **Agent Validation:**
+   - Verifies associated agent exists and is not deleted
 
 3. **Status Update:**
    - Updates knowledge base status
    - Sets `TRAINED` to 0 (not trained)
 
-4. **Chat Agent Training Reset:**
-   - Resets chat agent's `TRAINED` status to 0
-   - Indicates chat agent needs retraining after knowledge base change
+4. **Agent Training Reset:**
+   - Resets agent's `TRAINED` status to 0
+   - Indicates agent needs retraining after knowledge base change
 
 5. **Knowledge Base Sync:**
    - Syncs knowledge base with AI service
@@ -254,19 +254,19 @@ The chat chat agent update system provides multiple endpoints and mechanisms to 
 
 ### 4. Update Denied Word and Disposition Status
 
-**Endpoint:** `POST /api/chat agent/updateDeniedWordAndDisposition`
+**Endpoint:** `POST /api/agent/updateDeniedWordAndDisposition`
 
 **Authentication:** Requires Super Admin authentication
 
-**Controller:** `src/controllers/chat agentbuild/chat agentController.js` - `updateDeniedWordAndDisposition`
+**Controller:** `src/controllers/agentbuild/agentController.js` - `updateDeniedWordAndDisposition`
 
-**Location:** ```3557:3677:src/controllers/chat agentbuild/chat agentController.js```
+**Location:** ```3557:3677:src/controllers/agentbuild/agentController.js```
 
 #### Request Structure
 
 ```json
 {
-  "chat agent_id": 123,
+  "agent_id": 123,
   "denied_word_id": 789,      // Optional: for denied word update
   "disposition_id": 101,      // Optional: for disposition update
   "status": 1                 // 1=Active, 2=Deleted
@@ -276,16 +276,16 @@ The chat chat agent update system provides multiple endpoints and mechanisms to 
 #### Process Flow
 
 1. **Validation:**
-   - Validates `chat agent_id` is provided
-   - Checks chat agent exists and belongs to workspace
+   - Validates `agent_id` is provided
+   - Checks agent exists and belongs to workspace
 
 2. **Denied Word Update (if `denied_word_id` provided):**
-   - Validates denied word exists for the chat agent
+   - Validates denied word exists for the agent
    - Updates denied word status
    - Tracks change in change history
 
 3. **Disposition Update (if `disposition_id` provided):**
-   - Validates disposition exists for the chat agent
+   - Validates disposition exists for the agent
    - Updates disposition status
    - Tracks change in change history
 
@@ -325,7 +325,7 @@ All updates are tracked in the change history system:
 - Changed fields
 - User who made the change
 - Timestamp
-- IP address and user chat agent
+- IP address and user agent
 
 ### 2. Partial Updates
 
@@ -338,11 +338,11 @@ The update system supports partial updates:
 **Example:**
 
 ```json
-// Update only chat agent name
+// Update only agent name
 {
   "basic_details": {
-    "chat agent_id": 123,
-    "chat agent_name": "New Name"
+    "agent_id": 123,
+    "agent_name": "New Name"
   }
 }
 // All other fields remain unchanged
@@ -350,9 +350,9 @@ The update system supports partial updates:
 
 ### 3. Behavior Field Merging
 
-When updating chat agent behavior fields (tone, style, instruction_sensitivity):
+When updating agent behavior fields (tone, style, instruction_sensitivity):
 
-**Location:** ```380:394:src/controllers/chat agentbuild/chat agentController.js```
+**Location:** ```380:394:src/controllers/agentbuild/agentController.js```
 
 - Existing behavior is retrieved from database
 - New values are merged with existing values
@@ -367,21 +367,21 @@ When updating chat agent behavior fields (tone, style, instruction_sensitivity):
 // Result: { tone: "professional", style: "casual", instruction_sensitivity: "high" }
 ```
 
-### 4. Tools and Sub-chat agents Update Logic
+### 4. Tools and Sub-agents Update Logic
 
-**Location:** ```955:1014:src/controllers/chat agentbuild/chat agentController.js```
+**Location:** ```955:1014:src/controllers/agentbuild/agentController.js```
 
 **Update Strategy:**
-1. **Existing Tools/Sub-chat agents:**
+1. **Existing Tools/Sub-agents:**
    - Matched by `APP_LOCATION` (ID)
    - Updated with new `IS_ENABLED` status
    - Status set to 2 (deleted) if disabled, 1 (active) if enabled
 
-2. **New Tools/Sub-chat agents:**
+2. **New Tools/Sub-agents:**
    - Created as new entries
-   - Assigned to chat agent
+   - Assigned to agent
 
-3. **Removed Tools/Sub-chat agents:**
+3. **Removed Tools/Sub-agents:**
    - Not automatically deleted
    - Remain in database with their current status
 
@@ -389,48 +389,48 @@ When updating chat agent behavior fields (tone, style, instruction_sensitivity):
 
 When knowledge base is updated:
 
-**Location:** ```881:886:src/controllers/chat agentbuild/chat agentController.js```
+**Location:** ```881:886:src/controllers/agentbuild/agentController.js```
 
-- Chat Agent's `TRAINED` status is reset to 0
-- Indicates chat agent needs retraining
+- Agent's `TRAINED` status is reset to 0
+- Indicates agent needs retraining
 - Knowledge base sync is triggered
 
 ### 6. Token Management
 
-**Location:** ```112:169:src/controllers/chat agentbuild/chat agentController.js```
+**Location:** ```112:169:src/controllers/agentbuild/agentController.js```
 
-- Chat Agent token is retrieved or regenerated during updates
-- Token is used for chat agent authentication
-- Token includes chat agent ID, user ID, company ID, workspace ID
+- Agent token is retrieved or regenerated during updates
+- Token is used for agent authentication
+- Token includes agent ID, user ID, company ID, workspace ID
 
 ### 7. External Service Sync
 
 After successful updates:
 
-**Location:** ```548:597:src/controllers/chat agentbuild/chat agentController.js```
+**Location:** ```548:597:src/controllers/agentbuild/agentController.js```
 
 1. **Knowledge Base Sync:**
    - Syncs knowledge base files with AI service
    - Updates AI service with new knowledge base data
 
-2. **Chat Agent Configuration Sync:**
-   - Syncs chat agent configuration with AI service
-   - Updates AI service with new chat agent settings
+2. **Agent Configuration Sync:**
+   - Syncs agent configuration with AI service
+   - Updates AI service with new agent settings
 
-3. **External API Calls (Type 3 Chat Agents):**
-   - For telephony chat agents, calls external chat agent API
-   - Updates chat agent metadata in external platform
+3. **External API Calls (Type 3 Agents):**
+   - For telephony agents, calls external agent API
+   - Updates agent metadata in external platform
 
 ## Update Validation Rules
 
-### 1. Chat Agent Existence
-- Chat Agent must exist in database
-- Chat Agent must belong to workspace
-- Chat Agent must not be deleted (STATUS != 2)
+### 1. Agent Existence
+- Agent must exist in database
+- Agent must belong to workspace
+- Agent must not be deleted (STATUS != 2)
 
 ### 2. Publish Validation
-- Chat Agent type 3 (Telephony) must have at least one phone number
-- Chat Agent type must be set for all chat agent types
+- Agent type 3 (Telephony) must have at least one phone number
+- Agent type must be set for all agent types
 
 ### 3. Knowledge Base Updates
 - Maximum 3 files per update
@@ -450,11 +450,11 @@ After successful updates:
 
 ### 2. Validation Errors
 - Missing required fields throw validation errors
-- Invalid chat agent IDs throw "Chat Agent not found" errors
+- Invalid agent IDs throw "Agent not found" errors
 - Invalid status values throw validation errors
 
 ### 3. Business Logic Errors
-- Publishing chat agent without phone numbers throws error
+- Publishing agent without phone numbers throws error
 - Updating non-existent knowledge base throws error
 - Cross-workspace operations throw errors
 
@@ -469,9 +469,9 @@ After successful updates:
 
 ```json
 {
-  "message": "Chat Agent updated successfully",
+  "message": "Agent updated successfully",
   "data": {
-    "chat agent_id": 123
+    "agent_id": 123
   }
 }
 ```
@@ -480,10 +480,10 @@ After successful updates:
 
 ```json
 {
-  "message": "Chat Agent Published Successfully",
+  "message": "Agent Published Successfully",
   "data": {
     "id": 123,
-    "name": "Chat Agent Name",
+    "name": "Agent Name",
     "status": 1
   }
 }
@@ -511,17 +511,17 @@ After successful updates:
 
 ### Main Update Handler
 
-```2315:2461:src/controllers/chat agentbuild/chat agentController.js
-module.exports.createOrUpdateCompleteChat Agent = async (req, res, next) => {
-  // Main chat agent update handler
+```2315:2461:src/controllers/agentbuild/agentController.js
+module.exports.createOrUpdateCompleteAgent = async (req, res, next) => {
+  // Main agent update handler
 }
 ```
 
 ### Basic Details Update
 
-```372:438:src/controllers/chat agentbuild/chat agentController.js
-if (postData.chat agent_id) {
-  // Update chat agent build settings
+```372:438:src/controllers/agentbuild/agentController.js
+if (postData.agent_id) {
+  // Update agent build settings
   // Behavior field merging
   // Change tracking
 }
@@ -529,15 +529,15 @@ if (postData.chat agent_id) {
 
 ### Status Update
 
-```2469:2597:src/controllers/chat agentbuild/chat agentController.js
-module.exports.updateChat AgentStatus = async (req, res, next) => {
-  // Chat Agent status update handler
+```2469:2597:src/controllers/agentbuild/agentController.js
+module.exports.updateAgentStatus = async (req, res, next) => {
+  // Agent status update handler
 }
 ```
 
 ### Knowledge Base Status Update
 
-```3464:3549:src/controllers/chat agentbuild/chat agentController.js
+```3464:3549:src/controllers/agentbuild/agentController.js
 module.exports.updateKnowledgeBaseStatus = async (req, res, next) => {
   // Knowledge base status update handler
 }
@@ -545,7 +545,7 @@ module.exports.updateKnowledgeBaseStatus = async (req, res, next) => {
 
 ### Denied Word and Disposition Update
 
-```3557:3677:src/controllers/chat agentbuild/chat agentController.js
+```3557:3677:src/controllers/agentbuild/agentController.js
 module.exports.updateDeniedWordAndDisposition = async (req, res, next) => {
   // Denied word and disposition status update handler
 }
@@ -553,21 +553,21 @@ module.exports.updateDeniedWordAndDisposition = async (req, res, next) => {
 
 ## Differences from Creation
 
-1. **Chat Agent ID Required:** Updates require `chat agent_id` in `basic_details`
+1. **Agent ID Required:** Updates require `agent_id` in `basic_details`
 2. **No Name Deduplication:** Updates don't check for duplicate names
 3. **Behavior Merging:** Updates merge behavior fields instead of replacing
-4. **Tools/Sub-chat agents:** Updates existing entries instead of only creating
-5. **Token Refresh:** Updates refresh chat agent token instead of generating new one
+4. **Tools/Sub-agents:** Updates existing entries instead of only creating
+5. **Token Refresh:** Updates refresh agent token instead of generating new one
 6. **Change Tracking:** Updates track changes, creation tracks creation
 7. **No Default Values:** Updates don't set default values for missing fields
-8. **AGENT_UID:** Updates only generate AGENT_UID if missing (for legacy chat agents)
+8. **AGENT_UID:** Updates only generate AGENT_UID if missing (for legacy agents)
 
 ## Best Practices
 
 1. **Partial Updates:** Only send fields that need to be updated
 2. **Transaction Safety:** All updates are atomic - either all succeed or all fail
 3. **Change Tracking:** All changes are automatically tracked for audit
-4. **Validation:** Always validate chat agent exists before updating
+4. **Validation:** Always validate agent exists before updating
 5. **Status Management:** Use status update endpoint for status changes
 6. **Knowledge Base:** Update knowledge base separately for better control
 7. **Error Handling:** Handle validation errors gracefully
@@ -576,7 +576,7 @@ module.exports.updateDeniedWordAndDisposition = async (req, res, next) => {
 ## Notes
 
 - All update operations require appropriate authentication
-- Super Admin required for complete chat agent updates and knowledge base updates
+- Super Admin required for complete agent updates and knowledge base updates
 - Standard authentication sufficient for status updates
 - Updates are idempotent - can be called multiple times safely
 - Change history provides complete audit trail
