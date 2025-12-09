@@ -1,4 +1,588 @@
 ---
-title: Delete Voice Agent
-openapi: "api-reference/openapi.json POST /voice-agent/delete"
---- 
+title: Delete Voice Voice Agent
+openapi: "api-reference/openapi.json POST /voice-voice agent/delete"
+---
+
+# Delete Voice Voice Agent
+
+Voice voice agent deletion in the system is implemented as a **soft delete** mechanism. When a voice voice agent is deleted, it is not physically removed from the database. Instead, the voice voice agent's status is set to `2` (deleted), and the voice voice agent is marked as inactive. This approach preserves data integrity, maintains audit trails, and allows for potential recovery.
+
+## Deletion Endpoint
+
+**Endpoint:** `POST /api/voice agent/status`
+
+**Authentication:** Standard authentication (no Super Admin required)
+
+**Controller:** `src/controllers/voice agentbuild/voice agentController.js` - `updateVoice AgentStatus`
+
+**Location:** ```2469:2597:src/controllers/voice agentbuild/voice agentController.js```
+
+## Request Structure
+
+```json
+{
+  "voice agent_id": 123,
+  "status": 2  // 2 = Deleted
+}
+```
+
+## Deletion Process Flow
+
+### 1. Transaction Initialization
+
+**Location:** ```2470:2470:src/controllers/voice agentbuild/voice agentController.js```
+
+- A database transaction is started to ensure atomicity
+- All deletion operations are performed within this transaction
+- If any step fails, the entire operation is rolled back
+
+### 2. Validation
+
+**Location:** ```2477:2499:src/controllers/voice agentbuild/voice agentController.js```
+
+1. **Required Fields Validation:**
+   - Validates `voice agent_id` is provided
+   - Validates `status` is provided
+
+2. **Voice Agent Existence Check:**
+   - Checks if voice agent exists in database
+   - Verifies voice agent belongs to the user's workspace
+   - Throws "Voice Agent not found" error if voice agent doesn't exist
+
+### 3. Status Update
+
+**Location:** ```2525:2536:src/controllers/voice agentbuild/voice agentController.js```
+
+- Updates voice agent `STATUS` field to `2` (deleted)
+- Updates `UPDATED_BY` with current user ID
+- Updates `UPDATED_ON` with current timestamp
+- Stores old voice agent data for change tracking
+
+### 4. External Service Cleanup
+
+When an voice agent is deleted (status = 2), the system performs cleanup operations with external services:
+
+#### 4.1. Millis AI Platform Deletion
+
+**Location:** ```2537:2558:src/controllers/voice agentbuild/voice agentController.js```
+
+**Process:**
+1. Parses voice agent metadata to extract `platform_voice agent_id`
+2. Extracts `platform_voice agent_id` from:
+   ```javascript
+   voice agentMetadata?.successful_platform_integrations?.millis_ai?.platform_voice agent_id
+   ```
+3. If `platform_voice agent_id` exists:
+   - Calls Millis AI API DELETE endpoint: `https://api-west.millis.ai/voice agents/{voice agent_id}`
+   - Deletes voice agent from Millis AI platform
+4. **Error Handling:**
+   - Errors are logged but don't break the deletion process
+   - Deletion continues even if external API call fails
+   - Error message: "Failed to delete voice agent from Millis AI"
+
+#### 4.2. Knowledge Base Deletion from AI Service
+
+**Location:** ```2559:2561:src/controllers/voice agentbuild/voice agentController.js```
+
+**Function:** `deleteKnowledgeToAI(auth, voice agentId)`
+
+**Location:** ```4397:4417:src/controllers/voice agentbuild/voice agentController.js```
+
+**Process:**
+1. Calls AI service endpoint: `${process.env.AI_SOURCE_BASE_URL}/knowledge-base/delete`
+2. Sends deletion request with:
+   - `company_id`
+   - `workspace_id`
+   - `voice agent_id`
+3. Removes voice agent's knowledge base from AI service
+4. **Error Handling:**
+   - Errors are thrown and logged
+   - Deletion process continues (errors don't rollback transaction)
+
+### 5. Change Tracking
+
+**Location:** ```2569:2575:src/controllers/voice agentbuild/voice agentController.js```
+
+- Tracks status change in change history
+- Records old status and new status (2 = deleted)
+- Stores user information, timestamp, IP address, and user voice agent
+- **Error Handling:**
+  - Change tracking errors are logged but don't break deletion
+  - Deletion continues even if tracking fails
+
+### 6. Transaction Commit
+
+**Location:** ```2580:2580:src/controllers/voice agentbuild/voice agentController.js```
+
+- Commits database transaction
+- All changes are persisted
+- Voice Agent is now marked as deleted in the database
+
+### 7. Response
+
+**Location:** ```2583:2591:src/controllers/voice agentbuild/voice agentController.js```
+
+**Success Response:**
+
+```json
+{
+  "message": "Voice Agent Deleted Successfully",
+  "data": {
+    "id": 123,
+    "name": "Voice Agent Name",
+    "status": 2
+  }
+}
+```
+
+## Soft Delete Mechanism
+
+### What is Soft Delete?
+
+Soft delete means the voice agent record remains in the database but is marked as deleted. The voice agent is not physically removed from the database.
+
+**Benefits:**
+- **Data Preservation:** Historical data is maintained
+- **Audit Trail:** Complete record of all voice agents and their history
+- **Recovery:** Deleted voice agents can potentially be restored
+- **Referential Integrity:** Related records remain intact
+- **Analytics:** Historical data can be analyzed
+
+### How Soft Delete Works
+
+1. **Status Field:**
+   - Voice Agent `STATUS` field is set to `2` (deleted)
+   - All other voice agent data remains unchanged
+
+2. **Query Filtering:**
+   - All queries filter out deleted voice agents using: `STATUS: { [Op.ne]: 2 }`
+   - Deleted voice agents are excluded from:
+     - Voice Agent lists
+     - Voice Agent searches
+     - Voice Agent selections
+     - Public voice agent listings
+
+3. **Related Records:**
+   - Related records (knowledge base, tools, configurations) are **NOT** automatically deleted
+   - They remain in the database but are associated with a deleted voice agent
+   - Some queries may filter these out based on voice agent status
+
+## What Happens to Related Data
+
+### 1. Voice Agent Configuration
+
+**Status:** Remains in database
+- `Voice AgentConfiguration` records remain unchanged
+- Associated with deleted voice agent via `AGENT_ID`
+- Not automatically deleted
+
+### 2. Knowledge Base
+
+**Status:** Remains in database, deleted from AI service
+- `Voice AgentKnowledgebase` records remain in database
+- Knowledge base files remain in cloud storage
+- **Deleted from AI service** (via `deleteKnowledgeToAI` function)
+- Files are not removed from cloud storage
+
+### 3. Tools and Sub-voice agents
+
+**Status:** Remain in database
+- `Voice AgentAppTools` records remain unchanged
+- Tools and sub-voice agents remain associated with deleted voice agent
+- Not automatically deleted
+
+### 4. Calling Numbers
+
+**Status:** Remain in database
+- `Voice AgentCallingNumbers` records remain unchanged
+- Phone numbers remain associated with deleted voice agent
+- Not automatically deleted
+
+### 5. Denied Words
+
+**Status:** Remain in database
+- `Voice AgentDeniedWords` records remain unchanged
+- Denied words remain associated with deleted voice agent
+- Not automatically deleted
+
+### 6. Dispositions
+
+**Status:** Remain in database
+- `Voice AgentDisposition` records remain unchanged
+- Dispositions remain associated with deleted voice agent
+- Not automatically deleted
+
+### 7. Guardrails
+
+**Status:** Remain in database
+- Guardrail settings remain unchanged
+- Associated with deleted voice agent
+- Not automatically deleted
+
+### 8. Metadata
+
+**Status:** Remain in database
+- Metadata configurations remain unchanged
+- Associated with deleted voice agent
+- Not automatically deleted
+
+### 9. Change History
+
+**Status:** Preserved
+- All change history records remain
+- Complete audit trail is maintained
+- Includes deletion event in history
+
+## External Service Cleanup
+
+### 1. Millis AI Platform
+
+**Action:** Voice Agent is deleted from Millis AI platform
+
+**Endpoint:** `DELETE https://api-west.millis.ai/voice agents/{platform_voice agent_id}`
+
+**Process:**
+1. Extracts `platform_voice agent_id` from voice agent metadata
+2. Calls DELETE endpoint
+3. Removes voice agent from Millis AI platform
+
+**Error Handling:**
+- Errors are logged but don't break deletion
+- Deletion continues even if external API fails
+
+### 2. AI Service Knowledge Base
+
+**Action:** Knowledge base is deleted from AI service
+
+**Endpoint:** `POST ${AI_SOURCE_BASE_URL}/knowledge-base/delete`
+
+**Request Body:**
+
+```json
+{
+  "company_id": "123",
+  "workspace_id": "456",
+  "voice agent_id": "789"
+}
+```
+
+**Process:**
+1. Calls AI service deletion endpoint
+2. Removes all knowledge base data for the voice agent
+3. Voice Agent can no longer access knowledge base in AI service
+
+**Error Handling:**
+- Errors are thrown and logged
+- Deletion process continues
+
+## Query Filtering
+
+### How Deleted Voice Agents are Filtered
+
+All queries that retrieve voice agents filter out deleted voice agents:
+
+**Pattern Used:**
+
+```javascript
+STATUS: { [Op.ne]: 2 }  // Not equal to 2 (deleted)
+```
+
+**Examples:**
+
+1. **Voice Agent List:**
+
+   ```javascript
+   where: {
+     WORKSPACE_ID: auth.workspace_id,
+     STATUS: { [Op.ne]: 2 }  // Excludes deleted voice agents
+   }
+   ```
+
+2. **Voice Agent Search:**
+
+   ```javascript
+   where: {
+     AGENT_NAME: { [Op.like]: '%search%' },
+     STATUS: { [Op.ne]: 2 }  // Excludes deleted voice agents
+   }
+   ```
+
+3. **Public Voice Agents:**
+
+   ```javascript
+   where: {
+     AGENT_PRIVACY: 1,
+     STATUS: { [Op.ne]: 2 }  // Excludes deleted voice agents
+   }
+   ```
+
+4. **Voice Agent Details:**
+
+   ```javascript
+   where: {
+     ID: voice agent_id,
+     STATUS: { [Op.ne]: 2 }  // Excludes deleted voice agents
+   }
+   ```
+
+## Status Values
+
+### Voice Agent Status Values
+
+- **1 (Published):** Voice Agent is active and available for use
+- **2 (Deleted):** Voice Agent is soft-deleted (marked as deleted, not removed from database)
+- **3 (Unpublished):** Voice Agent is inactive but not deleted
+
+### Status Transitions
+
+**To Delete:**
+- Any status → Status 2 (Deleted)
+
+**From Delete:**
+- Status 2 → Status 1 (Published) - Can be restored
+- Status 2 → Status 3 (Unpublished) - Can be restored
+
+**Note:** The system allows restoring deleted voice agents by updating their status back to 1 or 3.
+
+## Error Handling
+
+### 1. Transaction Rollback
+
+**Location:** ```2593:2596:src/controllers/voice agentbuild/voice agentController.js```
+
+- If any critical error occurs, the entire transaction is rolled back
+- Voice Agent status is not updated
+- All database changes are reverted
+- Ensures data consistency
+
+### 2. Validation Errors
+
+- **Missing voice agent_id:** Throws validation error
+- **Missing status:** Throws validation error
+- **Voice Agent not found:** Throws "Voice Agent not found" error
+- **Voice Agent belongs to different workspace:** Throws "Voice Agent not found" error
+
+### 3. External Service Errors
+
+**Millis AI API Errors:**
+- Errors are logged: "Failed to delete voice agent from Millis AI"
+- Deletion continues even if external API fails
+- Voice Agent is still marked as deleted in database
+
+**AI Service Errors:**
+- Errors are thrown and logged
+- Deletion process continues
+- Knowledge base may remain in AI service if deletion fails
+
+### 4. Change Tracking Errors
+
+- Errors are logged: "Error tracking voice agent status change"
+- Deletion continues even if tracking fails
+- Voice Agent is still marked as deleted
+
+## Recovery and Restoration
+
+### Can Deleted Voice Agents be Restored?
+
+**Yes**, deleted voice agents can be restored by updating their status:
+
+**Restore to Published:**
+
+```json
+POST /api/voice agent/status
+{
+  "voice agent_id": 123,
+  "status": 1  // Restore to published
+}
+```
+
+**Restore to Unpublished:**
+
+```json
+POST /api/voice agent/status
+{
+  "voice agent_id": 123,
+  "status": 3  // Restore to unpublished
+}
+```
+
+### What Happens on Restoration?
+
+1. **Database:**
+   - Voice Agent status is updated to 1 or 3
+   - Voice Agent becomes visible in queries again
+
+2. **External Services:**
+   - Millis AI: Voice Agent is NOT automatically recreated
+   - AI Service: Knowledge base is NOT automatically restored
+   - Manual intervention may be required for external services
+
+3. **Related Data:**
+   - All related data (knowledge base, tools, etc.) becomes accessible again
+   - No data is lost during deletion/restoration
+
+## Code References
+
+### Main Deletion Handler
+
+```2469:2597:src/controllers/voice agentbuild/voice agentController.js
+module.exports.updateVoice AgentStatus = async (req, res, next) => {
+  // Voice Agent status update handler
+  // Handles deletion when status = 2
+}
+```
+
+### Status Update
+
+```2525:2536:src/controllers/voice agentbuild/voice agentController.js
+await db.Voice AgentDetails.update(
+  {
+    STATUS: postData.status == 2 ? 2 : postData.status,
+    // ...
+  }
+);
+```
+
+### Millis AI Deletion
+
+```2537:2558:src/controllers/voice agentbuild/voice agentController.js
+if (postData.status == 2) {
+  // Call Millis AI API to delete voice agent
+  // Extract platform_voice agent_id from metadata
+  // DELETE https://api-west.millis.ai/voice agents/{voice agent_id}
+}
+```
+
+### Knowledge Base Deletion
+
+```2559:2561:src/controllers/voice agentbuild/voice agentController.js
+if (postData.status == 2) {
+  deleteKnowledgeToAI(auth, voice agent.ID);
+}
+```
+
+### Delete Knowledge Base Function
+
+```4397:4417:src/controllers/voice agentbuild/voice agentController.js
+const deleteKnowledgeToAI = async (auth, voice agentId) => {
+  // Deletes knowledge base from AI service
+  // POST ${AI_SOURCE_BASE_URL}/knowledge-base/delete
+}
+```
+
+## Best Practices
+
+### 1. Pre-Deletion Checks
+
+Before deleting an voice agent, consider:
+- **Active Usage:** Check if voice agent is currently in use
+- **Dependencies:** Verify no critical workflows depend on the voice agent
+- **Backup:** Ensure important data is backed up if needed
+
+### 2. Post-Deletion Actions
+
+After deletion:
+- **Verify External Cleanup:** Check if external services were cleaned up
+- **Monitor Logs:** Review logs for any deletion errors
+- **Update Documentation:** Document any manual cleanup required
+
+### 3. Restoration Planning
+
+If restoration might be needed:
+- **Document Dependencies:** Note external service dependencies
+- **Plan Restoration:** Prepare restoration procedures
+- **Test Restoration:** Test restoration process if possible
+
+### 4. Error Handling
+
+- **Monitor External APIs:** Monitor Millis AI and AI service responses
+- **Handle Failures:** Have procedures for handling external API failures
+- **Log Analysis:** Regularly review deletion logs
+
+## Security Considerations
+
+### 1. Authorization
+
+- Standard authentication required (not Super Admin)
+- Users can only delete voice agents in their workspace
+- Cross-workspace deletion is prevented
+
+### 2. Audit Trail
+
+- All deletions are tracked in change history
+- User information is recorded
+- Timestamp and IP address are logged
+
+### 3. Data Protection
+
+- Soft delete preserves data for compliance
+- Historical records are maintained
+- Recovery is possible if needed
+
+## Limitations
+
+### 1. External Service Cleanup
+
+- **Millis AI:** Errors in external API don't prevent deletion
+- **AI Service:** Knowledge base deletion may fail silently
+- **Manual Cleanup:** May require manual intervention for external services
+
+### 2. Related Data
+
+- Related records are not automatically deleted
+- Some orphaned records may remain
+- Manual cleanup may be required for complete removal
+
+### 3. Storage
+
+- Deleted voice agents still consume database storage
+- Knowledge base files remain in cloud storage
+- No automatic cleanup of storage
+
+## Troubleshooting
+
+### Voice Agent Still Visible After Deletion
+
+**Possible Causes:**
+1. Transaction not committed
+2. Query not filtering by status
+3. Cache not cleared
+
+**Solutions:**
+1. Verify transaction was committed
+2. Check query includes `STATUS: { [Op.ne]: 2 }`
+3. Clear application cache
+
+### External Service Not Cleaned Up
+
+**Possible Causes:**
+1. External API call failed
+2. Network issues
+3. Invalid platform_voice agent_id
+
+**Solutions:**
+1. Check logs for API errors
+2. Verify network connectivity
+3. Manually delete from external service if needed
+
+### Knowledge Base Not Deleted from AI Service
+
+**Possible Causes:**
+1. AI service API call failed
+2. Invalid voice agent_id
+3. Service unavailable
+
+**Solutions:**
+1. Check logs for API errors
+2. Verify voice agent_id is correct
+3. Retry deletion or manual cleanup
+
+## Notes
+
+- Deletion is a soft delete - voice agent remains in database
+- All related data is preserved
+- External services are cleaned up (with error handling)
+- Deleted voice agents can be restored
+- Complete audit trail is maintained
+- Queries automatically filter out deleted voice agents
+- No physical data removal occurs
