@@ -3,4 +3,246 @@ title: Create Form
 openapi: "api-reference/openapi.json POST /form"
 ---
 
-Create a new form for data collection.
+# Create Form
+
+Create a new form in your workspace. Forms are customizable data collection structures that can be used to gather and store information from users.
+
+## Overview
+
+The Create Form API endpoint allows you to create a new form object in your workspace. When you create a form, the system automatically handles:
+
+- Form registration and organization
+- Unique identifier generation
+- File uploads for branding (banner and logo)
+- Data storage structure setup
+- Workspace and company association
+
+## Endpoint
+
+**POST** `/form`
+
+**Base URL:** `https://api.tryunleashx.com/v1`
+
+**Authentication:** Required (Bearer token)
+
+## Request Parameters
+
+### Required Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `object_name` | string | The name of the form. Must be a non-empty string. |
+
+### Optional Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `object_type` | integer | Type of form object. Defaults to `1` if not provided. |
+| `folder_id` | integer | ID of the folder to organize this form. Can be `null` if not organizing in folders. |
+| `form_banner` | file or string | Banner image file or existing file path. Supported formats: PNG, JPG, JPEG, SVG, GIF. |
+| `form_logo` | file or string | Logo image file or existing file path. Supported formats: PNG, JPG, JPEG, SVG, GIF. |
+| `form_description` | string | Text description of the form's purpose and usage. |
+| `rating` | decimal | Average rating value between 0.00 and 5.00. Defaults to `0.00` if not provided. |
+
+## Request Example
+
+### Using cURL
+
+```bash
+curl -X POST https://api.tryunleashx.com/v1/form \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: multipart/form-data" \
+  -F "object_name=Contact Form" \
+  -F "form_description=Customer contact information collection form" \
+  -F "form_banner=@/path/to/banner.png" \
+  -F "form_logo=@/path/to/logo.png" \
+  -F "rating=0.00"
+```
+
+### Using JSON (without file uploads)
+
+```json
+{
+  "object_name": "Contact Form",
+  "form_description": "Customer contact information collection form",
+  "object_type": 1,
+  "rating": 0.00
+}
+```
+
+## Response
+
+### Success Response
+
+**Status Code:** `200 OK`
+
+```json
+{
+  "message": "OBJECT_CREATED_SUCCESSFULLY",
+  "object": {
+    "ID": 123,
+    "OBJECT_NAME": "Contact Form",
+    "OBJECT_SLUG": "contactform123456",
+    "WORKSPACE_ID": 1,
+    "PRIMARY_TABLE": "company_acme_123",
+    "SECONDARY_TABLE": "company_acme_123_data",
+    "FOLDER_ID": null,
+    "FORM_BANNER": "1/forms/banner/banner.png",
+    "FORM_LOGO": "1/forms/logo/logo.png",
+    "FORM_DESCRIPTION": "Customer contact information collection form",
+    "RATING": 0.00,
+    "OBJECT_TYPE": 1,
+    "STATUS": 1,
+    "CREATED_ON": "2024-01-15T10:30:00.000Z",
+    "UPDATED_ON": "2024-01-15T10:30:00.000Z"
+  }
+}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `ID` | integer | Unique identifier for the created form |
+| `OBJECT_NAME` | string | Name of the form |
+| `OBJECT_SLUG` | string | Unique URL-friendly identifier generated from the form name |
+| `WORKSPACE_ID` | integer | ID of the workspace this form belongs to |
+| `PRIMARY_TABLE` | string | Internal table name for storing form submission metadata |
+| `SECONDARY_TABLE` | string | Internal table name for storing form field data |
+| `FOLDER_ID` | integer or null | ID of the folder containing this form, if organized |
+| `FORM_BANNER` | string or null | Path to the uploaded banner image |
+| `FORM_LOGO` | string or null | Path to the uploaded logo image |
+| `FORM_DESCRIPTION` | string or null | Description of the form |
+| `RATING` | decimal | Average rating value |
+| `OBJECT_TYPE` | integer | Type of form object |
+| `STATUS` | integer | Status of the form (1 = active) |
+| `CREATED_ON` | datetime | Timestamp when the form was created |
+| `UPDATED_ON` | datetime | Timestamp when the form was last updated |
+
+## File Uploads
+
+### Supported File Types
+
+- **Banner and Logo:** PNG, JPG, JPEG, SVG, GIF
+
+### File Upload Guidelines
+
+1. **File Size:** Ensure files are reasonably sized for web use
+2. **File Format:** Only image formats listed above are accepted
+3. **Validation:** The system validates both file extension and MIME type
+4. **Storage:** Files are securely stored and associated with your workspace
+
+### Upload Behavior
+
+- Files are uploaded to workspace-specific directories
+- Banner images are stored in: `{workspace_id}/forms/banner`
+- Logo images are stored in: `{workspace_id}/forms/logo`
+- You can provide either a file upload or an existing file path
+
+## Automatic Features
+
+### Name Uniqueness
+
+If a form with the same name already exists in your workspace, the system automatically appends a number suffix to ensure uniqueness:
+
+- "Contact Form" → "Contact Form (1)" (if "Contact Form" exists)
+- "Contact Form" → "Contact Form (2)" (if both exist)
+
+### Slug Generation
+
+A unique slug is automatically generated from the form name:
+
+- Special characters are removed
+- Text is converted to lowercase
+- A random 6-digit number is appended for uniqueness
+- Example: "Contact Form" → "contactform123456"
+
+## Error Handling
+
+### Error Response Format
+
+```json
+{
+  "error": "ERROR_CODE",
+  "message": "Human-readable error message"
+}
+```
+
+### Common Error Codes
+
+| Error Code | Description | Solution |
+|------------|-------------|----------|
+| `OBJECT_ALREADY_EXISTS` | A form with the same slug already exists | This is rare and typically handled automatically by name uniqueness |
+| `COMPANY_NOT_FOUND` | Company details not found | Verify your authentication token and workspace access |
+| `INVALID_FORM_BANNER_FILE_TYPE` | Banner file type is not supported | Use PNG, JPG, JPEG, SVG, or GIF format |
+| `INVALID_FORM_LOGO_FILE_TYPE` | Logo file type is not supported | Use PNG, JPG, JPEG, SVG, or GIF format |
+| `FORM_BANNER_FILE_REQUIRED` | Banner file field is present but empty | Either provide a valid file or omit the field |
+| `FORM_LOGO_FILE_REQUIRED` | Logo file field is present but empty | Either provide a valid file or omit the field |
+
+## Data Storage
+
+When you create a form, the system automatically sets up data storage structures:
+
+- **Primary Table:** Stores metadata for each form submission (one record per submission)
+- **Secondary Table:** Stores the actual form field data in a flexible key-value structure
+
+These tables are created automatically when needed and are shared across all forms in your company for efficient data management.
+
+## Best Practices
+
+1. **Form Naming:** Use descriptive, clear names for your forms to make them easy to identify
+2. **File Uploads:** Optimize images before uploading to ensure fast loading times
+3. **Descriptions:** Provide clear descriptions to help team members understand each form's purpose
+4. **Organization:** Use folders to organize related forms together
+5. **Error Handling:** Always check the response status and handle errors appropriately in your application
+
+## Related Operations
+
+After creating a form, you can:
+
+- **Add Form Sections:** Use the form sections API to define the structure and fields
+- **Update Form:** Modify form details, banner, logo, or description
+- **List Forms:** Retrieve all forms in your workspace
+- **Submit Form Data:** Once configured, users can submit data to your form
+- **Clone Form:** Duplicate an existing form to create a new one with similar structure
+
+## Notes
+
+- Form slugs are unique per workspace, not globally across all workspaces
+- File uploads are optional - you can create forms without banners or logos
+- Forms can be organized in folders using the `folder_id` parameter
+- The system automatically handles data storage structure setup
+- All operations are transactional - if any step fails, the entire operation is rolled back
+
+## Example Use Cases
+
+### Customer Feedback Form
+
+```json
+{
+  "object_name": "Customer Feedback",
+  "form_description": "Collect customer feedback and ratings",
+  "rating": 0.00
+}
+```
+
+### Lead Generation Form
+
+```json
+{
+  "object_name": "Lead Generation",
+  "form_description": "Capture lead information for sales follow-up",
+  "folder_id": 5
+}
+```
+
+### Event Registration Form
+
+```json
+{
+  "object_name": "Event Registration",
+  "form_description": "Register attendees for upcoming events",
+  "form_banner": "path/to/event-banner.png",
+  "form_logo": "path/to/event-logo.png"
+}
+```

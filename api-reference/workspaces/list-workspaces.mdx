@@ -3,4 +3,270 @@ title: List Workspaces
 openapi: "api-reference/openapi.json GET /workspace/all"
 ---
 
-Retrieve a list of all workspaces in your account.
+# List Workspaces
+
+Retrieve a paginated list of workspaces that you have access to. The response includes workspace details, creator information, user mappings, and workspace settings.
+
+## Overview
+
+The List Workspaces API returns information about all workspaces you have access to, including:
+
+- Workspace basic information (ID, name, status, creation date)
+- Creator information (who created the workspace)
+- User mappings (users associated with the workspace and their admin status)
+- Workspace settings (colors, fonts, logo, favicon)
+
+The API supports pagination and filtering to help you find specific workspaces efficiently.
+
+## Endpoint
+
+**GET** `/workspace/all` or **GET** `/get-workspaces`
+
+**Base URL:** `https://api.tryunleashx.com/v1`
+
+**Authentication:** Required (Bearer token)
+
+## Request Parameters
+
+All parameters are optional. Use them for pagination and filtering.
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `page` | integer | No | 1 | Page number for pagination (starts at 1) |
+| `limit` | integer | No | 10 | Number of records per page |
+| `name` | string | No | - | Filter workspaces by name (partial match, case-insensitive) |
+| `status` | integer | No | 1 | Filter by workspace status. `1` = active, `0` = inactive |
+
+## Request Examples
+
+### Get First Page (Default)
+
+```bash
+curl -X GET https://api.tryunleashx.com/v1/workspace/all \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+### Get Specific Page with Custom Limit
+
+```bash
+curl -X GET "https://api.tryunleashx.com/v1/workspace/all?page=2&limit=20" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+### Search Workspaces by Name
+
+```bash
+curl -X GET "https://api.tryunleashx.com/v1/workspace/all?name=marketing" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+### Filter by Status
+
+```bash
+curl -X GET "https://api.tryunleashx.com/v1/workspace/all?status=0" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+## Response
+
+### Success Response
+
+**Status Code:** `200 OK`
+
+```json
+{
+  "message": "WORKSPACES_FETCHED_SUCCESSFULLY",
+  "workspaces": [
+    {
+      "workspace_id": 123,
+      "workspace_name": "Marketing Team",
+      "workspace_status": 1,
+      "created_by": "John Doe",
+      "created_at": "2024-01-15T10:30:00.000Z",
+      "user_data": [
+        {
+          "user_id": 456,
+          "is_superadmin": 1
+        },
+        {
+          "user_id": 789,
+          "is_superadmin": 0
+        }
+      ],
+      "settings": {
+        "PRIMARY_COLOR_CODE": "#FF5733",
+        "SECONDARY_COLOR_CODE": "#33C3F0",
+        "FONT_STYLE": "Arial",
+        "LOGO": "https://aws-url.com/path/to/logo.png",
+        "FAVICON": "favicon.ico"
+      }
+    }
+  ],
+  "pagination": {
+    "totalRecords": 25,
+    "currentPage": 1,
+    "limit": 10,
+    "totalPages": 3
+  }
+}
+```
+
+## Response Fields
+
+### Workspace Object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `workspace_id` | integer | Unique identifier for the workspace |
+| `workspace_name` | string | Name of the workspace |
+| `workspace_status` | integer | Status of the workspace (1 = active, 0 = inactive) |
+| `created_by` | string or null | Full name of the user who created the workspace |
+| `created_at` | datetime | Timestamp when the workspace was created |
+| `user_data` | array | Array of user mappings showing users with access to this workspace |
+| `settings` | object or null | Workspace customization settings (colors, fonts, logo, favicon) |
+
+### User Data Object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `user_id` | integer | Unique identifier for the user |
+| `is_superadmin` | integer | Admin status. `1` = superadmin, `0` = regular user |
+
+### Settings Object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `PRIMARY_COLOR_CODE` | string | Primary color hex code for workspace branding |
+| `SECONDARY_COLOR_CODE` | string | Secondary color hex code for workspace branding |
+| `FONT_STYLE` | string | Font style name used in the workspace |
+| `LOGO` | string or null | Full URL to the workspace logo (prefixed with AWS URL) |
+| `FAVICON` | string or null | Favicon filename |
+
+### Pagination Object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `totalRecords` | integer | Total number of matching workspaces |
+| `currentPage` | integer | Current page number |
+| `limit` | integer | Number of records per page |
+| `totalPages` | integer | Total number of pages available |
+
+## Pagination
+
+The API uses page-based pagination:
+
+- **Page Number:** Starts at 1
+- **Limit:** Number of records per page (default: 10)
+- **Offset:** Automatically calculated as `(page - 1) * limit`
+
+### Pagination Examples
+
+- **Page 1, Limit 10:** Returns records 1-10
+- **Page 2, Limit 10:** Returns records 11-20
+- **Page 3, Limit 20:** Returns records 41-60
+
+### Calculating Total Pages
+
+```
+totalPages = ceil(totalRecords / limit)
+```
+
+## Filtering
+
+### Name Filter
+
+When you provide a `name` parameter, the API performs a case-insensitive partial match search:
+
+- `name=marketing` matches: "Marketing Team", "Marketing Department", "Digital Marketing"
+- The search looks for the term anywhere in the workspace name
+
+### Status Filter
+
+- `status=1` - Returns only active workspaces (default)
+- `status=0` - Returns only inactive workspaces
+- If not provided, defaults to active workspaces only
+
+## Sorting
+
+Results are sorted by creation date in descending order (most recently created workspaces first).
+
+## Access Control
+
+The API only returns workspaces where you have explicit access:
+
+- Workspaces are filtered based on your user ID
+- You must be mapped to a workspace to see it in the results
+- Access is determined by the `workspace_user_mapping` table
+
+## Workspace Settings
+
+Workspace settings allow customization of the workspace appearance:
+
+- **Colors:** Primary and secondary color codes for branding
+- **Fonts:** Custom font styles
+- **Logo:** Workspace logo image (automatically prefixed with AWS URL)
+- **Favicon:** Workspace favicon
+
+Settings may be `null` if the workspace hasn't been customized yet.
+
+## Best Practices
+
+1. **Use Pagination:** Always use pagination for large numbers of workspaces to improve performance
+2. **Filter by Name:** Use the name filter for search functionality in your application
+3. **Status Filtering:** Use status filter to show active/inactive workspaces separately
+4. **Error Handling:** Always check response status and handle errors appropriately
+5. **Cache Results:** Consider caching workspace lists when appropriate, as they don't change frequently
+
+## Error Handling
+
+### Error Response Format
+
+Standard error responses follow the application's error handling format. Always check the response status code and handle errors appropriately.
+
+## Example Use Cases
+
+### Get All Workspaces (First Page)
+
+```bash
+curl -X GET https://api.tryunleashx.com/v1/workspace/all \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+### Search for Marketing Workspaces
+
+```bash
+curl -X GET "https://api.tryunleashx.com/v1/workspace/all?name=marketing" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+### Get Second Page with 20 Results
+
+```bash
+curl -X GET "https://api.tryunleashx.com/v1/workspace/all?page=2&limit=20" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+### Get Inactive Workspaces
+
+```bash
+curl -X GET "https://api.tryunleashx.com/v1/workspace/all?status=0" \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+## Notes
+
+- Workspaces are sorted by creation date (newest first)
+- Logo URLs are automatically prefixed with the AWS URL
+- Creator name is formatted as "First Last" or `null` if the creator account is deleted
+- User mappings include all users associated with each workspace
+- Settings may be `null` if workspace settings haven't been configured
+- Pagination defaults ensure safe calculations even with invalid input
+- Only workspaces you have access to are returned in the results
+
+## Related Operations
+
+- **Create Workspace:** Create a new workspace
+- **Get Workspace:** Get details for a specific workspace
+- **Update Workspace:** Update workspace information
+- **Delete Workspace:** Remove a workspace
+- **Change Workspace:** Switch your active workspace context

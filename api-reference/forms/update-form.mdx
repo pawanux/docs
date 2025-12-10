@@ -1,6 +1,223 @@
 ---
 title: Update Form
-openapi: "api-reference/openapi.json POST /form/update"
+openapi: "api-reference/openapi.json PUT /form"
 ---
 
-Update an existing form configuration.
+# Update Form
+
+Update an existing form's metadata, appearance, or configuration. You can modify the form name, description, banner, logo, rating, and other settings.
+
+## Overview
+
+The Update Form API allows you to modify form properties after creation. There are two types of updates available:
+
+1. **Form Metadata Update** - Update the form's configuration, appearance, and settings
+2. **Form Data Update** - Update individual form submission records (covered separately)
+
+This endpoint handles form metadata updates, including name, description, branding images, and ratings.
+
+## Endpoint
+
+**PUT** `/form` or **POST** `/update-object`
+
+**Base URL:** `https://api.tryunleashx.com/v1`
+
+**Authentication:** Required (Bearer token)
+
+## Request Parameters
+
+### Required Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `object_id` | integer | The unique identifier of the form to update. |
+
+### Optional Parameters
+
+All other parameters are optional. If not provided, existing values are retained.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `object_name` | string | New name for the form. |
+| `form_description` | string | Updated description of the form. |
+| `rating` | decimal | Average rating value between 0.00 and 5.00. |
+| `form_banner` | file or string | New banner image file or existing file path. Supported formats: PNG, JPG, JPEG, SVG, GIF. |
+| `form_logo` | file or string | New logo image file or existing file path. Supported formats: PNG, JPG, JPEG, SVG, GIF. |
+| `screenshot` | file or string | Screenshot image file or existing file path. Supported formats: PNG, JPG, JPEG, SVG, GIF. |
+
+## Request Example
+
+### Using cURL (with file uploads)
+
+```bash
+curl -X PUT https://api.tryunleashx.com/v1/form \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: multipart/form-data" \
+  -F "object_id=123" \
+  -F "object_name=Updated Contact Form" \
+  -F "form_description=Updated description" \
+  -F "form_banner=@/path/to/new-banner.png" \
+  -F "rating=4.5"
+```
+
+### Using JSON (without file uploads)
+
+```json
+{
+  "object_id": 123,
+  "object_name": "Updated Contact Form",
+  "form_description": "Updated description for the contact form",
+  "rating": 4.5
+}
+```
+
+## Response
+
+### Success Response
+
+**Status Code:** `200 OK`
+
+```json
+{
+  "message": "OBJECT_UPDATED_SUCCESSFULLY"
+}
+```
+
+## File Uploads
+
+### Supported File Types
+
+- **Banner, Logo, Screenshot:** PNG, JPG, JPEG, SVG, GIF
+
+### File Update Behavior
+
+1. **New File Upload:** If you upload a new file, it replaces the existing file
+2. **File Path Provided:** If you provide a file path, the system uses that path (assumes file already exists)
+3. **Neither Provided:** If you don't provide a file or path, the existing file is retained
+
+### File Storage
+
+Files are stored in company-specific directories:
+- Banner: `{company_id}/forms/banner`
+- Logo: `{company_id}/forms/logo`
+- Screenshot: `{company_id}/forms/screenshot`
+
+## Update Behavior
+
+### Partial Updates
+
+The update operation supports partial updates:
+
+- **Fields Provided:** Only the fields you provide will be updated
+- **Fields Omitted:** Fields not included in the request retain their existing values
+- **Null Values:** To clear a field, you may need to explicitly set it to `null` (check API documentation for specific field behavior)
+
+### Automatic Updates
+
+The following fields are automatically updated by the system:
+
+- `UPDATED_ON` - Set to current timestamp
+- `UPDATED_BY` - Set to the authenticated user ID
+- `IP_ADDRESS` - Recorded from the request
+- `USER_AGENT` - Recorded from the request headers
+
+## Error Handling
+
+### Error Response Format
+
+```json
+{
+  "error": "ERROR_CODE",
+  "message": "Human-readable error message"
+}
+```
+
+### Common Error Codes
+
+| Error Code | Description | Solution |
+|------------|-------------|----------|
+| `OBJECT_NOT_FOUND` | The form with the specified ID doesn't exist or doesn't belong to your workspace | Verify the form ID and ensure you have access to it |
+| `INVALID_FORM_BANNER_FILE_TYPE` | Banner file type is not supported | Use PNG, JPG, JPEG, SVG, or GIF format |
+| `INVALID_FORM_LOGO_FILE_TYPE` | Logo file type is not supported | Use PNG, JPG, JPEG, SVG, or GIF format |
+| `INVALID_SCREENSHOT_FILE_TYPE` | Screenshot file type is not supported | Use PNG, JPG, JPEG, SVG, or GIF format |
+| `FORM_BANNER_FILE_REQUIRED` | Banner file field is present but empty | Either provide a valid file or omit the field |
+| `FORM_LOGO_FILE_REQUIRED` | Logo file field is present but empty | Either provide a valid file or omit the field |
+| `SCREENSHOT_FILE_REQUIRED` | Screenshot file field is present but empty | Either provide a valid file or omit the field |
+
+## Best Practices
+
+1. **Selective Updates:** Only include fields you want to change to avoid unnecessary updates
+2. **File Optimization:** Optimize images before uploading to ensure fast loading
+3. **Validation:** Validate file types and sizes on your client side before sending requests
+4. **Error Handling:** Always check response status and handle errors appropriately
+5. **Idempotency:** The update operation is safe to retry if a request fails
+
+## Update Form Data vs Update Form Metadata
+
+It's important to understand the difference between updating form metadata and updating form submission data:
+
+| Aspect | Form Metadata Update | Form Data Update |
+|--------|---------------------|------------------|
+| **What it updates** | Form configuration and settings | Individual form submission records |
+| **Target** | Form object itself | Form submission data |
+| **Use case** | Change form name, description, branding | Modify submitted form field values |
+| **Endpoint** | `PUT /form` or `POST /update-object` | `POST /update-form-object` |
+
+## Example Use Cases
+
+### Update Form Name and Description
+
+```json
+{
+  "object_id": 123,
+  "object_name": "Customer Feedback Form 2024",
+  "form_description": "Updated feedback form for 2024 with new questions"
+}
+```
+
+### Update Branding Images
+
+```json
+{
+  "object_id": 123,
+  "form_banner": "path/to/new-banner.png",
+  "form_logo": "path/to/new-logo.png"
+}
+```
+
+### Update Rating
+
+```json
+{
+  "object_id": 123,
+  "rating": 4.8
+}
+```
+
+### Update Multiple Fields
+
+```json
+{
+  "object_id": 123,
+  "object_name": "Enhanced Contact Form",
+  "form_description": "Improved contact form with better UX",
+  "rating": 4.5,
+  "form_banner": "path/to/banner.png"
+}
+```
+
+## Notes
+
+- All updates are transactional - if any step fails, the entire operation is rolled back
+- File uploads replace existing files when new files are provided
+- The system automatically tracks who made the update and when
+- Updates are immediately reflected in the system
+- Cache is automatically cleared after successful updates
+
+## Related Operations
+
+- **Get Form:** Retrieve form details
+- **List Forms:** Get all forms in your workspace
+- **Delete Form:** Remove a form
+- **Update Form Data:** Update individual form submission records
+- **List Form Data:** Retrieve form submissions
