@@ -11,12 +11,12 @@ Go from idea to live calls in minutes.
 
 <AccordionGroup>
   <Accordion icon="user" title="Sign in to the Dashboard">
-    1. Visit `https://platform.unleashx.ai` and sign in.
+    1. Visit `https://www.tryunleashx.com/` and sign in.
     2. Navigate to Developers → API Keys.
     3. Generate an API key and store it securely.
   </Accordion>
   <Accordion icon="key" title="Set your server URL">
-    API base URL: `https://api.tryunleashx.com/v1/`
+    API base URL: `https://www.tryunleashx.com/`
   </Accordion>
 </AccordionGroup>
 
@@ -31,7 +31,7 @@ Go from idea to live calls in minutes.
   <Accordion icon="square-code" title="Create via API (optional)">
 
 ```bash
-curl -X POST 'https://api.tryunleashx.com/v1/agent' \
+curl -X POST 'https://www.tryunleashx.com/agent' \
   -H 'Authorization: Bearer <api_key>' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -49,7 +49,7 @@ curl -X POST 'https://api.tryunleashx.com/v1/agent' \
   <Accordion icon="phone" title="Make your first call">
 
 ```bash
-curl -X POST 'https://api.tryunleashx.com/v1/call' \
+curl -X POST 'https://www.tryunleashx.com/call' \
   -H 'Authorization: Bearer <api_key>' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -64,7 +64,7 @@ curl -X POST 'https://api.tryunleashx.com/v1/call' \
   <Accordion icon="chart-line" title="View executions & calls">
 
 ```bash
-curl -X GET 'https://api.tryunleashx.com/v1/call/all?limit=50' \
+curl -X GET 'https://www.tryunleashx.com/call/all?limit=50' \
   -H 'Authorization: Bearer <api_key>'
 ```
 
