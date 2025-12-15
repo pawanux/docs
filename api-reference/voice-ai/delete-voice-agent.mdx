@@ -1,21 +1,20 @@
 ---
-title: Delete Voice Agent
-openapi: "api-reference/openapi.json POST /voice-agent/delete"
+
+title: Delete Agent
+
+openapi: "api-reference/openapi.json POST /agent/delete"
+
 ---
 
-# Delete Voice Agent
+The agent deletion system allows you to delete existing agents. Deletion is implemented as a **soft delete** - the agent is marked as deleted but not physically removed from the database. This preserves data integrity, maintains audit trails, and allows for potential recovery.
 
-Voice agent deletion in the system is implemented as a **soft delete** mechanism. When a voice agent is deleted, it is not physically removed from the database. Instead, the voice agent's status is set to `2` (deleted), and the voice agent is marked as inactive. This approach preserves data integrity, maintains audit trails, and allows for potential recovery.
-
-## Deletion Endpoint
+## API Endpoint
 
 **Endpoint:** `POST /api/agent/status`
 
-**Authentication:** Standard authentication (no Super Admin required)
+**Content-Type:** `application/json`
 
-**Controller:** `src/controllers/agentbuild/agentController.js` - `updateAgentStatus`
-
-**Location:** ```2469:2597:src/controllers/agentbuild/agentController.js```
+**Authentication:** Required (Token header: `token` or `api_access_token`)
 
 ## Request Structure
 
@@ -26,103 +25,23 @@ Voice agent deletion in the system is implemented as a **soft delete** mechanism
 }
 ```
 
-## Deletion Process Flow
+## cURL Example
 
-### 1. Transaction Initialization
+```bash
+curl -X POST "https://your-api-domain.com/api/agent/status" \
+  -H "token: YOUR_AUTH_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "agent_id": 123,
+    "status": 2
+  }'
+```
 
-**Location:** ```2470:2470:src/controllers/agentbuild/agentController.js```
+## Response
 
-- A database transaction is started to ensure atomicity
-- All deletion operations are performed within this transaction
-- If any step fails, the entire operation is rolled back
+### Success Response
 
-### 2. Validation
-
-**Location:** ```2477:2499:src/controllers/agentbuild/agentController.js```
-
-1. **Required Fields Validation:**
-   - Validates `agent_id` is provided
-   - Validates `status` is provided
-
-2. **Agent Existence Check:**
-   - Checks if agent exists in database
-   - Verifies agent belongs to the user's workspace
-   - Throws "Agent not found" error if agent doesn't exist
-
-### 3. Status Update
-
-**Location:** ```2525:2536:src/controllers/agentbuild/agentController.js```
-
-- Updates agent `STATUS` field to `2` (deleted)
-- Updates `UPDATED_BY` with current user ID
-- Updates `UPDATED_ON` with current timestamp
-- Stores old agent data for change tracking
-
-### 4. External Service Cleanup
-
-When an agent is deleted (status = 2), the system performs cleanup operations with external services:
-
-#### 4.1. Millis AI Platform Deletion
-
-**Location:** ```2537:2558:src/controllers/agentbuild/agentController.js```
-
-**Process:**
-1. Parses agent metadata to extract `platform_agent_id`
-2. Extracts `platform_agent_id` from:
-   ```javascript
-   agentMetadata?.successful_platform_integrations?.millis_ai?.platform_agent_id
-   ```
-3. If `platform_agent_id` exists:
-   - Calls Millis AI API DELETE endpoint: `https://api-west.millis.ai/agents/{agent_id}`
-   - Deletes agent from Millis AI platform
-4. **Error Handling:**
-   - Errors are logged but don't break the deletion process
-   - Deletion continues even if external API call fails
-   - Error message: "Failed to delete agent from Millis AI"
-
-#### 4.2. Knowledge Base Deletion from AI Service
-
-**Location:** ```2559:2561:src/controllers/agentbuild/agentController.js```
-
-**Function:** `deleteKnowledgeToAI(auth, agentId)`
-
-**Location:** ```4397:4417:src/controllers/agentbuild/agentController.js```
-
-**Process:**
-1. Calls AI service endpoint: `${process.env.AI_SOURCE_BASE_URL}/knowledge-base/delete`
-2. Sends deletion request with:
-   - `company_id`
-   - `workspace_id`
-   - `agent_id`
-3. Removes agent's knowledge base from AI service
-4. **Error Handling:**
-   - Errors are thrown and logged
-   - Deletion process continues (errors don't rollback transaction)
-
-### 5. Change Tracking
-
-**Location:** ```2569:2575:src/controllers/agentbuild/agentController.js```
-
-- Tracks status change in change history
-- Records old status and new status (2 = deleted)
-- Stores user information, timestamp, IP address, and user agent
-- **Error Handling:**
-  - Change tracking errors are logged but don't break deletion
-  - Deletion continues even if tracking fails
-
-### 6. Transaction Commit
-
-**Location:** ```2580:2580:src/controllers/agentbuild/agentController.js```
-
-- Commits database transaction
-- All changes are persisted
-- Agent is now marked as deleted in the database
-
-### 7. Response
-
-**Location:** ```2583:2591:src/controllers/agentbuild/agentController.js```
-
-**Success Response:**
+**Status Code:** `200 OK`
 
 ```json
 {
@@ -135,6 +54,66 @@ When an agent is deleted (status = 2), the system performs cleanup operations wi
 }
 ```
 
+### Error Responses
+
+#### 422 - Validation Error
+
+**Status Code:** `422 Unprocessable Entity`
+
+```json
+{
+  "error": true,
+  "code": 422,
+  "message": "Agent ID is missing",
+  "data": {}
+}
+```
+
+**Common Error Messages:**
+- `"Agent ID is missing"` - Required field `agent_id` is missing
+- `"Status is missing"` - Required field `status` is missing
+- `"Agent ID is invalid"` - Invalid agent ID format
+- `"Agent not found"` - Agent with provided ID does not exist or belongs to different workspace
+
+#### 401 - Authentication Error
+
+**Status Code:** `401 Unauthorized`
+
+```json
+{
+  "error": true,
+  "code": 401,
+  "message": "Invalid Auth Key or Session Expired",
+  "data": {}
+}
+```
+
+#### 500 - Server Error
+
+**Status Code:** `500 Internal Server Error`
+
+```json
+{
+  "error": true,
+  "code": 500,
+  "message": "Internal server error",
+  "data": {}
+}
+```
+
+## Error Codes
+
+| Status Code | Error Code | Description |
+|------------|------------|-------------|
+| 200 | - | Success |
+| 401 | AUTH_REQUIRED | Authentication required - Missing or invalid token |
+| 401 | AUTH_INVALID | Invalid authentication token or session expired |
+| 422 | VALIDATION_ERROR | Validation failed - Check required fields and data format |
+| 422 | MISSING_FIELD | Required field missing |
+| 422 | INVALID_FORMAT | Invalid data format or type |
+| 422 | AGENT_NOT_FOUND | Agent with provided ID does not exist |
+| 500 | SERVER_ERROR | Internal server error |
+
 ## Soft Delete Mechanism
 
 ### What is Soft Delete?
@@ -144,445 +123,96 @@ Soft delete means the agent record remains in the database but is marked as dele
 **Benefits:**
 - **Data Preservation:** Historical data is maintained
 - **Audit Trail:** Complete record of all agents and their history
-- **Recovery:** Deleted agents can potentially be restored
+- **Recovery:** Deleted agents can be restored
 - **Referential Integrity:** Related records remain intact
-- **Analytics:** Historical data can be analyzed
 
-### How Soft Delete Works
-
-1. **Status Field:**
-   - Agent `STATUS` field is set to `2` (deleted)
-   - All other agent data remains unchanged
-
-2. **Query Filtering:**
-   - All queries filter out deleted agents using: `STATUS: { [Op.ne]: 2 }`
-   - Deleted agents are excluded from:
-     - Agent lists
-     - Agent searches
-     - Agent selections
-     - Public agent listings
-
-3. **Related Records:**
-   - Related records (knowledge base, tools, configurations) are **NOT** automatically deleted
-   - They remain in the database but are associated with a deleted agent
-   - Some queries may filter these out based on agent status
-
-## What Happens to Related Data
-
-### 1. Agent Configuration
-
-**Status:** Remains in database
-- `AgentConfiguration` records remain unchanged
-- Associated with deleted agent via `AGENT_ID`
-- Not automatically deleted
-
-### 2. Knowledge Base
-
-**Status:** Remains in database, deleted from AI service
-- `AgentKnowledgebase` records remain in database
-- Knowledge base files remain in cloud storage
-- **Deleted from AI service** (via `deleteKnowledgeToAI` function)
-- Files are not removed from cloud storage
-
-### 3. Tools and Sub-agents
-
-**Status:** Remain in database
-- `AgentAppTools` records remain unchanged
-- Tools and sub-agents remain associated with deleted agent
-- Not automatically deleted
-
-### 4. Calling Numbers
-
-**Status:** Remain in database
-- `AgentCallingNumbers` records remain unchanged
-- Phone numbers remain associated with deleted agent
-- Not automatically deleted
-
-### 5. Denied Words
-
-**Status:** Remain in database
-- `AgentDeniedWords` records remain unchanged
-- Denied words remain associated with deleted agent
-- Not automatically deleted
-
-### 6. Dispositions
-
-**Status:** Remain in database
-- `AgentDisposition` records remain unchanged
-- Dispositions remain associated with deleted agent
-- Not automatically deleted
-
-### 7. Guardrails
-
-**Status:** Remain in database
-- Guardrail settings remain unchanged
-- Associated with deleted agent
-- Not automatically deleted
-
-### 8. Metadata
-
-**Status:** Remain in database
-- Metadata configurations remain unchanged
-- Associated with deleted agent
-- Not automatically deleted
-
-### 9. Change History
-
-**Status:** Preserved
-- All change history records remain
-- Complete audit trail is maintained
-- Includes deletion event in history
-
-## External Service Cleanup
-
-### 1. Millis AI Platform
-
-**Action:** Agent is deleted from Millis AI platform
-
-**Endpoint:** `DELETE https://api-west.millis.ai/agents/{platform_agent_id}`
-
-**Process:**
-1. Extracts `platform_agent_id` from agent metadata
-2. Calls DELETE endpoint
-3. Removes agent from Millis AI platform
-
-**Error Handling:**
-- Errors are logged but don't break deletion
-- Deletion continues even if external API fails
-
-### 2. AI Service Knowledge Base
-
-**Action:** Knowledge base is deleted from AI service
-
-**Endpoint:** `POST ${AI_SOURCE_BASE_URL}/knowledge-base/delete`
-
-**Request Body:**
-
-```json
-{
-  "company_id": "123",
-  "workspace_id": "456",
-  "agent_id": "789"
-}
-```
-
-**Process:**
-1. Calls AI service deletion endpoint
-2. Removes all knowledge base data for the agent
-3. Agent can no longer access knowledge base in AI service
-
-**Error Handling:**
-- Errors are thrown and logged
-- Deletion process continues
-
-## Query Filtering
-
-### How Deleted Agents are Filtered
-
-All queries that retrieve agents filter out deleted agents:
-
-**Pattern Used:**
-
-```javascript
-STATUS: { [Op.ne]: 2 }  // Not equal to 2 (deleted)
-```
-
-**Examples:**
-
-1. **Agent List:**
-
-   ```javascript
-   where: {
-     WORKSPACE_ID: auth.workspace_id,
-     STATUS: { [Op.ne]: 2 }  // Excludes deleted agents
-   }
-   ```
-
-2. **Agent Search:**
-
-   ```javascript
-   where: {
-     AGENT_NAME: { [Op.like]: '%search%' },
-     STATUS: { [Op.ne]: 2 }  // Excludes deleted agents
-   }
-   ```
-
-3. **Public Agents:**
-
-   ```javascript
-   where: {
-     AGENT_PRIVACY: 1,
-     STATUS: { [Op.ne]: 2 }  // Excludes deleted agents
-   }
-   ```
-
-4. **Agent Details:**
-
-   ```javascript
-   where: {
-     ID: agent_id,
-     STATUS: { [Op.ne]: 2 }  // Excludes deleted agents
-   }
-   ```
-
-## Status Values
-
-### Voice Agent Status Values
-
-- **1 (Published):** Agent is active and available for use
-- **2 (Deleted):** Agent is soft-deleted (marked as deleted, not removed from database)
-- **3 (Unpublished):** Agent is inactive but not deleted
-
-### Status Transitions
-
-**To Delete:**
-- Any status → Status 2 (Deleted)
-
-**From Delete:**
-- Status 2 → Status 1 (Published) - Can be restored
-- Status 2 → Status 3 (Unpublished) - Can be restored
-
-**Note:** The system allows restoring deleted agents by updating their status back to 1 or 3.
-
-## Error Handling
-
-### 1. Transaction Rollback
-
-**Location:** ```2593:2596:src/controllers/agentbuild/agentController.js```
-
-- If any critical error occurs, the entire transaction is rolled back
-- Agent status is not updated
-- All database changes are reverted
-- Ensures data consistency
-
-### 2. Validation Errors
-
-- **Missing agent_id:** Throws validation error
-- **Missing status:** Throws validation error
-- **Agent not found:** Throws "Agent not found" error
-- **Agent belongs to different workspace:** Throws "Agent not found" error
-
-### 3. External Service Errors
-
-**Millis AI API Errors:**
-- Errors are logged: "Failed to delete agent from Millis AI"
-- Deletion continues even if external API fails
-- Agent is still marked as deleted in database
-
-**AI Service Errors:**
-- Errors are thrown and logged
-- Deletion process continues
-- Knowledge base may remain in AI service if deletion fails
-
-### 4. Change Tracking Errors
-
-- Errors are logged: "Error tracking agent status change"
-- Deletion continues even if tracking fails
-- Agent is still marked as deleted
-
-## Recovery and Restoration
-
-### Can Deleted Agents be Restored?
-
-**Yes**, deleted voice agents can be restored by updating their status:
-
-**Restore to Published:**
-
-```json
-POST /api/agent/status
-{
-  "agent_id": 123,
-  "status": 1  // Restore to published
-}
-```
-
-**Restore to Unpublished:**
-
-```json
-POST /api/agent/status
-{
-  "agent_id": 123,
-  "status": 3  // Restore to unpublished
-}
-```
-
-### What Happens on Restoration?
-
-1. **Database:**
-   - Agent status is updated to 1 or 3
-   - Agent becomes visible in queries again
-
-2. **External Services:**
-   - Millis AI: Agent is NOT automatically recreated
-   - AI Service: Knowledge base is NOT automatically restored
-   - Manual intervention may be required for external services
-
-3. **Related Data:**
-   - All related data (knowledge base, tools, etc.) becomes accessible again
-   - No data is lost during deletion/restoration
-
-## Code References
-
-### Main Deletion Handler
-
-```2469:2597:src/controllers/agentbuild/agentController.js
-module.exports.updateAgentStatus = async (req, res, next) => {
-  // Agent status update handler
-  // Handles deletion when status = 2
-}
-```
-
-### Status Update
-
-```2525:2536:src/controllers/agentbuild/agentController.js
-await db.AgentDetails.update(
-  {
-    STATUS: postData.status == 2 ? 2 : postData.status,
-    // ...
-  }
-);
-```
-
-### Millis AI Deletion
-
-```2537:2558:src/controllers/agentbuild/agentController.js
-if (postData.status == 2) {
-  // Call Millis AI API to delete agent
-  // Extract platform_agent_id from metadata
-  // DELETE https://api-west.millis.ai/agents/{agent_id}
-}
-```
-
-### Knowledge Base Deletion
-
-```2559:2561:src/controllers/agentbuild/agentController.js
-if (postData.status == 2) {
-  deleteKnowledgeToAI(auth, agent.ID);
-}
-```
-
-### Delete Knowledge Base Function
-
-```4397:4417:src/controllers/agentbuild/agentController.js
-const deleteKnowledgeToAI = async (auth, agentId) => {
-  // Deletes knowledge base from AI service
-  // POST ${AI_SOURCE_BASE_URL}/knowledge-base/delete
-}
-```
-
-## Best Practices
-
-### 1. Pre-Deletion Checks
-
-Before deleting an agent, consider:
-- **Active Usage:** Check if agent is currently in use
-- **Dependencies:** Verify no critical workflows depend on the agent
-- **Backup:** Ensure important data is backed up if needed
-
-### 2. Post-Deletion Actions
-
-After deletion:
-- **Verify External Cleanup:** Check if external services were cleaned up
-- **Monitor Logs:** Review logs for any deletion errors
-- **Update Documentation:** Document any manual cleanup required
-
-### 3. Restoration Planning
-
-If restoration might be needed:
-- **Document Dependencies:** Note external service dependencies
-- **Plan Restoration:** Prepare restoration procedures
-- **Test Restoration:** Test restoration process if possible
-
-### 4. Error Handling
-
-- **Monitor External APIs:** Monitor Millis AI and AI service responses
-- **Handle Failures:** Have procedures for handling external API failures
-- **Log Analysis:** Regularly review deletion logs
-
-## Security Considerations
-
-### 1. Authorization
-
-- Standard authentication required (not Super Admin)
-- Users can only delete agents in their workspace
-- Cross-workspace deletion is prevented
-
-### 2. Audit Trail
-
-- All deletions are tracked in change history
-- User information is recorded
-- Timestamp and IP address are logged
-
-### 3. Data Protection
-
-- Soft delete preserves data for compliance
-- Historical records are maintained
-- Recovery is possible if needed
-
-## Limitations
-
-### 1. External Service Cleanup
-
-- **Millis AI:** Errors in external API don't prevent deletion
-- **AI Service:** Knowledge base deletion may fail silently
-- **Manual Cleanup:** May require manual intervention for external services
+### How It Works
+
+1. **Status Update:** Agent `STATUS` field is set to `2` (deleted)
+2. **Visibility:** Deleted agents are automatically excluded from:
+   - Agent lists
+   - Agent searches
+   - Agent selections
+   - Public agent listings
+3. **Data Preservation:** All agent data and related records remain in the database
+
+## What Happens When an Agent is Deleted
+
+### 1. Agent Record
+- Status is set to `2` (deleted)
+- Agent becomes invisible in queries
+- All agent data is preserved
 
 ### 2. Related Data
+All related records remain in the database:
+- Agent configuration
+- Knowledge base records
+- Tools and sub-agents
+- Calling numbers
+- Denied words
+- Dispositions
+- Guardrails
+- Metadata configurations
+- Change history
 
-- Related records are not automatically deleted
-- Some orphaned records may remain
-- Manual cleanup may be required for complete removal
+### 3. External Services Cleanup
 
-### 3. Storage
+**Millis AI Platform:**
+- Agent is deleted from Millis AI platform
+- Errors are logged but don't prevent deletion
 
-- Deleted agents still consume database storage
-- Knowledge base files remain in cloud storage
-- No automatic cleanup of storage
+**AI Service:**
+- Knowledge base is deleted from AI service
+- Agent can no longer access knowledge base in AI service
 
-## Troubleshooting
+**Note:** External service cleanup errors are logged but don't prevent the agent from being marked as deleted in the database.
 
-### Agent Still Visible After Deletion
+## Agent Status Values
 
-**Possible Causes:**
-1. Transaction not committed
-2. Query not filtering by status
-3. Cache not cleared
+| Status | Value | Description |
+|-------|-------|-------------|
+| Published | 1 | Agent is active and available for use |
+| Deleted | 2 | Agent is soft-deleted (marked as deleted) |
+| Unpublished | 3 | Agent is inactive but not deleted |
 
-**Solutions:**
-1. Verify transaction was committed
-2. Check query includes `STATUS: { [Op.ne]: 2 }`
-3. Clear application cache
+## Restoring Deleted Agents
 
-### External Service Not Cleaned Up
+Deleted agents can be restored by updating their status back to `1` (Published) or `3` (Unpublished).
 
-**Possible Causes:**
-1. External API call failed
-2. Network issues
-3. Invalid platform_agent_id
+### Restore to Published
 
-**Solutions:**
-1. Check logs for API errors
-2. Verify network connectivity
-3. Manually delete from external service if needed
+```bash
+curl -X POST "https://your-api-domain.com/api/agent/status" \
+  -H "token: YOUR_AUTH_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "agent_id": 123,
+    "status": 1
+  }'
+```
 
-### Knowledge Base Not Deleted from AI Service
+### Restore to Unpublished
 
-**Possible Causes:**
-1. AI service API call failed
-2. Invalid agent_id
-3. Service unavailable
+```bash
+curl -X POST "https://your-api-domain.com/api/agent/status" \
+  -H "token: YOUR_AUTH_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "agent_id": 123,
+    "status": 3
+  }'
+```
 
-**Solutions:**
-1. Check logs for API errors
-2. Verify agent_id is correct
-3. Retry deletion or manual cleanup
+**Note:** When restoring an agent, external services (Millis AI, AI Service) are not automatically recreated. Manual intervention may be required for external services.
 
-## Notes
+## Important Notes
 
-- Deletion is a soft delete - agent remains in database
-- All related data is preserved
-- External services are cleaned up (with error handling)
-- Deleted agents can be restored
-- Complete audit trail is maintained
-- Queries automatically filter out deleted agents
-- No physical data removal occurs
+- Deletion is a **soft delete** - agent remains in database with status `2`
+- All related data (knowledge base, tools, configurations) is preserved
+- External services (Millis AI, AI Service) are cleaned up during deletion
+- Deleted agents are automatically excluded from all queries and listings
+- Deleted agents can be restored by updating status to `1` or `3`
+- Complete audit trail is maintained for all deletions
+- External service cleanup errors don't prevent deletion from completing
+- Knowledge base files remain in cloud storage (not automatically removed)
+

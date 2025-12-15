@@ -1,75 +1,58 @@
 ---
+
 title: Update Form
+
 openapi: "api-reference/openapi.json POST /form/update"
+
 ---
 
-# Update Form
+The form update system allows you to update existing form metadata, appearance, and configuration. You can modify the form name, description, banner, logo, screenshot, rating, and other settings. Updates support partial modifications - only the fields you provide will be updated, while others remain unchanged.
 
-Update an existing form's metadata, appearance, or configuration. You can modify the form name, description, banner, logo, rating, and other settings.
+## API Endpoint
 
-## Overview
+**Endpoint:** `POST /api/common/update-object`
 
-The Update Form API allows you to modify form properties after creation. There are two types of updates available:
+**Content-Type:** `multipart/form-data`
 
-1. **Form Metadata Update** - Update the form's configuration, appearance, and settings
-2. **Form Data Update** - Update individual form submission records (covered separately)
+**Authentication:** Required (Token header: `token` or `api_access_token`)
 
-This endpoint handles form metadata updates, including name, description, branding images, and ratings.
+## Request Structure
 
-## Endpoint
-
-**PUT** `/form` or **POST** `/update-object`
-
-**Base URL:** `https://api.tryunleashx.com/v1`
-
-**Authentication:** Required (Bearer token)
-
-## Request Parameters
-
-### Required Parameters
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `object_id` | integer | The unique identifier of the form to update. |
-
-### Optional Parameters
-
-All other parameters are optional. If not provided, existing values are retained.
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `object_name` | string | New name for the form. |
-| `form_description` | string | Updated description of the form. |
-| `rating` | decimal | Average rating value between 0.00 and 5.00. |
-| `form_banner` | file or string | New banner image file or existing file path. Supported formats: PNG, JPG, JPEG, SVG, GIF. |
-| `form_logo` | file or string | New logo image file or existing file path. Supported formats: PNG, JPG, JPEG, SVG, GIF. |
-| `screenshot` | file or string | Screenshot image file or existing file path. Supported formats: PNG, JPG, JPEG, SVG, GIF. |
-
-## Request Example
-
-### Using cURL (with file uploads)
-
-```bash
-curl -X PUT https://api.tryunleashx.com/v1/form \
-  -H "Authorization: Bearer YOUR_API_KEY" \
-  -H "Content-Type: multipart/form-data" \
-  -F "object_id=123" \
-  -F "object_name=Updated Contact Form" \
-  -F "form_description=Updated description" \
-  -F "form_banner=@/path/to/new-banner.png" \
-  -F "rating=4.5"
-```
-
-### Using JSON (without file uploads)
+The endpoint accepts a `multipart/form-data` request with the following structure:
 
 ```json
 {
-  "object_id": 123,
-  "object_name": "Updated Contact Form",
-  "form_description": "Updated description for the contact form",
-  "rating": 4.5
+  "object_id": 123,                      // Required
+  "object_name": "Updated Form Name",   // Optional
+  "form_description": "Updated description", // Optional
+  "rating": 4.5,                        // Optional: Rating value (0.00-5.00)
+  "form_banner": "image_file_or_path",  // Optional: Banner image file
+  "form_logo": "image_file_or_path",    // Optional: Logo image file
+  "screenshot": "image_file_or_path"   // Optional: Screenshot image file
 }
 ```
+
+**File Uploads:**
+
+- `form_banner` - Banner image file (PNG, JPG, JPEG, SVG, GIF)
+- `form_logo` - Logo image file (PNG, JPG, JPEG, SVG, GIF)
+- `screenshot` - Screenshot image file (PNG, JPG, JPEG, SVG, GIF)
+
+## cURL Example
+
+```bash
+curl -X POST "https://your-api-domain.com/api/common/update-object" \
+  -H "token: YOUR_AUTH_TOKEN" \
+  -F "object_id=123" \
+  -F "object_name=Updated Contact Form" \
+  -F "form_description=Updated description for the contact form" \
+  -F "rating=4.5" \
+  -F "form_banner=@/path/to/new-banner.png" \
+  -F "form_logo=@/path/to/new-logo.png" \
+  -F "screenshot=@/path/to/screenshot.png"
+```
+
+**Note:** Remove any fields you don't need to update. Only `object_id` is required. All other fields are optional and only provided fields will be updated.
 
 ## Response
 
@@ -83,141 +66,132 @@ curl -X PUT https://api.tryunleashx.com/v1/form \
 }
 ```
 
-## File Uploads
+### Error Responses
 
-### Supported File Types
+#### 422 - Validation Error
 
-- **Banner, Logo, Screenshot:** PNG, JPG, JPEG, SVG, GIF
+**Status Code:** `422 Unprocessable Entity`
 
-### File Update Behavior
+```json
+{
+  "error": true,
+  "code": 422,
+  "message": "Object Details is missing",
+  "data": {}
+}
+```
 
-1. **New File Upload:** If you upload a new file, it replaces the existing file
-2. **File Path Provided:** If you provide a file path, the system uses that path (assumes file already exists)
-3. **Neither Provided:** If you don't provide a file or path, the existing file is retained
+**Common Error Messages:**
+- `"Object Details is missing"` - Required field `object_id` is missing
+- `"Object ID is invalid"` - Invalid object ID format
+- `"OBJECT_NOT_FOUND"` - Form with provided ID does not exist or doesn't belong to your workspace
+- `"INVALID_FORM_BANNER_FILE_TYPE"` - Banner file type is not supported (use PNG, JPG, JPEG, SVG, or GIF)
+- `"INVALID_FORM_LOGO_FILE_TYPE"` - Logo file type is not supported (use PNG, JPG, JPEG, SVG, or GIF)
+- `"INVALID_SCREENSHOT_FILE_TYPE"` - Screenshot file type is not supported (use PNG, JPG, JPEG, SVG, or GIF)
+- `"FORM_BANNER_FILE_REQUIRED"` - Banner file field is present but empty
+- `"FORM_LOGO_FILE_REQUIRED"` - Logo file field is present but empty
+- `"SCREENSHOT_FILE_REQUIRED"` - Screenshot file field is present but empty
 
-### File Storage
+#### 401 - Authentication Error
 
-Files are stored in company-specific directories:
-- Banner: `{company_id}/forms/banner`
-- Logo: `{company_id}/forms/logo`
-- Screenshot: `{company_id}/forms/screenshot`
+**Status Code:** `401 Unauthorized`
+
+```json
+{
+  "error": true,
+  "code": 401,
+  "message": "Invalid Auth Key or Session Expired",
+  "data": {}
+}
+```
+
+#### 500 - Server Error
+
+**Status Code:** `500 Internal Server Error`
+
+```json
+{
+  "error": true,
+  "code": 500,
+  "message": "Internal server error",
+  "data": {}
+}
+```
+
+## Error Codes
+
+| Status Code | Error Code | Description |
+|------------|------------|-------------|
+| 200 | - | Success |
+| 401 | AUTH_REQUIRED | Authentication required - Missing or invalid token |
+| 401 | AUTH_INVALID | Invalid authentication token or session expired |
+| 422 | VALIDATION_ERROR | Validation failed - Check required fields and data format |
+| 422 | MISSING_FIELD | Required field missing |
+| 422 | INVALID_FORMAT | Invalid data format or type |
+| 422 | OBJECT_NOT_FOUND | Form with provided ID does not exist |
+| 422 | INVALID_FORM_BANNER_FILE_TYPE | Banner file type not supported |
+| 422 | INVALID_FORM_LOGO_FILE_TYPE | Logo file type not supported |
+| 422 | INVALID_SCREENSHOT_FILE_TYPE | Screenshot file type not supported |
+| 422 | FORM_BANNER_FILE_REQUIRED | Banner file field is empty |
+| 422 | FORM_LOGO_FILE_REQUIRED | Logo file field is empty |
+| 422 | SCREENSHOT_FILE_REQUIRED | Screenshot file field is empty |
+| 500 | SERVER_ERROR | Internal server error |
 
 ## Update Behavior
 
 ### Partial Updates
 
-The update operation supports partial updates:
+- Only fields you provide will be updated
+- Fields not included in the request remain unchanged
+- You can update specific fields without affecting others
 
-- **Fields Provided:** Only the fields you provide will be updated
-- **Fields Omitted:** Fields not included in the request retain their existing values
-- **Null Values:** To clear a field, you may need to explicitly set it to `null` (check API documentation for specific field behavior)
+**Example:**
+```json
+// Update only form name
+{
+  "object_id": 123,
+  "object_name": "New Name"
+}
+// All other fields remain unchanged
+```
+
+### File Upload Behavior
+
+1. **New File Upload:** If you upload a new file, it replaces the existing file
+2. **File Path Provided:** If you provide a file path, the system uses that path (assumes file already exists)
+3. **Neither Provided:** If you don't provide a file or path, the existing file is retained
 
 ### Automatic Updates
 
 The following fields are automatically updated by the system:
-
 - `UPDATED_ON` - Set to current timestamp
 - `UPDATED_BY` - Set to the authenticated user ID
 - `IP_ADDRESS` - Recorded from the request
 - `USER_AGENT` - Recorded from the request headers
 
-## Error Handling
+## File Upload Guidelines
 
-### Error Response Format
+### Supported File Types
 
-```json
-{
-  "error": "ERROR_CODE",
-  "message": "Human-readable error message"
-}
-```
+- **Banner, Logo, Screenshot:** PNG, JPG, JPEG, SVG, GIF
 
-### Common Error Codes
+### File Upload Requirements
 
-| Error Code | Description | Solution |
-|------------|-------------|----------|
-| `OBJECT_NOT_FOUND` | The form with the specified ID doesn't exist or doesn't belong to your workspace | Verify the form ID and ensure you have access to it |
-| `INVALID_FORM_BANNER_FILE_TYPE` | Banner file type is not supported | Use PNG, JPG, JPEG, SVG, or GIF format |
-| `INVALID_FORM_LOGO_FILE_TYPE` | Logo file type is not supported | Use PNG, JPG, JPEG, SVG, or GIF format |
-| `INVALID_SCREENSHOT_FILE_TYPE` | Screenshot file type is not supported | Use PNG, JPG, JPEG, SVG, or GIF format |
-| `FORM_BANNER_FILE_REQUIRED` | Banner file field is present but empty | Either provide a valid file or omit the field |
-| `FORM_LOGO_FILE_REQUIRED` | Logo file field is present but empty | Either provide a valid file or omit the field |
-| `SCREENSHOT_FILE_REQUIRED` | Screenshot file field is present but empty | Either provide a valid file or omit the field |
+1. **File Size:** Ensure files are reasonably sized for web use
+2. **File Format:** Only image formats listed above are accepted
+3. **Validation:** The system validates both file extension and MIME type
+4. **Storage:** Files are securely stored in company-specific directories:
+   - Banner images: `{company_id}/forms/banner`
+   - Logo images: `{company_id}/forms/logo`
+   - Screenshot images: `{company_id}/forms/screenshot`
 
-## Best Practices
+## Important Notes
 
-1. **Selective Updates:** Only include fields you want to change to avoid unnecessary updates
-2. **File Optimization:** Optimize images before uploading to ensure fast loading
-3. **Validation:** Validate file types and sizes on your client side before sending requests
-4. **Error Handling:** Always check response status and handle errors appropriately
-5. **Idempotency:** The update operation is safe to retry if a request fails
-
-## Update Form Data vs Update Form Metadata
-
-It's important to understand the difference between updating form metadata and updating form submission data:
-
-| Aspect | Form Metadata Update | Form Data Update |
-|--------|---------------------|------------------|
-| **What it updates** | Form configuration and settings | Individual form submission records |
-| **Target** | Form object itself | Form submission data |
-| **Use case** | Change form name, description, branding | Modify submitted form field values |
-| **Endpoint** | `PUT /form` or `POST /update-object` | `POST /update-form-object` |
-
-## Example Use Cases
-
-### Update Form Name and Description
-
-```json
-{
-  "object_id": 123,
-  "object_name": "Customer Feedback Form 2024",
-  "form_description": "Updated feedback form for 2024 with new questions"
-}
-```
-
-### Update Branding Images
-
-```json
-{
-  "object_id": 123,
-  "form_banner": "path/to/new-banner.png",
-  "form_logo": "path/to/new-logo.png"
-}
-```
-
-### Update Rating
-
-```json
-{
-  "object_id": 123,
-  "rating": 4.8
-}
-```
-
-### Update Multiple Fields
-
-```json
-{
-  "object_id": 123,
-  "object_name": "Enhanced Contact Form",
-  "form_description": "Improved contact form with better UX",
-  "rating": 4.5,
-  "form_banner": "path/to/banner.png"
-}
-```
-
-## Notes
-
-- All updates are transactional - if any step fails, the entire operation is rolled back
+- `object_id` is **required** - all other fields are optional
+- Partial updates are supported - only include fields you want to change
 - File uploads replace existing files when new files are provided
-- The system automatically tracks who made the update and when
-- Updates are immediately reflected in the system
+- Updates are transactional - if any step fails, the entire operation is rolled back
 - Cache is automatically cleared after successful updates
+- Updates are immediately reflected in the system
+- The system automatically tracks who made the update and when
 
-## Related Operations
-
-- **Get Form:** Retrieve form details
-- **List Forms:** Get all forms in your workspace
-- **Delete Form:** Remove a form
-- **Update Form Data:** Update individual form submission records
-- **List Form Data:** Retrieve form submissions

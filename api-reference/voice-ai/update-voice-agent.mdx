@@ -1,342 +1,230 @@
 ---
-title: Update Voice Agent
-openapi: "api-reference/openapi.json POST /voice-agent/update"
+
+title: Update Agent
+
+openapi: "api-reference/openapi.json POST /agent/update"
+
 ---
 
-# Update Voice Agent
+The agent update system allows you to update existing agents with comprehensive settings. You can update basic details, configuration, knowledge base, calling numbers, denied words, dispositions, guardrails, and metadata. Updates support partial modifications - only the fields you provide will be updated, while others remain unchanged.
 
-The voice agent update system provides multiple endpoints and mechanisms to update existing voice agents. Updates can be performed on complete agents, individual components (status, knowledge base, denied words, dispositions), or specific fields. All update operations maintain data integrity through transactions and change tracking.
-
-## Update Endpoints
-
-### 1. Complete Voice Agent Update
+## API Endpoint
 
 **Endpoint:** `POST /api/agent/createagentorupdate`
 
-**Authentication:** Requires Super Admin authentication (`checkSuperAdmin` middleware)
+**Content-Type:** `multipart/form-data`
 
-**Route File:** `src/routes/agentBuild.js`
+**Authentication:** Required (Token header: `token` or `api_access_token`)
 
-**Controller:** `src/controllers/agentbuild/agentController.js` - `createOrUpdateCompleteAgent`
+## Request Structure
 
-**Key Difference from Creation:** When `agent_id` is provided in `basic_details`, the system performs an update instead of creation for voice agents.
-
-#### Request Structure
+The endpoint accepts a `multipart/form-data` request with the following structure. Include `agent_id` in `basic_details` to perform an update:
 
 ```json
 {
   "basic_details": {
-    "agent_id": 123,                    // REQUIRED for updates
+    "agent_id": 123,                    // Required for updates
     "agent_name": "Updated Name",
     "description": "Updated description",
-    "agent_prompt": "Updated prompt",
+    "category": 1,
+    "purpose": 1,
+    "agent_type": 1,                    // 1=Voice, 2=Chat, 3=Telephony, 4=General
+    "chatbot_name": "Updated Bot",
+    "chatbot_welcome_message": "Welcome!",
+    "chatbot_image": "image_url",       // Can be uploaded as file
+    "agent_privacy": 0,                 // 0=Private, 1=Public
+    "agent_prompt": "Updated prompt...",
+    "voice_id": "KYiVPerWcenyBTIvWbfY",
+    "voice_provider": 1,
+    "transcriber_provider": 2,
+    "transcriber_language": "en",
     "tone": "professional",
     "style": "conversational",
     "instruction_sensitivity": "medium"
-    // ... other fields to update
   },
   "configuration": {
-    "agent_id": 123,
+    "agent_id": 123,                    // Required
     "context_awareness": true,
-    // ... other config fields
+    "memory_recall": true,
+    "sentiment_analysis": true,
+    "interruption_handling": true,
+    "agent_terminate_instruction": "...",
+    "agent_terminate_messages": "..."
   },
   "knowledge_base": {
+    "agent_id": 123,                    // Required
+    "tools": [
+      { "id": 1, "isEnabled": true }
+    ],
+    "sub_agents": [
+      { "id": 2, "isEnabled": true }
+    ],
+    "text_knowledge_bases": [
+      { "name": "KB1", "content": "..." }
+    ]
+  },
+  "phone_numbers": ["+1234567890"],
+  "denials": {
     "agent_id": 123,
-    "tools": [...],
-    "sub_agents": [...]
+    "denied_words": ["word1", "word2"],
+    "denied_topics": ["topic1", "topic2"]
+  },
+  "dispositions_config": {
+    "dispositions": [...]
+  },
+  "guardrails": {
+    "agent_id": 123,
+    ...
+  },
+  "metadata_config": {
+    "metadata_input": ["field1", "field2"],
+    "metadata_output": ["field1", "field2"]
   }
-  // ... other sections
 }
 ```
 
-#### Update Process Flow
+**File Uploads:**
 
-**Location:** ```2315:2461:src/controllers/agentbuild/agentController.js```
+- `basic_details[chatbot_image]` - Chatbot image file (replaces existing)
+- Knowledge base files (PDF, DOC, DOCX, XLSX, CSV) - Up to 3 files, max 10MB each
 
-1. **Transaction Initialization**
-   - Starts database transaction
+## cURL Example
 
-2. **Basic Details Update**
+```bash
+curl -X POST "https://your-api-domain.com/api/agent/createagentorupdate" \
+  -H "token: YOUR_AUTH_TOKEN" \
+  -F "basic_details[agent_id]=123" \
+  -F "basic_details[agent_name]=Updated Agent Name" \
+  -F "basic_details[description]=Updated description" \
+  -F "basic_details[category]=1" \
+  -F "basic_details[purpose]=1" \
+  -F "basic_details[agent_type]=1" \
+  -F "basic_details[chatbot_name]=Updated Bot" \
+  -F "basic_details[chatbot_welcome_message]=Welcome! How can I help you?" \
+  -F "basic_details[chatbot_image]=@/path/to/image.png" \
+  -F "basic_details[agent_privacy]=0" \
+  -F "basic_details[agent_prompt]=Updated agent prompt" \
+  -F "basic_details[voice_id]=KYiVPerWcenyBTIvWbfY" \
+  -F "basic_details[voice_provider]=1" \
+  -F "basic_details[transcriber_provider]=2" \
+  -F "basic_details[transcriber_language]=en" \
+  -F "basic_details[tone]=professional" \
+  -F "basic_details[style]=conversational" \
+  -F "basic_details[instruction_sensitivity]=medium" \
+  -F "configuration[agent_id]=123" \
+  -F "configuration[context_awareness]=true" \
+  -F "configuration[memory_recall]=true" \
+  -F "configuration[sentiment_analysis]=true" \
+  -F "configuration[interruption_handling]=true" \
+  -F "configuration[agent_terminate_instruction]=End conversation politely" \
+  -F "configuration[agent_terminate_messages]=Thank you for contacting us" \
+  -F "knowledge_base[agent_id]=123" \
+  -F "knowledge_base[tools][0][id]=1" \
+  -F "knowledge_base[tools][0][isEnabled]=true" \
+  -F "knowledge_base[sub_agents][0][id]=2" \
+  -F "knowledge_base[sub_agents][0][isEnabled]=true" \
+  -F "knowledge_base[text_knowledge_bases][0][name]=KB1" \
+  -F "knowledge_base[text_knowledge_bases][0][content]=Updated knowledge base content" \
+  -F "FILE_KNOWLEDGE_BASES=@/path/to/document.pdf" \
+  -F "phone_numbers[]=+1234567890" \
+  -F "phone_numbers[]=+0987654321" \
+  -F "denials[agent_id]=123" \
+  -F "denials[denied_words][]=word1" \
+  -F "denials[denied_words][]=word2" \
+  -F "denials[denied_topics][]=topic1" \
+  -F "denials[denied_topics][]=topic2" \
+  -F "metadata_config[metadata_input][]=field1" \
+  -F "metadata_config[metadata_input][]=field2" \
+  -F "metadata_config[metadata_output][]=field1" \
+  -F "metadata_config[metadata_output][]=field2"
+```
 
-   **Function:** `createOrUpdateAgent(req, transaction)` - Update Branch
+**Note:** Remove any fields you don't need to update. Only `basic_details[agent_id]` is required. All other fields are optional and only provided fields will be updated.
 
-   **Location:** ```372:438:src/controllers/agentbuild/agentController.js```
+## Response
 
-   **Process:**
-   - Validates `agent_id` is provided
-   - Fetches existing agent record
-   - **Agent Behavior Handling:**
-     - Retrieves current agent behavior (tone, style, instruction_sensitivity)
-     - Merges new behavior values with existing ones
-     - Preserves existing behavior fields if not all are updated
-     - Example: If only `tone` is updated, `style` and `instruction_sensitivity` are preserved
-   - Retrieves or generates agent token
-   - Generates `AGENT_UID` if missing (for legacy agents)
-   - Stores old agent data for change tracking
-   - Updates agent record with new data
-   - Tracks changes in change history
+### Success Response
 
-3. **Chatbot Image Update**
-   - If new image is uploaded, replaces existing image
-   - Uploads to same directory structure
-
-4. **Configuration Update**
-   - Updates or creates agent configuration
-   - Only updates fields that are provided
-   - Tracks configuration changes
-
-5. **Knowledge Base Update**
-   - **Tools and Sub-agents:**
-     - Compares existing tools/sub-agents with new ones
-     - Updates existing entries (enabled/disabled status)
-     - Creates new entries for new tools/sub-agents
-     - Removes entries that are no longer in the list
-   - **File Knowledge Bases:**
-     - Adds new files (up to 3 files, 10MB each)
-     - Existing files remain unless explicitly removed
-   - **Training Status:**
-     - Resets agent `TRAINED` status to 0 when knowledge base is updated
-
-6. **Other Component Updates**
-   - Calling numbers (replaces existing)
-   - Denied words (adds new, doesn't remove existing)
-   - Dispositions
-   - Guardrails
-   - Metadata configuration
-
-7. **Transaction Commit**
-   - Commits all changes atomically
-
-8. **Agent Sync**
-   - Syncs updated agent with AI service asynchronously
-
-#### Key Update Behaviors
-
-1. **Partial Updates:**
-   - Only provided fields are updated
-   - Unprovided fields remain unchanged
-   - This allows updating specific sections without affecting others
-
-2. **Behavior Field Merging:**
-
-   ```javascript
-   // If current behavior is: { tone: "friendly", style: "casual", instruction_sensitivity: "high" }
-   // And update only provides: { tone: "professional" }
-   // Result: { tone: "professional", style: "casual", instruction_sensitivity: "high" }
-   ```
-
-3. **Tools/Sub-agents Update Logic:**
-   - Existing tools/sub-agents are matched by `APP_LOCATION` (ID)
-   - If tool exists: Updates `IS_ENABLED` and `STATUS`
-   - If tool doesn't exist: Creates new entry
-   - Tools not in the update list remain unchanged
-
-4. **Change Tracking:**
-   - All updates are tracked in change history
-   - Old and new values are stored for audit purposes
-   - Tracks which fields were changed
-
-### 2. Update Voice Agent Status
-
-**Endpoint:** `POST /api/agent/status`
-
-**Authentication:** Standard authentication (no Super Admin required)
-
-**Controller:** `src/controllers/agentbuild/agentController.js` - `updateAgentStatus`
-
-**Location:** ```2469:2597:src/controllers/agentbuild/agentController.js```
-
-#### Request Structure
+**Status Code:** `200 OK`
 
 ```json
 {
-  "agent_id": 123,
-  "status": 1  // 1=Published, 2=Deleted, 3=Unpublished
+  "message": "Agent updated successfully",
+  "data": {
+    "agent_id": 123
+  }
 }
 ```
 
-#### Process Flow
+### Error Responses
 
-1. **Validation:**
-   - Validates `agent_id` and `status` are provided
-   - Checks agent exists and belongs to workspace
+#### 422 - Validation Error
 
-2. **Publish Validation (Status = 1):**
-   - For agent type 3 (Telephony):
-     - Validates at least one phone number is assigned
-     - Throws error if no phone numbers found
-   - For other agent types:
-     - Validates agent type is set
-
-3. **Status Update:**
-   - Updates agent status in database
-   - Stores old data for change tracking
-
-4. **Special Handling for Deletion (Status = 2):**
-   - Calls Millis AI API to delete agent from external platform
-   - Deletes knowledge base from AI service
-   - Extracts `platform_agent_id` from `AGENT_METADATA`
-
-5. **Change Tracking:**
-   - Tracks status change in change history
-
-6. **Response:**
-
-   ```json
-   {
-     "message": "Agent Published Successfully", // or "Unpublished" or "Deleted"
-     "data": {
-       "id": 123,
-       "name": "Agent Name",
-       "status": 1
-     }
-   }
-   ```
-
-#### Status Values
-
-- **1 (Published):** Agent is active and available for use
-- **2 (Deleted):** Agent is soft-deleted (marked as deleted, not removed from database)
-- **3 (Unpublished):** Agent is inactive but not deleted
-
-### 3. Update Knowledge Base Status (Voice Agents)
-
-**Endpoint:** `POST /api/agent/updateKnowledgeBaseStatus`
-
-**Authentication:** Requires Super Admin authentication
-
-**Controller:** `src/controllers/agentbuild/agentController.js` - `updateKnowledgeBaseStatus`
-
-**Location:** ```3464:3549:src/controllers/agentbuild/agentController.js```
-
-#### Request Structure
+**Status Code:** `422 Unprocessable Entity`
 
 ```json
 {
-  "knowledge_base_id": 456,
-  "status": 1  // 1=Active, 2=Deleted
+  "error": true,
+  "code": 422,
+  "message": "Agent ID is missing",
+  "data": {}
 }
 ```
 
-#### Process Flow
+**Common Error Messages:**
+- `"Agent ID is missing"` - Required field `agent_id` is missing in `basic_details`
+- `"Agent ID is invalid"` - Invalid agent ID format
+- `"Agent not found"` - Agent with provided ID does not exist
+- `"Basic details are required"` - `basic_details` object is missing
 
-1. **Validation:**
-   - Validates `knowledge_base_id` and `status` are provided
-   - Checks knowledge base exists and belongs to workspace
+#### 401 - Authentication Error
 
-2. **Agent Validation:**
-   - Verifies associated agent exists and is not deleted
-
-3. **Status Update:**
-   - Updates knowledge base status
-   - Sets `TRAINED` to 0 (not trained)
-
-4. **Agent Training Reset:**
-   - Resets agent's `TRAINED` status to 0
-   - Indicates agent needs retraining after knowledge base change
-
-5. **Knowledge Base Sync:**
-   - Syncs knowledge base with AI service
-   - Updates knowledge base in AI service
-
-6. **Response:**
-
-   ```json
-   {
-     "message": "Knowledge base status updated successfully",
-     "data": {
-       "id": 456,
-       "name": "Knowledge Base Name",
-       "status": 1
-     }
-   }
-   ```
-
-### 4. Update Denied Word and Disposition Status (Voice Agents)
-
-**Endpoint:** `POST /api/agent/updateDeniedWordAndDisposition`
-
-**Authentication:** Requires Super Admin authentication
-
-**Controller:** `src/controllers/agentbuild/agentController.js` - `updateDeniedWordAndDisposition`
-
-**Location:** ```3557:3677:src/controllers/agentbuild/agentController.js```
-
-#### Request Structure
+**Status Code:** `401 Unauthorized`
 
 ```json
 {
-  "agent_id": 123,
-  "denied_word_id": 789,      // Optional: for denied word update
-  "disposition_id": 101,      // Optional: for disposition update
-  "status": 1                 // 1=Active, 2=Deleted
+  "error": true,
+  "code": 401,
+  "message": "Invalid Auth Key or Session Expired",
+  "data": {}
 }
 ```
 
-#### Process Flow
+#### 500 - Server Error
 
-1. **Validation:**
-   - Validates `agent_id` is provided
-   - Checks agent exists and belongs to workspace
+**Status Code:** `500 Internal Server Error`
 
-2. **Denied Word Update (if `denied_word_id` provided):**
-   - Validates denied word exists for the agent
-   - Updates denied word status
-   - Tracks change in change history
+```json
+{
+  "error": true,
+  "code": 500,
+  "message": "Internal server error",
+  "data": {}
+}
+```
 
-3. **Disposition Update (if `disposition_id` provided):**
-   - Validates disposition exists for the agent
-   - Updates disposition status
-   - Tracks change in change history
+## Error Codes
 
-4. **Response:**
+| Status Code | Error Code | Description |
+|------------|------------|-------------|
+| 200 | - | Success |
+| 401 | AUTH_REQUIRED | Authentication required - Missing or invalid token |
+| 401 | AUTH_INVALID | Invalid authentication token or session expired |
+| 422 | VALIDATION_ERROR | Validation failed - Check required fields and data format |
+| 422 | MISSING_FIELD | Required field missing |
+| 422 | INVALID_FORMAT | Invalid data format or type |
+| 422 | AGENT_NOT_FOUND | Agent with provided ID does not exist |
+| 500 | SERVER_ERROR | Internal server error |
 
-   ```json
-   {
-     "message": "Denied word status updated successfully", // or "Disposition status updated"
-     "data": {
-       "type": "denied_word", // or "disposition"
-       "id": 789,
-       "word_topic": "word",  // or "disposition_name": "name"
-       "status": 1
-     }
-   }
-   ```
+## Update Behavior
 
-## Update-Specific Features
+### Partial Updates
 
-### 1. Change Tracking
-
-All updates are tracked in the change history system:
-
-**Location:** `src/helpers/ChangeHistoryTracker.js`
-
-**Tracked Changes:**
-- Basic details changes
-- Configuration changes
-- Knowledge base changes
-- Status changes
-- Denied word changes
-- Disposition changes
-
-**Change History Includes:**
-- Old values
-- New values
-- Changed fields
-- User who made the change
-- Timestamp
-- IP address and user agent
-
-### 2. Partial Updates
-
-The update system supports partial updates:
-
-- **Only provided fields are updated**
-- **Unprovided fields remain unchanged**
-- This allows updating specific sections without affecting others
+- Only fields you provide will be updated
+- Fields not included in the request remain unchanged
+- You can update specific sections without affecting others
 
 **Example:**
-
 ```json
 // Update only agent name
 {
@@ -348,136 +236,41 @@ The update system supports partial updates:
 // All other fields remain unchanged
 ```
 
-### 3. Behavior Field Merging
+### Behavior Fields Merging
 
-When updating agent behavior fields (tone, style, instruction_sensitivity):
+When updating behavior fields (`tone`, `style`, `instruction_sensitivity`):
+- If you provide only one field, the others remain unchanged
+- Example: Updating only `tone` preserves existing `style` and `instruction_sensitivity`
 
-**Location:** ```380:394:src/controllers/agentbuild/agentController.js```
+### Knowledge Base Updates
 
-- Existing behavior is retrieved from database
-- New values are merged with existing values
-- Only provided fields are updated
-- Unprovided fields are preserved
+- New files are added to existing knowledge base
+- Existing files remain unless explicitly removed
+- Tools and sub-agents can be enabled/disabled
+- Agent training status is reset when knowledge base is updated
 
-**Example:**
+### Tools and Sub-agents
 
-```javascript
-// Current: { tone: "friendly", style: "casual", instruction_sensitivity: "high" }
-// Update: { tone: "professional" }
-// Result: { tone: "professional", style: "casual", instruction_sensitivity: "high" }
-```
+- Existing tools/sub-agents are matched by ID
+- You can enable/disable existing tools/sub-agents
+- New tools/sub-agents can be added
+- Tools not included in the update remain unchanged
 
-### 4. Tools and Sub-agents Update Logic
+## Additional Update Endpoints
 
-**Location:** ```955:1014:src/controllers/agentbuild/agentController.js```
+### Update Agent Status
 
-**Update Strategy:**
-1. **Existing Tools/Sub-agents:**
-   - Matched by `APP_LOCATION` (ID)
-   - Updated with new `IS_ENABLED` status
-   - Status set to 2 (deleted) if disabled, 1 (active) if enabled
+**Endpoint:** `POST /api/agent/status`
 
-2. **New Tools/Sub-agents:**
-   - Created as new entries
-   - Assigned to agent
-
-3. **Removed Tools/Sub-agents:**
-   - Not automatically deleted
-   - Remain in database with their current status
-
-### 5. Knowledge Base Training Reset
-
-When knowledge base is updated:
-
-**Location:** ```881:886:src/controllers/agentbuild/agentController.js```
-
-- Agent's `TRAINED` status is reset to 0
-- Indicates agent needs retraining
-- Knowledge base sync is triggered
-
-### 6. Token Management
-
-**Location:** ```112:169:src/controllers/agentbuild/agentController.js```
-
-- Agent token is retrieved or regenerated during updates
-- Token is used for agent authentication
-- Token includes agent ID, user ID, company ID, workspace ID
-
-### 7. External Service Sync
-
-After successful updates:
-
-**Location:** ```548:597:src/controllers/agentbuild/agentController.js```
-
-1. **Knowledge Base Sync:**
-   - Syncs knowledge base files with AI service
-   - Updates AI service with new knowledge base data
-
-2. **Agent Configuration Sync:**
-   - Syncs agent configuration with AI service
-   - Updates AI service with new agent settings
-
-3. **External API Calls (Type 3 Agents):**
-   - For telephony agents, calls external agent API
-   - Updates agent metadata in external platform
-
-## Update Validation Rules
-
-### 1. Agent Existence
-- Agent must exist in database
-- Agent must belong to workspace
-- Agent must not be deleted (STATUS != 2)
-
-### 2. Publish Validation
-- Agent type 3 (Telephony) must have at least one phone number
-- Agent type must be set for all agent types
-
-### 3. Knowledge Base Updates
-- Maximum 3 files per update
-- Maximum 10MB per file
-- Allowed file types: PDF, DOC, DOCX, XLSX, CSV
-
-### 4. Workspace Validation
-- All updates must be within the same workspace
-- Cross-workspace updates are not allowed
-
-## Error Handling
-
-### 1. Transaction Rollback
-- If any error occurs, entire transaction is rolled back
-- All database changes are reverted
-- Ensures data consistency
-
-### 2. Validation Errors
-- Missing required fields throw validation errors
-- Invalid agent IDs throw "Agent not found" errors
-- Invalid status values throw validation errors
-
-### 3. Business Logic Errors
-- Publishing agent without phone numbers throws error
-- Updating non-existent knowledge base throws error
-- Cross-workspace operations throw errors
-
-### 4. Change Tracking Errors
-- Change tracking errors are logged but don't break updates
-- Updates continue even if tracking fails
-- Errors are logged for debugging
-
-## Response Formats
-
-### Success Response (Complete Update)
-
+**Request:**
 ```json
 {
-  "message": "Agent updated successfully",
-  "data": {
-    "agent_id": 123
-  }
+  "agent_id": 123,
+  "status": 1  // 1=Published, 2=Deleted, 3=Unpublished
 }
 ```
 
-### Success Response (Status Update)
-
+**Response:**
 ```json
 {
   "message": "Agent Published Successfully",
@@ -489,8 +282,26 @@ After successful updates:
 }
 ```
 
-### Success Response (Knowledge Base Status)
+**Status Values:**
+- **1 (Published):** Agent is active and available for use
+- **2 (Deleted):** Agent is soft-deleted
+- **3 (Unpublished):** Agent is inactive but not deleted
 
+**Note:** Publishing a Telephony agent (type 3) requires at least one phone number to be assigned.
+
+### Update Knowledge Base Status
+
+**Endpoint:** `POST /api/agent/updateKnowledgeBaseStatus`
+
+**Request:**
+```json
+{
+  "knowledge_base_id": 456,
+  "status": 1  // 1=Active, 2=Deleted
+}
+```
+
+**Response:**
 ```json
 {
   "message": "Knowledge base status updated successfully",
@@ -502,82 +313,40 @@ After successful updates:
 }
 ```
 
-### Error Response
-- Returns error through Express error handler
-- Transaction is rolled back
-- Error details are logged
+### Update Denied Word and Disposition Status
 
-## Code References
+**Endpoint:** `POST /api/agent/updateDeniedWordAndDisposition`
 
-### Main Update Handler
-
-```2315:2461:src/controllers/agentbuild/agentController.js
-module.exports.createOrUpdateCompleteAgent = async (req, res, next) => {
-  // Main agent update handler
+**Request:**
+```json
+{
+  "agent_id": 123,
+  "denied_word_id": 789,      // Optional: for denied word update
+  "disposition_id": 101,      // Optional: for disposition update
+  "status": 1                 // 1=Active, 2=Deleted
 }
 ```
 
-### Basic Details Update
-
-```372:438:src/controllers/agentbuild/agentController.js
-if (postData.agent_id) {
-  // Update agent build settings
-  // Behavior field merging
-  // Change tracking
+**Response:**
+```json
+{
+  "message": "Denied word status updated successfully",
+  "data": {
+    "type": "denied_word",
+    "id": 789,
+    "word_topic": "word",
+    "status": 1
+  }
 }
 ```
 
-### Status Update
+## Important Notes
 
-```2469:2597:src/controllers/agentbuild/agentController.js
-module.exports.updateAgentStatus = async (req, res, next) => {
-  // Agent status update handler
-}
-```
+- `agent_id` is **required** in `basic_details` for all updates
+- All configuration sections are **optional** - only include what you want to update
+- Partial updates are supported - only provided fields are updated
+- File uploads replace existing files (chatbot image) or add new files (knowledge base)
+- Knowledge base updates reset agent training status
+- Updates are atomic - if any part fails, all changes are rolled back
+- All updates are tracked in change history for audit purposes
 
-### Knowledge Base Status Update
-
-```3464:3549:src/controllers/agentbuild/agentController.js
-module.exports.updateKnowledgeBaseStatus = async (req, res, next) => {
-  // Knowledge base status update handler
-}
-```
-
-### Denied Word and Disposition Update
-
-```3557:3677:src/controllers/agentbuild/agentController.js
-module.exports.updateDeniedWordAndDisposition = async (req, res, next) => {
-  // Denied word and disposition status update handler
-}
-```
-
-## Differences from Creation
-
-1. **Agent ID Required:** Updates require `agent_id` in `basic_details`
-2. **No Name Deduplication:** Updates don't check for duplicate names
-3. **Behavior Merging:** Updates merge behavior fields instead of replacing
-4. **Tools/Sub-agents:** Updates existing entries instead of only creating
-5. **Token Refresh:** Updates refresh agent token instead of generating new one
-6. **Change Tracking:** Updates track changes, creation tracks creation
-7. **No Default Values:** Updates don't set default values for missing fields
-8. **AGENT_UID:** Updates only generate AGENT_UID if missing (for legacy agents)
-
-## Best Practices
-
-1. **Partial Updates:** Only send fields that need to be updated
-2. **Transaction Safety:** All updates are atomic - either all succeed or all fail
-3. **Change Tracking:** All changes are automatically tracked for audit
-4. **Validation:** Always validate agent exists before updating
-5. **Status Management:** Use status update endpoint for status changes
-6. **Knowledge Base:** Update knowledge base separately for better control
-7. **Error Handling:** Handle validation errors gracefully
-8. **Sync Operations:** Sync operations are async - don't wait for them
-
-## Notes
-
-- All update operations require appropriate authentication
-- Super Admin required for complete agent updates and knowledge base updates
-- Standard authentication sufficient for status updates
-- Updates are idempotent - can be called multiple times safely
-- Change history provides complete audit trail
-- External service sync happens asynchronously after successful updates

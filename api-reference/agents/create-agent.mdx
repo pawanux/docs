@@ -3,19 +3,15 @@ title: Create Agent
 openapi: "api-reference/openapi.json POST /agent"
 ---
 
-# Create Agent
-
-The agent creation system allows users to create and configure AI agents with comprehensive settings including basic details, configuration, knowledge base, calling numbers, denied words, dispositions, guardrails, and metadata. The system supports both creating new agents and updating existing ones through a single unified endpoint.
+The agent creation system allows users to create and configure AI agents with comprehensive settings in a single request. You can set up basic details, configuration, knowledge base, calling numbers, denied words, dispositions, guardrails, and metadata all at once when creating a new agent.
 
 ## API Endpoint
 
 **Endpoint:** `POST /api/agent/createagentorupdate`
 
-**Authentication:** Requires Super Admin authentication (`checkSuperAdmin` middleware)
+**Content-Type:** `multipart/form-data`
 
-**Route File:** `src/routes/agentBuild.js`
-
-**Controller:** `src/controllers/agentbuild/agentController.js` - `createOrUpdateCompleteAgent`
+**Authentication:** Required (Token header: `token` or `api_access_token`)
 
 ## Request Structure
 
@@ -24,8 +20,7 @@ The endpoint accepts a `multipart/form-data` request with the following structur
 ```json
 {
   "basic_details": {
-    "agent_id": 123,                    // Optional: Required for updates
-    "agent_name": "Customer Support",   // Required for new agents
+    "agent_name": "Customer Support",   // Required
     "description": "Agent description",
     "category": 1,
     "purpose": 1,
@@ -44,7 +39,6 @@ The endpoint accepts a `multipart/form-data` request with the following structur
     "instruction_sensitivity": "medium"
   },
   "configuration": {
-    "agent_id": 123,                    // Required
     "context_awareness": true,
     "memory_recall": true,
     "sentiment_analysis": true,
@@ -53,7 +47,6 @@ The endpoint accepts a `multipart/form-data` request with the following structur
     "agent_terminate_messages": "..."
   },
   "knowledge_base": {
-    "agent_id": 123,                    // Required
     "tools": [
       { "id": 1, "isEnabled": true }
     ],
@@ -66,7 +59,6 @@ The endpoint accepts a `multipart/form-data` request with the following structur
   },
   "phone_numbers": ["+1234567890"],
   "denials": {
-    "agent_id": 123,
     "denied_words": ["word1", "word2"],
     "denied_topics": ["topic1", "topic2"]
   },
@@ -74,7 +66,6 @@ The endpoint accepts a `multipart/form-data` request with the following structur
     "dispositions": [...]
   },
   "guardrails": {
-    "agent_id": 123,
     ...
   },
   "metadata_config": {
@@ -85,287 +76,64 @@ The endpoint accepts a `multipart/form-data` request with the following structur
 ```
 
 **File Uploads:**
+
 - `basic_details[chatbot_image]` - Chatbot image file
 - Knowledge base files (PDF, DOC, DOCX, XLSX, CSV) - Up to 3 files, max 10MB each
 
-## Process Flow
-
-The agent creation/update process follows these steps in sequence:
-
-### 1. Transaction Initialization
-
-- A database transaction is started to ensure atomicity
-- All operations are performed within this transaction
-- If any step fails, the entire operation is rolled back
-
-### 2. Basic Details Processing
-
-**Function:** `createOrUpdateAgent(req, transaction)`
-
-**Location:** ```177:509:src/controllers/agentbuild/agentController.js```
-
-#### For New Agents:
-
-1. **Validation:**
-   - Validates `agent_name` is provided
-   - Checks for duplicate agent names in the workspace
-   - Auto-increments name if duplicate found (e.g., "Agent Name (1)")
-
-2. **Category Processing:**
-   - If category ID is provided, fetches category description from predefined lists
-   - Stores category information as JSON
-
-3. **Agent Data Construction:**
-   - Builds agent data object with provided fields
-   - Sets default values:
-     - `AGENT_MODEL`: 11
-     - `MODEL_VERSION`: 55
-     - `AGENT_PRIVACY`: 0 (Private)
-     - `STATUS`: 3
-   - Sets default voice ID if not provided: `"KYiVPerWcenyBTIvWbfY"` (Sia - Friendly Customer Care Agent)
-   - Sets default transcriber provider: 2
-   - Sets default transcriber model: 16
-   - Sets default voice provider: 1
-
-4. **Agent Creation:**
-   - Creates agent record in `AgentDetails` table
-   - Generates unique `AGENT_UID` using UUID v4
-   - Sets `CREATED_BY` and `CREATED_ON` timestamps
-
-5. **Token Generation:**
-   - Generates JWT token for agent authentication
-   - Token payload includes:
-     - `AGENT_ID`
-     - `USER_ID`
-     - `COMPANY_ID`
-     - `WORKSPACE_ID`
-     - `CREATED_ON`
-     - `AUTH_UPDATE_AT`
-   - Updates agent record with generated token
-
-6. **Change Tracking:**
-   - Tracks agent creation in change history
-
-#### For Existing Agents (Updates):
-
-1. **Validation:**
-   - Validates `agent_id` is provided
-   - Fetches existing agent record
-
-2. **Agent Behavior Handling:**
-   - Merges behavior fields (tone, style, instruction_sensitivity) with existing values
-   - Preserves existing behavior if not all fields are updated
-
-3. **Token Refresh:**
-   - Retrieves or generates new agent token
-
-4. **Update Processing:**
-   - Updates agent record with new data
-   - Tracks changes in change history
-
-### 3. Chatbot Image Upload
-
-**Location:** ```2328:2336:src/controllers/agentbuild/agentController.js```
-
-- Extracts chatbot image from uploaded files
-- Uploads to S3/cloud storage with path: `{company_id}/agent/chatbot_image/{agent_id}`
-- Updates `basic_details.chatbot_image` with file directory path
-- Removes image file from `req.files` array (to prevent it from being processed as knowledge base file)
-
-### 4. Configuration Update
-
-**Function:** `updateAgentConfig(req, transaction)`
-
-**Location:** ```606:850:src/controllers/agentbuild/agentController.js```
-
-**Process:**
-1. Validates `agent_id` is provided
-2. Checks if agent exists
-3. Finds or creates `AgentConfiguration` record
-4. Updates configuration fields:
-   - Context awareness
-   - Memory recall
-   - Sentiment analysis
-   - Interruption handling
-   - Voice settings
-   - Agent terminate instructions
-   - Ambient noise detection
-   - And other configuration options
-5. Tracks configuration changes in change history
-
-### 5. Knowledge Base Update
-
-**Function:** `updateAgentKnowledgebase(req, transaction)`
-
-**Location:** ```858:1205:src/controllers/agentbuild/agentController.js```
-
-**Process:**
-1. **Validation:**
-   - Validates `agent_id` is provided
-   - Checks agent exists and is not deleted
-
-2. **Training Status Reset:**
-   - Sets agent `TRAINED` status to 0 (not trained)
-
-3. **Tools and Sub-agents:**
-   - Processes tools array (TYPE: 1)
-   - Processes sub-agents array (TYPE: 2)
-   - Stores in `AgentAppTools` table
-   - Updates existing tools/sub-agents or creates new ones
-
-4. **File Knowledge Bases:**
-   - Validates uploaded files:
-     - Maximum 3 files
-     - Maximum 10MB per file
-     - Allowed types: PDF, DOC, DOCX, XLSX, CSV
-   - Uploads files to cloud storage: `{company_id}/agent/knowledge_base/{agent_id}`
-   - Creates `AgentKnowledgebase` records (KNOWLEDGEBASE_TYPE: 1 for files)
-
-5. **Text Knowledge Bases:**
-   - Processes text-based knowledge bases
-   - Creates `AgentKnowledgebase` records (KNOWLEDGEBASE_TYPE: 2 for text)
-
-6. **Change Tracking:**
-   - Tracks knowledge base changes
-
-### 6. Calling Numbers
-
-**Function:** `saveAgentCallingNumbersHelper(agentId, phoneNumbers, auth, transaction)`
-
-**Location:** ```5208:5240:src/controllers/agentbuild/agentController.js```
-
-**Process:**
-1. Removes existing calling numbers for the agent
-2. For each phone number:
-   - Finds provider details by phone number
-   - Creates `AgentCallingNumbers` record with:
-     - Agent ID
-     - Phone number
-     - Context ID
-     - Number context
-     - Call provider ID
-
-### 7. Denied Words
-
-**Function:** `updateAgentDeniedWords(req, transaction)`
-
-**Location:** ```5577:5673:src/controllers/agentbuild/agentController.js```
-
-**Process:**
-1. Validates `agent_id` is provided
-2. Checks agent exists and belongs to workspace
-3. Processes `denied_words` array (TYPE: 'word')
-4. Processes `denied_topics` array (TYPE: 'topic')
-5. Creates `AgentDeniedWords` records via bulk create
-6. Tracks changes in change history
-
-### 8. Dispositions
-
-**Function:** `dispositionController.createOrUpdateDisposition(req, res, next)`
-
-**Location:** ```2392:2401:src/controllers/agentbuild/agentController.js```
-
-**Process:**
-- Updates agent dispositions configuration
-- Handled by disposition controller
-
-### 9. Guardrails
-
-**Function:** `guardrailController.createOrUpdateGuardrailSettings(req, res, next)`
-
-**Location:** ```2403:2414:src/controllers/agentbuild/agentController.js```
-
-**Process:**
-- Updates agent guardrail settings
-- Handled by guardrail controller
-
-### 10. Metadata Configuration
-
-**Function:** `flowhelper.saveAgentMetadataConfig(req, transaction)`
-
-**Location:** ```2416:2440:src/controllers/agentbuild/agentController.js```
-
-**Process:**
-1. Processes metadata input array
-2. Processes metadata output array
-3. Saves agent metadata configuration
-
-### 11. Transaction Commit
-
-**Location:** ```2442:2442:src/controllers/agentbuild/agentController.js```
-
-- Commits database transaction
-- All changes are persisted
-
-### 12. Agent Sync
-
-**Function:** `syncAgent(auth, req, agentId)`
-
-**Location:** ```548:597:src/controllers/agentbuild/agentController.js```
-
-**Process:**
-1. Retrieves agent token
-2. Calls `agentKnowledgeBaseUpdate` to sync knowledge base with AI service
-3. For agent type 3 (Telephony), calls external agent API
-4. Syncs agent configuration with AI service
-
-**Note:** Sync operations run asynchronously after transaction commit to avoid blocking the response
-
-## Database Tables Involved
-
-1. **AgentDetails** - Main agent information
-2. **AgentConfiguration** - Agent abilities and settings
-3. **AgentKnowledgebase** - Knowledge base files and text
-4. **AgentAppTools** - Tools and sub-agents
-5. **AgentCallingNumbers** - Phone numbers associated with agent
-6. **AgentDeniedWords** - Denied words and topics
-7. **AgentDispositions** - Disposition configurations
-8. **AgentGuardrails** - Guardrail settings
-9. **AgentMetadata** - Metadata input/output configurations
-10. **ChangeHistory** - Tracks all changes made to agents
-
-## External Integrations
-
-### 1. AI Service Knowledge Base Sync
-
-- **Endpoint:** `${process.env.AI_SOURCE_BASE_URL}/knowledge-base/update`
-- **Purpose:** Syncs knowledge base files with AI service
-- **Trigger:** After knowledge base update
-
-### 2. AI Service Agent Sync
-
-- **Endpoint:** `${process.env.AI_BASE_URL}/chat/api/sync-knowledgebase`
-- **Purpose:** Syncs agent configuration with AI service
-- **Trigger:** After agent creation/update
-
-### 3. External Agent API (Type 3 Agents)
-
-- **Purpose:** Updates agent metadata for telephony agents
-- **Trigger:** For agent type 3 (Telephony)
-
-## Error Handling
-
-1. **Transaction Rollback:**
-   - If any error occurs, the entire transaction is rolled back
-   - All database changes are reverted
-
-2. **Validation Errors:**
-   - Missing required fields throw validation errors
-   - Invalid file types/sizes throw errors
-   - Non-existent agents throw errors
-
-3. **Change Tracking Errors:**
-   - Change tracking errors are logged but don't break the main operation
-   - Agent creation/update continues even if tracking fails
-
-4. **Sync Errors:**
-   - Sync operations run asynchronously
-   - Errors in sync don't affect the main operation
-   - Errors are logged for debugging
+## cURL Example
+
+```bash
+curl -X POST "https://your-api-domain.com/api/agent/createagentorupdate" \
+  -H "token: YOUR_AUTH_TOKEN" \
+  -F "basic_details[agent_name]=Customer Support Agent" \
+  -F "basic_details[description]=A helpful customer support agent" \
+  -F "basic_details[category]=1" \
+  -F "basic_details[purpose]=1" \
+  -F "basic_details[agent_type]=1" \
+  -F "basic_details[chatbot_name]=Support Bot" \
+  -F "basic_details[chatbot_welcome_message]=Welcome! How can I help you today?" \
+  -F "basic_details[chatbot_image]=@/path/to/image.png" \
+  -F "basic_details[agent_privacy]=0" \
+  -F "basic_details[agent_prompt]=You are a helpful customer support assistant." \
+  -F "basic_details[voice_id]=KYiVPerWcenyBTIvWbfY" \
+  -F "basic_details[voice_provider]=1" \
+  -F "basic_details[transcriber_provider]=2" \
+  -F "basic_details[transcriber_language]=en" \
+  -F "basic_details[tone]=professional" \
+  -F "basic_details[style]=conversational" \
+  -F "basic_details[instruction_sensitivity]=medium" \
+  -F "configuration[context_awareness]=true" \
+  -F "configuration[memory_recall]=true" \
+  -F "configuration[sentiment_analysis]=true" \
+  -F "configuration[interruption_handling]=true" \
+  -F "configuration[agent_terminate_instruction]=End conversation politely" \
+  -F "configuration[agent_terminate_messages]=Thank you for contacting us" \
+  -F "knowledge_base[tools][0][id]=1" \
+  -F "knowledge_base[tools][0][isEnabled]=true" \
+  -F "knowledge_base[sub_agents][0][id]=2" \
+  -F "knowledge_base[sub_agents][0][isEnabled]=true" \
+  -F "knowledge_base[text_knowledge_bases][0][name]=KB1" \
+  -F "knowledge_base[text_knowledge_bases][0][content]=Knowledge base content here" \
+  -F "FILE_KNOWLEDGE_BASES=@/path/to/document.pdf" \
+  -F "phone_numbers[]=+1234567890" \
+  -F "phone_numbers[]=+0987654321" \
+  -F "denials[denied_words][]=word1" \
+  -F "denials[denied_words][]=word2" \
+  -F "denials[denied_topics][]=topic1" \
+  -F "denials[denied_topics][]=topic2" \
+  -F "metadata_config[metadata_input][]=field1" \
+  -F "metadata_config[metadata_input][]=field2" \
+  -F "metadata_config[metadata_output][]=field1" \
+  -F "metadata_config[metadata_output][]=field2"
+```
+
+**Note:** Remove any fields you don't need. Only `basic_details[agent_name]` is required.
 
 ## Response
 
-**Success Response:**
+### Success Response
+
+**Status Code:** `200 OK`
 
 ```json
 {
@@ -376,60 +144,72 @@ The agent creation/update process follows these steps in sequence:
 }
 ```
 
-**Error Response:**
-- Returns error through Express error handler
-- Transaction is rolled back
-- Error details are logged
+**Note:** The response message says "updated" but this is the standard response for both create and update operations. The `agent_id` in the response is the newly created agent's ID.
 
-## Key Features
+### Error Responses
 
-1. **Atomic Operations:** All operations are wrapped in a database transaction
-2. **Change Tracking:** All changes are tracked in change history
-3. **File Upload Support:** Supports chatbot images and knowledge base files
-4. **Flexible Updates:** Can update individual sections or complete agent
-5. **Name Deduplication:** Automatically handles duplicate agent names
-6. **Default Values:** Sets sensible defaults for missing fields
-7. **Async Sync:** Agent sync happens asynchronously after commit
+#### 422 - Validation Error
 
-## Code References
+**Status Code:** `422 Unprocessable Entity`
 
-### Main Entry Point
-
-```2315:2461:src/controllers/agentbuild/agentController.js
-module.exports.createOrUpdateCompleteAgent = async (req, res, next) => {
-  // Main agent creation/update handler
+```json
+{
+  "error": true,
+  "code": 422,
+  "message": "Agent Name is missing",
+  "data": {}
 }
 ```
 
-### Basic Details Handler
+**Common Error Messages:**
+- `"Agent Name is missing"` - Required field `agent_name` is missing in `basic_details`
+- `"Basic details are required"` - `basic_details` object is missing
+- `"Agent Name is invalid"` - Invalid format for `agent_name`
 
-```177:509:src/controllers/agentbuild/agentController.js
-const createOrUpdateAgent = async (req, transaction) => {
-  // Handles agent basic details creation/update
+#### 401 - Authentication Error
+
+**Status Code:** `401 Unauthorized`
+
+```json
+{
+  "error": true,
+  "code": 401,
+  "message": "Invalid Auth Key or Session Expired",
+  "data": {}
 }
 ```
 
-### Configuration Handler
+#### 500 - Server Error
 
-```606:850:src/controllers/agentbuild/agentController.js
-const updateAgentConfig = async (req, transaction) => {
-  // Handles agent configuration
+**Status Code:** `500 Internal Server Error`
+
+```json
+{
+  "error": true,
+  "code": 500,
+  "message": "Internal server error",
+  "data": {}
 }
 ```
 
-### Knowledge Base Handler
+## Error Codes
 
-```858:1205:src/controllers/agentbuild/agentController.js
-const updateAgentKnowledgebase = async (req, transaction) => {
-  // Handles knowledge base updates
-}
-```
+| Status Code | Error Code | Description |
+|------------|------------|-------------|
+| 200 | - | Success |
+| 401 | AUTH_REQUIRED | Authentication required - Missing or invalid token |
+| 401 | AUTH_INVALID | Invalid authentication token or session expired |
+| 422 | VALIDATION_ERROR | Validation failed - Check required fields and data format |
+| 422 | MISSING_FIELD | Required field missing |
+| 422 | INVALID_FORMAT | Invalid data format or type |
+| 500 | SERVER_ERROR | Internal server error |
 
-## Notes
+## Important Notes
 
-- All operations require Super Admin authentication
-- Agent ID is required for updates, optional for creation
-- Knowledge base files are limited to 3 files, 10MB each
-- Supported file types: PDF, DOC, DOCX, XLSX, CSV
-- Agent sync happens asynchronously after successful creation/update
-- Change history is tracked for audit purposes
+- `agent_name` is **required** in `basic_details` for creating new agents
+- All configuration sections (`configuration`, `knowledge_base`, `phone_numbers`, `denials`, `dispositions_config`, `guardrails`, `metadata_config`) are **optional**
+- File uploads are optional and limited to 3 files, 10MB each
+- Knowledge base files can be uploaded during creation using the `FILE_KNOWLEDGE_BASES` field
+- The endpoint uses database transactions - if any part fails, all changes are rolled back
+- All sections can be configured in a single request to create a fully configured agent
+
