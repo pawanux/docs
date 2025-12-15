@@ -1,5 +1,901 @@
----
-title: Call Logs
+# Agent Summary Documentation
+
+## Overview
+
+This document describes the `getAgentSummary` function that retrieves a comprehensive summary of an agent including its configuration, knowledge base, abilities, advanced settings, and all related metadata. The function formats and enriches agent data with labels from predefined lists and generates HTML for knowledge pages.
+
+## Table of Contents
+
+1. [Introduction](#introduction)
+2. [API Endpoint](#api-endpoint)
+3. [Function Flow](#function-flow)
+4. [Request Parameters](#request-parameters)
+5. [Response Format](#response-format)
+6. [Database Structure](#database-structure)
+7. [Data Processing](#data-processing)
+8. [Knowledge Pages HTML Generation](#knowledge-pages-html-generation)
+9. [Code Reference](#code-reference)
+
 ---
 
-Retrieve and filter call logs and execution data. 
+## Introduction
+
+The `getAgentSummary` function provides a complete overview of an agent with:
+
+- **Agent Basic Information**: ID, UID, name, description, workspace/company IDs
+- **Model Configuration**: AI model, version, voice settings
+- **Agent Type & Behavior**: Type label, tone, style, instruction sensitivity
+- **Chatbot Settings**: Name, welcome message, image
+- **Knowledge Base**: Files, links, and pages (with generated HTML)
+- **Denied Words**: Words and topics that the agent should avoid
+- **Abilities**: Context awareness, memory recall, escalation handling, etc.
+- **Advanced Settings**: Temperature, retry logic, access control
+- **TTS/STT Models**: Text-to-speech and speech-to-text model labels
+
+The function enriches raw database values with human-readable labels from predefined lists and generates HTML content for knowledge pages.
+
+---
+
+## API Endpoint
+
+**Route:** `GET /summary`
+
+**Controller:** `src/controllers/agentbuild/agentController.js` → `getAgentSummary`
+
+**Authentication:** Requires authentication (based on route configuration)
+
+**Locations:**
+- `src/routes/agentBuild.js:22`
+- `src/routes/agentopenroutes.js:17`
+
+**HTTP Method:** GET
+
+---
+
+## Function Flow
+
+### Step-by-Step Process
+
+1. **Extract Request Data**
+   - Gets `postData` from request (query parameters or body)
+   - Gets `auth` object containing workspace and user information
+
+2. **Input Validation**
+   - Validates that `agent_id` is provided and is a non-empty value
+
+3. **Fetch Agent with Associations**
+   - Retrieves agent from database with includes:
+     - **AgentConfiguration**: Agent configuration settings
+     - **AgentAppTools**: Tools associated with agent
+     - **AgentKnowledgebase**: Knowledge base items (only active, STATUS = 1)
+     - **AgentDeniedWords**: Denied words list (only active, STATUS = 1)
+   - Validates agent exists and belongs to workspace
+   - Ensures agent is not deleted (STATUS != 2)
+
+4. **Fetch AI Models**
+   - Retrieves all active AI models from `AIModelMaster`
+   - Includes sub-models (versions) for each model
+   - Formats models with provider and version information
+
+5. **Resolve Model Labels**
+   - Finds model label from AI models list using `AGENT_MODEL`
+   - Finds version label from model's sub-models using `MODEL_VERSION`
+
+6. **Resolve Predefined List Labels**
+   - Gets TTS model label from predefined lists
+   - Gets STT model label from predefined lists
+   - Gets agent type label from predefined lists
+   - Gets behavior labels (tone, style, instruction) from predefined lists
+
+7. **Format Abilities**
+   - Extracts ability settings from configuration:
+     - Context awareness
+     - Memory recall
+     - Escalation handling
+     - Multi-turn reasoning
+     - Persona emulation
+     - Intent disambiguation
+   - Includes enabled status and descriptions
+
+8. **Format Advanced Settings**
+   - Extracts advanced configuration:
+     - Temperature
+     - Call follow-up (retry logic)
+     - Follow-up attempts
+     - Access control
+     - Access control list
+
+9. **Process Knowledge Base**
+   - Separates knowledge base items by type:
+     - **Type 1**: Files
+     - **Type 2**: Links
+     - **Type 3**: Pages
+   - For knowledge pages:
+     - Fetches page details from `PageSchema`
+     - Fetches page elements from `ElementSchema`
+     - Generates HTML using `parsePageToHTML` function
+
+10. **Format Response**
+    - Builds comprehensive response object
+    - Formats knowledge files with URLs (AWS URL prefix for files)
+    - Formats knowledge links
+    - Formats knowledge pages with generated HTML
+    - Formats denied words and denials
+    - Returns complete agent summary
+
+---
+
+## Request Parameters
+
+### Query Parameters / Body Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `agent_id` | INTEGER/STRING | Yes | ID of the agent to get summary for |
+
+### Authentication
+
+The request must include authentication token in headers. The `auth` object contains:
+- `workspace_id` - ID of the workspace
+- `company_id` - ID of the company
+- `user_id` - ID of the authenticated user
+
+---
+
+## Response Format
+
+### Success Response
+
+```json
+{
+    "agent_id": 123,
+    "agent_uid": "uid_abc123",
+    "workspace_id": 1,
+    "company_id": 1,
+    "agent_name": "Customer Support Agent",
+    "description": "Handles customer inquiries and support requests",
+    "model": "GPT-4",
+    "version": "gpt-4-turbo",
+    "voice": 5,
+    "prompt": "You are a helpful customer support agent...",
+    "agent_type": "Voice Agent",
+    "chatbot_name": "Support Bot",
+    "chatbot_welcome_message": "Hello! How can I help you today?",
+    "chatbot_image": "https://aws-url.com/images/bot.png",
+    "agent_behaviour": {
+        "tone": "Professional",
+        "style": "Friendly",
+        "instruction_sensitivity": "Medium"
+    },
+    "knowledge_files": [
+        {
+            "id": 456,
+            "name": "Product Manual.pdf",
+            "url": "https://aws-url.com/files/manual.pdf",
+            "trained": 1
+        }
+    ],
+    "knowledge_links": [
+        {
+            "id": 789,
+            "name": "Company Website",
+            "type": 2,
+            "url": "https://example.com",
+            "trained": 1
+        }
+    ],
+    "knowledge_pages": [
+        {
+            "id": 101,
+            "name": "FAQ Page",
+            "trained": 1,
+            "html": "<!DOCTYPE html><html>...</html>"
+        }
+    ],
+    "denied_words": [
+        {
+            "id": 201,
+            "word_topic": "refund",
+            "type": "word",
+            "description": "Do not discuss refunds"
+        }
+    ],
+    "denials": {
+        "denied_words": ["refund", "cancel"],
+        "denied_topics": ["pricing", "competitors"]
+    },
+    "abilities": {
+        "context_awareness": {
+            "enabled": true,
+            "description": "Maintains conversation context"
+        },
+        "memory_recall": {
+            "enabled": true,
+            "description": "Recalls previous conversations"
+        },
+        "escalation_handling": {
+            "enabled": true,
+            "description": "Handles escalations to human agents",
+            "channel": "email"
+        },
+        "multi_turn_reasoning": {
+            "enabled": false,
+            "description": null
+        },
+        "persona_emulation": {
+            "enabled": true,
+            "description": "Emulates specific personality",
+            "personality": "friendly_professional"
+        },
+        "intent_disambiguation": {
+            "enabled": true,
+            "description": "Clarifies ambiguous user intents"
+        }
+    },
+    "advanced": {
+        "temperature": 0.7,
+        "call_follow_up": true,
+        "follow_up_attempts": 3,
+        "access_control": "restricted",
+        "access_control_list": ["user1@example.com", "user2@example.com"]
+    },
+    "trained": 1,
+    "tts_model": "Google TTS",
+    "stt_model": "Google STT"
+}
+```
+
+### Response Fields
+
+#### Root Level Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `agent_id` | INTEGER | Agent unique identifier |
+| `agent_uid` | STRING | Agent unique UID |
+| `workspace_id` | INTEGER | Workspace identifier |
+| `company_id` | INTEGER | Company identifier |
+| `agent_name` | STRING | Name of the agent |
+| `description` | STRING | Agent description |
+| `model` | STRING | AI model label (e.g., "GPT-4") |
+| `version` | STRING | Model version label (e.g., "gpt-4-turbo") |
+| `voice` | INTEGER | Voice ID |
+| `prompt` | STRING | Agent prompt/instructions |
+| `agent_type` | STRING | Agent type label |
+| `chatbot_name` | STRING | Chatbot name (or "Unknown") |
+| `chatbot_welcome_message` | STRING | Welcome message (or "Unknown") |
+| `chatbot_image` | STRING | Chatbot image URL (or "Unknown") |
+| `agent_behaviour` | OBJECT | Behavior settings |
+| `knowledge_files` | ARRAY | Knowledge base files |
+| `knowledge_links` | ARRAY | Knowledge base links |
+| `knowledge_pages` | ARRAY | Knowledge base pages with HTML |
+| `denied_words` | ARRAY | Denied words details |
+| `denials` | OBJECT | Denied words and topics arrays |
+| `abilities` | OBJECT | Agent abilities configuration |
+| `advanced` | OBJECT | Advanced settings |
+| `trained` | INTEGER | Training status (1=trained, 0=not trained) |
+| `tts_model` | STRING | TTS model label |
+| `stt_model` | STRING | STT model label |
+
+#### Agent Behaviour Object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `tone` | STRING | Tone label (or "Unknown") |
+| `style` | STRING | Style label (or "Unknown") |
+| `instruction_sensitivity` | STRING | Instruction sensitivity label (or "Unknown") |
+
+#### Knowledge File Object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | INTEGER | Knowledge base item ID |
+| `name` | STRING | File name |
+| `url` | STRING | Full URL (AWS URL prefixed if not HTTP) |
+| `trained` | INTEGER | Training status (1=trained, 0=not trained) |
+
+#### Knowledge Link Object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | INTEGER | Knowledge base item ID |
+| `name` | STRING | Link name |
+| `type` | INTEGER | Knowledge base type (2 for links) |
+| `url` | STRING | Link URL |
+| `trained` | INTEGER | Training status (1=trained, 0=not trained) |
+
+#### Knowledge Page Object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | INTEGER | Knowledge base item ID |
+| `name` | STRING | Page name |
+| `trained` | INTEGER | Training status (1=trained, 0=not trained) |
+| `html` | STRING | Generated HTML content (or null if page not found) |
+
+#### Denied Word Object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | INTEGER | Denied word ID |
+| `word_topic` | STRING | Word or topic text |
+| `type` | STRING | Type: "word" or "topic" |
+| `description` | STRING | Description of the denial |
+
+#### Denials Object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `denied_words` | ARRAY | Array of denied word strings |
+| `denied_topics` | ARRAY | Array of denied topic strings |
+
+#### Abilities Object
+
+Each ability has the following structure:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `enabled` | BOOLEAN | Whether the ability is enabled |
+| `description` | STRING | Ability description (or null) |
+| `channel` | STRING | Escalation channel (escalation_handling only) |
+| `personality` | STRING | Personality type (persona_emulation only) |
+
+**Abilities:**
+- `context_awareness` - Maintains conversation context
+- `memory_recall` - Recalls previous conversations
+- `escalation_handling` - Handles escalations to human agents
+- `multi_turn_reasoning` - Multi-turn reasoning capability
+- `persona_emulation` - Emulates specific personality
+- `intent_disambiguation` - Clarifies ambiguous user intents
+
+#### Advanced Object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `temperature` | NUMBER | Temperature setting (default: 0) |
+| `call_follow_up` | BOOLEAN | Whether retry logic is enabled |
+| `follow_up_attempts` | INTEGER | Number of retry attempts |
+| `access_control` | STRING | Access control type |
+| `access_control_list` | ARRAY | List of allowed users/emails |
+
+### Error Response
+
+Standard error responses follow the application's error handling format.
+
+**Common Errors:**
+- `'Agent not found'` - Agent doesn't exist or doesn't belong to workspace
+
+---
+
+## Database Structure
+
+### Tables Involved
+
+1. **agent_details** - Main agent table
+2. **agent_configuration** - Agent configuration settings
+3. **agent_app_tools** - Tools associated with agent
+4. **agent_knowledgebase** - Knowledge base items
+5. **agent_denied_words** - Denied words list
+6. **ai_model_master** - AI model definitions
+7. **ai_model_sub_model** - AI model versions/sub-models
+8. **page_schema** - Page definitions (for knowledge pages)
+9. **element_schema** - Page elements (for knowledge pages)
+
+### Key Relationships
+
+- **AgentDetails** → **AgentConfiguration** (one-to-one)
+- **AgentDetails** → **AgentAppTools** (one-to-many)
+- **AgentDetails** → **AgentKnowledgebase** (one-to-many)
+- **AgentDetails** → **AgentDeniedWords** (one-to-many)
+- **AIModelMaster** → **AIModelSubModel** (one-to-many)
+- **PageSchema** → **ElementSchema** (one-to-many)
+
+### Knowledge Base Types
+
+- **Type 1**: Files (PDFs, documents, etc.)
+- **Type 2**: Links (URLs)
+- **Type 3**: Pages (custom pages with elements)
+
+---
+
+## Data Processing
+
+### Model Label Resolution
+
+1. **AI Model**: Looks up model in `AIModelMaster` by `AGENT_MODEL` ID
+2. **Model Version**: Looks up version in model's sub-models by `MODEL_VERSION` ID
+3. **TTS Model**: Looks up in `predefinedLists.tts_models` by configuration `TTS_MODEL` ID
+4. **STT Model**: Looks up in `predefinedLists.stt_models` by configuration `STT_MODEL` ID
+
+### Behavior Label Resolution
+
+Behavior values are stored as integers in `AGENT_BEHAVIOUR` JSON object:
+- **Tone**: Looks up in `predefinedLists.tones` by `tone` ID
+- **Style**: Looks up in `predefinedLists.styles` by `style` ID
+- **Instruction Sensitivity**: Looks up in `predefinedLists.instructions` by `instruction_sensitivity` ID
+
+**Note**: Values are converted to integers using `parseInt()` for comparison.
+
+### Knowledge File URL Processing
+
+For knowledge files (type 1):
+- If URL starts with `http` or `https`: Uses as-is
+- Otherwise: Prefixes with `process.env.AWS_URL`
+
+### Denied Words Processing
+
+Denied words are processed in two ways:
+1. **Full Details**: Array of objects with ID, word_topic, type, description
+2. **Simple Arrays**: Separated into `denied_words` (type="word") and `denied_topics` (type="topic")
+
+---
+
+## Knowledge Pages HTML Generation
+
+### Process
+
+1. **Fetch Page Details**: Gets page from `PageSchema` table
+2. **Fetch Elements**: Gets all active elements for the page, ordered by `ELEMENT_INDEX`
+3. **Generate HTML**: Uses `parsePageToHTML` function to convert page and elements to HTML
+
+### HTML Generation Function
+
+The `parsePageToHTML` function generates HTML from page and element data:
+
+**Supported Element Types:**
+- `HEADER1`, `HEADER2`, `HEADER3` - Headers (h1, h2, h3)
+- `TEXT` - Paragraph text
+- `NUMBERED_LIST` - Ordered list (ol)
+- `BULLET_LIST` - Unordered list (ul)
+- `TODO_LIST` - Todo list with checkboxes
+- `IMAGE` - Image element
+- `FILE` - File download link
+- `DIVIDER` - Horizontal rule (hr)
+- `PAGE` - Nested page reference
+- `DATA_SOURCE` - Filtered out (not included in HTML)
+
+**HTML Structure:**
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{Page Title}</title>
+    <style>
+        /* Inline styles for formatting */
+    </style>
+</head>
+<body>
+    <h1>{Page Title}</h1>
+    <!-- Elements rendered in order -->
+</body>
+</html>
+```
+
+**List Processing:**
+- Numbered lists, bullet lists, and todo lists parse JSON content
+- Each item must have a `text` property
+- Todo items include checkbox state from `completed` property
+
+**Error Handling:**
+- If page not found: Returns page object with `html: null`
+- If parsing fails: Throws error
+
+---
+
+## Code Reference
+
+### Main Function
+
+```3220:3456:src/controllers/agentbuild/agentController.js
+module.exports.getAgentSummary = async (req, res, next) => {
+    try {
+        const postData = req.data;
+        const auth = req.auth;
+        // Validate required fields
+        util.validate_prams(postData,
+            {
+                agent_id: 'ASN'
+            },
+            {
+                agent_id: 'Agent ID'
+            }
+        );
+
+        // Get agent details with configuration and knowledgebase
+        const agent = await db.AgentDetails.findOne({
+            where: {
+                ID: postData.agent_id,
+                WORKSPACE_ID: auth.workspace_id,
+                STATUS: { [Op.ne]: 2 }
+            },
+            include: [
+                {
+                    model: db.AgentConfiguration,
+                    as: 'configuration'
+                },
+                {
+                    model: db.AgentAppTools,
+                    as: 'tools'
+                },
+                {
+                    model: db.AgentKnowledgebase,
+                    as: 'knowledgebases',
+                    where: { STATUS: 1 },
+                    required: false
+                },
+                {
+                    model: db.AgentDeniedWords,
+                    as: 'deniedWords',
+                    where: { STATUS: 1 },
+                    required: false
+                }
+            ]
+        });
+        if (!agent) {
+            throw new Error('Agent not found');
+        }
+
+        const agentData = agent.toJSON();
+
+        // Fetch AI models from database (same as predefinedListsController)
+        const aiModels = await db.AIModelMaster.findAll({
+            where: {
+                STATUS: 1 // Only active models
+            },
+            include: [
+                {
+                    model: db.AIModelSubModel,
+                    as: 'subModels',
+                    where: {
+                        STATUS: 1 // Only active sub-models
+                    },
+                    required: false
+                }
+            ],
+            order: [['MODEL_DISPLAY_NAME', 'ASC']]
+        });
+
+        // Format AI models data
+        const models = aiModels.map(model => {
+            const modelData = model.toJSON();
+            return {
+                id: modelData.ID,
+                label: modelData.MODEL_DISPLAY_NAME,
+                provider: modelData.PROVIDER,
+                versions: modelData.subModels ? modelData.subModels.map(subModel => ({
+                    id: subModel.ID,
+                    label: subModel.SUB_MODEL_DISPLAY_NAME
+                })) : []
+            };
+        });
+
+        // Get model and version labels
+        const modelInfo = models.find(m => m.id === agentData.AGENT_MODEL);
+        const modelVersion = modelInfo?.versions?.find(v => v.id === agentData.MODEL_VERSION);
+
+        const voiceInfo = agentData.VOICE_ID
+        // Get TTS and STT model labels
+        const ttsModelInfo = predefinedLists.tts_models?.find(m => m.id === agentData.configuration?.TTS_MODEL);
+        const sttModelInfo = predefinedLists.stt_models?.find(m => m.id === agentData.configuration?.STT_MODEL);
+
+        // Get agent type label
+        const agentTypeInfo = predefinedLists.agent_types?.find(type => type.id === agentData.AGENT_TYPE);
+        // Get behavior labels - convert string values to integers for comparison
+        const toneInfo = predefinedLists.tones?.find(t => t.id === parseInt(agentData.AGENT_BEHAVIOUR?.tone));
+        const styleInfo = predefinedLists.styles?.find(s => s.id === parseInt(agentData.AGENT_BEHAVIOUR?.style));
+        const instructionInfo = predefinedLists.instructions?.find(i => i.id === parseInt(agentData.AGENT_BEHAVIOUR?.instruction_sensitivity));
+
+        // Format abilities from configuration
+        const abilities = {
+            context_awareness: {
+                enabled: agentData.configuration?.CONTEXT_AWARENESS === 1,
+                description: agentData.configuration?.CONTEXT_AWARENESS_DESCRIPTION
+            },
+            memory_recall: {
+                enabled: agentData.configuration?.MEMORY_RECALL === 1,
+                description: agentData.configuration?.MEMORY_RECALL_DESCRIPTION
+            },
+            escalation_handling: {
+                enabled: agentData.configuration?.ESCALATION_HANDLING === 1,
+                description: agentData.configuration?.ESCALATION_HANDLING_DESCRIPTION,
+                channel: agentData.configuration?.ESCALATION_CHANNEL
+            },
+            multi_turn_reasoning: {
+                enabled: agentData.configuration?.MULTI_TURN_REASONING === 1,
+                description: agentData.configuration?.MULTI_TURN_REASONING_DESCRIPTION
+            },
+            persona_emulation: {
+                enabled: agentData.configuration?.PERSONA_EMULATION === 1,
+                description: agentData.configuration?.PERSONA_EMULATION_DESCRIPTION,
+                personality: agentData.configuration?.PERSONA_EMULATION_PERSONALITY
+            },
+            intent_disambiguation: {
+                enabled: agentData.configuration?.INTENT_DISAMBIGUATION === 1,
+                description: agentData.configuration?.INTENT_DISAMBIGUATION_DESCRIPTION
+            }
+        };
+
+        // Format advanced settings
+        const advanced = {
+            temperature: agentData.configuration?.TEMPERATURE || 0,
+            call_follow_up: agentData.configuration?.RETRY_LOGIC === 1,
+            follow_up_attempts: agentData.configuration?.RETRY_ATTEMPTS,
+            access_control: agentData.configuration?.ACCESS_CONTROL,
+            access_control_list: agentData.configuration?.ACCESS_CONTROL_LIST
+        };
+
+        // Format knowledge files
+        const knowledgeFiles = agentData.knowledgebases?.filter(kb => kb.KNOWLEDGEBASE_TYPE === 1) || [];
+        const knowledgeLinks = agentData.knowledgebases?.filter(kb => kb.KNOWLEDGEBASE_TYPE === 2) || [];
+        const knowledgePages = agentData.knowledgebases?.filter(kb => kb.KNOWLEDGEBASE_TYPE === 3) || [];
+        // Process knowledge pages to generate HTML
+        const processedKnowledgePages = await Promise.all(knowledgePages.map(async (page) => {
+            // Get page details
+            const pageDetails = await db.PageSchema.findOne({
+                where: {
+                    ID: page.KNOWLEDGEBASE_LOCATION,
+                    STATUS: 1,
+                    WORKSPACE_ID: auth.workspace_id
+                }
+            });
+            if (!pageDetails) {
+                return {
+                    ...page,
+                    html: null
+                };
+            }
+
+            // Get page elements
+            const elements = await db.ElementSchema.findAll({
+                where: {
+                    PAGE_ID: page.KNOWLEDGEBASE_LOCATION,
+                    STATUS: 1
+                },
+                order: [['ELEMENT_INDEX', 'ASC']]
+            });
+            // Generate HTML
+            const html = await parsePageToHTML(pageDetails, elements);
+
+            return {
+                ...page,
+                html: html
+            };
+        }));
+
+        const response = {
+            agent_id: agentData.ID,
+            agent_uid: agentData.AGENT_UID,
+            workspace_id: auth.workspace_id,
+            company_id: auth.company_id,
+            agent_name: agentData.AGENT_NAME,
+            description: agentData.DESCRIPTION,
+            model: modelInfo?.label || 'Unknown',
+            version: modelVersion?.label || 'Unknown',
+            voice: voiceInfo,
+            prompt: agentData.AGENT_PROMPT,
+            agent_type: agentTypeInfo?.label || 'Unknown',
+            chatbot_name: agentData.CHATBOT_NAME || 'Unknown',
+            chatbot_welcome_message: agentData.CHATBOT_WELCOME_MESSAGE || 'Unknown',
+            chatbot_image: agentData.CHATBOT_IMAGE || 'Unknown',
+            agent_behaviour: {
+                tone: toneInfo?.label || 'Unknown',
+                style: styleInfo?.label || 'Unknown',
+                instruction_sensitivity: instructionInfo?.label || 'Unknown'
+            },
+            knowledge_files: knowledgeFiles.map(file => ({
+                id: file.ID,
+                name: file.KNOWLEDGEBASE_NAME,
+                url: file.KNOWLEDGEBASE_TYPE === 1 ? (file.KNOWLEDGEBASE_LOCATION.startsWith('http') ? file.KNOWLEDGEBASE_LOCATION : `${process.env.AWS_URL}${file.KNOWLEDGEBASE_LOCATION}`) : file.KNOWLEDGEBASE_LOCATION,
+                trained: file.TRAINED
+            })),
+            knowledge_links: knowledgeLinks.map(link => ({
+                id: link.ID,
+                name: link.KNOWLEDGEBASE_NAME,
+                type: link.KNOWLEDGEBASE_TYPE,
+                url: link.KNOWLEDGEBASE_LOCATION,
+                trained: link.TRAINED
+            })),
+            knowledge_pages: processedKnowledgePages.map(page => ({
+                id: page.ID,
+                name: page.KNOWLEDGEBASE_NAME,
+                trained: page.TRAINED,
+                html: page.html
+            })),
+            denied_words: agentData.deniedWords?.map(word => ({
+                id: word.ID,
+                word_topic: word.WORD_TOPIC,
+                type: word.TYPE,
+                description: word.DESCRIPTION
+            })) || [],
+            denials: {
+                denied_words: agentData.deniedWords?.filter(word => word.TYPE === 'word').map(word => word.WORD_TOPIC) || [],
+                denied_topics: agentData.deniedWords?.filter(word => word.TYPE === 'topic').map(word => word.WORD_TOPIC) || []
+            },
+            abilities: abilities,
+            advanced: advanced,
+            trained: agentData.TRAINED,
+            tts_model: ttsModelInfo?.label || 'Unknown',
+            stt_model: sttModelInfo?.label || 'Unknown'
+        };
+
+        res.json(response);
+
+    } catch (error) {
+        next(error);
+    }
+};
+```
+
+### HTML Generation Function
+
+```3114:3212:src/controllers/agentbuild/agentController.js
+const parsePageToHTML = async (page, elements) => {
+    try {
+        // Filter out data source elements
+        const filteredElements = elements.filter(element => element.ELEMENT_TYPE !== 'DATA_SOURCE');
+
+        let html = '<!DOCTYPE html><html><head>';
+        html += `<title>${page.TITLE}</title>`;
+        html += '<style>';
+        html += 'body { font-family: Arial, sans-serif; margin: 20px; }';
+        html += 'h1 { color: #333; }';
+        html += 'h2 { color: #444; }';
+        html += 'h3 { color: #555; }';
+        html += '.element { margin-bottom: 20px; }';
+        html += '.image { max-width: 100%; height: auto; }';
+        html += '.file-link { color: blue; text-decoration: underline; }';
+        html += '.todo-list { list-style-type: none; padding: 0; }';
+        html += '.todo-item { margin: 5px 0; }';
+        html += '.divider { border-top: 1px solid #ccc; margin: 20px 0; }';
+        html += '</style>';
+        html += '</head><body>';
+
+        // Add page title
+        html += `<h1>${page.TITLE}</h1>`;
+
+        // Process each element
+        for (const element of filteredElements) {
+            html += '<div class="element">';
+            switch (element.ELEMENT_TYPE) {
+                case 'HEADER1':
+                    html += `<h1>${element.CONTENT}</h1>`;
+                    break;
+                case 'HEADER2':
+                    html += `<h2>${element.CONTENT}</h2>`;
+                    break;
+                case 'HEADER3':
+                    html += `<h3>${element.CONTENT}</h3>`;
+                    break;
+                case 'TEXT':
+                    html += `<p>${element.CONTENT}</p>`;
+                    break;
+                case 'NUMBERED_LIST': {
+                    html += '<ol>';
+                    let numberedItems = [];
+                    try { numberedItems = JSON.parse(element.CONTENT); } catch { numberedItems = []; }
+                    numberedItems.forEach(item => {
+                        if (item.text && item.text.trim()) {
+                            html += `<li>${item.text.trim()}</li>`;
+                        }
+                    });
+                    html += '</ol>';
+                    break;
+                }
+                case 'BULLET_LIST': {
+                    html += '<ul>';
+                    let bulletItems = [];
+                    try { bulletItems = JSON.parse(element.CONTENT); } catch { bulletItems = []; }
+                    bulletItems.forEach(item => {
+                        if (item.text && item.text.trim()) {
+                            html += `<li>${item.text.trim()}</li>`;
+                        }
+                    });
+                    html += '</ul>';
+                    break;
+                }
+                case 'TODO_LIST': {
+                    html += '<ul class="todo-list">';
+                    let todoItems = [];
+                    try { todoItems = JSON.parse(element.CONTENT); } catch { todoItems = []; }
+                    todoItems.forEach(item => {
+                        if (item.text && item.text.trim()) {
+                            html += `<li class="todo-item"><input type="checkbox" ${item.completed ? 'checked' : ''} disabled> ${item.text.trim()}</li>`;
+                        }
+                    });
+                    html += '</ul>';
+                    break;
+                }
+                case 'IMAGE':
+                    html += `<img src="${element.CONTENT}" alt="Image" class="image">`;
+                    break;
+                case 'FILE':
+                    html += `<a href="${element.CONTENT}" class="file-link" target="_blank">Download File</a>`;
+                    break;
+                case 'DIVIDER':
+                    html += '<hr class="divider">';
+                    break;
+                case 'PAGE':
+                    html += `<div class="nested-page">Page Reference: ${element.CONTENT}</div>`;
+                    break;
+            }
+            html += '</div>';
+        }
+
+        html += '</body></html>';
+        return html;
+    } catch (error) {
+        console.error('Error parsing page to HTML:', error);
+        throw error;
+    }
+};
+```
+
+---
+
+## Usage Examples
+
+### Example 1: Get Agent Summary
+
+**Request:**
+```http
+GET /summary?agent_id=123
+```
+
+**Response:**
+Returns complete agent summary with all details, knowledge base, and abilities.
+
+### Example 2: Get Agent Summary (POST body)
+
+**Request:**
+```http
+POST /summary
+Content-Type: application/json
+
+{
+    "agent_id": 123
+}
+```
+
+**Response:**
+Same as Example 1.
+
+---
+
+## Best Practices
+
+1. **Error Handling**: Function uses try-catch with `next(error)` for proper error propagation
+2. **Data Enrichment**: Raw IDs are converted to human-readable labels
+3. **HTML Generation**: Knowledge pages are processed asynchronously for better performance
+4. **Null Safety**: Uses optional chaining (`?.`) and nullish coalescing (`||`) for safe access
+5. **Default Values**: Provides "Unknown" for missing labels and 0 for missing numeric values
+6. **Filtering**: Only includes active knowledge base items and denied words (STATUS = 1)
+
+---
+
+## Performance Considerations
+
+1. **Parallel Processing**: Knowledge pages are processed in parallel using `Promise.all`
+2. **Database Queries**: Uses includes to fetch related data in single query
+3. **HTML Generation**: HTML is generated on-demand for knowledge pages
+4. **Caching**: Consider caching agent summaries if they don't change frequently
+
+---
+
+## Notes
+
+- Agent must exist and belong to the authenticated workspace
+- Deleted agents (STATUS = 2) are excluded
+- Only active knowledge base items (STATUS = 1) are included
+- Only active denied words (STATUS = 1) are included
+- Knowledge file URLs are prefixed with AWS URL if not already HTTP/HTTPS
+- Knowledge pages return `html: null` if page not found
+- Behavior values are parsed as integers for label lookup
+- Model and version labels default to "Unknown" if not found
+- TTS/STT model labels default to "Unknown" if not found
+- Chatbot fields default to "Unknown" if not set
+
+---
+
+**Last Updated:** 2024
+**Maintained By:** Development Team
+
