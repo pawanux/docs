@@ -39,7 +39,7 @@ Our comprehensive API documentation includes:
 
 - **Documentation**: Browse our comprehensive guides and tutorials
 - **API Reference**: Explore our interactive API documentation
-- **Support**: Contact us at hello@unleashx.ai
+- **Support**: Contact us at cs@unleashx.ai
 - **Status**: Check our system status at status.unleashx.ai
 
 ## Development
@@ -67,7 +67,7 @@ Changes are automatically deployed to production when you push to the main branc
 - [UnleashX Dashboard](https://tryunleashx.com)
 - [API Documentation](https://docs.unleashx.ai)
 - [Status Page](https://status.unleashx.ai)
-- [Support](mailto:hello@unleashx.ai)
+- [Support](mailto:cs@unleashx.ai)
 
 ---
 

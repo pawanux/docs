@@ -2,10 +2,23 @@
 title: Authentication
 ---
 
-All API endpoints require a Bearer token.
+All UnleashX API endpoints require authentication using a token in the request header.
 
-```
-Authorization: Bearer <api_key>
+## Using Your API Token
+
+Include your API token in the `token` header for all authenticated requests:
+
+```bash
+curl -X POST https://your-domain.com/api/v1/global/verify \
+  -H "Content-Type: application/json" \
+  -H "token: your_api_token_here" \
+  -d '{}'
 ```
 
-Generate keys in the dashboard at `https://www.tryunleashx.com`. 
+## Getting Your API Token
+
+To generate an API token, you'll need to:
+1. Login or create an account to get a login token
+2. Use the login token to generate your API token
+
+For detailed instructions on generating API tokens, see the [Token Generation API documentation](/api-reference/token/generate-token).

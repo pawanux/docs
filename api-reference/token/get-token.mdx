@@ -1,0 +1,165 @@
+---
+title: Get API Token Details
+openapi: "api-reference/openapi.json GET /global/get-token"
+---
+
+Retrieve your most recently generated API token along with basic account information such as your email and workspace name.
+
+## API Endpoint
+
+**Endpoint:** `GET /api/v1/global/get-token`
+
+**Authentication:** Required (Login token in `token` header)
+
+## Authentication
+
+This endpoint requires a **login token** to authenticate your requests.
+
+### Obtaining Your Login Token
+
+You will receive a login token when you:
+- **Log in** to your account
+- **Create a new account**
+
+After logging in or creating your account, the login token is available in the **request header** of any API call you make. When you make authenticated API requests, the login token is sent in the request header as:
+
+```
+token: <your_login_token>
+```
+
+This token is your session token that identifies your authenticated session and is automatically included in request headers for authenticated API calls.
+
+**Important:** The token must be provided in the `token` request header. Request body or query parameters are not supported.
+
+## Request Headers
+
+```
+token: <your_login_token>
+```
+
+**Required:** The `token` header must contain your login token.
+
+## cURL Example
+
+```bash
+curl -X GET https://your-domain.com/api/v1/global/get-token \
+  -H "token: your_login_token_here"
+```
+
+## Response
+
+### Success Response
+
+**Status Code:** `200 OK`
+
+```json
+{
+  "message": "API token details fetched successfully",
+  "data": {
+    "token": "359b83f43a5f5702cfbdedad269bd4f1d726fc576c48cdc65b594ce57896f0f9",
+    "email": "user@example.com",
+    "workspace_name": "My Workspace"
+  }
+}
+```
+
+## Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `token` | string | Your API access token (64-character hexadecimal string) |
+| `email` | string | Your registered email address |
+| `workspace_name` | string | Name of your workspace |
+
+### Error Responses
+
+#### Missing Login Token
+
+**Status Code:** `400 Bad Request`
+
+```json
+{
+  "error": true,
+  "message": "LOGIN_TOKEN_REQUIRED"
+}
+```
+
+#### Invalid or Expired Login Token
+
+**Status Code:** `401 Unauthorized`
+
+```json
+{
+  "error": true,
+  "message": "INVALID_LOGIN_TOKEN"
+}
+```
+
+#### No API Token Found
+
+**Status Code:** `404 Not Found`
+
+```json
+{
+  "error": true,
+  "message": "NO_API_TOKEN_FOUND"
+}
+```
+
+*This error occurs if you haven't generated any API tokens yet. Use the generate-token endpoint first.*
+
+## Error Codes
+
+| Status Code | Error Code | Description |
+|------------|------------|-------------|
+| 200 | - | Success |
+| 400 | LOGIN_TOKEN_REQUIRED | Login token is missing in request header |
+| 401 | INVALID_LOGIN_TOKEN | Invalid or expired login token |
+| 404 | NO_API_TOKEN_FOUND | No API token has been generated yet |
+
+## Important Notes
+
+- Returns the **most recent** API token for your account
+- If you have multiple tokens, only the latest one is returned
+- If you need a specific token, use the generate-token endpoint to create a new one
+- The token must be provided in the `token` request header, not in the request body or query parameters
+
+## Workflow Example
+
+### Step 1: Login or Create Account to Get Login Token
+
+```bash
+# Login endpoint (example)
+curl -X POST https://your-domain.com/api/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "user@example.com",
+    "password": "your_password"
+  }'
+
+# Response includes login token in response body
+{
+  "auth": {...},
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "message": "LOGGEDIN"
+}
+```
+
+**Note:** After logging in or creating your account, when you make any authenticated API call, the login token will be available in the **request header** (`token`) of that API call. You can extract it from the request header to use with this endpoint.
+
+### Step 2: Retrieve Token Details
+
+```bash
+curl -X GET https://your-domain.com/api/v1/global/get-token \
+  -H "token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+# Response
+{
+  "message": "API token details fetched successfully",
+  "data": {
+    "token": "359b83f43a5f5702cfbdedad269bd4f1d726fc576c48cdc65b594ce57896f0f9",
+    "email": "user@example.com",
+    "workspace_name": "My Workspace"
+  }
+}
+```

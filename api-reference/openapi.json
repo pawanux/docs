@@ -508,6 +508,64 @@
         "tags": ["User"],
         "responses": { "200": { "description": "OK" } }
       }
+    },
+
+    "/global/generate-token": {
+      "post": {
+        "summary": "Generate API token",
+        "tags": ["Token"],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "Login token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "API token generated successfully" },
+          "400": { "description": "LOGIN_TOKEN_REQUIRED" },
+          "401": { "description": "INVALID_LOGIN_TOKEN or SESSIONEXPIRED" }
+        }
+      }
+    },
+    "/global/get-token": {
+      "get": {
+        "summary": "Get API token details",
+        "tags": ["Token"],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "Login token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": { "description": "API token details fetched successfully" },
+          "400": { "description": "LOGIN_TOKEN_REQUIRED" },
+          "401": { "description": "INVALID_LOGIN_TOKEN" },
+          "404": { "description": "NO_API_TOKEN_FOUND" }
+        }
+      }
     }
   },
   "components": {

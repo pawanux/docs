@@ -106,6 +106,13 @@
             ]
           },
           {
+            "group": "Token",
+            "pages": [
+              "api-reference/token/generate-token",
+              "api-reference/token/get-token"
+            ]
+          },
+          {
             "group": "Agents",
             "pages": [
               "api-reference/agents/create-agent",
@@ -228,7 +235,7 @@
       },
       {
         "label": "Support",
-        "href": "mailto:hello@unleashx.ai"
+        "href": "mailto:cs@unleashx.ai"
       }
     ],
     "primary": {
