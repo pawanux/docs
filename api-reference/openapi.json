@@ -6,7 +6,7 @@
     "description": "UnleashX - Your home for human like conversations"
   },
   "servers": [
-    { "url": "https://api.tryunleashx.com/v1/" }
+    { "url": "https://www.tryunleashx.com/api/v1/" }
   ],
   "security": [ { "bearerAuth": [] } ],
   

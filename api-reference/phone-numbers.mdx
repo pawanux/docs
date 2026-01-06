@@ -7,7 +7,7 @@ Manage phone numbers for UnleashX.
 ## List phone numbers
 
 ```
-GET https://api.tryunleashx.com/v2/phone-number/all
+GET https://www.tryunleashx.com/v2/phone-number/all
 Headers:
   Authorization: Bearer <api_key>
 ```
@@ -15,14 +15,14 @@ Headers:
 ### Try it (curl)
 
 ```bash
-curl -X GET 'https://api.tryunleashx.com/v2/phone-number/all' \
+curl -X GET 'https://www.tryunleashx.com/v2/phone-number/all' \
   -H 'Authorization: Bearer <api_key>'
 ```
 
 ## Purchase a phone number
 
 ```
-POST https://api.tryunleashx.com/v2/phone-number/purchase
+POST https://www.tryunleashx.com/v2/phone-number/purchase
 Headers:
   Authorization: Bearer <api_key>
   Content-Type: application/json
@@ -36,7 +36,7 @@ Body:
 ### Try it (curl)
 
 ```bash
-curl -X POST 'https://api.tryunleashx.com/v2/phone-number/purchase' \
+curl -X POST 'https://www.tryunleashx.com/v2/phone-number/purchase' \
   -H 'Authorization: Bearer <api_key>' \
   -H 'Content-Type: application/json' \
   -d '{

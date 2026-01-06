@@ -22,7 +22,7 @@ The API supports pagination and filtering to help you find specific workspaces e
 
 **GET** `/workspace/all` or **GET** `/get-workspaces`
 
-**Base URL:** `https://api.tryunleashx.com/v1`
+**Base URL:** `https://www.tryunleashx.com/v1`
 
 **Authentication:** Required (Bearer token)
 
@@ -42,28 +42,28 @@ All parameters are optional. Use them for pagination and filtering.
 ### Get First Page (Default)
 
 ```bash
-curl -X GET https://api.tryunleashx.com/v1/workspace/all \
+curl -X GET https://www.tryunleashx.com/v1/workspace/all \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 
 ### Get Specific Page with Custom Limit
 
 ```bash
-curl -X GET "https://api.tryunleashx.com/v1/workspace/all?page=2&limit=20" \
+curl -X GET "https://www.tryunleashx.com/v1/workspace/all?page=2&limit=20" \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 
 ### Search Workspaces by Name
 
 ```bash
-curl -X GET "https://api.tryunleashx.com/v1/workspace/all?name=marketing" \
+curl -X GET "https://www.tryunleashx.com/v1/workspace/all?name=marketing" \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 
 ### Filter by Status
 
 ```bash
-curl -X GET "https://api.tryunleashx.com/v1/workspace/all?status=0" \
+curl -X GET "https://www.tryunleashx.com/v1/workspace/all?status=0" \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 
@@ -228,28 +228,28 @@ Standard error responses follow the application's error handling format. Always 
 ### Get All Workspaces (First Page)
 
 ```bash
-curl -X GET https://api.tryunleashx.com/v1/workspace/all \
+curl -X GET https://www.tryunleashx.com/v1/workspace/all \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 
 ### Search for Marketing Workspaces
 
 ```bash
-curl -X GET "https://api.tryunleashx.com/v1/workspace/all?name=marketing" \
+curl -X GET "https://www.tryunleashx.com/v1/workspace/all?name=marketing" \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 
 ### Get Second Page with 20 Results
 
 ```bash
-curl -X GET "https://api.tryunleashx.com/v1/workspace/all?page=2&limit=20" \
+curl -X GET "https://www.tryunleashx.com/v1/workspace/all?page=2&limit=20" \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 
 ### Get Inactive Workspaces
 
 ```bash
-curl -X GET "https://api.tryunleashx.com/v1/workspace/all?status=0" \
+curl -X GET "https://www.tryunleashx.com/v1/workspace/all?status=0" \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 
