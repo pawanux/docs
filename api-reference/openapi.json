@@ -111,55 +111,322 @@
         "responses": { "201": { "description": "Created" } }
       }
     },
-    "/voice-agent/update": {
+    "/global/agents/update": {
       "post": {
         "summary": "Update voice agent",
         "tags": ["Voice AI"],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "agent_id",
+            "in": "query",
+            "required": false,
+            "description": "ID of the agent to update (can also be provided in request body)",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
+                "required": ["agent_id"],
                 "properties": {
-                  "voice_agent_id": { "type": "string", "format": "uuid" },
-                  "name": { "type": "string" },
-                  "language": { "type": "string" }
-                },
-                "required": ["voice_agent_id"]
+                  "agent_id": {
+                    "type": "integer",
+                    "description": "ID of the agent to update"
+                  },
+                  "agent_name": {
+                    "type": "string",
+                    "description": "Updated name of the agent"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Updated description"
+                  },
+                  "agent_prompt": {
+                    "type": "string",
+                    "description": "Updated system prompt/instructions"
+                  },
+                  "voice_id": {
+                    "type": "string",
+                    "description": "Updated voice ID (string format)"
+                  },
+                  "voice_id_json": {
+                    "type": "string",
+                    "description": "Updated voice ID JSON containing complete voice metadata"
+                  },
+                  "voice_provider": {
+                    "type": "integer",
+                    "description": "Updated voice provider ID"
+                  },
+                  "transcriber_provider": {
+                    "type": "integer",
+                    "description": "Updated speech-to-text provider ID"
+                  },
+                  "transcriber_language": {
+                    "type": "integer",
+                    "description": "Updated language ID"
+                  },
+                  "transcriber_model": {
+                    "type": "integer",
+                    "description": "Updated transcriber model ID"
+                  },
+                  "calling_type": {
+                    "type": "integer",
+                    "description": "Updated calling type (1=Outbound, 2=Inbound)"
+                  },
+                  "purpose": {
+                    "type": "integer",
+                    "description": "Updated purpose ID"
+                  },
+                  "tts_model": {
+                    "type": "string",
+                    "description": "Updated TTS model for voice synthesis"
+                  },
+                  "status": {
+                    "type": "integer",
+                    "description": "Updated agent status (1=Active, 3=Draft)"
+                  }
+                }
               }
             }
           }
         },
-        "responses": { "200": { "description": "OK" } }
+        "responses": {
+          "200": { "description": "Voice agent updated successfully" },
+          "400": { "description": "Bad Request - Agent ID is required" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Agent not found" },
+          "422": { "description": "Validation error" }
+        }
       }
     },
-    "/voice-agent/delete": {
+    "/global/agents/delete": {
       "post": {
         "summary": "Delete voice agent",
         "tags": ["Voice AI"],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "agent_id",
+            "in": "query",
+            "required": false,
+            "description": "ID of the agent to delete (can also be provided in request body)",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
+                "required": ["agent_id"],
                 "properties": {
-                  "voice_agent_id": { "type": "string", "format": "uuid" }
-                },
-                "required": ["voice_agent_id"]
+                  "agent_id": {
+                    "type": "integer",
+                    "description": "ID of the agent to delete"
+                  }
+                }
               }
             }
           }
         },
-        "responses": { "204": { "description": "Deleted" } }
+        "responses": {
+          "200": { "description": "Voice agent deleted successfully" },
+          "400": { "description": "Bad Request - Agent ID is required" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Agent not found" }
+        }
       }
     },
-    "/voice-agent/all": {
-      "get": {
-        "summary": "List voice agents",
+    "/global/agents": {
+      "post": {
+        "summary": "Create voice agent",
         "tags": ["Voice AI"],
-        "responses": { "200": { "description": "OK" } }
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["agent_name", "agent_prompt"],
+                "properties": {
+                  "agent_name": {
+                    "type": "string",
+                    "description": "Name of the voice agent"
+                  },
+                  "agent_prompt": {
+                    "type": "string",
+                    "description": "System prompt/instructions for the agent"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Description of the agent"
+                  },
+                  "voice_id": {
+                    "type": "string",
+                    "description": "Voice ID to use for the agent. Defaults to 'RXe6OFmxoC0nlSWpuCDy' if not provided"
+                  },
+                  "voice_provider": {
+                    "type": "integer",
+                    "description": "Voice provider ID (1=ElevenLabs, 2=OpenAI, 3=Deepgram, 4=Sarvam). Defaults to 1"
+                  },
+                  "transcriber_provider": {
+                    "type": "integer",
+                    "description": "Speech-to-text provider ID. Defaults to 2 (Deepgram)"
+                  },
+                  "transcriber_language": {
+                    "type": "integer",
+                    "description": "Language ID for transcription. Defaults to 1 (English)"
+                  },
+                  "transcriber_model": {
+                    "type": "integer",
+                    "description": "Transcriber model ID. Defaults to 16 (nova-3) when using Deepgram"
+                  },
+                  "calling_type": {
+                    "type": "integer",
+                    "description": "Calling type (1=Outbound, 2=Inbound). Defaults to 1"
+                  },
+                  "purpose": {
+                    "type": "integer",
+                    "description": "Purpose ID for the agent (1-15). See Purpose Options in documentation"
+                  },
+                  "tts_model": {
+                    "type": "string",
+                    "description": "TTS model for voice synthesis. Defaults to 'eleven_multilingual_v2'"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Voice agent created successfully" },
+          "400": { "description": "Bad Request - Agent Name is required" },
+          "401": { "description": "Unauthorized" },
+          "422": { "description": "Validation error" }
+        }
+      }
+    },
+    "/global/agents/get": {
+      "get": {
+        "summary": "Get voice agents",
+        "tags": ["Voice AI"],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "agent_id",
+            "in": "query",
+            "required": false,
+            "description": "ID of the agent to retrieve. If not provided, returns all agents",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "agent_type",
+            "in": "query",
+            "required": false,
+            "description": "Filter by agent type: 2 = Chat, 3 = Telephony, 4 = General",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": { 
+          "200": { "description": "Voice agents retrieved successfully" },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Agent not found" }
+        }
+      },
+      "post": {
+        "summary": "Get voice agents",
+        "tags": ["Voice AI"],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "agent_id": {
+                    "type": "integer",
+                    "description": "ID of the agent to retrieve. If not provided, returns all agents"
+                  },
+                  "agent_type": {
+                    "type": "integer",
+                    "description": "Filter by agent type: 2 = Chat, 3 = Telephony, 4 = General"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": { 
+          "200": { "description": "Voice agents retrieved successfully" },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Agent not found" }
+        }
       }
     },
     "/voice-agent/activity-logs": {

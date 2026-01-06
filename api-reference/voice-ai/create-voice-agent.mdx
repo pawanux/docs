@@ -1,215 +1,317 @@
 ---
-title: Create Agent
-openapi: "api-reference/openapi.json POST /agent"
+title: Create Voice Agent
+openapi: "api-reference/openapi.json POST /global/agents"
 ---
 
-The agent creation system allows users to create and configure AI agents with comprehensive settings in a single request. You can set up basic details, configuration, knowledge base, calling numbers, denied words, dispositions, guardrails, and metadata all at once when creating a new agent.
+# Create Voice Agent API
 
-## API Endpoint
+This documentation explains how to create a new voice agent using the API.
 
-**Endpoint:** `POST /api/agent/createagentorupdate`
+## Endpoint
 
-**Content-Type:** `multipart/form-data`
+**POST** `/api/v1/global/agents`
 
-**Authentication:** Required (Token header: `token` or `api_access_token`)
+## Authentication
 
-## Request Structure
+Include your API token in the request header:
 
-The endpoint accepts a `multipart/form-data` request with the following structure:
+```
+token: <your_api_token>
+```
+
+or
+
+```
+api_access_token: <your_api_token>
+```
+
+## Request Body
 
 ```json
 {
-  "basic_details": {
-    "agent_name": "Customer Support",   // Required
-    "description": "Agent description",
-    "category": 1,
-    "purpose": 1,
-    "agent_type": 1,                    // 1=Voice, 2=Chat, 3=Telephony, 4=General
-    "chatbot_name": "Support Bot",
-    "chatbot_welcome_message": "Welcome!",
-    "chatbot_image": "image_url",       // Can be uploaded as file
-    "agent_privacy": 0,                 // 0=Private, 1=Public
-    "agent_prompt": "You are a helpful assistant...",
-    "voice_id": "KYiVPerWcenyBTIvWbfY",
-    "voice_provider": 1,
-    "transcriber_provider": 2,
-    "transcriber_language": "en",
-    "tone": "professional",
-    "style": "conversational",
-    "instruction_sensitivity": "medium"
-  },
-  "configuration": {
-    "context_awareness": true,
-    "memory_recall": true,
-    "sentiment_analysis": true,
-    "interruption_handling": true,
-    "agent_terminate_instruction": "...",
-    "agent_terminate_messages": "..."
-  },
-  "knowledge_base": {
-    "tools": [
-      { "id": 1, "isEnabled": true }
-    ],
-    "sub_agents": [
-      { "id": 2, "isEnabled": true }
-    ],
-    "text_knowledge_bases": [
-      { "name": "KB1", "content": "..." }
-    ]
-  },
-  "phone_numbers": ["+1234567890"],
-  "denials": {
-    "denied_words": ["word1", "word2"],
-    "denied_topics": ["topic1", "topic2"]
-  },
-  "dispositions_config": {
-    "dispositions": [...]
-  },
-  "guardrails": {
-    ...
-  },
-  "metadata_config": {
-    "metadata_input": ["field1", "field2"],
-    "metadata_output": ["field1", "field2"]
-  }
+  "agent_name": "Customer Support Agent",
+  "description": "Handles customer inquiries",
+  "agent_prompt": "You are a helpful customer support agent. Answer questions politely and professionally.",
+  "voice_id": "RXe6OFmxoC0nlSWpuCDy",
+  "voice_provider": 1,
+  "transcriber_provider": 2,
+  "transcriber_language": 1,
+  "transcriber_model": 16,
+  "calling_type": 1,
+  "purpose": 2
 }
 ```
 
-**File Uploads:**
+## Required Fields
 
-- `basic_details[chatbot_image]` - Chatbot image file
-- Knowledge base files (PDF, DOC, DOCX, XLSX, CSV) - Up to 3 files, max 10MB each
+| Field | Type | Description |
+|-------|------|-------------|
+| `agent_name` | string | Name of the voice agent |
+| `agent_prompt` | string | System prompt/instructions for the agent. This defines how the agent behaves and responds |
 
-## cURL Example
+## Optional Fields
 
-```bash
-curl -X POST "https://your-api-domain.com/api/agent/createagentorupdate" \
-  -H "token: YOUR_AUTH_TOKEN" \
-  -F "basic_details[agent_name]=Customer Support Agent" \
-  -F "basic_details[description]=A helpful customer support agent" \
-  -F "basic_details[category]=1" \
-  -F "basic_details[purpose]=1" \
-  -F "basic_details[agent_type]=1" \
-  -F "basic_details[chatbot_name]=Support Bot" \
-  -F "basic_details[chatbot_welcome_message]=Welcome! How can I help you today?" \
-  -F "basic_details[chatbot_image]=@/path/to/image.png" \
-  -F "basic_details[agent_privacy]=0" \
-  -F "basic_details[agent_prompt]=You are a helpful customer support assistant." \
-  -F "basic_details[voice_id]=KYiVPerWcenyBTIvWbfY" \
-  -F "basic_details[voice_provider]=1" \
-  -F "basic_details[transcriber_provider]=2" \
-  -F "basic_details[transcriber_language]=en" \
-  -F "basic_details[tone]=professional" \
-  -F "basic_details[style]=conversational" \
-  -F "basic_details[instruction_sensitivity]=medium" \
-  -F "configuration[context_awareness]=true" \
-  -F "configuration[memory_recall]=true" \
-  -F "configuration[sentiment_analysis]=true" \
-  -F "configuration[interruption_handling]=true" \
-  -F "configuration[agent_terminate_instruction]=End conversation politely" \
-  -F "configuration[agent_terminate_messages]=Thank you for contacting us" \
-  -F "knowledge_base[tools][0][id]=1" \
-  -F "knowledge_base[tools][0][isEnabled]=true" \
-  -F "knowledge_base[sub_agents][0][id]=2" \
-  -F "knowledge_base[sub_agents][0][isEnabled]=true" \
-  -F "knowledge_base[text_knowledge_bases][0][name]=KB1" \
-  -F "knowledge_base[text_knowledge_bases][0][content]=Knowledge base content here" \
-  -F "FILE_KNOWLEDGE_BASES=@/path/to/document.pdf" \
-  -F "phone_numbers[]=+1234567890" \
-  -F "phone_numbers[]=+0987654321" \
-  -F "denials[denied_words][]=word1" \
-  -F "denials[denied_words][]=word2" \
-  -F "denials[denied_topics][]=topic1" \
-  -F "denials[denied_topics][]=topic2" \
-  -F "metadata_config[metadata_input][]=field1" \
-  -F "metadata_config[metadata_input][]=field2" \
-  -F "metadata_config[metadata_output][]=field1" \
-  -F "metadata_config[metadata_output][]=field2"
-```
+| Field | Type | Description | Default |
+|-------|------|-------------|---------|
+| `description` | string | Description of the agent | Empty string |
+| `voice_id` | string | Voice ID to use for the agent. Use the voice ID from the voices API | "RXe6OFmxoC0nlSWpuCDy" |
+| `voice_provider` | integer | Voice provider ID (see Voice Providers below) | 1 (ElevenLabs) |
+| `transcriber_provider` | integer | Speech-to-text provider ID (see Transcriber Providers below) | 2 (Deepgram) |
+| `transcriber_language` | integer | Language ID for transcription (see Languages below) | 1 (English) |
+| `transcriber_model` | integer | Transcriber model ID (see Transcriber Models below) | 16 (nova-3) |
+| `calling_type` | integer | Calling type (see Calling Types below) | 1 (Outbound) |
+| `purpose` | integer | Purpose ID for the agent (see Purpose Options below) | None |
+| `tts_model` | string | TTS (Text-to-Speech) model for voice synthesis | "eleven_multilingual_v2" |
 
-**Note:** Remove any fields you don't need. Only `basic_details[agent_name]` is required.
+## Voice Providers
 
-## Response
+| ID | Provider | Description |
+|----|----------|-------------|
+| 1 | ElevenLabs | High-quality AI voice synthesis with natural-sounding voices |
+| 2 | OpenAI | Advanced text-to-speech with multiple voice options |
+| 3 | Deepgram | Real-time speech recognition and voice synthesis |
+| 4 | Sarvam | Real-time speech recognition and voice synthesis |
 
-### Success Response
+## Transcriber Providers (STT - Speech-to-Text)
+
+### Deepgram (ID: 2)
+
+| Model ID | Model Name | Description |
+|----------|------------|-------------|
+| 3 | nova-2 | General purpose model |
+| 4 | nova-2-general | General purpose transcription |
+| 5 | nova-2-meeting | Optimized for meetings |
+| 6 | nova-2-phonecall | Optimized for phone calls |
+| 7 | nova-2-finance | Optimized for finance domain |
+| 8 | nova-2-conversationalai | Optimized for conversational AI |
+| 9 | nova-2-video | Optimized for video content |
+| 10 | nova-2-medical | Optimized for medical domain |
+| 11 | nova-2-drivethru | Optimized for drive-thru scenarios |
+| 12 | nova-2-automotive | Optimized for automotive |
+| 13 | nova-2-legal | Optimized for legal domain |
+| 14 | nova-2-government | Optimized for government |
+| 15 | nova-2-enterprise | Optimized for enterprise |
+| 16 | nova-3 | Latest general purpose model (Default) |
+
+**Note:** The default `transcriber_model` is 16 (nova-3) when using Deepgram as the transcriber provider.
+
+### Sarvam (ID: 3)
+
+| Model ID | Model Name |
+|----------|------------|
+| 1 | sarvam |
+
+### Gladia (ID: 4)
+
+| Model ID | Model Name |
+|----------|------------|
+| 1 | gladia |
+
+## Transcriber Languages
+
+| ID | Language | Value |
+|----|----------|-------|
+| 1 | English | english |
+| 2 | Hindi | hindi |
+| 3 | Multilingual | multi |
+| 4 | Albanian | albanian (Beta) |
+| 5 | Arabic | arabic (Beta) |
+| 6 | Armenian | armenian (Beta) |
+| 7 | Azerbaijani | azerbaijani (Beta) |
+| 8 | Belarusian | belarusian (Beta) |
+| 9 | Bengali | bengali (Beta) |
+| 10 | Bosnian | bosnian (Beta) |
+| 11 | Bulgarian | bulgarian |
+| 12 | Catalan | catalan |
+| 13 | Chinese (Mandarin, Simplified) | chinese |
+| 14 | Chinese (Mandarin, Traditional) | chinese |
+| 15 | Croatian | croatian (Beta) |
+| 16 | Czech | czech |
+| 17 | Danish | danish |
+| 18 | Dutch | dutch |
+| 19 | English (Australia) | english_australia |
+| 20 | English (India) | english_india |
+| 21 | English (New Zealand) | english_new_zealand |
+| 22 | English (UK) | english_uk |
+| 23 | English (US) | english_us |
+| 24 | English/Spanish mix | english_spanish |
+| 25 | Estonian | estonian |
+| 26 | Finnish | finnish |
+| 27 | French | french |
+| 28 | Galician | galician (Beta) |
+| 29 | Georgian | georgian (Beta) |
+| 30 | German | german |
+| 31 | German (Switzerland) | german_switzerland |
+| 32 | Greek | greek |
+| 33 | Gujarati | gujarati (Beta) |
+| 34 | Haitian Creole | haitian_creole (Beta) |
+| 35 | Hausa | hausa (Beta) |
+| 36 | Hebrew | hebrew (Beta) |
+| 37 | Afrikaans | afrikaans (Beta) |
+| 38 | Hungarian | hungarian |
+| 39 | Icelandic | icelandic (Beta) |
+| 40 | Indonesian | indonesian |
+| 41 | Italian | italian |
+| 42 | Japanese | japanese |
+| 43 | Javanese | javanese (Beta) |
+| 44 | Kannada | kannada (Beta) |
+| 45 | Kazakh | kazakh (Beta) |
+| 46 | Khmer | khmer (Beta) |
+| 47 | Korean | korean |
+| 48 | Latvian | latvian |
+| 49 | Lithuanian | lithuanian |
+| 50 | Macedonian | macedonian (Beta) |
+| 51 | Malay | malay |
+| 52 | Malayalam | malayalam (Beta) |
+| 53 | Maori | maori (Beta) |
+| 54 | Marathi | marathi (Beta) |
+| 55 | Nepali | nepali (Beta) |
+| 56 | Norwegian | norwegian |
+| 57 | Persian | persian (Beta) |
+| 58 | Polish | polish |
+| 59 | Portuguese | portuguese |
+| 60 | Portuguese (Brazil) | portuguese_brazil |
+| 61 | Punjabi | punjabi (Beta) |
+| 62 | Romanian | romanian |
+| 63 | Russian | russian |
+| 64 | Serbian | serbian (Beta) |
+| 65 | Shona | shona (Beta) |
+| 66 | Slovak | slovak |
+| 67 | Slovenian | slovenian (Beta) |
+| 68 | Somali | somali (Beta) |
+| 69 | Spanish | spanish |
+| 70 | Spanish (Latin America) | spanish_latin_america |
+| 71 | Sundanese | sundanese (Beta) |
+| 72 | Swahili | swahili (Beta) |
+| 73 | Swedish | swedish |
+| 74 | Tagalog | tagalog (Beta) |
+| 75 | Tamil | tamil (Beta) |
+| 76 | Tajik | tajik (Beta) |
+| 77 | Telugu | telugu (Beta) |
+| 78 | Thai | thai |
+| 79 | Tswana | tswana (Beta) |
+| 80 | Turkish | turkish |
+| 81 | Ukrainian | ukrainian |
+| 82 | Urdu | urdu (Beta) |
+| 83 | Vietnamese | vietnamese |
+| 84 | Welsh | welsh |
+
+**Note:** Languages marked as "Beta" are in beta testing phase.
+
+## Purpose Options
+
+| ID | Purpose |
+|----|---------|
+| 1 | Automate repetitive tasks |
+| 2 | Respond to queries |
+| 3 | Qualify leads |
+| 4 | Book meetings or appointments |
+| 5 | Update CRMs or internal tools |
+| 6 | Send notifications or reminders |
+| 7 | Collect and analyze feedback |
+| 8 | Generate content or reports |
+| 9 | Extract and summarize information |
+| 10 | Assist in user onboarding |
+| 11 | Monitor behavior and trigger actions |
+| 12 | Conduct research |
+| 13 | Handle voice or chat conversations |
+| 14 | Connect and automate workflows |
+| 15 | Personalize user experiences |
+
+**Note:** The `purpose` field is optional and helps categorize the agent's primary function.
+
+## Calling Types
+
+**Important:** The `calling_type` field determines whether the agent makes outbound calls or receives inbound calls.
+
+| ID | Type | Description |
+|----|------|-------------|
+| 1 | **Outbound** | Agent makes calls to customers. Use this when you want the agent to initiate calls to phone numbers. |
+| 2 | **Inbound** | Agent receives calls from customers. Use this when customers call your phone numbers and the agent answers. |
+
+**Note:** 
+- For outbound calling (making calls to customers), use `calling_type: 1`
+- For inbound calling (receiving calls from customers), use `calling_type: 2`
+- Default value is `1` (Outbound) if not specified
+
+## TTS Models
+
+The TTS (Text-to-Speech) model determines the voice synthesis engine used for the agent.
+
+| Model | Description |
+|-------|-------------|
+| `eleven_multilingual_v2` | ElevenLabs Multilingual V2 model (Default) - High-quality multilingual voice synthesis |
+
+**Note:** The default TTS model is `eleven_multilingual_v2` when not specified. This model supports multiple languages and provides high-quality voice synthesis.
+
+## Success Response
 
 **Status Code:** `200 OK`
 
 ```json
 {
-  "message": "Agent updated successfully",
+  "success": true,
+  "message": "Voice agent created successfully",
   "data": {
-    "agent_id": 123
+    "agent_id": 123,
+    "agent_name": "Customer Support Agent",
+    "status": "draft"
   }
 }
 ```
 
-**Note:** The response message says "updated" but this is the standard response for both create and update operations. The `agent_id` in the response is the newly created agent's ID.
+## Error Responses
 
-### Error Responses
-
-#### 422 - Validation Error
-
-**Status Code:** `422 Unprocessable Entity`
-
+### 400 Bad Request
 ```json
 {
   "error": true,
-  "code": 422,
-  "message": "Agent Name is missing",
-  "data": {}
+  "message": "Agent Name is required"
 }
 ```
 
-**Common Error Messages:**
-- `"Agent Name is missing"` - Required field `agent_name` is missing in `basic_details`
-- `"Basic details are required"` - `basic_details` object is missing
-- `"Agent Name is invalid"` - Invalid format for `agent_name`
-
-#### 401 - Authentication Error
-
-**Status Code:** `401 Unauthorized`
-
+### 401 Unauthorized
 ```json
 {
   "error": true,
-  "code": 401,
-  "message": "Invalid Auth Key or Session Expired",
-  "data": {}
+  "message": "Invalid Auth Key or Session Expired"
 }
 ```
 
-#### 500 - Server Error
-
-**Status Code:** `500 Internal Server Error`
-
+### 422 Unprocessable Entity
 ```json
 {
   "error": true,
-  "code": 500,
-  "message": "Internal server error",
-  "data": {}
+  "message": "Validation error message"
 }
 ```
 
-## Error Codes
+## Example Request
 
-| Status Code | Error Code | Description |
-|------------|------------|-------------|
-| 200 | - | Success |
-| 401 | AUTH_REQUIRED | Authentication required - Missing or invalid token |
-| 401 | AUTH_INVALID | Invalid authentication token or session expired |
-| 422 | VALIDATION_ERROR | Validation failed - Check required fields and data format |
-| 422 | MISSING_FIELD | Required field missing |
-| 422 | INVALID_FORMAT | Invalid data format or type |
-| 500 | SERVER_ERROR | Internal server error |
+```bash
+curl -X POST https://your-domain.com/api/v1/global/agents \
+  -H "Content-Type: application/json" \
+  -H "token: your_api_token_here" \
+  -d '{
+    "agent_name": "Support Agent",
+    "description": "Customer support voice agent",
+    "agent_prompt": "You are a helpful customer support agent. Be polite and professional.",
+    "voice_id": "RXe6OFmxoC0nlSWpuCDy",
+    "voice_provider": 1,
+    "transcriber_provider": 2,
+    "transcriber_language": 1,
+    "transcriber_model": 16,
+    "calling_type": 1,
+    "purpose": 2
+  }'
+```
 
-## Important Notes
+## Notes
 
-- `agent_name` is **required** in `basic_details` for creating new agents
-- All configuration sections (`configuration`, `knowledge_base`, `phone_numbers`, `denials`, `dispositions_config`, `guardrails`, `metadata_config`) are **optional**
-- File uploads are optional and limited to 3 files, 10MB each
-- Knowledge base files can be uploaded during creation using the `FILE_KNOWLEDGE_BASES` field
-- The endpoint uses database transactions - if any part fails, all changes are rolled back
-- All sections can be configured in a single request to create a fully configured agent
-
+- The `voice_id` is optional. If not provided, it defaults to "RXe6OFmxoC0nlSWpuCDy" (Anika - Soothing Customer Care Agent). You can fetch available voices using the voices API endpoint.
+- The `voice_id_json` is automatically set with the default voice information when `voice_id` is not provided. The default JSON contains the complete voice metadata including ID, title, description, URL, and provider information.
+- The `tts_model` is optional. If not provided, it defaults to "eleven_multilingual_v2".
+- **Important:** The agent will be created with status `3` (Draft) by default. To activate the agent and make it available for calls, you must call the Update Agent API with `status: 1` after creation. See the Update Agent API documentation for details.
+- The `agent_prompt` is crucial as it defines the agent's behavior and personality during conversations.
+- `voice_infra` is automatically set to 3 (Internal call) and cannot be changed via the API.
+- A default phone number (+918062810349) is automatically added to the agent during creation. This phone number can be used for making calls with the agent.

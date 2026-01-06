@@ -1,218 +1,114 @@
 ---
-
-title: Delete Agent
-
-openapi: "api-reference/openapi.json POST /agent/delete"
-
+title: Delete Voice Agent
+openapi: "api-reference/openapi.json POST /global/agents/delete"
 ---
 
-The agent deletion system allows you to delete existing agents. Deletion is implemented as a **soft delete** - the agent is marked as deleted but not physically removed from the database. This preserves data integrity, maintains audit trails, and allows for potential recovery.
+# Delete Voice Agent API
 
-## API Endpoint
+This documentation explains how to delete a voice agent using the API.
 
-**Endpoint:** `POST /api/agent/status`
+## Endpoint
 
-**Content-Type:** `application/json`
+**POST** `/api/v1/global/agents/delete`
 
-**Authentication:** Required (Token header: `token` or `api_access_token`)
+## Authentication
 
-## Request Structure
+Include your API token in the request header:
+
+```
+token: <your_api_token>
+```
+
+or
+
+```
+api_access_token: <your_api_token>
+```
+
+## Request Body
 
 ```json
 {
-  "agent_id": 123,
-  "status": 2  // 2 = Deleted
+  "agent_id": 123
 }
 ```
 
-## cURL Example
+## Query Parameters (Alternative)
 
-```bash
-curl -X POST "https://your-api-domain.com/api/agent/status" \
-  -H "token: YOUR_AUTH_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "agent_id": 123,
-    "status": 2
-  }'
+You can also pass `agent_id` as a query parameter:
+
+```
+POST /api/v1/global/agents/delete?agent_id=123
 ```
 
-## Response
+## Required Fields
 
-### Success Response
+| Field | Type | Description |
+|-------|------|-------------|
+| `agent_id` | integer | ID of the agent to delete |
+
+## Success Response
 
 **Status Code:** `200 OK`
 
 ```json
 {
-  "message": "Agent Deleted Successfully",
+  "success": true,
+  "message": "Voice agent deleted successfully",
   "data": {
-    "id": 123,
-    "name": "Agent Name",
-    "status": 2
+    "agent_id": 123
   }
 }
 ```
 
-### Error Responses
+## Error Responses
 
-#### 422 - Validation Error
-
-**Status Code:** `422 Unprocessable Entity`
-
+### 400 Bad Request
 ```json
 {
   "error": true,
-  "code": 422,
-  "message": "Agent ID is missing",
-  "data": {}
+  "message": "Agent ID is required"
 }
 ```
 
-**Common Error Messages:**
-- `"Agent ID is missing"` - Required field `agent_id` is missing
-- `"Status is missing"` - Required field `status` is missing
-- `"Agent ID is invalid"` - Invalid agent ID format
-- `"Agent not found"` - Agent with provided ID does not exist or belongs to different workspace
-
-#### 401 - Authentication Error
-
-**Status Code:** `401 Unauthorized`
-
+### 401 Unauthorized
 ```json
 {
   "error": true,
-  "code": 401,
-  "message": "Invalid Auth Key or Session Expired",
-  "data": {}
+  "message": "Invalid Auth Key or Session Expired"
 }
 ```
 
-#### 500 - Server Error
-
-**Status Code:** `500 Internal Server Error`
-
+### 404 Not Found
 ```json
 {
   "error": true,
-  "code": 500,
-  "message": "Internal server error",
-  "data": {}
+  "message": "Agent not found"
 }
 ```
 
-## Error Codes
+## Example Request
 
-| Status Code | Error Code | Description |
-|------------|------------|-------------|
-| 200 | - | Success |
-| 401 | AUTH_REQUIRED | Authentication required - Missing or invalid token |
-| 401 | AUTH_INVALID | Invalid authentication token or session expired |
-| 422 | VALIDATION_ERROR | Validation failed - Check required fields and data format |
-| 422 | MISSING_FIELD | Required field missing |
-| 422 | INVALID_FORMAT | Invalid data format or type |
-| 422 | AGENT_NOT_FOUND | Agent with provided ID does not exist |
-| 500 | SERVER_ERROR | Internal server error |
-
-## Soft Delete Mechanism
-
-### What is Soft Delete?
-
-Soft delete means the agent record remains in the database but is marked as deleted. The agent is not physically removed from the database.
-
-**Benefits:**
-- **Data Preservation:** Historical data is maintained
-- **Audit Trail:** Complete record of all agents and their history
-- **Recovery:** Deleted agents can be restored
-- **Referential Integrity:** Related records remain intact
-
-### How It Works
-
-1. **Status Update:** Agent `STATUS` field is set to `2` (deleted)
-2. **Visibility:** Deleted agents are automatically excluded from:
-   - Agent lists
-   - Agent searches
-   - Agent selections
-   - Public agent listings
-3. **Data Preservation:** All agent data and related records remain in the database
-
-## What Happens When an Agent is Deleted
-
-### 1. Agent Record
-- Status is set to `2` (deleted)
-- Agent becomes invisible in queries
-- All agent data is preserved
-
-### 2. Related Data
-All related records remain in the database:
-- Agent configuration
-- Knowledge base records
-- Tools and sub-agents
-- Calling numbers
-- Denied words
-- Dispositions
-- Guardrails
-- Metadata configurations
-- Change history
-
-### 3. External Services Cleanup
-
-**Millis AI Platform:**
-- Agent is deleted from Millis AI platform
-- Errors are logged but don't prevent deletion
-
-**AI Service:**
-- Knowledge base is deleted from AI service
-- Agent can no longer access knowledge base in AI service
-
-**Note:** External service cleanup errors are logged but don't prevent the agent from being marked as deleted in the database.
-
-## Agent Status Values
-
-| Status | Value | Description |
-|-------|-------|-------------|
-| Published | 1 | Agent is active and available for use |
-| Deleted | 2 | Agent is soft-deleted (marked as deleted) |
-| Unpublished | 3 | Agent is inactive but not deleted |
-
-## Restoring Deleted Agents
-
-Deleted agents can be restored by updating their status back to `1` (Published) or `3` (Unpublished).
-
-### Restore to Published
-
+### Using Request Body
 ```bash
-curl -X POST "https://your-api-domain.com/api/agent/status" \
-  -H "token: YOUR_AUTH_TOKEN" \
+curl -X POST https://your-domain.com/api/v1/global/agents/delete \
   -H "Content-Type: application/json" \
+  -H "token: your_api_token_here" \
   -d '{
-    "agent_id": 123,
-    "status": 1
+    "agent_id": 123
   }'
 ```
 
-### Restore to Unpublished
-
+### Using Query Parameter
 ```bash
-curl -X POST "https://your-api-domain.com/api/agent/status" \
-  -H "token: YOUR_AUTH_TOKEN" \
+curl -X POST "https://your-domain.com/api/v1/global/agents/delete?agent_id=123" \
   -H "Content-Type: application/json" \
-  -d '{
-    "agent_id": 123,
-    "status": 3
-  }'
+  -H "token: your_api_token_here"
 ```
 
-**Note:** When restoring an agent, external services (Millis AI, AI Service) are not automatically recreated. Manual intervention may be required for external services.
+## Notes
 
-## Important Notes
-
-- Deletion is a **soft delete** - agent remains in database with status `2`
-- All related data (knowledge base, tools, configurations) is preserved
-- External services (Millis AI, AI Service) are cleaned up during deletion
-- Deleted agents are automatically excluded from all queries and listings
-- Deleted agents can be restored by updating status to `1` or `3`
-- Complete audit trail is maintained for all deletions
-- External service cleanup errors don't prevent deletion from completing
-- Knowledge base files remain in cloud storage (not automatically removed)
+- Deleting an agent is a permanent action. The agent will be marked as deleted and cannot be recovered.
+- The agent must exist and belong to your workspace.
+- Once deleted, the agent cannot be used for making calls.
 

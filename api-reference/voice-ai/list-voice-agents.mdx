@@ -1,347 +1,318 @@
 ---
 title: List Voice Agents
-openapi: "api-reference/openapi.json GET /voice-agent/all"
+openapi: "api-reference/openapi.json GET /global/agents/get"
 ---
 
-# List Voice Agents
+# Get Voice Agent API
 
-Retrieve a comprehensive list of voice AI agents in your workspace. The response includes agent configurations, integrated tools, execution statistics, AI usage metrics, and creator information.
-
-## Overview
-
-The List Voice Agents API returns detailed information about all voice agents in your workspace, including:
-
-- Agent basic information (name, type, category, status)
-- Agent configuration and settings
-- Integrated tools and subagents
-- Execution statistics (total, completed, running, failed)
-- AI usage metrics (tokens, requests, models used)
-- Creator information
-- Last modification date
+This documentation explains how to retrieve details of voice agents using the API.
 
 ## Endpoint
 
-**GET** `/voice-agent/all` or **GET** `/list`
+**GET** `/api/v1/global/agents/get`
 
-**Base URL:** `https://api.tryunleashx.com/v1`
+or
 
-**Authentication:** Required (Bearer token)
+**POST** `/api/v1/global/agents/get`
 
-## Request Parameters
+## Authentication
 
-All parameters are optional. Use them to filter the results.
+Include your API token in the request header:
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `name` | string | Filter agents by name (partial match, case-insensitive). Example: `name=support` matches "Customer Support Agent", "Support Bot", etc. |
-| `status` | integer | Filter by agent status. Common values: `1` = active, `2` = deleted. If not provided, deleted agents are excluded by default. |
-| `agent_type` | integer | Filter by agent type (1, 2, etc.). If not provided, agents with type 3 are excluded by default. |
-| `category` | integer | Filter by category ID. Categories help organize agents by purpose (e.g., Customer Experience, Sales, Support). |
-| `fromdate` | date | Start date for date range filter. Must be used with `todate`. Format: `YYYY-MM-DD`. |
-| `todate` | date | End date for date range filter. Must be used with `fromdate`. Format: `YYYY-MM-DD`. |
-| `date_field` | string | Which date field to filter on. Options: `'created'` (creation date), `'updated'` (update date), or `'both'` (default - either field). |
+```
+token: <your_api_token>
+```
 
-## Request Examples
+or
+
+```
+api_access_token: <your_api_token>
+```
+
+## Request Body (for POST)
+
+### Get Specific Agent
+```json
+{
+  "agent_id": 123
+}
+```
 
 ### Get All Agents
-
-```bash
-curl -X GET https://api.tryunleashx.com/v1/voice-agent/all \
-  -H "Authorization: Bearer YOUR_API_KEY"
+```json
+{}
 ```
 
-### Search by Name
-
-```bash
-curl -X GET "https://api.tryunleashx.com/v1/voice-agent/all?name=support" \
-  -H "Authorization: Bearer YOUR_API_KEY"
+### Get Agents by Type
+```json
+{
+  "agent_type": 3
+}
 ```
 
-### Filter by Status and Category
-
-```bash
-curl -X GET "https://api.tryunleashx.com/v1/voice-agent/all?status=1&category=3" \
-  -H "Authorization: Bearer YOUR_API_KEY"
+### Get Specific Agent with Type Filter
+```json
+{
+  "agent_id": 123,
+  "agent_type": 3
+}
 ```
 
-### Filter by Date Range
+## Query Parameters (for GET)
 
-```bash
-curl -X GET "https://api.tryunleashx.com/v1/voice-agent/all?fromdate=2024-01-01&todate=2024-01-31&date_field=created" \
-  -H "Authorization: Bearer YOUR_API_KEY"
+### Get Specific Agent
+```
+?agent_id=123
 ```
 
-## Response
+### Get All Agents
+```
+(no parameters)
+```
 
-### Success Response
+### Get Agents by Type
+```
+?agent_type=3
+```
+
+### Get Specific Agent with Type Filter
+```
+?agent_id=123&agent_type=3
+```
+
+## Optional Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `agent_id` | integer | ID of the agent to retrieve. If not provided, returns all agents |
+| `agent_type` | integer | Filter by agent type. See Agent Types below |
+
+## Agent Types
+
+| ID | Type | Description |
+|----|------|-------------|
+| 2 | Chat | Chat-based agents |
+| 3 | Telephony | Voice/telephony agents (for making calls) |
+| 4 | General | General purpose agents |
+
+**Note:** For voice/telephony agents that can make calls, use `agent_type: 3`.
+
+## Calling Types
+
+**Important:** The `calling_type` field in the response indicates whether the agent is configured for outbound or inbound calls.
+
+| ID | Type | Description |
+|----|------|-------------|
+| 1 | **Outbound** | Agent makes calls to customers. The agent initiates calls to phone numbers. |
+| 2 | **Inbound** | Agent receives calls from customers. Customers call your phone numbers and the agent answers. |
+| null | **Not Set** | Calling type is not configured for this agent. |
+
+**Note:** 
+- `calling_type: 1` means the agent is configured for outbound calling (making calls)
+- `calling_type: 2` means the agent is configured for inbound calling (receiving calls)
+- `calling_type: null` means the calling type is not configured
+
+## Success Response
+
+### Single Agent Response (when agent_id is provided)
 
 **Status Code:** `200 OK`
 
 ```json
 {
-  "data": [
-    {
-      "ID": 123,
-      "AGENT_NAME": "Customer Support Agent",
-      "AGENT_TYPE": 1,
-      "CATEGORY": 3,
-      "STATUS": 1,
-      "AGENT_TOKEN": "token_abc123",
-      "AGENT_UID": "uid_xyz789",
-      "category_description": {
-        "id": 3,
-        "label": "Customer Experience",
-        "textColor": "#003366",
-        "backgroundColor": "#E6F7FF"
-      },
-      "LAST_MODIFIED": "2 days ago",
-      "tools_data": {
-        "tools": [
-          {
-            "integration_id": 7,
-            "integration_name": "Gmail",
-            "service_name": "Gmail API",
-            "is_available": true,
-            "is_connected": true,
-            "is_enabled": true,
-            "connected_account": "user@example.com",
-            "connected_account_id": "acc_123",
-            "category": "Communication",
-            "icon": "https://aws-url.com/icons/gmail.png",
-            "integration_url": "https://gmail.com",
-            "integration_type": "api",
-            "auth_type": "oauth"
-          }
-        ],
-        "subagents": [
-          {
-            "id": 456,
-            "name": "Lead Qualification Agent",
-            "token": "token_sub456",
-            "agent_uid": "uid_sub456",
-            "is_enabled": true
-          }
-        ]
-      },
-      "creator": {
-        "user_id": 789,
-        "first_name": "John",
-        "last_name": "Doe",
-        "email": "john.doe@example.com",
-        "full_name": "John Doe"
-      },
-      "execution_statistics": {
-        "total_executions": 150,
-        "completed_executions": 120,
-        "running_executions": 5,
-        "failed_executions": 25,
-        "total_minutes": 450
-      },
-      "ai_usage": {
-        "total_tokens_used": 50000,
-        "prompt_tokens": 30000,
-        "completion_tokens": 20000,
-        "total_requests": 100,
-        "models_used": ["gpt-4", "gpt-3.5-turbo"],
-        "request_types": ["text", "call", "chat"]
-      },
-      "configuration": {
-        // Agent configuration object
-      }
+  "error": false,
+  "code": 200,
+  "message": "Voice agent retrieved successfully",
+  "timestamp": 1767638299411,
+  "data": {
+    "success": true,
+    "message": "Voice agent retrieved successfully",
+    "data": {
+      "agent_id": 1048,
+      "agent_name": "Test Agent",
+      "description": "Test description",
+      "status": 3,
+      "agent_type": 3,
+      "voice_id": "KYiVPerWcenyBTIvWbfY",
+      "voice_provider": 1,
+      "transcriber_provider": null,
+      "calling_type": null,
+      "created_on": "2026-01-01T07:44:46.000Z",
+      "updated_on": "2026-01-01T07:44:46.000Z"
     }
-  ]
+  }
+}
+```
+
+### Multiple Agents Response (when agent_id is not provided)
+
+**Status Code:** `200 OK`
+
+```json
+{
+  "error": false,
+  "code": 200,
+  "message": "Voice agents retrieved successfully",
+  "timestamp": 1767638262719,
+  "data": {
+    "success": true,
+    "total": 35,
+    "data": [
+      {
+        "agent_id": 1049,
+        "agent_name": "Flow Test",
+        "description": "",
+        "status": 3,
+        "agent_type": 3,
+        "voice_id": "KYiVPerWcenyBTIvWbfY",
+        "voice_provider": 1,
+        "transcriber_provider": null,
+        "calling_type": null,
+        "created_on": "2026-01-02T14:13:19.000Z",
+        "updated_on": "2026-01-02T14:13:19.000Z"
+      },
+      {
+        "agent_id": 1048,
+        "agent_name": "Test Agent",
+        "description": "",
+        "status": 3,
+        "agent_type": 3,
+        "voice_id": "KYiVPerWcenyBTIvWbfY",
+        "voice_provider": 1,
+        "transcriber_provider": null,
+        "calling_type": null,
+        "created_on": "2026-01-01T07:44:46.000Z",
+        "updated_on": "2026-01-01T07:44:46.000Z"
+      }
+    ]
+  }
 }
 ```
 
 ## Response Fields
 
-### Agent Object
-
 | Field | Type | Description |
 |-------|------|-------------|
-| `ID` | integer | Unique identifier for the agent |
-| `AGENT_NAME` | string | Name of the agent |
-| `AGENT_TYPE` | integer | Type of agent (1, 2, etc.) |
-| `CATEGORY` | integer | Category ID for organizing agents |
-| `STATUS` | integer | Agent status (1 = active, 2 = deleted) |
-| `AGENT_TOKEN` | string | Authentication token for the agent |
-| `AGENT_UID` | string | Unique identifier for the agent |
-| `category_description` | object | Category details with label and colors |
-| `LAST_MODIFIED` | string | Human-readable last modification time (e.g., "2 days ago", "Just now") |
-| `tools_data` | object | Integrated tools and subagents information |
-| `creator` | object | Information about who created the agent |
-| `execution_statistics` | object | Execution metrics and performance data |
-| `ai_usage` | object | AI/LLM usage metrics |
-| `configuration` | object | Agent configuration settings |
+| `agent_id` | integer | Unique identifier for the agent |
+| `agent_name` | string | Name of the agent |
+| `description` | string | Description of the agent (can be empty string) |
+| `status` | integer | Agent status: 1 = Active, 3 = Inactive, 2 = Deleted |
+| `agent_type` | integer | Type of agent: 2 = Chat, 3 = Telephony, 4 = General |
+| `voice_id` | string | Voice ID being used (can be a string identifier) |
+| `voice_provider` | integer | Voice provider ID (see Create Agent docs for options) |
+| `transcriber_provider` | integer \| null | Speech-to-text provider ID (can be null) |
+| `calling_type` | integer \| null | Calling type (see Calling Types below). Can be null if not configured |
+| `created_on` | string | Creation timestamp (ISO 8601 format) |
+| `updated_on` | string | Last update timestamp (ISO 8601 format) |
 
-### Category Description Object
+**Note:** 
+- `transcriber_provider` and `calling_type` can be `null` if not configured
+- `voice_id` is typically a string identifier, not an integer
+- Timestamps are in ISO 8601 format (e.g., "2026-01-01T07:44:46.000Z")
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | integer | Category ID |
-| `label` | string | Category label (e.g., "Customer Experience") |
-| `textColor` | string | Text color hex code for UI display |
-| `backgroundColor` | string | Background color hex code for UI display |
+## Error Responses
 
-### Tools Data Object
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `tools` | array | Array of integrated tool objects |
-| `subagents` | array | Array of subagent objects |
-
-### Tool Object
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `integration_id` | integer | Unique identifier for the integration |
-| `integration_name` | string | Name of the integration (e.g., "Gmail") |
-| `service_name` | string | Service name (e.g., "Gmail API") |
-| `is_available` | boolean | Whether the integration is available |
-| `is_connected` | boolean | Whether the integration is connected to an account |
-| `is_enabled` | boolean | Whether the tool is enabled for this agent |
-| `connected_account` | string or null | Connected account name/email |
-| `connected_account_id` | string or null | Connected account identifier |
-| `category` | string | Integration category (e.g., "Communication") |
-| `icon` | string | URL to the integration icon |
-| `integration_url` | string | URL to the integration service |
-| `integration_type` | string | Type of integration (e.g., "api") |
-| `auth_type` | string | Authentication type (e.g., "oauth", "noAuth") |
-
-### Subagent Object
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | integer | Subagent ID |
-| `name` | string | Subagent name |
-| `token` | string | Subagent authentication token |
-| `agent_uid` | string | Subagent unique identifier |
-| `is_enabled` | boolean | Whether the subagent is enabled |
-
-### Creator Object
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `user_id` | integer | User ID of the creator |
-| `first_name` | string | Creator's first name |
-| `last_name` | string | Creator's last name |
-| `email` | string | Creator's email address |
-| `full_name` | string | Creator's full name or "Unknown User" |
-
-### Execution Statistics Object
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `total_executions` | integer | Total number of executions |
-| `completed_executions` | integer | Number of successfully completed executions |
-| `running_executions` | integer | Number of currently running executions |
-| `failed_executions` | integer | Number of failed executions |
-| `total_minutes` | integer | Total execution duration in minutes (rounded) |
-
-### AI Usage Object
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `total_tokens_used` | integer | Total tokens used across all models |
-| `prompt_tokens` | integer | Total prompt tokens consumed |
-| `completion_tokens` | integer | Total completion tokens generated |
-| `total_requests` | integer | Total number of AI requests made |
-| `models_used` | array | List of AI models used (e.g., ["gpt-4", "gpt-3.5-turbo"]) |
-| `request_types` | array | List of request types (e.g., ["text", "call", "chat"]) |
-
-## Filtering Details
-
-### Name Filter
-
-When you provide a `name` parameter, the API performs a case-insensitive partial match search:
-
-- `name=support` matches: "Customer Support Agent", "Support Bot", "Technical Support"
-- The search looks for the term anywhere in the agent name
-
-### Status Filter
-
-- `status=1` - Returns only active agents
-- `status=2` - Returns only deleted agents
-- If not provided, deleted agents (status 2) are excluded by default
-
-### Agent Type Filter
-
-- If `agent_type` is provided, only agents of that type are returned
-- If not provided, agents with type 3 are excluded by default
-
-### Category Filter
-
-Categories help organize agents by purpose. Common categories include:
-- Customer Experience
-- Sales
-- Support
-- Marketing
-- Operations
-
-### Date Range Filter
-
-You can filter agents by creation or update date:
-
-- **Created Date Only:** `date_field=created`
-- **Updated Date Only:** `date_field=updated`
-- **Either Date (Default):** `date_field=both`
-
-Both `fromdate` and `todate` must be provided for date filtering to work.
-
-## Sorting
-
-Results are sorted by creation date in descending order (most recently created agents first).
-
-## Best Practices
-
-1. **Use Filters:** Apply filters to reduce result set size and improve response time
-2. **Pagination:** For large workspaces, consider implementing pagination on the client side
-3. **Cache Results:** Cache agent lists when appropriate, as they don't change frequently
-4. **Error Handling:** Always check response status and handle errors appropriately
-5. **Statistics:** Execution and AI usage statistics are aggregated efficiently in the response
-
-## Performance Considerations
-
-- Statistics are aggregated efficiently in bulk queries
-- Results are processed in parallel for better performance
-- Large result sets may take longer to process
-- Consider using filters to limit the number of agents returned
-
-## Example Use Cases
-
-### Get All Active Agents
-
-```bash
-curl -X GET "https://api.tryunleashx.com/v1/voice-agent/all?status=1" \
-  -H "Authorization: Bearer YOUR_API_KEY"
+### 400 Bad Request
+```json
+{
+  "error": true,
+  "message": "Agent ID is required"
+}
 ```
 
-### Find Support Agents Created This Month
-
-```bash
-curl -X GET "https://api.tryunleashx.com/v1/voice-agent/all?name=support&fromdate=2024-01-01&todate=2024-01-31&date_field=created" \
-  -H "Authorization: Bearer YOUR_API_KEY"
+### 401 Unauthorized
+```json
+{
+  "error": true,
+  "message": "Invalid Auth Key or Session Expired"
+}
 ```
 
-### Get Agents in Customer Experience Category
+### 404 Not Found
+```json
+{
+  "error": true,
+  "message": "Agent not found"
+}
+```
 
+## Example Requests
+
+### Get Specific Agent (GET)
 ```bash
-curl -X GET "https://api.tryunleashx.com/v1/voice-agent/all?category=3" \
-  -H "Authorization: Bearer YOUR_API_KEY"
+curl -X GET "https://your-domain.com/api/v1/global/agents/get?agent_id=123" \
+  -H "token: your_api_token_here"
+```
+
+### Get Specific Agent (POST)
+```bash
+curl -X POST https://your-domain.com/api/v1/global/agents/get \
+  -H "Content-Type: application/json" \
+  -H "token: your_api_token_here" \
+  -d '{
+    "agent_id": 123
+  }'
+```
+
+### Get All Agents (GET)
+```bash
+curl -X GET "https://your-domain.com/api/v1/global/agents/get" \
+  -H "token: your_api_token_here"
+```
+
+### Get All Agents (POST)
+```bash
+curl -X POST https://your-domain.com/api/v1/global/agents/get \
+  -H "Content-Type: application/json" \
+  -H "token: your_api_token_here" \
+  -d '{}'
+```
+
+### Get All Telephony Agents (GET)
+```bash
+curl -X GET "https://your-domain.com/api/v1/global/agents/get?agent_type=3" \
+  -H "token: your_api_token_here"
+```
+
+### Get All Telephony Agents (POST)
+```bash
+curl -X POST https://your-domain.com/api/v1/global/agents/get \
+  -H "Content-Type: application/json" \
+  -H "token: your_api_token_here" \
+  -d '{
+    "agent_type": 3
+  }'
+```
+
+### Get All Chat Agents (POST)
+```bash
+curl -X POST https://your-domain.com/api/v1/global/agents/get \
+  -H "Content-Type: application/json" \
+  -H "token: your_api_token_here" \
+  -d '{
+    "agent_type": 2
+  }'
+```
+
+### Get All General Agents (POST)
+```bash
+curl -X POST https://your-domain.com/api/v1/global/agents/get \
+  -H "Content-Type: application/json" \
+  -H "token: your_api_token_here" \
+  -d '{
+    "agent_type": 4
+  }'
 ```
 
 ## Notes
 
-- Deleted agents (status = 2) are excluded by default unless explicitly requested
-- Agent type 3 is excluded by default unless explicitly filtered
-- Last modified date considers updates to agent, configuration, tools, and denied words
-- Tools and subagents are only included if they are active (status = 1)
-- Execution duration is accumulated across all status groups and converted to minutes
-- Category descriptions are automatically parsed from stored data
-
-## Related Operations
-
-- **Create Voice Agent:** Create a new voice agent
-- **Update Voice Agent:** Modify an existing agent
-- **Delete Voice Agent:** Remove an agent
-- **Get Agent Activity Logs:** View detailed execution logs for an agent
+- If `agent_id` is provided, returns details of that specific agent.
+- If `agent_id` is not provided, returns a list of all agents.
+- If `agent_type` is provided, filters agents by type (2 = Chat, 3 = Telephony, 4 = General).
+- The `agent_type` filter only applies when getting all agents (not when getting a specific agent by ID).
+- The agents must belong to your workspace.
+- Deleted agents (status = 2) will not be returned.
+- Use the `status` field to check if the agent is active before making calls.
+- For making calls, use agents with `agent_type: 3` (Telephony).
+- Response includes a wrapper with `error`, `code`, `message`, `timestamp`, and `data` fields.
+- The actual agent data is nested in `data.data` for single agent, or `data.data` array for multiple agents.

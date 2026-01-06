@@ -1,352 +1,181 @@
 ---
-
-title: Update Agent
-
-openapi: "api-reference/openapi.json POST /agent/update"
-
+title: Update Voice Agent
+openapi: "api-reference/openapi.json POST /global/agents/update"
 ---
 
-The agent update system allows you to update existing agents with comprehensive settings. You can update basic details, configuration, knowledge base, calling numbers, denied words, dispositions, guardrails, and metadata. Updates support partial modifications - only the fields you provide will be updated, while others remain unchanged.
+# Update Voice Agent API
 
-## API Endpoint
+This documentation explains how to update an existing voice agent using the API.
 
-**Endpoint:** `POST /api/agent/createagentorupdate`
+## Endpoint
 
-**Content-Type:** `multipart/form-data`
+**POST** `/api/v1/global/agents/update`
 
-**Authentication:** Required (Token header: `token` or `api_access_token`)
+## Authentication
 
-## Request Structure
+Include your API token in the request header:
 
-The endpoint accepts a `multipart/form-data` request with the following structure. Include `agent_id` in `basic_details` to perform an update:
+```
+token: <your_api_token>
+```
+
+or
+
+```
+api_access_token: <your_api_token>
+```
+
+## Request Body
 
 ```json
 {
-  "basic_details": {
-    "agent_id": 123,                    // Required for updates
-    "agent_name": "Updated Name",
-    "description": "Updated description",
-    "category": 1,
-    "purpose": 1,
-    "agent_type": 1,                    // 1=Voice, 2=Chat, 3=Telephony, 4=General
-    "chatbot_name": "Updated Bot",
-    "chatbot_welcome_message": "Welcome!",
-    "chatbot_image": "image_url",       // Can be uploaded as file
-    "agent_privacy": 0,                 // 0=Private, 1=Public
-    "agent_prompt": "Updated prompt...",
-    "voice_id": "KYiVPerWcenyBTIvWbfY",
-    "voice_provider": 1,
-    "transcriber_provider": 2,
-    "transcriber_language": "en",
-    "tone": "professional",
-    "style": "conversational",
-    "instruction_sensitivity": "medium"
-  },
-  "configuration": {
-    "agent_id": 123,                    // Required
-    "context_awareness": true,
-    "memory_recall": true,
-    "sentiment_analysis": true,
-    "interruption_handling": true,
-    "agent_terminate_instruction": "...",
-    "agent_terminate_messages": "..."
-  },
-  "knowledge_base": {
-    "agent_id": 123,                    // Required
-    "tools": [
-      { "id": 1, "isEnabled": true }
-    ],
-    "sub_agents": [
-      { "id": 2, "isEnabled": true }
-    ],
-    "text_knowledge_bases": [
-      { "name": "KB1", "content": "..." }
-    ]
-  },
-  "phone_numbers": ["+1234567890"],
-  "denials": {
-    "agent_id": 123,
-    "denied_words": ["word1", "word2"],
-    "denied_topics": ["topic1", "topic2"]
-  },
-  "dispositions_config": {
-    "dispositions": [...]
-  },
-  "guardrails": {
-    "agent_id": 123,
-    ...
-  },
-  "metadata_config": {
-    "metadata_input": ["field1", "field2"],
-    "metadata_output": ["field1", "field2"]
-  }
+  "agent_id": 123,
+  "agent_name": "Updated Agent Name",
+  "description": "Updated description",
+  "agent_prompt": "Updated prompt text",
+  "voice_id": "RXe6OFmxoC0nlSWpuCDy",
+  "voice_provider": 1,
+  "transcriber_provider": 2,
+  "transcriber_language": 1,
+  "transcriber_model": 16,
+  "calling_type": 1,
+  "purpose": 2,
+  "tts_model": "eleven_multilingual_v2",
+  "status": 1
 }
 ```
 
-**File Uploads:**
+## Required Fields
 
-- `basic_details[chatbot_image]` - Chatbot image file (replaces existing)
-- Knowledge base files (PDF, DOC, DOCX, XLSX, CSV) - Up to 3 files, max 10MB each
+| Field | Type | Description |
+|-------|------|-------------|
+| `agent_id` | integer | ID of the agent to update |
 
-## cURL Example
+## Optional Fields
 
-```bash
-curl -X POST "https://your-api-domain.com/api/agent/createagentorupdate" \
-  -H "token: YOUR_AUTH_TOKEN" \
-  -F "basic_details[agent_id]=123" \
-  -F "basic_details[agent_name]=Updated Agent Name" \
-  -F "basic_details[description]=Updated description" \
-  -F "basic_details[category]=1" \
-  -F "basic_details[purpose]=1" \
-  -F "basic_details[agent_type]=1" \
-  -F "basic_details[chatbot_name]=Updated Bot" \
-  -F "basic_details[chatbot_welcome_message]=Welcome! How can I help you?" \
-  -F "basic_details[chatbot_image]=@/path/to/image.png" \
-  -F "basic_details[agent_privacy]=0" \
-  -F "basic_details[agent_prompt]=Updated agent prompt" \
-  -F "basic_details[voice_id]=KYiVPerWcenyBTIvWbfY" \
-  -F "basic_details[voice_provider]=1" \
-  -F "basic_details[transcriber_provider]=2" \
-  -F "basic_details[transcriber_language]=en" \
-  -F "basic_details[tone]=professional" \
-  -F "basic_details[style]=conversational" \
-  -F "basic_details[instruction_sensitivity]=medium" \
-  -F "configuration[agent_id]=123" \
-  -F "configuration[context_awareness]=true" \
-  -F "configuration[memory_recall]=true" \
-  -F "configuration[sentiment_analysis]=true" \
-  -F "configuration[interruption_handling]=true" \
-  -F "configuration[agent_terminate_instruction]=End conversation politely" \
-  -F "configuration[agent_terminate_messages]=Thank you for contacting us" \
-  -F "knowledge_base[agent_id]=123" \
-  -F "knowledge_base[tools][0][id]=1" \
-  -F "knowledge_base[tools][0][isEnabled]=true" \
-  -F "knowledge_base[sub_agents][0][id]=2" \
-  -F "knowledge_base[sub_agents][0][isEnabled]=true" \
-  -F "knowledge_base[text_knowledge_bases][0][name]=KB1" \
-  -F "knowledge_base[text_knowledge_bases][0][content]=Updated knowledge base content" \
-  -F "FILE_KNOWLEDGE_BASES=@/path/to/document.pdf" \
-  -F "phone_numbers[]=+1234567890" \
-  -F "phone_numbers[]=+0987654321" \
-  -F "denials[agent_id]=123" \
-  -F "denials[denied_words][]=word1" \
-  -F "denials[denied_words][]=word2" \
-  -F "denials[denied_topics][]=topic1" \
-  -F "denials[denied_topics][]=topic2" \
-  -F "metadata_config[metadata_input][]=field1" \
-  -F "metadata_config[metadata_input][]=field2" \
-  -F "metadata_config[metadata_output][]=field1" \
-  -F "metadata_config[metadata_output][]=field2"
-```
+All fields from the Create Agent API are optional. Only include the fields you want to update:
 
-**Note:** Remove any fields you don't need to update. Only `basic_details[agent_id]` is required. All other fields are optional and only provided fields will be updated.
+| Field | Type | Description |
+|-------|------|-------------|
+| `agent_name` | string | Updated name of the agent |
+| `description` | string | Updated description |
+| `agent_prompt` | string | Updated system prompt/instructions |
+| `voice_id` | string | Updated voice ID (string format, e.g., "RXe6OFmxoC0nlSWpuCDy") |
+| `voice_id_json` | string | Updated voice ID JSON containing complete voice metadata |
+| `voice_provider` | integer | Updated voice provider ID (see Create Agent docs for options) |
+| `transcriber_provider` | integer | Updated speech-to-text provider ID (see Create Agent docs for options) |
+| `transcriber_language` | integer | Updated language ID (see Create Agent docs for options) |
+| `transcriber_model` | integer | Updated transcriber model ID (see Create Agent docs for Transcriber Models) |
+| `calling_type` | integer | Updated calling type (see Calling Types below) |
+| `purpose` | integer | Updated purpose ID (see Create Agent docs for Purpose Options) |
+| `tts_model` | string | Updated TTS (Text-to-Speech) model for voice synthesis (see Create Agent docs for TTS Models) |
+| `status` | integer | Updated agent status (see Agent Status below) |
 
-## Response
+## Agent Status
 
-### Success Response
+| ID | Status | Description |
+|----|--------|-------------|
+| 1 | **Active/Published** | Agent is active and available for calls |
+| 3 | **Draft/Unpublished** | Agent is inactive and not available for calls |
+
+**Note:** 
+- After creating an agent, it is created with status `3` (Draft). To activate the agent and make it available for calls, you must call the update API with `status: 1`.
+- The agent must have at least one phone number configured before it can be published (status = 1).
+
+## Calling Types
+
+**Important:** The `calling_type` field determines whether the agent makes outbound calls or receives inbound calls.
+
+| ID | Type | Description |
+|----|------|-------------|
+| 1 | **Outbound** | Agent makes calls to customers. Use this when you want the agent to initiate calls to phone numbers. |
+| 2 | **Inbound** | Agent receives calls from customers. Use this when customers call your phone numbers and the agent answers. |
+
+**Note:** 
+- For outbound calling (making calls to customers), use `calling_type: 1`
+- For inbound calling (receiving calls from customers), use `calling_type: 2`
+
+## Success Response
 
 **Status Code:** `200 OK`
 
 ```json
 {
-  "message": "Agent updated successfully",
+  "success": true,
+  "message": "Voice agent updated successfully",
   "data": {
-    "agent_id": 123
-  }
-}
-```
-
-### Error Responses
-
-#### 422 - Validation Error
-
-**Status Code:** `422 Unprocessable Entity`
-
-```json
-{
-  "error": true,
-  "code": 422,
-  "message": "Agent ID is missing",
-  "data": {}
-}
-```
-
-**Common Error Messages:**
-- `"Agent ID is missing"` - Required field `agent_id` is missing in `basic_details`
-- `"Agent ID is invalid"` - Invalid agent ID format
-- `"Agent not found"` - Agent with provided ID does not exist
-- `"Basic details are required"` - `basic_details` object is missing
-
-#### 401 - Authentication Error
-
-**Status Code:** `401 Unauthorized`
-
-```json
-{
-  "error": true,
-  "code": 401,
-  "message": "Invalid Auth Key or Session Expired",
-  "data": {}
-}
-```
-
-#### 500 - Server Error
-
-**Status Code:** `500 Internal Server Error`
-
-```json
-{
-  "error": true,
-  "code": 500,
-  "message": "Internal server error",
-  "data": {}
-}
-```
-
-## Error Codes
-
-| Status Code | Error Code | Description |
-|------------|------------|-------------|
-| 200 | - | Success |
-| 401 | AUTH_REQUIRED | Authentication required - Missing or invalid token |
-| 401 | AUTH_INVALID | Invalid authentication token or session expired |
-| 422 | VALIDATION_ERROR | Validation failed - Check required fields and data format |
-| 422 | MISSING_FIELD | Required field missing |
-| 422 | INVALID_FORMAT | Invalid data format or type |
-| 422 | AGENT_NOT_FOUND | Agent with provided ID does not exist |
-| 500 | SERVER_ERROR | Internal server error |
-
-## Update Behavior
-
-### Partial Updates
-
-- Only fields you provide will be updated
-- Fields not included in the request remain unchanged
-- You can update specific sections without affecting others
-
-**Example:**
-```json
-// Update only agent name
-{
-  "basic_details": {
     "agent_id": 123,
-    "agent_name": "New Name"
-  }
-}
-// All other fields remain unchanged
-```
-
-### Behavior Fields Merging
-
-When updating behavior fields (`tone`, `style`, `instruction_sensitivity`):
-- If you provide only one field, the others remain unchanged
-- Example: Updating only `tone` preserves existing `style` and `instruction_sensitivity`
-
-### Knowledge Base Updates
-
-- New files are added to existing knowledge base
-- Existing files remain unless explicitly removed
-- Tools and sub-agents can be enabled/disabled
-- Agent training status is reset when knowledge base is updated
-
-### Tools and Sub-agents
-
-- Existing tools/sub-agents are matched by ID
-- You can enable/disable existing tools/sub-agents
-- New tools/sub-agents can be added
-- Tools not included in the update remain unchanged
-
-## Additional Update Endpoints
-
-### Update Agent Status
-
-**Endpoint:** `POST /api/agent/status`
-
-**Request:**
-```json
-{
-  "agent_id": 123,
-  "status": 1  // 1=Published, 2=Deleted, 3=Unpublished
-}
-```
-
-**Response:**
-```json
-{
-  "message": "Agent Published Successfully",
-  "data": {
-    "id": 123,
-    "name": "Agent Name",
-    "status": 1
+    "agent_name": "Updated Agent Name"
   }
 }
 ```
 
-**Status Values:**
-- **1 (Published):** Agent is active and available for use
-- **2 (Deleted):** Agent is soft-deleted
-- **3 (Unpublished):** Agent is inactive but not deleted
+## Error Responses
 
-**Note:** Publishing a Telephony agent (type 3) requires at least one phone number to be assigned.
-
-### Update Knowledge Base Status
-
-**Endpoint:** `POST /api/agent/updateKnowledgeBaseStatus`
-
-**Request:**
+### 400 Bad Request
 ```json
 {
-  "knowledge_base_id": 456,
-  "status": 1  // 1=Active, 2=Deleted
+  "error": true,
+  "message": "Agent ID is required"
 }
 ```
 
-**Response:**
+### 401 Unauthorized
 ```json
 {
-  "message": "Knowledge base status updated successfully",
-  "data": {
-    "id": 456,
-    "name": "Knowledge Base Name",
-    "status": 1
-  }
+  "error": true,
+  "message": "Invalid Auth Key or Session Expired"
 }
 ```
 
-### Update Denied Word and Disposition Status
-
-**Endpoint:** `POST /api/agent/updateDeniedWordAndDisposition`
-
-**Request:**
+### 404 Not Found
 ```json
 {
-  "agent_id": 123,
-  "denied_word_id": 789,      // Optional: for denied word update
-  "disposition_id": 101,      // Optional: for disposition update
-  "status": 1                 // 1=Active, 2=Deleted
+  "error": true,
+  "message": "Agent not found"
 }
 ```
 
-**Response:**
+### 422 Unprocessable Entity
 ```json
 {
-  "message": "Denied word status updated successfully",
-  "data": {
-    "type": "denied_word",
-    "id": 789,
-    "word_topic": "word",
-    "status": 1
-  }
+  "error": true,
+  "message": "Validation error message"
 }
 ```
 
-## Important Notes
+## Example Request
 
-- `agent_id` is **required** in `basic_details` for all updates
-- All configuration sections are **optional** - only include what you want to update
-- Partial updates are supported - only provided fields are updated
-- File uploads replace existing files (chatbot image) or add new files (knowledge base)
-- Knowledge base updates reset agent training status
-- Updates are atomic - if any part fails, all changes are rolled back
-- All updates are tracked in change history for audit purposes
+```bash
+# Using agent_id in request body
+curl -X POST https://your-domain.com/api/v1/global/agents/update \
+  -H "Content-Type: application/json" \
+  -H "token: your_api_token_here" \
+  -d '{
+    "agent_id": 123,
+    "agent_name": "Updated Support Agent",
+    "agent_prompt": "You are an updated helpful support agent.",
+    "tts_model": "eleven_multilingual_v2"
+  }'
 
+# Or using agent_id as query parameter
+curl -X POST "https://your-domain.com/api/v1/global/agents/update?agent_id=123" \
+  -H "Content-Type: application/json" \
+  -H "token: your_api_token_here" \
+  -d '{
+    "agent_name": "Updated Support Agent",
+    "agent_prompt": "You are an updated helpful support agent."
+  }'
+```
+
+## Notes
+
+- Only include fields you want to update. Omitted fields will remain unchanged.
+- The agent must exist and belong to your workspace.
+- For available options for voice_provider, transcriber_provider, transcriber_language, tts_model, etc., refer to the Create Agent API documentation.
+- The `tts_model` field updates the TTS model in the agent configuration. If not provided, the existing TTS model configuration remains unchanged.
+- The `voice_id` field accepts a string value (e.g., "RXe6OFmxoC0nlSWpuCDy"), not an integer.
+- The `voice_id_json` field can be updated with complete voice metadata in JSON string format.
+- `voice_infra` is automatically set to 3 (Internal call) and cannot be changed via the API.
+- The `agent_id` can be provided either in the request body or as a query parameter.
+- **Important:** After creating an agent, it is created with status `3` (Draft). To activate the agent and make it available for calls, you must call the update API with `status: 1`. The agent must have at least one phone number configured before it can be published (status = 1).
