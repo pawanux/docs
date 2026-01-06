@@ -1,0 +1,196 @@
+---
+title: Make Call
+openapi: "api-reference/openapi.json POST /global/agents/call"
+---
+
+# Make Call API
+
+This documentation explains how to initiate a call using a voice agent.
+
+## Endpoint
+
+**POST** `/api/v1/global/agents/call`
+
+## Authentication
+
+Include your API token in the request header:
+
+```
+token: <your_api_token>
+```
+
+or
+
+```
+api_access_token: <your_api_token>
+```
+
+## Request Body
+
+```json
+{
+  "agent_id": 123,
+  "phone_number": "+1234567890",
+  "metadata": {
+    "customer_id": "CUST001",
+    "call_reason": "Follow-up",
+    "order_id": "ORD123"
+  }
+}
+```
+
+## Required Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `agent_id` | integer | ID of the agent to use for the call |
+| `phone_number` | string | Phone number to call. Must include country code with `+` prefix (e.g., `+1234567890`) |
+
+## Optional Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `metadata` | object | Additional metadata to pass with the call. Can include any custom key-value pairs |
+
+## Success Response
+
+**Status Code:** `200 OK`
+
+```json
+{
+  "success": true,
+  "message": "Call initiated successfully",
+  "data": {
+    "execution_id": "550e8400-e29b-41d4-a716-446655440000",
+    "agent_id": 123,
+    "phone_number": "+1234567890",
+    "call_status": "initiated"
+  }
+}
+```
+
+## Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `execution_id` | string | Unique identifier for this call execution. Use this to track the call |
+| `agent_id` | integer | ID of the agent used for the call |
+| `phone_number` | string | Phone number that was called |
+| `call_status` | string | Status of the call ("initiated") |
+
+## Error Responses
+
+### 400 Bad Request
+```json
+{
+  "error": true,
+  "message": "Phone Number is required"
+}
+```
+
+or
+
+```json
+{
+  "error": true,
+  "message": "Agent ID is required"
+}
+```
+
+### 401 Unauthorized
+```json
+{
+  "error": true,
+  "message": "Invalid Auth Key or Session Expired"
+}
+```
+
+### 404 Not Found
+```json
+{
+  "error": true,
+  "message": "Agent not found or not active"
+}
+```
+
+### 422 Unprocessable Entity
+```json
+{
+  "error": true,
+  "message": "Validation error message"
+}
+```
+
+## Example Request
+
+```bash
+curl -X POST https://your-domain.com/api/v1/global/agents/call \
+  -H "Content-Type: application/json" \
+  -H "token: your_api_token_here" \
+  -d '{
+    "agent_id": 123,
+    "phone_number": "+1234567890",
+    "metadata": {
+      "customer_id": "CUST001",
+      "call_reason": "Follow-up"
+    }
+  }'
+```
+
+## Important Notes
+
+### Phone Number Format
+- **Required:** Phone numbers must include country code with `+` prefix
+- **Correct:** `+1234567890`, `+919876543210`
+- **Incorrect:** `1234567890`, `919876543210` (missing `+`)
+
+The API will automatically add the `+` prefix if it's missing, but it's recommended to include it.
+
+### Agent Requirements
+- The agent must be **active** (status = 1) to make calls
+- Only voice agents (agent_type = 3) can be used for calls
+- The agent must belong to your workspace
+- For outbound calls (making calls to customers), the agent should have `calling_type: 1`
+- For inbound calls (receiving calls), the agent should have `calling_type: 2`
+
+### Calling Types
+
+| ID | Type | Description |
+|----|------|-------------|
+| 1 | **Outbound** | Agent makes calls to customers. Use this when you want the agent to initiate calls to phone numbers. |
+| 2 | **Inbound** | Agent receives calls from customers. Use this when customers call your phone numbers and the agent answers. |
+
+**Note:** When making calls using this API, ensure the agent's `calling_type` is set to `1` (Outbound) for outbound calling scenarios.
+
+### Execution ID
+- Store the `execution_id` returned in the response for tracking purposes
+- This ID can be used to query call status and details later
+
+### Metadata
+- The `metadata` field is optional but useful for passing context
+- Common use cases:
+  - Customer information
+  - Order details
+  - Call reason/purpose
+  - Custom tracking IDs
+- Metadata will be available during the call for the agent to reference
+
+## Best Practices
+
+1. **Validate Phone Numbers**: Ensure phone numbers are in correct format before making the call
+2. **Check Agent Status**: Verify the agent is active before initiating calls
+3. **Store Execution IDs**: Keep track of execution IDs for call monitoring and analytics
+4. **Use Metadata**: Pass relevant context in metadata for better call handling
+5. **Error Handling**: Implement proper error handling for failed call attempts
+6. **Rate Limiting**: Be mindful of rate limits when making multiple calls
+
+## Common Issues
+
+### Issue: "Agent not found or not active"
+- **Solution**: Verify the agent exists and has status = 1 (active). Use the Get Agent API to check status.
+
+### Issue: "Phone Number is required"
+- **Solution**: Ensure `phone_number` is included in the request body.
+
+### Issue: Invalid phone number format
+- **Solution**: Ensure phone number includes country code with `+` prefix (e.g., `+1234567890`).

@@ -113,86 +113,13 @@
             ]
           },
           {
-            "group": "Agents",
-            "pages": [
-              "api-reference/agents/create-agent",
-              "api-reference/agents/update-agent",
-              "api-reference/agents/delete-agent",
-              "api-reference/agents/agent-activity-logs"
-            ]
-          },
-          {
             "group": "Voice AI",
             "pages": [
               "api-reference/voice-ai/create-voice-agent",
               "api-reference/voice-ai/update-voice-agent",
               "api-reference/voice-ai/delete-voice-agent",
               "api-reference/voice-ai/list-voice-agents",
-              "api-reference/voice-ai/activity-logs"
-            ]
-          },
-          {
-            "group": "Phone Numbers",
-            "pages": [
-              "api-reference/phone-numbers/list-phone-numbers",
-              "api-reference/phone-numbers/import-phone-numbers"
-            ]
-          },
-          {
-            "group": "Voices",
-            "pages": [
-              "api-reference/voices/list-voices"
-            ]
-          },
-          {
-            "group": "Call Logs",
-            "pages": [
-              "api-reference/call-logs/get-call-logs",
-              "api-reference/call-logs/get-call-history",
-              "api-reference/call-logs/delete-call-history"
-            ]
-          },
-          {
-            "group": "Chatbots",
-            "pages": [
-              "api-reference/chatbots/create-chat-agent",
-              "api-reference/chatbots/update-chat-agent",
-              "api-reference/chatbots/delete-chat-agent",
-              "api-reference/chatbots/chatbot-list",
-              "api-reference/chatbots/list-conversations",
-              "api-reference/chatbots/conversations"
-            ]
-          },
-          {
-            "group": "Forms",
-            "pages": [
-              "api-reference/forms/create-form",
-              "api-reference/forms/update-form",
-              "api-reference/forms/delete-form",
-              "api-reference/forms/list-forms",
-              "api-reference/forms/list-form-data"
-            ]
-          },
-          {
-            "group": "Workflows",
-            "pages": [
-              "api-reference/workflows/workflow-list",
-              "api-reference/workflows/workflow"
-            ]
-          },
-          {
-            "group": "Workspaces",
-            "pages": [
-              "api-reference/workspaces/list-workspaces"
-            ]
-          },
-          {
-            "group": "Users",
-            "pages": [
-              "api-reference/users/create-user",
-              "api-reference/users/get-user",
-              "api-reference/users/list-user",
-              "api-reference/users/delete-user"
+              "api-reference/voice-ai/make-call"
             ]
           }
         ]
