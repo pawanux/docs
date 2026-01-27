@@ -1063,7 +1063,7 @@
       }
     },
 
-    "/global/generate-token": {
+    "/generate-token": {
       "post": {
         "summary": "Generate API token",
         "tags": ["Token"],
@@ -1096,7 +1096,7 @@
         }
       }
     },
-    "/global/get-token": {
+    "/get-token": {
       "get": {
         "summary": "Get API token details",
         "tags": ["Token"],
