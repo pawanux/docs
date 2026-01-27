@@ -1,0 +1,430 @@
+---
+title: Call Summary
+openapi: "api-reference/openapi.json GET /call-summary"
+---
+
+Retrieve detailed information about a specific call by providing the call ID. This endpoint returns comprehensive call details including calling number, duration, recording URL, call status, and call date.
+
+## API Endpoint
+
+**Endpoint:** `GET /api/v1/call-summary`
+
+**Authentication:** Required (Token header: `token` or `api_access_token`)
+
+## Query Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `call_id` | string | Yes | Unique identifier of the call |
+
+## Request Examples
+
+### cURL
+
+```bash
+# Get call summary by call ID
+curl -X GET "https://your-api-domain.com/api/v1/call-summary?call_id=call_abc123xyz" \
+  -H "token: YOUR_AUTH_TOKEN"
+```
+
+### JavaScript
+
+```javascript
+const getCallSummary = async (callId) => {
+  const response = await fetch(`https://your-api-domain.com/api/v1/call-summary?call_id=${callId}`, {
+    method: 'GET',
+    headers: {
+      'token': 'YOUR_AUTH_TOKEN'
+    }
+  });
+
+  const data = await response.json();
+  return data;
+};
+
+// Usage
+const summary = await getCallSummary('call_abc123xyz');
+console.log(summary);
+```
+
+### Python
+
+```python
+import requests
+
+def get_call_summary(call_id):
+    url = "https://your-api-domain.com/api/v1/call-summary"
+    params = {
+        "call_id": call_id
+    }
+    headers = {
+        "token": "YOUR_AUTH_TOKEN"
+    }
+    
+    response = requests.get(url, params=params, headers=headers)
+    return response.json()
+
+# Usage
+summary = get_call_summary("call_abc123xyz")
+print(summary)
+```
+
+### PHP
+
+```php
+<?php
+$call_id = "call_abc123xyz";
+$url = "https://your-api-domain.com/api/v1/call-summary?call_id=" . urlencode($call_id);
+
+$options = [
+    'http' => [
+        'header'  => "token: YOUR_AUTH_TOKEN\r\n",
+        'method'  => 'GET'
+    ]
+];
+
+$context  = stream_context_create($options);
+$result = file_get_contents($url, false, $context);
+$response = json_decode($result, true);
+
+print_r($response);
+?>
+```
+
+## Response
+
+### Success Response
+
+**Status Code:** `200 OK`
+
+```json
+{
+  "error": false,
+  "code": 200,
+  "message": "Call summary retrieved successfully",
+  "timestamp": 1769244619292,
+  "data": {
+    "call_id": "call_abc123xyz",
+    "calling_number": "+918062810341",
+    "called_number": "+12025551234",
+    "agent_id": "agent_xyz789",
+    "agent_name": "Customer Support Agent",
+    "total_duration": 245,
+    "duration_formatted": "4 minutes 5 seconds",
+    "recording_url": "https://storage.googleapis.com/recordings/call_abc123xyz.mp3",
+    "call_status": "completed",
+    "call_date": "2026-01-24T10:30:19Z",
+    "call_date_formatted": "January 24, 2026 at 10:30 AM",
+    "direction": "outbound",
+    "provider": "san",
+    "cost": 0.15,
+    "currency": "USD",
+    "transcript": {
+      "available": true,
+      "url": "https://storage.googleapis.com/transcripts/call_abc123xyz.json"
+    },
+    "metadata": {
+      "customer_id": "cust_123",
+      "order_id": "ORD-456",
+      "custom_field": "value"
+    },
+    "started_at": "2026-01-24T10:30:19Z",
+    "ended_at": "2026-01-24T10:34:24Z",
+    "timezone": "America/New_York"
+  }
+}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `error` | boolean | Indicates if there was an error (false for success) |
+| `code` | integer | HTTP status code |
+| `message` | string | Success or error message |
+| `timestamp` | integer | Unix timestamp in milliseconds |
+| `data` | object | Call summary data object |
+| `data.call_id` | string | Unique identifier of the call |
+| `data.calling_number` | string | Phone number that initiated the call (in E.164 format) |
+| `data.called_number` | string | Phone number that received the call (in E.164 format) |
+| `data.agent_id` | string | ID of the agent that handled the call |
+| `data.agent_name` | string | Name of the agent that handled the call |
+| `data.total_duration` | integer | Total call duration in seconds |
+| `data.duration_formatted` | string | Human-readable duration (e.g., "4 minutes 5 seconds") |
+| `data.recording_url` | string | URL to download or stream the call recording (may be null if recording not available) |
+| `data.call_status` | string | Status of the call (see Call Status below) |
+| `data.call_date` | string | ISO 8601 timestamp of when the call was made |
+| `data.call_date_formatted` | string | Human-readable date and time |
+| `data.direction` | string | Call direction: `inbound` or `outbound` |
+| `data.provider` | string | Telephony provider used for the call |
+| `data.cost` | number | Cost of the call (if applicable) |
+| `data.currency` | string | Currency code for the cost (e.g., "USD", "INR") |
+| `data.transcript` | object | Transcript information (see Transcript Object below) |
+| `data.metadata` | object | Custom metadata associated with the call |
+| `data.started_at` | string | ISO 8601 timestamp when call started |
+| `data.ended_at` | string | ISO 8601 timestamp when call ended |
+| `data.timezone` | string | Timezone of the call date |
+
+### Transcript Object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `available` | boolean | Whether transcript is available |
+| `url` | string | URL to download the transcript (may be null if not available) |
+
+## Call Status Values
+
+| Status | Description |
+|--------|-------------|
+| `initiated` | Call has been initiated but not yet connected |
+| `ringing` | Call is ringing |
+| `answered` | Call has been answered |
+| `in_progress` | Call is currently in progress |
+| `completed` | Call completed successfully |
+| `failed` | Call failed to connect |
+| `busy` | Called number was busy |
+| `no_answer` | Call was not answered |
+| `cancelled` | Call was cancelled |
+| `rejected` | Call was rejected |
+| `timeout` | Call timed out |
+
+## Error Responses
+
+### 400 - Bad Request
+
+**Status Code:** `400 Bad Request`
+
+```json
+{
+  "error": true,
+  "code": 400,
+  "message": "Call ID is required",
+  "data": {}
+}
+```
+
+**Common error messages:**
+- `"Call ID is required"`
+- `"Invalid call ID format"`
+
+### 401 - Authentication Error
+
+**Status Code:** `401 Unauthorized`
+
+```json
+{
+  "error": true,
+  "code": 401,
+  "message": "Invalid Auth Key or Session Expired",
+  "data": {}
+}
+```
+
+### 404 - Call Not Found
+
+**Status Code:** `404 Not Found`
+
+```json
+{
+  "error": true,
+  "code": 404,
+  "message": "Call not found",
+  "data": {}
+}
+```
+
+### 500 - Server Error
+
+**Status Code:** `500 Internal Server Error`
+
+```json
+{
+  "error": true,
+  "code": 500,
+  "message": "Internal server error",
+  "data": {}
+}
+```
+
+## Usage Examples
+
+### Example 1: Get Call Summary and Display Details
+
+```javascript
+const displayCallSummary = async (callId) => {
+  try {
+    const response = await fetch(`https://your-api-domain.com/api/v1/call-summary?call_id=${callId}`, {
+      headers: { 'token': 'YOUR_AUTH_TOKEN' }
+    });
+    
+    const result = await response.json();
+    
+    if (result.error) {
+      console.error('Error:', result.message);
+      return;
+    }
+    
+    const call = result.data;
+    
+    console.log('Call Summary:');
+    console.log(`Call ID: ${call.call_id}`);
+    console.log(`From: ${call.calling_number}`);
+    console.log(`To: ${call.called_number}`);
+    console.log(`Duration: ${call.duration_formatted}`);
+    console.log(`Status: ${call.call_status}`);
+    console.log(`Date: ${call.call_date_formatted}`);
+    console.log(`Recording: ${call.recording_url || 'Not available'}`);
+    
+    return call;
+  } catch (error) {
+    console.error('Failed to fetch call summary:', error);
+  }
+};
+
+displayCallSummary('call_abc123xyz');
+```
+
+### Example 2: Download Call Recording
+
+```python
+import requests
+import os
+
+def download_call_recording(call_id, save_path=None):
+    """Get call summary and download recording if available"""
+    
+    # Get call summary
+    url = "https://your-api-domain.com/api/v1/call-summary"
+    params = {"call_id": call_id}
+    headers = {"token": "YOUR_AUTH_TOKEN"}
+    
+    response = requests.get(url, params=params, headers=headers)
+    data = response.json()
+    
+    if data.get('error'):
+        print(f"Error: {data.get('message')}")
+        return None
+    
+    call = data['data']
+    recording_url = call.get('recording_url')
+    
+    if not recording_url:
+        print("No recording available for this call")
+        return None
+    
+    # Download recording
+    if not save_path:
+        save_path = f"{call_id}.mp3"
+    
+    recording_response = requests.get(recording_url)
+    
+    if recording_response.status_code == 200:
+        with open(save_path, 'wb') as f:
+            f.write(recording_response.content)
+        print(f"Recording saved to {save_path}")
+        return save_path
+    else:
+        print(f"Failed to download recording: {recording_response.status_code}")
+        return None
+
+# Usage
+download_call_recording("call_abc123xyz", "call_recording.mp3")
+```
+
+### Example 3: Get Multiple Call Summaries
+
+```javascript
+const getMultipleCallSummaries = async (callIds) => {
+  const summaries = await Promise.all(
+    callIds.map(async (callId) => {
+      try {
+        const response = await fetch(
+          `https://your-api-domain.com/api/v1/call-summary?call_id=${callId}`,
+          { headers: { 'token': 'YOUR_AUTH_TOKEN' } }
+        );
+        const data = await response.json();
+        return data.error ? null : data.data;
+      } catch (error) {
+        console.error(`Error fetching call ${callId}:`, error);
+        return null;
+      }
+    })
+  );
+  
+  return summaries.filter(summary => summary !== null);
+};
+
+// Usage
+const callIds = ['call_abc123', 'call_xyz789', 'call_def456'];
+const summaries = await getMultipleCallSummaries(callIds);
+console.log(`Retrieved ${summaries.length} call summaries`);
+```
+
+### Example 4: Calculate Total Call Duration
+
+```python
+import requests
+from datetime import timedelta
+
+def calculate_total_duration(call_ids):
+    """Calculate total duration across multiple calls"""
+    
+    total_seconds = 0
+    successful_calls = 0
+    
+    for call_id in call_ids:
+        url = "https://your-api-domain.com/api/v1/call-summary"
+        params = {"call_id": call_id}
+        headers = {"token": "YOUR_AUTH_TOKEN"}
+        
+        response = requests.get(url, params=params, headers=headers)
+        data = response.json()
+        
+        if not data.get('error') and data.get('data'):
+            duration = data['data'].get('total_duration', 0)
+            total_seconds += duration
+            successful_calls += 1
+    
+    # Format total duration
+    duration = timedelta(seconds=total_seconds)
+    hours, remainder = divmod(duration.seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    
+    return {
+        "total_seconds": total_seconds,
+        "formatted": f"{hours} hours, {minutes} minutes, {seconds} seconds",
+        "total_calls": successful_calls,
+        "average_duration": total_seconds / successful_calls if successful_calls > 0 else 0
+    }
+
+# Usage
+call_ids = ["call_abc123", "call_xyz789", "call_def456"]
+stats = calculate_total_duration(call_ids)
+print(f"Total Duration: {stats['formatted']}")
+print(f"Average Duration: {stats['average_duration']:.2f} seconds")
+```
+
+## Important Notes
+
+1. **Call ID Format**: The call ID is typically provided when a call is initiated via the [Make Call API](/api-reference/voice-ai/make-call) or can be retrieved from the [Call Logs API](/api-reference/call-logs/get-call-logs).
+
+2. **Recording Availability**: Call recordings may not be available immediately after a call ends. There may be a processing delay before the recording URL is available.
+
+3. **Transcript Availability**: Transcripts are generated asynchronously and may not be available immediately. Check the `transcript.available` field before accessing the transcript URL.
+
+4. **Duration Format**: The `total_duration` is in seconds. Use `duration_formatted` for human-readable format.
+
+5. **Timezone**: All timestamps are returned in ISO 8601 format. The `timezone` field indicates the timezone context of the call.
+
+6. **Cost Information**: Cost information is only available for outbound calls and depends on your pricing plan and provider.
+
+7. **Metadata**: Custom metadata passed during call initiation (via the Make Call API) will be returned in the `metadata` field.
+
+8. **Rate Limits**: API calls are subject to rate limiting based on your plan.
+
+## Related Endpoints
+
+- [Get Call Logs](/api-reference/call-logs/get-call-logs) - List all calls with pagination
+- [Get Call History](/api-reference/call-logs/get-call-history) - Get call history for specific filters
+- [Make Call](/api-reference/voice-ai/make-call) - Initiate a new call
+- [Delete Call History](/api-reference/call-logs/delete-call-history) - Delete call records

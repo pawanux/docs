@@ -7,9 +7,7 @@ Retrieve a list of all available voices from various voice providers for your vo
 
 ## API Endpoint
 
-**GET** `/api/v1/global/voice-list`
-
-**Content-Type:** `application/json`
+**Endpoint:** `GET /api/voice-list`
 
 **Authentication:** Required (Token header: `token` or `api_access_token`)
 
@@ -17,11 +15,12 @@ Retrieve a list of all available voices from various voice providers for your vo
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `provider_id` | string | Yes | Voice provider identifier. Supported values: `elevenlabs`, `openai`, `deepgram`, `sarvam` |
+| `provider` | string | Yes | Voice provider name. Supported values: `elevenlabs`, `openai`, `deepgram`, `sarvam` |
 | `page_token` | string | No | Token for pagination to retrieve the next page of results |
 | `limit` | integer | No | Number of voices to return per page (default varies by provider) |
 
 
+```json
 {
   "error": false,
   "code": 200,
@@ -101,14 +100,10 @@ Retrieve a list of all available voices from various voice providers for your vo
 {
   "error": true,
   "code": 400,
-  "message": "Provider ID is required",
+  "message": "Provider parameter is required",
   "data": {}
 }
 ```
-
-**Common error messages:**
-- `"Provider ID is required"`
-- `"Invalid provider ID. Supported values: elevenlabs, openai, deepgram, sarvam"`
 
 ### 401 - Authentication Error
 
@@ -154,7 +149,7 @@ Retrieve a list of all available voices from various voice providers for your vo
 When `has_more` is `true`, use the `next_page_token` value in your next request to fetch the next page of voices:
 
 ```bash
-curl -X GET "https://your-api-domain.com/api/v1/voice-list?provider_id=elevenlabs&page_token=YOUR_NEXT_PAGE_TOKEN" \
+curl -X GET "https://your-api-domain.com/api/voice-list?provider=elevenlabs&page_token=YOUR_NEXT_PAGE_TOKEN" \
   -H "token: YOUR_AUTH_TOKEN"
 ```
 
@@ -167,41 +162,22 @@ curl -X GET "https://your-api-domain.com/api/v1/voice-list?provider_id=elevenlab
 | Deepgram | `deepgram` | Fast, accurate voice synthesis |
 | Sarvam | `sarvam` | Multilingual voices optimized for Indian languages |
 
-## Important Notes
+## Usage Notes
 
-1. **Provider ID**: The `provider_id` parameter is **required** and must be one of: `elevenlabs`, `openai`, `deepgram`, or `sarvam`
-
-2. **Voice ID Usage**: Use the `id` field from the voice object when creating or updating agents with the `voice_id` parameter
-
-3. **Voice Preview**: Preview voices using the `url` field before selecting one for your agent
-
-4. **Filtering**: Filter voices by `language`, `gender`, or `age` in your application logic
-
-5. **Voice Categories**: The `category` field helps identify voice types (`professional` for business use, `premade` for general purpose)
-
-6. **Rate Limits**: Some providers may have rate limits on voice listing; implement caching when possible
-
-7. **Pagination**: Use `next_page_token` to retrieve additional pages when `has_more` is `true`
+- Use the `id` field from the voice object when creating or updating agents with the `voice_id` parameter
+- Preview voices using the `url` field before selecting one for your agent
+- Filter voices by `language`, `gender`, or `age` in your application logic
+- The `category` field helps identify voice types (`professional` for business use, `premade` for general purpose)
+- Some providers may have rate limits on voice listing; implement caching when possible
 
 ## Example: Using Voice ID in Agent Creation
 
 After fetching voices, use the voice `id` when creating an agent:
 
 ```bash
-curl -X POST "https://your-api-domain.com/api/v1/global/agents" \
-  -H "Content-Type: application/json" \
-  -H "authorization: YOUR_API_KEY" \
-  -d '{
-    "agent_name": "My Agent",
-    "prompt": "You are a helpful assistant.",
-    "voice": {
-      "provider": "elevenlabs",
-      "voice_id": "s3I1dCXC0u6BYPeTyp1u"
-    }
-  }'
+curl -X POST "https://your-api-domain.com/api/agent/createagentorupdate" \
+  -H "token: YOUR_AUTH_TOKEN" \
+  -F "basic_details[agent_name]=My Agent" \
+  -F "basic_details[voice_id]=s3I1dCXC0u6BYPeTyp1u" \
+  -F "basic_details[voice_provider]=1"
 ```
-
-## Related Endpoints
-
-- [Create Voice Agent](/api-reference/voice-ai/create-voice-agent) - Create a new voice agent with selected voice
-- [Update Voice Agent](/api-reference/voice-ai/update-voice-agent) - Update agent voice configuration

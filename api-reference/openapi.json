@@ -6,7 +6,7 @@
     "description": "UnleashX - Your home for human like conversations"
   },
   "servers": [
-    { "url": "https://www.tryunleashx.com/api/v1/" }
+    { "url": "https://www.tryunleashx.com/api/v1/global/" }
   ],
   "security": [ { "bearerAuth": [] } ],
   
@@ -336,6 +336,72 @@
         }
       }
     },
+    "/global/agents/attach-phone-number": {
+      "post": {
+        "summary": "Attach phone numbers to an agent",
+        "tags": ["Voice AI"],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["agent_id", "phone_number"],
+                "properties": {
+                  "agent_id": {
+                    "type": "integer",
+                    "description": "ID of the agent to attach phone numbers to"
+                  },
+                  "phone_number": {
+                    "type": "array",
+                    "description": "Phone numbers to attach to the agent. Must include country code with + prefix (e.g., '+1234567890')"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { 
+            "description": "Numbers attached successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "message": { "type": "string" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "agent_id": { "type": "integer" },
+                        "phone_numbers": { "type": "array", "items": { "type": "string" } }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Bad Request - Phone Number or Agent ID is required" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Agent not found or not active" },
+          "422": { "description": "Validation error" }
+        }
+      }
+    },
     "/global/agents": {
       "post": {
         "summary": "Create voice agent",
@@ -559,6 +625,76 @@
         "summary": "Delete call history",
         "tags": ["Call Logs"],
         "responses": { "204": { "description": "Deleted" } }
+      }
+    },
+    "/call-summary": {
+      "get": {
+        "summary": "Get call summary",
+        "tags": ["Call Logs"],
+        "parameters": [
+          {
+            "name": "call_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Unique identifier of the call"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Call summary retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": { "type": "boolean" },
+                    "code": { "type": "integer" },
+                    "message": { "type": "string" },
+                    "timestamp": { "type": "integer" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "call_id": { "type": "string" },
+                        "calling_number": { "type": "string" },
+                        "called_number": { "type": "string" },
+                        "agent_id": { "type": "string" },
+                        "agent_name": { "type": "string" },
+                        "total_duration": { "type": "integer" },
+                        "duration_formatted": { "type": "string" },
+                        "recording_url": { "type": "string" },
+                        "call_status": { "type": "string" },
+                        "call_date": { "type": "string" },
+                        "call_date_formatted": { "type": "string" },
+                        "direction": { "type": "string" },
+                        "provider": { "type": "string" },
+                        "cost": { "type": "number" },
+                        "currency": { "type": "string" },
+                        "transcript": {
+                          "type": "object",
+                          "properties": {
+                            "available": { "type": "boolean" },
+                            "url": { "type": "string" }
+                          }
+                        },
+                        "metadata": { "type": "object" },
+                        "started_at": { "type": "string" },
+                        "ended_at": { "type": "string" },
+                        "timezone": { "type": "string" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Bad Request - Call ID is required" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Call not found" },
+          "500": { "description": "Internal Server Error" }
+        }
       }
     },
 
@@ -833,11 +969,89 @@
       }
     },
 
-    "/voice/all": {
+    "/voice-list": {
       "get": {
         "summary": "List voices",
         "tags": ["Voices"],
-        "responses": { "200": { "description": "OK" } }
+        "parameters": [
+          {
+            "name": "provider_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["elevenlabs", "openai", "deepgram", "sarvam"]
+            },
+            "description": "Voice provider identifier"
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token for pagination to retrieve the next page of results"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Number of voices to return per page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": { "type": "boolean" },
+                    "code": { "type": "integer" },
+                    "message": { "type": "string" },
+                    "timestamp": { "type": "integer" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "provider_id": { "type": "string" },
+                        "provider_name": { "type": "string" },
+                        "total_count": { "type": "integer" },
+                        "next_page_token": { "type": "string" },
+                        "has_more": { "type": "boolean" },
+                        "voices": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": { "type": "string" },
+                              "title": { "type": "string" },
+                              "category": { "type": "string" },
+                              "description": { "type": "string" },
+                              "url": { "type": "string" },
+                              "language": { "type": "string" },
+                              "age": { "type": "string" },
+                              "gender": { "type": "string" },
+                              "image": { "type": "string", "nullable": true }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Bad Request - Provider ID is required" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Provider not found" },
+          "500": { "description": "Internal Server Error" }
+        }
       }
     },
 

@@ -1,4 +1,183 @@
 ---
 title: List Phone Numbers
-openapi: "api-reference/openapi.json GET /phone-number/all"
---- 
+openapi: "api-reference/openapi.json GET /list-phone-numbers"
+---
+
+Retrieve a list of all available phone numbers from various telephony providers. This endpoint returns phone numbers grouped by provider, allowing you to manage and assign numbers to your voice agents.
+
+## API Endpoint
+
+**GET** `/api/v1/global/list-phone-numbers`
+
+**Content-Type:** `application/json`
+
+**Authentication:** Required (Token header: `token` or `api_access_token`)
+
+## Query Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `provider` | string | No | Filter by specific provider. Supported values: `san`, `ozonetell`, `twilio`, `exotel` |
+| `number_type` | string | No | Filter by number type: `local`, `toll_free`, `mobile` |
+
+## Response
+
+### Success Response
+
+**Status Code:** `200 OK`
+
+```json
+{
+  "error": false,
+  "code": 200,
+  "message": "",
+  "timestamp": 1769244619292,
+  "data": {
+    "providers": {
+      "San Software": [
+        {
+          "number": "+9180********",
+          "label_name": null,
+          "number_purpose": null
+        },
+        {
+          "number": "+9180********",
+          "label_name": null,
+          "number_purpose": null
+        },
+        {
+          "number": "+9180********",
+          "label_name": "Sales Team",
+          "number_purpose": "TEST"
+        }
+      ],
+      "Ozonetell": [
+        {
+          "number": "+9180********",
+          "label_name": null,
+          "number_purpose": null
+        }
+      ],
+      "Twilio": [
+        {
+          "number": "+120********",
+          "label_name": "Customer Support",
+          "number_purpose": "PRODUCTION"
+        }
+      ],
+      "Exotel": [
+        {
+          "number": "+9198********",
+          "label_name": "Marketing",
+          "number_purpose": "OUTBOUND"
+        }
+      ]
+    }
+  }
+}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `error` | boolean | Indicates if there was an error |
+| `code` | integer | HTTP status code |
+| `message` | string | Success or error message |
+| `timestamp` | integer | Unix timestamp in milliseconds |
+| `data` | object | Response data object |
+| `data.providers` | object | Phone numbers grouped by provider name |
+
+### Phone Number Object Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `number` | string | Phone number in E.164 format (e.g., +918062810341) |
+| `label_name` | string | Custom label assigned to the number (nullable) 
+
+### Common Number Purpose Values
+
+| Purpose | Description |
+|---------|-------------|
+| `TEST` | Number used for testing purposes |
+| `PRODUCTION` | Number used in production environment |
+| `OUTBOUND` | Number dedicated for outbound calls |
+| `INBOUND` | Number dedicated for inbound calls |
+| `SUPPORT` | Number for customer support |
+| `SALES` | Number for sales operations |
+
+## Error Responses
+
+### 401 - Authentication Error
+
+**Status Code:** `401 Unauthorized`
+
+```json
+{
+  "error": true,
+  "code": 401,
+  "message": "Invalid Auth Key or Session Expired",
+  "data": {}
+}
+```
+
+### 404 - No Numbers Found
+
+**Status Code:** `404 Not Found`
+
+```json
+{
+  "error": true,
+  "code": 404,
+  "message": "No phone numbers found",
+  "data": {}
+}
+```
+
+### 500 - Server Error
+
+**Status Code:** `500 Internal Server Error`
+
+```json
+{
+  "error": true,
+  "code": 500,
+  "message": "Internal server error",
+  "data": {}
+}
+```
+
+## Supported Providers
+
+| Provider | Key | Description |
+|----------|-----|-------------|
+| San Software | `san` | San Software telephony platform |
+| Ozonetell | `ozonetell` | Ozonetell cloud communication platform |
+| Twilio | `twilio` | Global cloud communications platform |
+| Exotel | `exotel` | Leading cloud telephony provider in India |
+| Telnyx | `telnyx` | Global carrier network provider |
+| Vonage | `vonage` | Cloud communications platform |
+
+
+
+## Important Notes
+
+1. **Phone Number Format**: Phone numbers are returned in **E.164 format** (e.g., +918062810341)
+
+2. **Provider Grouping**: Numbers are **grouped by provider** for easy organization
+
+3. **Label Management**: `label_name` can be used to identify numbers by custom names
+
+5. **Available Numbers**: Numbers without a `number_purpose` are typically available for new assignments
+
+6. **Provider Setup**: Some providers may require additional setup before numbers can be used
+
+7. **Permissions**: Ensure you have proper permissions and provider configurations before using numbers
+
+8. **Rate Limits**: API calls are subject to rate limiting based on your plan
+
+## Related Endpoints
+
+- [Attach Phone Number](/api-reference/voice-ai/attach-phone-number) - Assign phone numbers to voice agents
+- [Create Voice Agent](/api-reference/voice-ai/create-voice-agent) - Create a new voice agent
+- [Update Voice Agent](/api-reference/voice-ai/update-voice-agent) - Update agent configuration 
