@@ -1,6 +1,6 @@
 ---
 title: Attach Phone Number
-openapi: "api-reference/openapi.json POST /global/agents/attach-phone-number"
+openapi: "api-reference/openapi.json POST /attach-phone-numbers"
 ---
 
 Attach or assign phone numbers to voice agents to enable inbound and outbound calling capabilities. This endpoint allows you to connect phone numbers from various telephony providers to your voice agents.
@@ -19,7 +19,7 @@ Attach or assign phone numbers to voice agents to enable inbound and outbound ca
 {
   "agent_id": "agent_abc123xyz",
   "provider": "san",
-  "phone_number": "+918062810341"
+  "numbers": ["+918062810341"]
 }
 ```
 
@@ -29,7 +29,7 @@ Attach or assign phone numbers to voice agents to enable inbound and outbound ca
 |-----------|------|----------|-------------|
 | `agent_id` | string | Yes | Unique identifier of the voice agent |
 | `provider` | string | Yes | Telephony provider name (see supported providers below) |
-| `phone_number` | string | Yes | Phone number in E.164 format (e.g., +918062810341) |
+| `numbers` | array | Yes | Phone numbers in E.164 format (e.g., `["+918062810341"]`). Provide one or more numbers. |
 
 ## Supported Providers
 
@@ -56,7 +56,7 @@ curl -X POST "https://your-api-domain.com/api/agent/attach-phone-number" \
   -d '{
     "agent_id": "agent_abc123xyz",
     "provider": "san",
-    "phone_number": "+918062810341"
+    "numbers": ["+918062810341"]
   }'
 
 # Attach Twilio number to agent
@@ -66,7 +66,7 @@ curl -X POST "https://your-api-domain.com/api/agent/attach-phone-number" \
   -d '{
     "agent_id": "agent_abc123xyz",
     "provider": "twilio",
-    "phone_number": "+12025551234"
+    "numbers": ["+12025551234"]
   }'
 
 # Attach Exotel number to agent
@@ -76,56 +76,9 @@ curl -X POST "https://your-api-domain.com/api/agent/attach-phone-number" \
   -d '{
     "agent_id": "agent_abc123xyz",
     "provider": "exotel",
-    "phone_number": "+919876543210"
+    "numbers": ["+919876543210"]
   }'
 ```
-
-### JavaScript
-
-```javascript
-const attachPhoneNumber = async () => {
-  const response = await fetch('https://your-api-domain.com/api/agent/attach-phone-number', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'token': 'YOUR_AUTH_TOKEN'
-    },
-    body: JSON.stringify({
-      agent_id: 'agent_abc123xyz',
-      provider: 'san',
-      phone_number: '+918062810341'
-    })
-  });
-
-  const data = await response.json();
-  console.log(data);
-  return data;
-};
-
-attachPhoneNumber();
-```
-
-### Python
-
-```python
-import requests
-
-url = "https://your-api-domain.com/api/agent/attach-phone-number"
-headers = {
-    "Content-Type": "application/json",
-    "token": "YOUR_AUTH_TOKEN"
-}
-payload = {
-    "agent_id": "agent_abc123xyz",
-    "provider": "san",
-    "phone_number": "+918062810341"
-}
-
-response = requests.post(url, json=payload, headers=headers)
-data = response.json()
-print(data)
-```
-
 ### PHP
 
 ```php
@@ -135,7 +88,7 @@ $url = "https://your-api-domain.com/api/agent/attach-phone-number";
 $data = [
     "agent_id" => "agent_abc123xyz",
     "provider" => "san",
-    "phone_number" => "+918062810341"
+    "numbers" => ["+918062810341"]
 ];
 
 $options = [
@@ -169,7 +122,7 @@ print_r($response);
   "timestamp": 1769244619292,
   "data": {
     "agent_id": "agent_abc123xyz",
-    "phone_number": "+918062810341",
+    "phone_numbers": ["+918062810341"],
     "provider": "san",
     "attached_at": "2026-01-24T10:30:19Z",
     "status": "active"
@@ -187,7 +140,7 @@ print_r($response);
 | `timestamp` | integer | Unix timestamp in milliseconds |
 | `data` | object | Response data object |
 | `data.agent_id` | string | ID of the agent |
-| `data.phone_number` | string | Attached phone number in E.164 format |
+| `data.phone_numbers` | array | Attached phone numbers in E.164 format |
 | `data.provider` | string | Telephony provider |
 | `data.attached_at` | string | ISO 8601 timestamp of attachment |
 | `data.status` | string | Status of the phone number (`active`, `pending`, `inactive`) |
@@ -210,7 +163,7 @@ print_r($response);
 **Common error messages:**
 - `"Agent ID is required"`
 - `"Provider is required"`
-- `"Phone number is required"`
+- `"Phone number(s) are required"`
 - `"Invalid phone number format. Use E.164 format"`
 - `"Phone number is already attached to another agent"`
 - `"Provider not configured for your account"`
@@ -308,181 +261,7 @@ Phone numbers **must** be in **E.164 format**:
 
 ## Usage Examples
 
-### Example 1: Get Phone Numbers and Attach to Agent
-
-```javascript
-// Step 1: Get available phone numbers
-const getAvailableNumbers = async () => {
-  const response = await fetch('https://your-api-domain.com/api/phone-number/all', {
-    headers: { 'token': 'YOUR_AUTH_TOKEN' }
-  });
-  const data = await response.json();
-  return data;
-};
-
-// Step 2: Find unattached numbers
-const findUnattachedNumbers = (phoneData) => {
-  const availableNumbers = [];
-  
-  Object.entries(phoneData.data.providers).forEach(([provider, numbers]) => {
-    numbers.forEach(num => {
-      if (!num.number_purpose) {
-        availableNumbers.push({
-          provider: provider.toLowerCase().replace(' ', ''),
-          number: num.number
-        });
-      }
-    });
-  });
-  
-  return availableNumbers;
-};
-
-// Step 3: Attach number to agent
-const attachNumber = async (agentId, provider, phoneNumber) => {
-  const response = await fetch('https://your-api-domain.com/api/agent/attach-phone-number', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'token': 'YOUR_AUTH_TOKEN'
-    },
-    body: JSON.stringify({
-      agent_id: agentId,
-      provider: provider,
-      phone_number: phoneNumber
-    })
-  });
-  
-  return await response.json();
-};
-
-// Complete workflow
-const setupAgentPhoneNumber = async (agentId) => {
-  try {
-    // Get available numbers
-    const phoneData = await getAvailableNumbers();
-    const availableNumbers = findUnattachedNumbers(phoneData);
-    
-    if (availableNumbers.length === 0) {
-      console.log('No available numbers found');
-      return;
-    }
-    
-    // Attach first available number
-    const { provider, number } = availableNumbers[0];
-    const result = await attachNumber(agentId, provider, number);
-    
-    console.log('Phone number attached:', result);
-  } catch (error) {
-    console.error('Error:', error);
-  }
-};
-
-setupAgentPhoneNumber('agent_abc123xyz');
-```
-
-### Example 2: Attach Multiple Numbers to Agent
-
-```python
-import requests
-
-def attach_multiple_numbers(agent_id, phone_numbers):
-    """
-    Attach multiple phone numbers to a single agent
-    
-    Args:
-        agent_id: ID of the agent
-        phone_numbers: List of tuples (provider, phone_number)
-    """
-    url = "https://your-api-domain.com/api/agent/attach-phone-number"
-    headers = {
-        "Content-Type": "application/json",
-        "token": "YOUR_AUTH_TOKEN"
-    }
-    
-    results = []
-    
-    for provider, phone_number in phone_numbers:
-        payload = {
-            "agent_id": agent_id,
-            "provider": provider,
-            "phone_number": phone_number
-        }
-        
-        response = requests.post(url, json=payload, headers=headers)
-        results.append(response.json())
-    
-    return results
-
-# Attach multiple numbers
-numbers = [
-    ("san", "+918062810341"),
-    ("san", "+918062810342"),
-    ("twilio", "+12025551234")
-]
-
-results = attach_multiple_numbers("agent_abc123xyz", numbers)
-
-for result in results:
-    if result.get('error') == False:
-        print(f"✓ Attached: {result['data']['phone_number']}")
-    else:
-        print(f"✗ Failed: {result.get('message')}")
-```
-
-### Example 3: Validate and Attach Number
-
-```python
-import re
-import requests
-
-def is_valid_e164(phone_number):
-    """Validate E.164 phone number format"""
-    pattern = r'^\+[1-9]\d{1,14}$'
-    return bool(re.match(pattern, phone_number))
-
-def attach_phone_with_validation(agent_id, provider, phone_number):
-    """Attach phone number with validation"""
-    
-    # Validate phone number format
-    if not is_valid_e164(phone_number):
-        return {
-            "error": True,
-            "message": f"Invalid phone number format: {phone_number}. Use E.164 format (e.g., +918062810341)"
-        }
-    
-    # Validate provider
-    valid_providers = ["san", "ozonetell", "twilio", "exotel", "telnyx", "vonage"]
-    if provider.lower() not in valid_providers:
-        return {
-            "error": True,
-            "message": f"Invalid provider: {provider}. Valid options: {', '.join(valid_providers)}"
-        }
-    
-    # Make API request
-    url = "https://your-api-domain.com/api/agent/attach-phone-number"
-    headers = {
-        "Content-Type": "application/json",
-        "token": "YOUR_AUTH_TOKEN"
-    }
-    payload = {
-        "agent_id": agent_id,
-        "provider": provider,
-        "phone_number": phone_number
-    }
-    
-    response = requests.post(url, json=payload, headers=headers)
-    return response.json()
-
-# Usage
-result = attach_phone_with_validation(
-    agent_id="agent_abc123xyz",
-    provider="san",
-    phone_number="+918062810341"
-)
-
-print(result)
-```
+Examples are provided above for cURL and PHP. Client library code examples (JavaScript/Python) have been removed — use the cURL examples as the canonical requests (send `numbers` as an array of E.164 strings).
 
 ## Important Notes
 

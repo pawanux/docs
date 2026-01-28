@@ -1,47 +1,52 @@
 ---
 title: Update Voice Agent
-openapi: "api-reference/openapi.json POST /global/agents/update"
+openapi: "api-reference/openapi.json POST /create-agent"
 ---
 
-# Update Voice Agent API
+The Update Voice Agent API uses the same request/response shape as Create Voice Agent, but you must include `agent_id` to identify which agent to update. Only `agent_id` is required — include any other fields you want to change.
 
-This documentation explains how to update an existing voice agent using the API.
+## API Endpoint
 
-## Endpoint
+**POST** `/api/v1/global/create-agent`
 
-**POST** `/api/v1/global/agents/update`
+**Content-Type:** `application/json`
 
-## Authentication
-
-Include your API token in the request header:
-
-```
-token: <your_api_token>
-```
-
-or
-
-```
-api_access_token: <your_api_token>
-```
+**Authentication:** Required (Token header: `token`)
 
 ## Request Body
 
 ```json
 {
   "agent_id": 123,
-  "agent_name": "Updated Agent Name",
+  "agent_name": "Updated Support Agent",
   "description": "Updated description",
-  "agent_prompt": "Updated prompt text",
-  "voice_id": "RXe6OFmxoC0nlSWpuCDy",
-  "voice_provider": 1,
-  "transcriber_provider": 2,
-  "transcriber_language": 1,
-  "transcriber_model": 16,
-  "calling_type": 1,
-  "purpose": 2,
-  "tts_model": "eleven_multilingual_v2",
-  "status": 1
+  "prompt": "Updated prompt/instructions",
+  "timezone": "Asia/Kolkata",
+  "greeting": "Hello and welcome",
+  "session_data_webhook": "https://your-domain.com/webhooks/session-data",
+  "voice": {
+    "provider": "elevenlabs",
+    "voice_id": "RXe6OFmxoC0nlSWpuCDy",
+    "model": "eleven_turbo_v2_5",
+    "settings": {
+      "stability": 0.5,
+      "voice_style": 1,
+      "speed": 1.0
+    }
+  },
+  "speech_to_text": {
+    "provider": "deepgram",
+    "model": "nova-2",
+    "language": "english"
+  },
+  "llm": {
+    "llm": "gpt-4o",
+    "model": "gpt-4o"
+  },
+  "configurations": {
+    "confidence_threshold": 0.8,
+    "do_not_call_detection": true
+  }
 }
 ```
 
@@ -49,53 +54,15 @@ api_access_token: <your_api_token>
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `agent_id` | integer | ID of the agent to update |
+| `agent_id` | integer | ID of the agent to update (required) |
 
 ## Optional Fields
 
-All fields from the Create Agent API are optional. Only include the fields you want to update:
+All other fields follow the same definitions as the Create Voice Agent API — include only the fields you want to update.
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `agent_name` | string | Updated name of the agent |
-| `description` | string | Updated description |
-| `agent_prompt` | string | Updated system prompt/instructions |
-| `voice_id` | string | Updated voice ID (string format, e.g., "RXe6OFmxoC0nlSWpuCDy") |
-| `voice_id_json` | string | Updated voice ID JSON containing complete voice metadata |
-| `voice_provider` | integer | Updated voice provider ID (see Create Agent docs for options) |
-| `transcriber_provider` | integer | Updated speech-to-text provider ID (see Create Agent docs for options) |
-| `transcriber_language` | integer | Updated language ID (see Create Agent docs for options) |
-| `transcriber_model` | integer | Updated transcriber model ID (see Create Agent docs for Transcriber Models) |
-| `calling_type` | integer | Updated calling type (see Calling Types below) |
-| `purpose` | integer | Updated purpose ID (see Create Agent docs for Purpose Options) |
-| `tts_model` | string | Updated TTS (Text-to-Speech) model for voice synthesis (see Create Agent docs for TTS Models) |
-| `status` | integer | Updated agent status (see Agent Status below) |
+## Response
 
-## Agent Status
-
-| ID | Status | Description |
-|----|--------|-------------|
-| 1 | **Active/Published** | Agent is active and available for calls |
-| 3 | **Draft/Unpublished** | Agent is inactive and not available for calls |
-
-**Note:** 
-- After creating an agent, it is created with status `3` (Draft). To activate the agent and make it available for calls, you must call the update API with `status: 1`.
-- The agent must have at least one phone number configured before it can be published (status = 1).
-
-## Calling Types
-
-**Important:** The `calling_type` field determines whether the agent makes outbound calls or receives inbound calls.
-
-| ID | Type | Description |
-|----|------|-------------|
-| 1 | **Outbound** | Agent makes calls to customers. Use this when you want the agent to initiate calls to phone numbers. |
-| 2 | **Inbound** | Agent receives calls from customers. Use this when customers call your phone numbers and the agent answers. |
-
-**Note:** 
-- For outbound calling (making calls to customers), use `calling_type: 1`
-- For inbound calling (receiving calls from customers), use `calling_type: 2`
-
-## Success Response
+### Success Response
 
 **Status Code:** `200 OK`
 
@@ -105,14 +72,15 @@ All fields from the Create Agent API are optional. Only include the fields you w
   "message": "Voice agent updated successfully",
   "data": {
     "agent_id": 123,
-    "agent_name": "Updated Agent Name"
+    "agent_name": "Updated Support Agent"
   }
 }
 ```
 
-## Error Responses
+### Error Responses
 
-### 400 Bad Request
+#### 400 Bad Request
+
 ```json
 {
   "error": true,
@@ -120,7 +88,8 @@ All fields from the Create Agent API are optional. Only include the fields you w
 }
 ```
 
-### 401 Unauthorized
+#### 401 Unauthorized
+
 ```json
 {
   "error": true,
@@ -128,7 +97,8 @@ All fields from the Create Agent API are optional. Only include the fields you w
 }
 ```
 
-### 404 Not Found
+#### 404 Not Found
+
 ```json
 {
   "error": true,
@@ -136,7 +106,8 @@ All fields from the Create Agent API are optional. Only include the fields you w
 }
 ```
 
-### 422 Unprocessable Entity
+#### 422 Unprocessable Entity
+
 ```json
 {
   "error": true,
@@ -144,38 +115,40 @@ All fields from the Create Agent API are optional. Only include the fields you w
 }
 ```
 
-## Example Request
+## Example Requests
 
 ```bash
-# Using agent_id in request body
-curl -X POST https://your-domain.com/api/v1/global/agents/update \
+# Update agent using agent_id in request body
+curl -X POST https://your-domain.com/api/v1/global/create-agent \
   -H "Content-Type: application/json" \
   -H "token: your_api_token_here" \
   -d '{
     "agent_id": 123,
     "agent_name": "Updated Support Agent",
-    "agent_prompt": "You are an updated helpful support agent.",
-    "tts_model": "eleven_multilingual_v2"
+    "prompt": "You are an updated helpful support agent.",
+    "voice": {
+      "provider": "elevenlabs",
+      "voice_id": "RXe6OFmxoC0nlSWpuCDy"
+    }
   }'
+```
 
+```bash
 # Or using agent_id as query parameter
-curl -X POST "https://your-domain.com/api/v1/global/agents/update?agent_id=123" \
+curl -X POST "https://your-domain.com/api/v1/global/create-agent?agent_id=123" \
   -H "Content-Type: application/json" \
   -H "token: your_api_token_here" \
   -d '{
     "agent_name": "Updated Support Agent",
-    "agent_prompt": "You are an updated helpful support agent."
+    "prompt": "You are an updated helpful support agent."
   }'
 ```
 
 ## Notes
 
-- Only include fields you want to update. Omitted fields will remain unchanged.
+- Only include fields you want to update; omitted fields will remain unchanged.
 - The agent must exist and belong to your workspace.
-- For available options for voice_provider, transcriber_provider, transcriber_language, tts_model, etc., refer to the Create Agent API documentation.
-- The `tts_model` field updates the TTS model in the agent configuration. If not provided, the existing TTS model configuration remains unchanged.
-- The `voice_id` field accepts a string value (e.g., "RXe6OFmxoC0nlSWpuCDy"), not an integer.
-- The `voice_id_json` field can be updated with complete voice metadata in JSON string format.
-- `voice_infra` is automatically set to 3 (Internal call) and cannot be changed via the API.
+- For available options for `voice.provider`, `speech_to_text.provider`, `speech_to_text.language`, `llm` models, and `tts_model`, refer to the Create Voice Agent API documentation.
 - The `agent_id` can be provided either in the request body or as a query parameter.
-- **Important:** After creating an agent, it is created with status `3` (Draft). To activate the agent and make it available for calls, you must call the update API with `status: 1`. The agent must have at least one phone number configured before it can be published (status = 1).
+
+

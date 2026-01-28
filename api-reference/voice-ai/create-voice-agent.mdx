@@ -1,17 +1,17 @@
 ---
 title: Create Voice Agent
-openapi: "api-reference/openapi.json POST /voice-agent"
+openapi: "api-reference/openapi.json POST /create-agent"
 ---
 
 The Create Voice Agent API allows you to create and configure AI voice agents with comprehensive settings including voice configuration, speech-to-text, LLM selection, and advanced call handling features.
 
 ## API Endpoint
 
-**POST** `/agents`
+**POST** `/create-agent`
 
 **Content-Type:** `application/json`
 
-**Authentication:** Required (Authorization header or token parameter)
+**Authentication:** Required (Token parameter)
 
 ## Request Body
 
@@ -41,7 +41,7 @@ The Create Voice Agent API allows you to create and configure AI voice agents wi
   "speech_to_text": {
     "provider": "deepgram",
     "model": "nova-2",
-    "language": "en"
+    "language": "english"
   },
   "llm": {
     "llm": "gpt-4o",
@@ -77,8 +77,9 @@ The Create Voice Agent API allows you to create and configure AI voice agents wi
 | Field | Type | Description |
 |-------|------|-------------|
 | `agent_name` | string | Name of the voice agent (required) |
-| `prompt` | string | System prompt/instructions that define the agent's behavior and personality |
-| `voice` | object | Voice configuration (required - see Voice Configuration below) |
+| `prompt` | string | System prompt/instructions that define the agent's behavior and personality (required) |
+
+The `voice` object is optional — include it to configure TTS provider, voice ID, and voice settings.
 
 ## Optional Fields
 
@@ -93,11 +94,11 @@ The Create Voice Agent API allows you to create and configure AI voice agents wi
 
 ## Voice Configuration
 
-The `voice` object is **required** and contains the following properties:
+The `voice` object is **optional** and, if provided, contains the following properties:
 
 | Property | Type | Required | Description |
 |----------|------|----------|-------------|
-| `provider` | string | Yes | Voice provider: `elevenlabs`, `openai`, `deepgram`, `sarvam` |
+| `provider` | string | No | Voice provider: `elevenlabs`, `openai`, `deepgram`, `sarvam` |
 | `voice_id` | string | Yes | Unique identifier for the voice |
 | `model` | string | No | TTS model to use (see Voice Models below) |
 | `settings` | object | No | Voice settings configuration (see Voice Settings below) |
@@ -145,13 +146,17 @@ The `settings` object contains fine-tuning parameters for voice output:
 
 ## Speech-to-Text Configuration
 
+The `speech_to_text` object configures the transcription service. Use full language names (not codes) for the `language` field — for example `english`, `hindi`, `multi`, `spanish`, etc. Supported values include:
+
+- `english`, `hindi`, `multi`, `albanian`, `arabic`, `armenian`, `azerbaijani`, `belarusian`, `bengali`, `bosnian`, `bulgarian`, `catalan`, `chinese`, `croatian`, `czech`, `danish`, `dutch`, `english_australia`, `english_india`, `english_new_zealand`, `english_uk`, `english_us`, `english_spanish`, `estonian`, `finnish`, `french`, `galician`, `georgian`, `german`, `german_switzerland`, `greek`, `gujarati`, `haitian_creole`, `hausa`, `hebrew`, `afrikaans`, `hungarian`, `icelandic`, `indonesian`, `italian`, `japanese`, `javanese`, `kannada`, `kazakh`, `khmer`, `korean`, `latvian`, `lithuanian`, `macedonian`, `malay`, `malayalam`, `maori`, `marathi`, `nepali`, `norwegian`, `persian`, `polish`, `portuguese`, `portuguese_brazil`, `punjabi`, `romanian`, `russian`, `serbian`, `shona`, `slovak`, `slovenian`, `somali`, `spanish`, `spanish_latin_america`, `sundanese`, `swahili`, `swedish`, `tagalog`, `tamil`, `tajik`, `telugu`, `thai`, `tswana`, `turkish`, `ukrainian`, `urdu`, `vietnamese`, `welsh`.
+
 The `speech_to_text` object configures the transcription service:
 
 | Property | Type | Required | Description |
 |----------|------|----------|-------------|
 | `provider` | string | Yes | STT provider (see providers below) |
 | `model` | string | Yes | Model to use (see models below) |
-| `language` | string | Yes | Language code (see languages below) |
+| `language` | string | Yes | Language name (see languages above) |
 
 ### STT Providers and Models
 
@@ -185,82 +190,6 @@ The `speech_to_text` object configures the transcription service:
 | Model | Value | Description |
 |-------|-------|-------------|
 | Sarvam | `sarvam` | Optimized for Indian languages |
-
-### Supported Languages
-
-#### English Variants
-
-| Language | Code | Description |
-|----------|------|-------------|
-| English (US) | `en` | English - United States |
-| English (UK) | `en-GB` | English - United Kingdom |
-| English (Australia) | `en-AU` | English - Australia |
-| English (India) | `en-IN` | English - India |
-| English (New Zealand) | `en-NZ` | English - New Zealand |
-
-#### Major Languages
-
-| Language | Code |
-|----------|------|
-| Spanish | `es` |
-| French | `fr` |
-| German | `de` |
-| Italian | `it` |
-| Portuguese | `pt` |
-| Portuguese (Brazil) | `pt-BR` |
-| Russian | `ru` |
-| Japanese | `ja` |
-| Korean | `ko` |
-| Chinese (Mandarin) | `zh` |
-| Hindi | `hi` |
-| Arabic | `ar` |
-| Turkish | `tr` |
-| Dutch | `nl` |
-| Polish | `pl` |
-| Swedish | `sv` |
-| Danish | `da` |
-| Norwegian | `no` |
-| Finnish | `fi` |
-
-#### Indian Languages
-
-| Language | Code |
-|----------|------|
-| Hindi | `hi` |
-| Bengali | `bn` |
-| Telugu | `te` |
-| Marathi | `mr` |
-| Tamil | `ta` |
-| Gujarati | `gu` |
-| Kannada | `kn` |
-| Malayalam | `ml` |
-| Punjabi | `pa` |
-| Urdu | `ur` |
-
-#### Other Languages
-
-| Language | Code |
-|----------|------|
-| Czech | `cs` |
-| Greek | `el` |
-| Bulgarian | `bg` |
-| Romanian | `ro` |
-| Hungarian | `hu` |
-| Indonesian | `id` |
-| Thai | `th` |
-| Vietnamese | `vi` |
-| Ukrainian | `uk` |
-| Catalan | `ca` |
-| Croatian | `hr` |
-| Lithuanian | `lt` |
-| Latvian | `lv` |
-| Slovak | `sk` |
-| Slovenian | `sl` |
-| Estonian | `et` |
-| Icelandic | `is` |
-| Welsh | `cy` |
-
-**Note:** Use `multi` for automatic multilingual detection.
 
 ## LLM Configuration
 
@@ -421,7 +350,7 @@ Configuration for voicemail detection and handling:
     "speech_to_text": {
       "provider": "deepgram",
       "model": "nova-2",
-      "language": "en"
+      "language": "english"
     },
     "llm": {
       "llm": "gpt-4o",
@@ -492,9 +421,9 @@ Configuration for voicemail detection and handling:
 ### Minimal Request
 
 ```bash
-curl -X POST https://api.yourdomain.com/agents \
+curl -X POST https://api.yourdomain.com/create-agent \
   -H "Content-Type: application/json" \
-  -H "authorization: your_api_key_here" \
+  -H "token: your_api_key_here" \
   -d '{
     "agent_name": "Simple Agent",
     "prompt": "You are a helpful assistant.",
@@ -508,9 +437,9 @@ curl -X POST https://api.yourdomain.com/agents \
 ### Complete Request with All Features
 
 ```bash
-curl -X POST https://api.yourdomain.com/agents \
+curl -X POST https://api.yourdomain.com/create-agent \
   -H "Content-Type: application/json" \
-  -H "authorization: your_api_key_here" \
+  -H "token: your_api_key_here" \
   -d '{
     "agent_name": "Advanced Support Agent",
     "description": "Full-featured customer support agent",
@@ -536,7 +465,7 @@ curl -X POST https://api.yourdomain.com/agents \
     "speech_to_text": {
       "provider": "deepgram",
       "model": "nova-2-phonecall",
-      "language": "en"
+      "language": "english"
     },
     "llm": {
       "llm": "gpt-4o",
@@ -567,83 +496,10 @@ curl -X POST https://api.yourdomain.com/agents \
   }'
 ```
 
-### Python Example
-
-```python
-import requests
-
-url = "https://api.yourdomain.com/agents"
-headers = {
-    "Content-Type": "application/json",
-    "authorization": "your_api_key_here"
-}
-
-payload = {
-    "agent_name": "Customer Support Agent",
-    "prompt": "You are a helpful customer support agent.",
-    "voice": {
-        "provider": "elevenlabs",
-        "voice_id": "RXe6OFmxoC0nlSWpuCDy",
-        "model": "eleven_turbo_v2_5"
-    },
-    "speech_to_text": {
-        "provider": "deepgram",
-        "model": "nova-2",
-        "language": "en"
-    },
-    "llm": {
-        "llm": "gpt-4o",
-        "model": "gpt-4o"
-    }
-}
-
-response = requests.post(url, json=payload, headers=headers)
-print(response.json())
-```
-
-### JavaScript Example
-
-```javascript
-const axios = require('axios');
-
-const createAgent = async () => {
-  try {
-    const response = await axios.post('https://api.yourdomain.com/agents', {
-      agent_name: 'Customer Support Agent',
-      prompt: 'You are a helpful customer support agent.',
-      voice: {
-        provider: 'elevenlabs',
-        voice_id: 'RXe6OFmxoC0nlSWpuCDy',
-        model: 'eleven_turbo_v2_5'
-      },
-      speech_to_text: {
-        provider: 'deepgram',
-        model: 'nova-2',
-        language: 'en'
-      },
-      llm: {
-        llm: 'gpt-4o',
-        model: 'gpt-4o'
-      }
-    }, {
-      headers: {
-        'Content-Type': 'application/json',
-        'authorization': 'your_api_key_here'
-      }
-    });
-    
-    console.log('Agent created:', response.data);
-  } catch (error) {
-    console.error('Error:', error.response?.data || error.message);
-  }
-};
-
-createAgent();
-```
 
 ## Important Notes
 
-1. **Required Fields**: Only `agent_name`, `prompt`, and `voice` (with `provider` and `voice_id`) are required. All other fields are optional.
+1. **Required Fields**: Only `agent_name` and `prompt` are required. The `voice` object is optional — include `voice` (with `provider` and `voice_id`) when you want to configure TTS for the agent. All other fields are optional.
 
 2. **Voice IDs**: Get available voice IDs from the [List Voices API](/api-reference/voices/list-voices).
 
@@ -651,13 +507,15 @@ createAgent();
 
 4. **Timezones**: Use standard timezone strings (e.g., "America/New_York", "Europe/London", "Asia/Tokyo").
 
-5. **Language Codes**: Use ISO 639-1 language codes (2-letter codes like "en", "es", "fr") or region-specific codes (like "en-US", "pt-BR").
+5. **Language Names**: Use full language names (e.g., `english`, `hindi`, `spanish`) or region-specific variants (e.g., `english_us`, `english_uk`) as shown in the Speech-to-Text section above.
 
 6. **Model Compatibility**: Ensure the voice model is compatible with your chosen provider. For example, `eleven_turbo_v2_5` only works with ElevenLabs.
 
 7. **Rate Limits**: API calls are subject to rate limiting based on your plan. See [pricing documentation](/pricing/call-pricing) for details.
 
 8. **Testing**: After creating an agent, test it thoroughly before using in production. Use the [Make Call API](/api-reference/voice-ai/make-call) to test your agent.
+
+9. Attaching phone numbers is necessary to place calls via agents
 
 ## Related Endpoints
 

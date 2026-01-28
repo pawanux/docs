@@ -89,8 +89,20 @@
       }
     },
 
-    "/voice-agent": {
+    "/create-agent": {
       "post": {
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "summary": "Create voice agent",
         "tags": ["Voice AI"],
         "requestBody": {
@@ -100,10 +112,57 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "name": { "type": "string" },
-                  "language": { "type": "string" }
-                },
-                "required": ["name"]
+                  "agent_id": { "type": "integer" },
+                  "agent_name": { "type": "string" },
+                  "description": { "type": "string" },
+                  "prompt": { "type": "string" },
+                  "timezone": { "type": "string" },
+                  "greeting": { "type": "string" },
+                  "session_data_webhook": { "type": "string" },
+                  "voice": {
+                    "type": "object",
+                    "properties": {
+                      "provider": { "type": "string", "enum": ["elevenlabs", "openai", "deepgram", "sarvam"] },
+                      "voice_id": { "type": "string" },
+                      "model": { "type": "string" },
+                      "settings": { "type": "object" }
+                    }
+                  },
+                  "speech_to_text": {
+                    "type": "object",
+                    "properties": {
+                      "provider": { "type": "string" },
+                      "model": { "type": "string" },
+                      "language": {
+                        "type": "string",
+                        "enum": [
+                          "english", "hindi", "multi", "albanian", "arabic", "armenian", "azerbaijani",
+                          "belarusian", "bengali", "bosnian", "bulgarian", "catalan", "chinese",
+                          "croatian", "czech", "danish", "dutch", "english_australia", "english_india",
+                          "english_new_zealand", "english_uk", "english_us", "english_spanish",
+                          "estonian", "finnish", "french", "galician", "georgian", "german",
+                          "german_switzerland", "greek", "gujarati", "haitian_creole", "hausa",
+                          "hebrew", "afrikaans", "hungarian", "icelandic", "indonesian", "italian",
+                          "japanese", "javanese", "kannada", "kazakh", "khmer", "korean", "latvian",
+                          "lithuanian", "macedonian", "malay", "malayalam", "maori", "marathi",
+                          "nepali", "norwegian", "persian", "polish", "portuguese", "portuguese_brazil",
+                          "punjabi", "romanian", "russian", "serbian", "shona", "slovak", "slovenian",
+                          "somali", "spanish", "spanish_latin_america", "sundanese", "swahili",
+                          "swedish", "tagalog", "tamil", "tajik", "telugu", "thai", "tswana",
+                          "turkish", "ukrainian", "urdu", "vietnamese", "welsh"
+                        ]
+                      }
+                    }
+                  },
+                  "llm": {
+                    "type": "object",
+                    "properties": {
+                      "llm": { "type": "string" },
+                      "model": { "type": "string" }
+                    }
+                  },
+                  "configurations": { "type": "object" }
+                }
               }
             }
           }
@@ -214,7 +273,7 @@
         }
       }
     },
-    "/global/agents/delete": {
+    "/delete-agent": {
       "post": {
         "summary": "Delete voice agent",
         "tags": ["Voice AI"],
@@ -264,7 +323,7 @@
         }
       }
     },
-    "/global/agents/call": {
+    "/agents/call": {
       "post": {
         "summary": "Make call",
         "tags": ["Voice AI"],
@@ -336,7 +395,7 @@
         }
       }
     },
-    "/global/agents/attach-phone-number": {
+    "/attach-phone-numbers": {
       "post": {
         "summary": "Attach phone numbers to an agent",
         "tags": ["Voice AI"],
@@ -358,15 +417,17 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["agent_id", "phone_number"],
+                "required": ["agent_id", "numbers"],
                 "properties": {
                   "agent_id": {
                     "type": "integer",
                     "description": "ID of the agent to attach phone numbers to"
                   },
-                  "phone_number": {
+                  "numbers": {
                     "type": "array",
-                    "description": "Phone numbers to attach to the agent. Must include country code with + prefix (e.g., '+1234567890')"
+                    "description": "Phone numbers to attach to the agent. Must include country code with + prefix (e.g., '+1234567890'). Provide one or more numbers.",
+                    "items": { "type": "string", "example": "+12025551234" },
+                    "minItems": 1
                   }
                 }
               }
@@ -483,7 +544,7 @@
         }
       }
     },
-    "/global/agents/get": {
+    "/agents/get": {
       "get": {
         "summary": "Get voice agents",
         "tags": ["Voice AI"],
@@ -579,10 +640,33 @@
       }
     },
 
-    "/phone-number/all": {
+    "/list-phone-numbers": {
       "get": {
         "summary": "List phone numbers",
         "tags": ["Phone Numbers"],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+          ,
+          {
+            "name": "provider",
+            "in": "query",
+            "required": false,
+            "description": "Filter by specific provider. Supported values: `san`, `ozonetell`, `twilio`, `exotel`",
+            "schema": {
+              "type": "string",
+              "enum": ["Exotel", "Twilio", "San Software", "Novus", "Deepijatel", "San Bajaj GSM", "Ozonetel"]
+            }
+          }
+        ],
         "responses": { "200": { "description": "OK" } }
       }
     },
@@ -971,9 +1055,19 @@
 
     "/voice-list": {
       "get": {
+        "security": [],
         "summary": "List voices",
         "tags": ["Voices"],
         "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "provider_id",
             "in": "query",
