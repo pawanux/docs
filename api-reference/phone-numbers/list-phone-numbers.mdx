@@ -18,7 +18,6 @@ Retrieve a list of all available phone numbers from various telephony providers.
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `provider` | string | No | Filter by specific provider. Supported values: `san`, `ozonetell`, `twilio`, `exotel` |
-| `number_type` | string | No | Filter by number type: `local`, `toll_free`, `mobile` |
 
 ## Response
 
@@ -101,10 +100,6 @@ Retrieve a list of all available phone numbers from various telephony providers.
 |---------|-------------|
 | `TEST` | Number used for testing purposes |
 | `PRODUCTION` | Number used in production environment |
-| `OUTBOUND` | Number dedicated for outbound calls |
-| `INBOUND` | Number dedicated for inbound calls |
-| `SUPPORT` | Number for customer support |
-| `SALES` | Number for sales operations |
 
 ## Error Responses
 
@@ -152,11 +147,9 @@ Retrieve a list of all available phone numbers from various telephony providers.
 | Provider | Key | Description |
 |----------|-----|-------------|
 | San Software | `san` | San Software telephony platform |
-| Ozonetell | `ozonetell` | Ozonetell cloud communication platform |
+| Ozonetel | `ozonetel` | Ozonetel cloud communication platform |
 | Twilio | `twilio` | Global cloud communications platform |
 | Exotel | `exotel` | Leading cloud telephony provider in India |
-| Telnyx | `telnyx` | Global carrier network provider |
-| Vonage | `vonage` | Cloud communications platform |
 
 
 
