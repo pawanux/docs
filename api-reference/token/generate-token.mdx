@@ -132,7 +132,7 @@ curl -X POST https://your-domain.com/api/login \
   -H "Content-Type: application/json" \
   -d '{
     "username": "user@example.com",
-    "password": "your_password"
+    "otp: "otp received on your mail"
   }'
 
 # Response includes login token in response body
@@ -142,6 +142,7 @@ curl -X POST https://your-domain.com/api/login \
   "message": "LOGGEDIN"
 }
 ```
+**Note:** To generate the OTP, invoke the login API using only the username. After receiving the OTP, invoke the login API again with both the username and the OTP
 
 **Note:** After logging in or creating your account, when you make any authenticated API call, the login token will be available in the **request header** (`token`) of that API call. You can extract it from the request header to use with this token generation endpoint.
 
