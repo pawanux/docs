@@ -1,151 +1,130 @@
 ---
-title: Call Summary
-openapi: "api-reference/openapi.json GET /call-summary"
+title: Call Summary(Agent Wise)
+openapi: "api-reference/openapi.json GET /agents/executions/list"
 ---
 
-Retrieve detailed information about a specific call by providing the call ID. This endpoint returns comprehensive call details including calling number, duration, recording URL, call status, and call date.
+Retrieve per-call records (executions) for agents. This endpoint returns detailed call-level records (transcripts, audio paths, durations, dispositions, etc.) and supports multiple filters.
 
 ## API Endpoint
 
-**Endpoint:** `GET /api/v1/call-summary`
+**GET** `/api/v1/global/agents/executions/list`
 
-**Authentication:** Required (Token header: `token` or `api_access_token`)
+**Content-Type:** `application/json`
+
+**Authentication:** Required (API token validated by middleware `apiauth.verifyToken`). Provide token via header `token` or `api_access_token`.
 
 ## Query Parameters
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `call_id` | string | Yes | Unique identifier of the call |
+| `agent_id` | integer | No | Filter records for a specific agent. |
+| `calling_number` | string | No | Partial-match against `CALLING_NUMBER` (uses SQL LIKE). |
+| `provider_number` | string | No | Exact match against `PROVIDER_NUMBER`. |
+| `status` | string/integer | No | Filter by execution `STATUS` (or `CALL_STATUS` in some places). Examples: `completed`, `failed`. |
+| `fromdate` | string | No | Start date (e.g. `2025-01-01` or datetime). Defaults to 1 month back if omitted. |
+| `todate` | string | No | End date. Defaults to now if omitted. |
+| `page` | integer | No | Page number (used with `limit` to paginate results). |
+| `limit` | integer | No | Page size / limit. |
+| `audio_url` | string | No | Use `available` to return records that have an audio file (`FILE_PATH` present). |
+| `transcript` | string | No | Use `available` to return records that have `TRANSCRIPT` present. |
+| `sentiment` | string | No | Filter by `OVERALL_SENTIMENT` (if voice analysis available). |
+| `disposition` | string | No | Comma-separated dispositions; will be applied as SQL IN filter. |
+| `emotion` | string | No | Filter by `DETECTED_EMOTION`. |
+| `input_data` | string | No | Partial-match (`LIKE`) against `INPUT_DATA`. |
+| `cost_breakdown` | string | No | Partial-match (`LIKE`) against `COST_BREAKDOWN` or within `RETURN_DATA`. |
+| `duration` | string | No | Range filter (e.g., `30-300`) for `TOTAL_DURATION` (per-call list). |
 
-## Request Examples
+> Note: The handler accepts parameters from `req.query` (GET). The underlying implementation also supports similar filters for POST bodies in the agent controller, but this global route is exposed as GET.
 
-### cURL
+## Example Requests
 
+### Get executions for an agent (GET)
 ```bash
-# Get call summary by call ID
-curl -X GET "https://your-api-domain.com/api/v1/call-summary?call_id=call_abc123xyz" \
-  -H "token: YOUR_AUTH_TOKEN"
+curl -X GET "https://your-api-domain.com/api/v1/global/agents/executions/list?agent_id=962&page=1&limit=50&fromdate=2025-01-01&todate=2025-01-31" \
+  -H "token: YOUR_API_TOKEN"
 ```
 
-## Response
+### Filter by calling number (partial)
+```bash
+curl -X GET "https://your-api-domain.com/api/v1/global/agents/executions/list?agent_id=962&calling_number=91234&page=1&limit=20" \
+  -H "token: YOUR_API_TOKEN"
+```
 
-### Success Response
+### Filter by audio availability and transcript
+```bash
+curl -X GET "https://your-api-domain.com/api/v1/global/agents/executions/list?agent_id=962&audio_url=available&transcript=available" \
+  -H "token: YOUR_API_TOKEN"
+```
 
-**Status Code:** `200 OK`
+### Filter by disposition and sentiment
+```bash
+curl -X GET "https://your-api-domain.com/api/v1/global/agents/executions/list?agent_id=962&disposition=resolved,followup&sentiment=positive" \
+  -H "token: YOUR_API_TOKEN"
+```
+
+## Successful Response (200)
+
+Returns an object with `datalist` containing call execution records. Each record includes many fields; the key fields are listed below. The controller formats durations and dates (e.g., `total_duration` as `1h:2m:3s`, `date`, `time`).
 
 ```json
 {
-  "error": false,
-  "code": 200,
-  "message": "Call summary retrieved successfully",
-  "timestamp": 1769244619292,
-  "data": {
-    "call_id": "call_abc123xyz",
-    "calling_number": "+918062810341",
-    "called_number": "+12025551234",
-    "agent_id": "agent_xyz789",
-    "agent_name": "Customer Support Agent",
-    "total_duration": 245,
-    "duration_formatted": "4 minutes 5 seconds",
-    "recording_url": "https://storage.googleapis.com/recordings/call_abc123xyz.mp3",
-    "call_status": "completed",
-    "call_date": "2026-01-24T10:30:19Z",
-    "call_date_formatted": "January 24, 2026 at 10:30 AM",
-    "direction": "outbound",
-    "provider": "san",
-    "cost": 0.15,
-    "currency": "USD",
-    "transcript": {
-      "available": true,
-      "url": "https://storage.googleapis.com/transcripts/call_abc123xyz.json"
-    },
-    "metadata": {
-      "customer_id": "cust_123",
-      "order_id": "ORD-456",
-      "custom_field": "value"
-    },
-    "started_at": "2026-01-24T10:30:19Z",
-    "ended_at": "2026-01-24T10:34:24Z",
-    "timezone": "America/New_York"
-  }
+  "datalist": [
+    {
+      "ID": 98765,
+      "AGENT_ID": 962,
+      "agent_name": "Support Agent A",
+      "CALLING_NUMBER": "+919876543210",
+      "PROVIDER_NUMBER": "+14045551234",
+      "STATUS": "completed",
+      "CALL_STATUS": "completed",
+      "TOTAL_DURATION": 185,                // raw seconds in DB (in code returned as TOTAL_DURATION but formatted)
+      "total_duration": "3m:5s",            // formatted string added by controller
+      "CREATED_AT": "2025-01-15T10:12:34Z",
+      "date": "15 Jan, 2025",
+      "time": "10:12",
+      "TRANSCRIPT": "Customer said ...",
+      "FILE_PATH": "https://storage.example.com/recordings/..",
+      "DISPOSITION": "resolved",
+      "SUMMARY": "Call summary text",
+      "RETURN_DATA": { /* trimmed, filtered in response */ },
+      "INPUT_DATA": { /* request metadata */ },
+      "COST_BREAKDOWN": [ /* formatted cost items */ ],
+      "VOICE_CALL_ANALYSIS": { /* optional analysis */ },
+      "VOICE_QUALITY_FEEDBACK": 1,
+      "workflow_name": "Support Flow",
+      "workflow_type": "IVR"
+    }
+  ]
 }
 ```
 
-### Response Fields
+### Field Notes
+- `total_duration` is formatted by the controller as `Xh:Ym:Zs` or `Mm:Ss` style for readability (the DB stores seconds).  
+- `RETURN_DATA` is filtered to remove some internal fields; `cost_breakdown` may be moved into `RETURN_DATA.cost_breakdown` if present.  
+- `FILE_PATH` is the URL to audio recording (if available).  
+- `TRANSCRIPT` may be null or empty if speech-to-text was not produced.  
+- `VOICE_QUALITY_FEEDBACK` is a numeric rating stored for voice analysis (e.g., upvote/downvote).  
+- `agent_name` is provided via join with agent details when available.
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `error` | boolean | Indicates if there was an error (false for success) |
-| `code` | integer | HTTP status code |
-| `message` | string | Success or error message |
-| `timestamp` | integer | Unix timestamp in milliseconds |
-| `data` | object | Call summary data object |
-| `data.call_id` | string | Unique identifier of the call |
-| `data.calling_number` | string | Phone number that initiated the call (in E.164 format) |
-| `data.called_number` | string | Phone number that received the call (in E.164 format) |
-| `data.agent_id` | string | ID of the agent that handled the call |
-| `data.agent_name` | string | Name of the agent that handled the call |
-| `data.total_duration` | integer | Total call duration in seconds |
-| `data.duration_formatted` | string | Human-readable duration (e.g., "4 minutes 5 seconds") |
-| `data.recording_url` | string | URL to download or stream the call recording (may be null if recording not available) |
-| `data.call_status` | string | Status of the call (see Call Status below) |
-| `data.call_date` | string | ISO 8601 timestamp of when the call was made |
-| `data.call_date_formatted` | string | Human-readable date and time |
-| `data.direction` | string | Call direction: `inbound` or `outbound` |
-| `data.provider` | string | Telephony provider used for the call |
-| `data.cost` | number | Cost of the call (if applicable) |
-| `data.currency` | string | Currency code for the cost (e.g., "USD", "INR") |
-| `data.transcript` | object | Transcript information (see Transcript Object below) |
-| `data.metadata` | object | Custom metadata associated with the call |
-| `data.started_at` | string | ISO 8601 timestamp when call started |
-| `data.ended_at` | string | ISO 8601 timestamp when call ended |
-| `data.timezone` | string | Timezone of the call date |
+## Pagination
 
-### Transcript Object
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `available` | boolean | Whether transcript is available |
-| `url` | string | URL to download the transcript (may be null if not available) |
-
-## Call Status Values
-
-| Status | Description |
-|--------|-------------|
-| `initiated` | Call has been initiated but not yet connected |
-| `ringing` | Call is ringing |
-| `answered` | Call has been answered |
-| `in_progress` | Call is currently in progress |
-| `completed` | Call completed successfully |
-| `failed` | Call failed to connect |
-| `busy` | Called number was busy |
-| `no_answer` | Call was not answered |
-| `cancelled` | Call was cancelled |
-| `rejected` | Call was rejected |
-| `timeout` | Call timed out |
+- The endpoint accepts `page` and `limit` to paginate results. The controller applies `limit` and `offset` when querying.  
+- Note: the current implementation returns only `datalist` (array) and does not include pagination metadata (`totalRecords`, `totalPages`) in the response. Use `page` and `limit` to page through results.
 
 ## Error Responses
 
-### 400 - Bad Request
-
-**Status Code:** `400 Bad Request`
+### 400 Bad Request
 
 ```json
 {
   "error": true,
   "code": 400,
-  "message": "Call ID is required",
+  "message": "Invalid parameters",
   "data": {}
 }
 ```
 
-**Common error messages:**
-- `"Call ID is required"`
-- `"Invalid call ID format"`
-
-### 401 - Authentication Error
-
-**Status Code:** `401 Unauthorized`
+### 401 Unauthorized
 
 ```json
 {
@@ -156,22 +135,7 @@ curl -X GET "https://your-api-domain.com/api/v1/call-summary?call_id=call_abc123
 }
 ```
 
-### 404 - Call Not Found
-
-**Status Code:** `404 Not Found`
-
-```json
-{
-  "error": true,
-  "code": 404,
-  "message": "Call not found",
-  "data": {}
-}
-```
-
-### 500 - Server Error
-
-**Status Code:** `500 Internal Server Error`
+### 500 Internal Server Error
 
 ```json
 {
@@ -182,27 +146,12 @@ curl -X GET "https://your-api-domain.com/api/v1/call-summary?call_id=call_abc123
 }
 ```
 
-## Important Notes
+## Important Notes & Recommendations
 
-1. **Call ID Format**: The call ID is typically provided when a call is initiated via the [Make Call API](/api-reference/voice-ai/make-call) or can be retrieved from the [Call Logs API](/api-reference/call-logs/get-call-logs).
+- Use narrow date ranges (≤ 3 months) for faster queries. The underlying controller defaults to 1 month if `fromdate`/`todate` are omitted.  
+- For more aggregate/grouped metrics use `/api/v1/global/agents/call-history` (agent-level summary).  
+- For export of conversational data (Excel), the system provides a separate endpoint (`downloadConversationalData`) which streams an XLSX.  
+- If you need pagination metadata added to the response, we can update the controller to include `totalRecords` and `totalPages`.
 
-2. **Recording Availability**: Call recordings may not be available immediately after a call ends. There may be a processing delay before the recording URL is available.
+---
 
-3. **Transcript Availability**: Transcripts are generated asynchronously and may not be available immediately. Check the `transcript.available` field before accessing the transcript URL.
-
-4. **Duration Format**: The `total_duration` is in seconds. Use `duration_formatted` for human-readable format.
-
-5. **Timezone**: All timestamps are returned in ISO 8601 format. The `timezone` field indicates the timezone context of the call.
-
-6. **Cost Information**: Cost information is only available for outbound calls and depends on your pricing plan and provider.
-
-7. **Metadata**: Custom metadata passed during call initiation (via the Make Call API) will be returned in the `metadata` field.
-
-8. **Rate Limits**: API calls are subject to rate limiting based on your plan.
-
-## Related Endpoints
-
-- [Get Call Logs](/api-reference/call-logs/get-call-logs) - List all calls with pagination
-- [Get Call History](/api-reference/call-logs/get-call-history) - Get call history for specific filters
-- [Make Call](/api-reference/voice-ai/make-call) - Initiate a new call
-- [Delete Call History](/api-reference/call-logs/delete-call-history) - Delete call records

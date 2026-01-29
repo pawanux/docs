@@ -133,8 +133,9 @@
           {
             "group": "Call Logs",
             "pages": [
-              "api-reference/call-logs/get-call-logs",
-              "api-reference/call-logs/call-summary"
+              "api-reference/call-logs",
+              "api-reference/call-logs/call-summary",
+              "api-reference/call-logs/call-cost"
             ]
           }
         ]

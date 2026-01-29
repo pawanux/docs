@@ -1,0 +1,119 @@
+---
+title: Call Cost
+openapi: "api-reference/openapi.json GET /transactions/calling-list-with-transaction"
+---
+
+Retrieve call execution records joined with transaction/cost metadata. This global API mirrors the internal `/api/agent/agent-executions/list` behavior and returns a `transactions` array with headers and pagination metadata.
+
+## API Endpoint
+
+**GET** `/api/v1/global/transactions/calling-list-with-transaction`
+
+**Content-Type:** `application/json`
+
+**Authentication:** Required (API token validated by middleware `apiauth.verifyToken`). Provide token via header `token` or `api_access_token`.
+
+## Query Parameters / Request Body
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `agent_id` | string | No | Comma-separated agent IDs to filter (e.g., `962` or `962,963`). |
+| `call_status` | string | No | Comma-separated call statuses to filter (mapped to `CALL_STATUS`). |
+| `fromdate` | string | No | Start date/time (e.g., `2025-01-01` or ISO datetime). |
+| `todate` | string | No | End date/time. |
+| `search` | string | No | Search string applied to `TRACK_ID` and `CALLING_NUMBER`. |
+| `page` | integer | No | Page number (default 1). |
+| `limit` | integer | No | Page size (default 10). |
+
+## Example Requests
+
+### Basic - get first page for an agent
+```bash
+curl -X GET "https://your-api-domain.com/api/v1/global/transactions/calling-list-with-transaction?agent_id=962&page=1&limit=20" \
+  -H "token: YOUR_API_TOKEN"
+```
+
+### Filter by call status and date range
+```bash
+curl -X GET "https://your-api-domain.com/api/v1/global/transactions/calling-list-with-transaction?agent_id=962&call_status=completed&fromdate=2025-01-01&todate=2025-01-31" \
+  -H "token: YOUR_API_TOKEN"
+```
+
+### Search by calling number or track id
+```bash
+curl -X GET "https://your-api-domain.com/api/v1/global/transactions/calling-list-with-transaction?agent_id=962&search=91234" \
+  -H "token: YOUR_API_TOKEN"
+```
+
+### POST example (if you prefer JSON body)
+```bash
+curl -X POST "https://your-api-domain.com/api/v1/global/transactions/calling-list-with-transaction" \
+  -H "Content-Type: application/json" \
+  -H "token: YOUR_API_TOKEN" \
+  -d '{ "agent_id": "962", "call_status": "completed", "fromdate": "2025-01-01", "todate": "2025-01-31", "page": 1, "limit": 20 }'
+```
+
+## Successful Response (200)
+
+The response contains `headers`, `transactions` (array), and `pagination` metadata:
+
+```json
+{
+  "headers": [ { "key": "track_id", "label": "Call ID", "type": "number", "clickable": true }, ... ],
+  "transactions": [
+    {
+      "calling_number": "+919876543210",
+      "provider_number": "+14045551234",
+      "status": "completed",
+      "track_id": "abc123",
+      "call_id": "call-xyz",
+      "total_duration": 185,
+      "detected_emotion": null,
+      "transcript": "Customer said ...",
+      "comments": "test comment",
+      "call_status": "completed",
+      "disposition": "resolved",
+      "overall_sentiment": "positive",
+      "error_message": null,
+      "cost_breakdown": null,
+      "voice_call_analysis": null,
+      "tts_cost": "0.00",
+      "llm_cost": "0.00",
+      "stt_cost": "0.00",
+      "infra_cost": "0.00",
+      "analysis_cost": "0.00",
+      "agent_name": "Support Agent A",
+      "agent_icon": null,
+      "agent_id": 962,
+      "id": 12345,
+      "total_cost": "0.00",
+      "created_at": "15 Jan 2025, 10:12 AM",
+      "CALL_JSON": "{...}"
+    }
+  ],
+  "pagination": {
+    "totalRecords": 100,
+    "currentPage": 1,
+    "limit": 20,
+    "totalPages": 5,
+    "has_next": true,
+    "has_prev": false
+  }
+}
+```
+
+## Notes
+- `agent_id` accepts comma-separated values and is applied as an `IN` filter.  
+- `call_status` accepts comma-separated values and is applied as an `IN` filter against `CALL_STATUS`.  
+- `search` performs a LIKE search on `TRACK_ID` and `CALLING_NUMBER`.  
+- `total_duration` is returned as raw seconds; controller does not format this field here (use UI to format as needed).  
+- The endpoint returns `headers` to help front-end table rendering and `transactions` array for rows.
+
+## Error Responses
+
+- `400 Bad Request` for invalid params.  
+- `401 Unauthorized` for auth failures.  
+- `500 Internal Server Error` for server errors.
+
+---
+
