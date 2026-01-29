@@ -713,9 +713,17 @@
     },
     "/call-summary": {
       "get": {
+        "security": [],
         "summary": "Get call summary",
         "tags": ["Call Logs"],
         "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": { "type": "string" }
+          },
           {
             "name": "call_id",
             "in": "query",

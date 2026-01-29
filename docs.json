@@ -129,6 +129,13 @@
               "api-reference/voice-ai/make-call",
               "api-reference/voice-ai/attach-phone-number"
             ]
+          },
+          {
+            "group": "Call Logs",
+            "pages": [
+              "api-reference/call-logs/get-call-logs",
+              "api-reference/call-logs/call-summary"
+            ]
           }
         ]
       },
