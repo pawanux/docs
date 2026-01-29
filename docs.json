@@ -106,13 +106,6 @@
             ]
           },
           {
-            "group": "Token",
-            "pages": [
-              "api-reference/token/generate-token",
-              "api-reference/token/get-token"
-            ]
-          },
-          {
             "group": "Phone Numbers",
             "pages": [
               "api-reference/phone-numbers/list-phone-numbers"
