@@ -29,25 +29,25 @@ Retrieve call execution records joined with transaction/cost metadata. This glob
 
 ### Basic - get first page for an agent
 ```bash
-curl -X GET "https://your-api-domain.com/api/v1/global/transactions/calling-list-with-transaction?agent_id=962&page=1&limit=20" \
+curl -X GET "https://www.tryunleashx.com/api/v1/global/transactions/calling-list-with-transaction?agent_id=962&page=1&limit=20" \
   -H "token: YOUR_API_TOKEN"
 ```
 
 ### Filter by call status and date range
 ```bash
-curl -X GET "https://your-api-domain.com/api/v1/global/transactions/calling-list-with-transaction?agent_id=962&call_status=completed&fromdate=2025-01-01&todate=2025-01-31" \
+curl -X GET "https://www.tryunleashx.com/api/v1/global/transactions/calling-list-with-transaction?agent_id=962&call_status=completed&fromdate=2025-01-01&todate=2025-01-31" \
   -H "token: YOUR_API_TOKEN"
 ```
 
 ### Search by calling number or track id
 ```bash
-curl -X GET "https://your-api-domain.com/api/v1/global/transactions/calling-list-with-transaction?agent_id=962&search=91234" \
+curl -X GET "https://www.tryunleashx.com/api/v1/global/transactions/calling-list-with-transaction?agent_id=962&search=91234" \
   -H "token: YOUR_API_TOKEN"
 ```
 
 ### POST example (if you prefer JSON body)
 ```bash
-curl -X POST "https://your-api-domain.com/api/v1/global/transactions/calling-list-with-transaction" \
+curl -X POST "https://www.tryunleashx.com/api/v1/global/transactions/calling-list-with-transaction" \
   -H "Content-Type: application/json" \
   -H "token: YOUR_API_TOKEN" \
   -d '{ "agent_id": "962", "call_status": "completed", "fromdate": "2025-01-01", "todate": "2025-01-31", "page": 1, "limit": 20 }'

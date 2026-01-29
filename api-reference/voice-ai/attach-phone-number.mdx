@@ -50,7 +50,7 @@ Attach or assign phone numbers to voice agents to enable inbound and outbound ca
 
 ```bash
 # Attach San Software number to agent
-curl -X POST "https://your-api-domain.com/api/agent/attach-phone-number" \
+curl -X POST "https://www.tryunleashx.com/api/agent/attach-phone-number" \
   -H "Content-Type: application/json" \
   -H "token: YOUR_AUTH_TOKEN" \
   -d '{
@@ -60,7 +60,7 @@ curl -X POST "https://your-api-domain.com/api/agent/attach-phone-number" \
   }'
 
 # Attach Twilio number to agent
-curl -X POST "https://your-api-domain.com/api/agent/attach-phone-number" \
+curl -X POST "https://www.tryunleashx.com/api/agent/attach-phone-number" \
   -H "Content-Type: application/json" \
   -H "token: YOUR_AUTH_TOKEN" \
   -d '{
@@ -70,7 +70,7 @@ curl -X POST "https://your-api-domain.com/api/agent/attach-phone-number" \
   }'
 
 # Attach Exotel number to agent
-curl -X POST "https://your-api-domain.com/api/agent/attach-phone-number" \
+curl -X POST "https://www.tryunleashx.com/api/agent/attach-phone-number" \
   -H "Content-Type: application/json" \
   -H "token: YOUR_AUTH_TOKEN" \
   -d '{
@@ -83,7 +83,7 @@ curl -X POST "https://your-api-domain.com/api/agent/attach-phone-number" \
 
 ```php
 <?php
-$url = "https://your-api-domain.com/api/agent/attach-phone-number";
+$url = "https://www.tryunleashx.com/api/agent/attach-phone-number";
 
 $data = [
     "agent_id" => "agent_abc123xyz",
@@ -292,7 +292,7 @@ Examples are provided above for cURL and PHP. Client library code examples (Java
 ```javascript
 // 1. Create Agent
 const createAgent = async () => {
-  const response = await fetch('https://your-api-domain.com/api/agents', {
+  const response = await fetch('https://www.tryunleashx.com/api/agents', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -312,7 +312,7 @@ const createAgent = async () => {
 
 // 2. Attach Phone Number
 const attachPhone = async (agentId) => {
-  const response = await fetch('https://your-api-domain.com/api/agent/attach-phone-number', {
+  const response = await fetch('https://www.tryunleashx.com/api/agent/attach-phone-number', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

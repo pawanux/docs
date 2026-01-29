@@ -61,7 +61,7 @@ Notes:
 ## Example Request
 
 ```bash
-curl -X GET "https://your-api-domain.com/api/v1/global/agents/call-history?page=1&limit=10&fromdate=2025-01-01&todate=2025-01-31" \
+curl -X GET "https://www.tryunleashx.com/api/v1/global/agents/call-history?page=1&limit=10&fromdate=2025-01-01&todate=2025-01-31" \
   -H "token: YOUR_API_TOKEN" \
   -H "Content-Type: application/json"
 ```
@@ -196,7 +196,7 @@ Results are paginated. Use `page` and `limit` to page through results. Paginatio
 ## Example: Use agent_id to fetch one agent's summary
 
 ```bash
-curl -X GET "https://your-api-domain.com/api/v1/global/agents/call-history?agent_id=123&fromdate=2025-01-01&todate=2025-01-31" \
+curl -X GET "https://www.tryunleashx.com/api/v1/global/agents/call-history?agent_id=123&fromdate=2025-01-01&todate=2025-01-31" \
   -H "token: YOUR_API_TOKEN"
 ```
 
@@ -206,13 +206,13 @@ Below are cURL examples that demonstrate how to call the endpoint using the vari
 
 ### 1) Get summary for a specific agent (GET)
 ```bash
-curl -X GET "https://your-api-domain.com/api/v1/global/agents/call-history?agent_id=123&fromdate=2025-01-01&todate=2025-01-31&page=1&limit=10" \
+curl -X GET "https://www.tryunleashx.com/api/v1/global/agents/call-history?agent_id=123&fromdate=2025-01-01&todate=2025-01-31&page=1&limit=10" \
   -H "token: YOUR_API_TOKEN"
 ```
 
 ### 2) Get summary for a specific agent (POST)
 ```bash
-curl -X POST "https://your-api-domain.com/api/v1/global/agents/call-history" \
+curl -X POST "https://www.tryunleashx.com/api/v1/global/agents/call-history" \
   -H "Content-Type: application/json" \
   -H "token: YOUR_API_TOKEN" \
   -d '{ "agent_id": 123, "fromdate": "2025-01-01", "todate": "2025-01-31", "page": 1, "limit": 10 }'
@@ -220,73 +220,73 @@ curl -X POST "https://your-api-domain.com/api/v1/global/agents/call-history" \
 
 ### 3) Filter by calling_number (partial match)
 ```bash
-curl -X GET "https://your-api-domain.com/api/v1/global/agents/call-history?calling_number=91234&page=1&limit=10" \
+curl -X GET "https://www.tryunleashx.com/api/v1/global/agents/call-history?calling_number=91234&page=1&limit=10" \
   -H "token: YOUR_API_TOKEN"
 ```
 
 ### 4) Filter by provider_number (exact match)
 ```bash
-curl -X GET "https://your-api-domain.com/api/v1/global/agents/call-history?provider_number=+14045551234&page=1" \
+curl -X GET "https://www.tryunleashx.com/api/v1/global/agents/call-history?provider_number=+14045551234&page=1" \
   -H "token: YOUR_API_TOKEN"
 ```
 
 ### 5) Filter by status (e.g., completed)
 ```bash
-curl -X GET "https://your-api-domain.com/api/v1/global/agents/call-history?status=completed&fromdate=2025-01-01&todate=2025-01-31" \
+curl -X GET "https://www.tryunleashx.com/api/v1/global/agents/call-history?status=completed&fromdate=2025-01-01&todate=2025-01-31" \
   -H "token: YOUR_API_TOKEN"
 ```
 
 ### 6) Filter for calls that have audio available
 ```bash
-curl -X GET "https://your-api-domain.com/api/v1/global/agents/call-history?audio_url=available&fromdate=2025-01-01&todate=2025-01-31" \
+curl -X GET "https://www.tryunleashx.com/api/v1/global/agents/call-history?audio_url=available&fromdate=2025-01-01&todate=2025-01-31" \
   -H "token: YOUR_API_TOKEN"
 ```
 
 ### 7) Filter for calls with transcript available
 ```bash
-curl -X GET "https://your-api-domain.com/api/v1/global/agents/call-history?transcript=available&fromdate=2025-01-01&todate=2025-01-31" \
+curl -X GET "https://www.tryunleashx.com/api/v1/global/agents/call-history?transcript=available&fromdate=2025-01-01&todate=2025-01-31" \
   -H "token: YOUR_API_TOKEN"
 ```
 
 ### 8) Filter by sentiment or emotion
 ```bash
-curl -X GET "https://your-api-domain.com/api/v1/global/agents/call-history?sentiment=positive&emotion=happy&fromdate=2025-01-01&todate=2025-01-31" \
+curl -X GET "https://www.tryunleashx.com/api/v1/global/agents/call-history?sentiment=positive&emotion=happy&fromdate=2025-01-01&todate=2025-01-31" \
   -H "token: YOUR_API_TOKEN"
 ```
 
 ### 9) Filter by disposition (comma-separated)
 ```bash
-curl -X GET "https://your-api-domain.com/api/v1/global/agents/call-history?disposition=resolved,followup&fromdate=2025-01-01&todate=2025-01-31" \
+curl -X GET "https://www.tryunleashx.com/api/v1/global/agents/call-history?disposition=resolved,followup&fromdate=2025-01-01&todate=2025-01-31" \
   -H "token: YOUR_API_TOKEN"
 ```
 
 ### 10) Filter by input_data partial match
 ```bash
-curl -X GET "https://your-api-domain.com/api/v1/global/agents/call-history?input_data=order&page=1" \
+curl -X GET "https://www.tryunleashx.com/api/v1/global/agents/call-history?input_data=order&page=1" \
   -H "token: YOUR_API_TOKEN"
 ```
 
 ### 11) Filter by cost_breakdown (partial match)
 ```bash
-curl -X GET "https://your-api-domain.com/api/v1/global/agents/call-history?cost_breakdown=google_tts&page=1" \
+curl -X GET "https://www.tryunleashx.com/api/v1/global/agents/call-history?cost_breakdown=google_tts&page=1" \
   -H "token: YOUR_API_TOKEN"
 ```
 
 ### 12) Duration range (per-call list; example for reference)
 ```bash
-curl -X GET "https://your-api-domain.com/api/v1/global/agents/call-history?duration=30-300&page=1" \
+curl -X GET "https://www.tryunleashx.com/api/v1/global/agents/call-history?duration=30-300&page=1" \
   -H "token: YOUR_API_TOKEN"
 ```
 
 ### 13) Combined filters (example)
 ```bash
-curl -X GET "https://your-api-domain.com/api/v1/global/agents/call-history?agent_id=123&calling_number=91234&status=completed&fromdate=2025-01-01&todate=2025-01-31&page=1&limit=20" \
+curl -X GET "https://www.tryunleashx.com/api/v1/global/agents/call-history?agent_id=123&calling_number=91234&status=completed&fromdate=2025-01-01&todate=2025-01-31&page=1&limit=20" \
   -H "token: YOUR_API_TOKEN"
 ```
 
 ### 14) POST example with multiple filters (combined)
 ```bash
-curl -X POST "https://your-api-domain.com/api/v1/global/agents/call-history" \
+curl -X POST "https://www.tryunleashx.com/api/v1/global/agents/call-history" \
   -H "Content-Type: application/json" \
   -H "token: YOUR_API_TOKEN" \
   -d '{

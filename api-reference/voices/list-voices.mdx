@@ -154,7 +154,7 @@ Retrieve a list of all available voices from various voice providers for your vo
 When `has_more` is `true`, use the `next_page_token` value in your next request to fetch the next page of voices:
 
 ```bash
-curl -X GET "https://your-api-domain.com/api/v1/voice-list?provider_id=elevenlabs&page_token=YOUR_NEXT_PAGE_TOKEN" \
+curl -X GET "https://www.tryunleashx.com/api/v1/voice-list?provider_id=elevenlabs&page_token=YOUR_NEXT_PAGE_TOKEN" \
   -H "token: YOUR_AUTH_TOKEN"
 ```
 
@@ -188,7 +188,7 @@ curl -X GET "https://your-api-domain.com/api/v1/voice-list?provider_id=elevenlab
 After fetching voices, use the voice `id` when creating an agent:
 
 ```bash
-curl -X POST "https://your-api-domain.com/api/v1/global/agents" \
+curl -X POST "https://www.tryunleashx.com/api/v1/global/agents" \
   -H "Content-Type: application/json" \
   -H "authorization: YOUR_API_KEY" \
   -d '{

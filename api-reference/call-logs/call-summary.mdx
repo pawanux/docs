@@ -40,25 +40,25 @@ Retrieve per-call records (executions) for agents. This endpoint returns detaile
 
 ### Get executions for an agent (GET)
 ```bash
-curl -X GET "https://your-api-domain.com/api/v1/global/agents/executions/list?agent_id=962&page=1&limit=50&fromdate=2025-01-01&todate=2025-01-31" \
+curl -X GET "https://www.tryunleashx.com/api/v1/global/agents/executions/list?agent_id=962&page=1&limit=50&fromdate=2025-01-01&todate=2025-01-31" \
   -H "token: YOUR_API_TOKEN"
 ```
 
 ### Filter by calling number (partial)
 ```bash
-curl -X GET "https://your-api-domain.com/api/v1/global/agents/executions/list?agent_id=962&calling_number=91234&page=1&limit=20" \
+curl -X GET "https://www.tryunleashx.com/api/v1/global/agents/executions/list?agent_id=962&calling_number=91234&page=1&limit=20" \
   -H "token: YOUR_API_TOKEN"
 ```
 
 ### Filter by audio availability and transcript
 ```bash
-curl -X GET "https://your-api-domain.com/api/v1/global/agents/executions/list?agent_id=962&audio_url=available&transcript=available" \
+curl -X GET "https://www.tryunleashx.com/api/v1/global/agents/executions/list?agent_id=962&audio_url=available&transcript=available" \
   -H "token: YOUR_API_TOKEN"
 ```
 
 ### Filter by disposition and sentiment
 ```bash
-curl -X GET "https://your-api-domain.com/api/v1/global/agents/executions/list?agent_id=962&disposition=resolved,followup&sentiment=positive" \
+curl -X GET "https://www.tryunleashx.com/api/v1/global/agents/executions/list?agent_id=962&disposition=resolved,followup&sentiment=positive" \
   -H "token: YOUR_API_TOKEN"
 ```
 
