@@ -1,0 +1,24 @@
+{
+    "name": "Grest Docs",
+    "favicon": "/favicon.ico",
+    "colors": {
+      "primary": "#6366f1"
+    },
+    "navigation": [
+      {
+        "group": "API Reference",
+        "pages": [
+          "api-reference/introduction"
+        ]
+      }
+    ],
+    "apiReference": {
+      "specPath": "./api-reference/myopenapi.json",
+      "tryIt": {
+        "enabled": true
+      }
+    }
+  }
+  
+  
+  
