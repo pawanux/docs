@@ -9,7 +9,7 @@ All UnleashX API endpoints require authentication using a token in the request h
 Include your API token in the `token` header for all authenticated requests:
 
 ```bash
-curl -X POST https://your-domain.com/api/v1/global/verify \
+curl -X POST https://www.tryunleashx.com/api/v1/global/verify \
   -H "Content-Type: application/json" \
   -H "token: your_api_token_here" \
   -d '{}'
@@ -17,8 +17,33 @@ curl -X POST https://your-domain.com/api/v1/global/verify \
 
 ## Getting Your API Token
 
-To generate an API token, you'll need to:
-1. Login or create an account to get a login token
-2. Use the login token to generate your API token
+### UnleashX Portal
 
-For detailed instructions on generating API tokens, see the [Token Generation API documentation](/api-reference/token/generate-token).
+1. Sign in to the UnleashX portal at `https://www.tryunleashx.com/login`.
+2. Open **Profile & Settings** → **API Key** (or **API Key** under your profile).
+3. Click **Generate API Token** (or **Create API Key**). Copy the generated token value.
+4. Store the token securely. Treat it like a password — do not share or check it into source control.
+
+Notes:
+- Tokens generated in the portal are persistent and do not expire by default (rotate them if compromised).
+- Use the `token` header when calling APIs (some endpoints also accept `api_access_token`).
+
+Successful response (example):
+
+```json
+{
+  "message": "API token generated successfully",
+  "token": "your_api_token_here"
+}
+```
+
+Use that returned value as your API token (`token` header) for subsequent API calls.
+
+### Verify Token API
+
+Use this API to validate an API token. It is typically used by clients or middleware to ensure the token is valid before making protected requests.
+
+- **Endpoint:** `POST /api/v1/global/verify`
+- **Headers:** `token` (string, required) — the API token to validate
+- **Content-Type:** `application/json`
+- **Description:** Validates the provided API token. Returns `200 OK` when the token is valid; returns `401 Unauthorized` when the token is invalid or expired.

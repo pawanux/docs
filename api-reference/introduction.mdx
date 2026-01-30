@@ -21,68 +21,19 @@ UnleashX is a platform for building, deploying, and managing AI-powered voice ag
 
 ## Getting Started
 
-### 1. Authentication Flow (Access Token Generation)
+To get started you need to log in to the UnleashX portal:
 
-UnleashX APIs now use a two-step token system for access:
+- Visit the portal at `https://www.tryunleashx.com/login` and sign in with your account.
+- After signing in, open **Profile & Settings** → **API Key** and generate a persistent API token (this is the value you will pass in the `token` header).
 
-1. **Login or Create Account** to get a **login token**
-2. **Call the Generate Token API** with your login token to get an **API access token**
-3. **Use the API Token** for all authenticated API requests
-
-### Step 1: Login or Create Account
-
-Use the login endpoint to authenticate and get your login token. Example:
-
-```bash
-curl -X POST https://your-domain.com/api/login \
-  -H "Content-Type: application/json" \
-  -d '{
-    "username": "user@example.com",
-    "password": "your_password"
-  }'
-
-# The response includes your login token:
-# {
-#   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-# }
-```
-
-### Step 2: Generate Your API Token
-
-Use your login token to generate a persistent API token:
-
-```bash
-curl -X POST https://your-domain.com/api/v1/global/generate-token \
-  -H "Content-Type: application/json" \
-  -H "token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
-  -d '{}'
-
-# The response:
-# {
-#   "message": "API token generated successfully",
-#   "token": "359b83f43a5f5702cfbdedad269bd4f1d726fc576c48cdc65b594ce57896f0f9"
-# }
-```
-
-> **Note:** This API token never expires, but you should store it securely.
-
-### Step 3: Use Your API Token in Requests
-
-Pass the token in the `token` header for authenticated API calls:
-
-```bash
-curl -X POST https://your-domain.com/api/v1/global/verify \
-  -H "Content-Type: application/json" \
-  -H "token: 359b83f43a5f5702cfbdedad269bd4f1d726fc576c48cdc65b594ce57896f0f9" \
-  -d '{}'
-```
+For full authentication instructions and examples (token usage, generation, and verification), see the Authentication guide: `/api-reference/authentication`.
 
 ## Base URL
 
 All API requests should use:
 
 ```
-https://your-domain.com/api/v1/global
+https://www.tryunleashx.com/api/v1/global
 ```
 
 
@@ -95,7 +46,7 @@ https://your-domain.com/api/v1/global
 ## Example: Agent Creation (Authenticated)
 
 ```bash
-curl -X POST https://your-domain.com/api/agent/createagentorupdate \
+curl -X POST https://www.tryunleashx.com/api/agent/createagentorupdate \
   -H "Content-Type: application/json" \
   -H "token: 359b83f4...your_api_token_here" \
   -d '{

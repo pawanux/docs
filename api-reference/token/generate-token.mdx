@@ -53,7 +53,7 @@ No request body is required. You can send an empty body:
 ## cURL Example
 
 ```bash
-curl -X POST https://your-domain.com/api/v1/global/generate-token \
+curl -X POST https://www.tryunleashx.com/api/v1/global/generate-token \
   -H "Content-Type: application/json" \
   -H "token: your_login_token_here" \
   -d '{}'
@@ -128,7 +128,7 @@ or
 
 ```bash
 # Login endpoint (example)
-curl -X POST https://your-domain.com/api/login \
+curl -X POST https://www.tryunleashx.com/api/login \
   -H "Content-Type: application/json" \
   -d '{
     "username": "user@example.com",
@@ -149,7 +149,7 @@ curl -X POST https://your-domain.com/api/login \
 ### Step 2: Generate API Token
 
 ```bash
-curl -X POST https://your-domain.com/api/v1/global/generate-token \
+curl -X POST https://www.tryunleashx.com/api/v1/global/generate-token \
   -H "Content-Type: application/json" \
   -H "token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
   -d '{}'
@@ -164,7 +164,7 @@ curl -X POST https://your-domain.com/api/v1/global/generate-token \
 ### Step 3: Use API Token for Authenticated Requests
 
 ```bash
-curl -X POST https://your-domain.com/api/v1/global/verify \
+curl -X POST https://www.tryunleashx.com/api/v1/global/verify \
   -H "Content-Type: application/json" \
   -H "token: 359b83f43a5f5702cfbdedad269bd4f1d726fc576c48cdc65b594ce57896f0f9" \
   -d '{}'
