@@ -1,0 +1,1503 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "UnleashX - Build human like conversations | Voice Agents | Automations | AI Workforce",
+    "version": "1.0.0",
+    "description": "UnleashX - Your home for human like conversations"
+  },
+  "servers": [
+    { "url": "https://www.tryunleashx.com/api/v1/global/" }
+  ],
+  "security": [ { "bearerAuth": [] } ],
+  
+  "paths": {
+    "/agent": {
+      "post": {
+        "summary": "Create agent",
+        "tags": ["Agent"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "language": { "type": "string" }
+                },
+                "required": ["name"]
+              }
+            }
+          }
+        },
+        "responses": { "201": { "description": "Created" } }
+      }
+    },
+    "/agent/update": {
+      "post": {
+        "summary": "Update agent",
+        "tags": ["Agent"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "agent_id": { "type": "string", "format": "uuid" },
+                  "name": { "type": "string" },
+                  "language": { "type": "string" }
+                },
+                "required": ["agent_id"]
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/agent/delete": {
+      "post": {
+        "summary": "Delete agent",
+        "tags": ["Agent"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "agent_id": { "type": "string", "format": "uuid" }
+                },
+                "required": ["agent_id"]
+              }
+            }
+          }
+        },
+        "responses": { "204": { "description": "Deleted" } }
+      }
+    },
+    "/agent/activity-logs": {
+      "get": {
+        "summary": "Get agent activity logs",
+        "tags": ["Agent"],
+        "parameters": [
+          { "name": "agent_id", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "limit", "in": "query", "required": false, "schema": { "type": "integer" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+
+    "/create-agent": {
+      "post": {
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "summary": "Create voice agent",
+        "tags": ["Voice AI"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "agent_id": { "type": "integer" },
+                  "agent_name": { "type": "string" },
+                  "description": { "type": "string" },
+                  "prompt": { "type": "string" },
+                  "timezone": { "type": "string" },
+                  "greeting": { "type": "string" },
+                  "session_data_webhook": { "type": "string" },
+                  "voice": {
+                    "type": "object",
+                    "properties": {
+                      "provider": { "type": "string", "enum": ["elevenlabs", "openai", "deepgram", "sarvam"] },
+                      "voice_id": { "type": "string" },
+                      "model": { "type": "string" },
+                      "settings": { "type": "object" }
+                    }
+                  },
+                  "speech_to_text": {
+                    "type": "object",
+                    "properties": {
+                      "provider": { "type": "string" },
+                      "model": { "type": "string" },
+                      "language": {
+                        "type": "string",
+                        "enum": [
+                          "english", "hindi", "multi", "albanian", "arabic", "armenian", "azerbaijani",
+                          "belarusian", "bengali", "bosnian", "bulgarian", "catalan", "chinese",
+                          "croatian", "czech", "danish", "dutch", "english_australia", "english_india",
+                          "english_new_zealand", "english_uk", "english_us", "english_spanish",
+                          "estonian", "finnish", "french", "galician", "georgian", "german",
+                          "german_switzerland", "greek", "gujarati", "haitian_creole", "hausa",
+                          "hebrew", "afrikaans", "hungarian", "icelandic", "indonesian", "italian",
+                          "japanese", "javanese", "kannada", "kazakh", "khmer", "korean", "latvian",
+                          "lithuanian", "macedonian", "malay", "malayalam", "maori", "marathi",
+                          "nepali", "norwegian", "persian", "polish", "portuguese", "portuguese_brazil",
+                          "punjabi", "romanian", "russian", "serbian", "shona", "slovak", "slovenian",
+                          "somali", "spanish", "spanish_latin_america", "sundanese", "swahili",
+                          "swedish", "tagalog", "tamil", "tajik", "telugu", "thai", "tswana",
+                          "turkish", "ukrainian", "urdu", "vietnamese", "welsh"
+                        ]
+                      }
+                    }
+                  },
+                  "llm": {
+                    "type": "object",
+                    "properties": {
+                      "llm": { "type": "string" },
+                      "model": { "type": "string" }
+                    }
+                  },
+                  "configurations": { "type": "object" }
+                }
+              }
+            }
+          }
+        },
+        "responses": { "201": { "description": "Created" } }
+      }
+    },
+    "/global/agents/update": {
+      "post": {
+        "summary": "Update voice agent",
+        "tags": ["Voice AI"],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "agent_id",
+            "in": "query",
+            "required": false,
+            "description": "ID of the agent to update (can also be provided in request body)",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["agent_id"],
+                "properties": {
+                  "agent_id": {
+                    "type": "integer",
+                    "description": "ID of the agent to update"
+                  },
+                  "agent_name": {
+                    "type": "string",
+                    "description": "Updated name of the agent"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Updated description"
+                  },
+                  "agent_prompt": {
+                    "type": "string",
+                    "description": "Updated system prompt/instructions"
+                  },
+                  "voice_id": {
+                    "type": "string",
+                    "description": "Updated voice ID (string format)"
+                  },
+                  "voice_id_json": {
+                    "type": "string",
+                    "description": "Updated voice ID JSON containing complete voice metadata"
+                  },
+                  "voice_provider": {
+                    "type": "integer",
+                    "description": "Updated voice provider ID"
+                  },
+                  "transcriber_provider": {
+                    "type": "integer",
+                    "description": "Updated speech-to-text provider ID"
+                  },
+                  "transcriber_language": {
+                    "type": "integer",
+                    "description": "Updated language ID"
+                  },
+                  "transcriber_model": {
+                    "type": "integer",
+                    "description": "Updated transcriber model ID"
+                  },
+                  "calling_type": {
+                    "type": "integer",
+                    "description": "Updated calling type (1=Outbound, 2=Inbound)"
+                  },
+                  "purpose": {
+                    "type": "integer",
+                    "description": "Updated purpose ID"
+                  },
+                  "tts_model": {
+                    "type": "string",
+                    "description": "Updated TTS model for voice synthesis"
+                  },
+                  "status": {
+                    "type": "integer",
+                    "description": "Updated agent status (1=Active, 3=Draft)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Voice agent updated successfully" },
+          "400": { "description": "Bad Request - Agent ID is required" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Agent not found" },
+          "422": { "description": "Validation error" }
+        }
+      }
+    },
+    "/delete-agent": {
+      "post": {
+        "summary": "Delete voice agent",
+        "tags": ["Voice AI"],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "agent_id",
+            "in": "query",
+            "required": false,
+            "description": "ID of the agent to delete (can also be provided in request body)",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["agent_id"],
+                "properties": {
+                  "agent_id": {
+                    "type": "integer",
+                    "description": "ID of the agent to delete"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Voice agent deleted successfully" },
+          "400": { "description": "Bad Request - Agent ID is required" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Agent not found" }
+        }
+      }
+    },
+    "/agents/call": {
+      "post": {
+        "summary": "Make call",
+        "tags": ["Voice AI"],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["agent_id", "phone_number"],
+                "properties": {
+                  "agent_id": {
+                    "type": "integer",
+                    "description": "ID of the agent to use for the call"
+                  },
+                  "phone_number": {
+                    "type": "string",
+                    "description": "Phone number to call. Must include country code with + prefix (e.g., '+1234567890')"
+                  },
+                  "metadata": {
+                    "type": "object",
+                    "description": "Additional metadata to pass with the call. Can include any custom key-value pairs"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { 
+            "description": "Call initiated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "message": { "type": "string" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "execution_id": { "type": "string", "format": "uuid" },
+                        "agent_id": { "type": "integer" },
+                        "phone_number": { "type": "string" },
+                        "call_status": { "type": "string" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Bad Request - Phone Number or Agent ID is required" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Agent not found or not active" },
+          "422": { "description": "Validation error" }
+        }
+      }
+    },
+    "/attach-phone-numbers": {
+      "post": {
+        "summary": "Attach phone numbers to an agent",
+        "tags": ["Voice AI"],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["agent_id", "numbers"],
+                "properties": {
+                  "agent_id": {
+                    "type": "integer",
+                    "description": "ID of the agent to attach phone numbers to"
+                  },
+                  "numbers": {
+                    "type": "array",
+                    "description": "Phone numbers to attach to the agent. Must include country code with + prefix (e.g., '+1234567890'). Provide one or more numbers.",
+                    "items": { "type": "string", "example": "+12025551234" },
+                    "minItems": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { 
+            "description": "Numbers attached successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "message": { "type": "string" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "agent_id": { "type": "integer" },
+                        "phone_numbers": { "type": "array", "items": { "type": "string" } }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Bad Request - Phone Number or Agent ID is required" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Agent not found or not active" },
+          "422": { "description": "Validation error" }
+        }
+      }
+    },
+    "/global/agents": {
+      "post": {
+        "summary": "Create voice agent",
+        "tags": ["Voice AI"],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["agent_name", "agent_prompt"],
+                "properties": {
+                  "agent_name": {
+                    "type": "string",
+                    "description": "Name of the voice agent"
+                  },
+                  "agent_prompt": {
+                    "type": "string",
+                    "description": "System prompt/instructions for the agent"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Description of the agent"
+                  },
+                  "voice_id": {
+                    "type": "string",
+                    "description": "Voice ID to use for the agent. Defaults to 'RXe6OFmxoC0nlSWpuCDy' if not provided"
+                  },
+                  "voice_provider": {
+                    "type": "integer",
+                    "description": "Voice provider ID (1=ElevenLabs, 2=OpenAI, 3=Deepgram, 4=Sarvam). Defaults to 1"
+                  },
+                  "transcriber_provider": {
+                    "type": "integer",
+                    "description": "Speech-to-text provider ID. Defaults to 2 (Deepgram)"
+                  },
+                  "transcriber_language": {
+                    "type": "integer",
+                    "description": "Language ID for transcription. Defaults to 1 (English)"
+                  },
+                  "transcriber_model": {
+                    "type": "integer",
+                    "description": "Transcriber model ID. Defaults to 16 (nova-3) when using Deepgram"
+                  },
+                  "calling_type": {
+                    "type": "integer",
+                    "description": "Calling type (1=Outbound, 2=Inbound). Defaults to 1"
+                  },
+                  "purpose": {
+                    "type": "integer",
+                    "description": "Purpose ID for the agent (1-15). See Purpose Options in documentation"
+                  },
+                  "tts_model": {
+                    "type": "string",
+                    "description": "TTS model for voice synthesis. Defaults to 'eleven_multilingual_v2'"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Voice agent created successfully" },
+          "400": { "description": "Bad Request - Agent Name is required" },
+          "401": { "description": "Unauthorized" },
+          "422": { "description": "Validation error" }
+        }
+      }
+    },
+    "/agents/get": {
+      "get": {
+        "summary": "Get voice agents",
+        "tags": ["Voice AI"],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "agent_id",
+            "in": "query",
+            "required": false,
+            "description": "ID of the agent to retrieve. If not provided, returns all agents",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "agent_type",
+            "in": "query",
+            "required": false,
+            "description": "Filter by agent type: 2 = Chat, 3 = Telephony, 4 = General",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": { 
+          "200": { "description": "Voice agents retrieved successfully" },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Agent not found" }
+        }
+      },
+      "post": {
+        "summary": "Get voice agents",
+        "tags": ["Voice AI"],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "agent_id": {
+                    "type": "integer",
+                    "description": "ID of the agent to retrieve. If not provided, returns all agents"
+                  },
+                  "agent_type": {
+                    "type": "integer",
+                    "description": "Filter by agent type: 2 = Chat, 3 = Telephony, 4 = General"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": { 
+          "200": { "description": "Voice agents retrieved successfully" },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Agent not found" }
+        }
+      }
+    },
+    "/voice-agent/activity-logs": {
+      "get": {
+        "summary": "Get voice agent activity logs",
+        "tags": ["Voice AI"],
+        "parameters": [
+          { "name": "voice_agent_id", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "limit", "in": "query", "required": false, "schema": { "type": "integer" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+
+    "/list-phone-numbers": {
+      "get": {
+        "summary": "List phone numbers",
+        "tags": ["Phone Numbers"],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+          ,
+          {
+            "name": "provider",
+            "in": "query",
+            "required": false,
+            "description": "Filter by specific provider. Supported values: `san`, `ozonetell`, `twilio`, `exotel`",
+            "schema": {
+              "type": "string",
+              "enum": ["Exotel", "Twilio", "San Software", "Novus", "Deepijatel", "San Bajaj GSM", "Ozonetel"]
+            }
+          }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/phone-number/import": {
+      "post": {
+        "summary": "Import phone numbers",
+        "tags": ["Phone Numbers"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "numbers": { "type": "array", "items": { "type": "string" } }
+                },
+                "required": ["numbers"]
+              }
+            }
+          }
+        },
+        "responses": { "201": { "description": "Imported" } }
+      }
+    },
+
+    "/call-logs": {
+      "get": {
+        "summary": "Get call logs",
+        "tags": ["Call Logs"],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/call-history": {
+      "get": {
+        "summary": "Get call history",
+        "tags": ["Call Logs"],
+        "responses": { "200": { "description": "OK" } }
+      },
+      "delete": {
+        "summary": "Delete call history",
+        "tags": ["Call Logs"],
+        "responses": { "204": { "description": "Deleted" } }
+      }
+    },
+    "/agents/call-history": {
+      "get": {
+        "security": [],
+        "summary": "Get agents call history (grouped by agent)",
+        "tags": ["Call Logs"],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": { "type": "string" }
+          },
+          { "name": "page", "in": "query", "required": false, "schema": { "type": "integer" } },
+          { "name": "limit", "in": "query", "required": false, "schema": { "type": "integer" } },
+          { "name": "fromdate", "in": "query", "required": false, "schema": { "type": "string" } },
+          { "name": "todate", "in": "query", "required": false, "schema": { "type": "string" } },
+          { "name": "agent_id", "in": "query", "required": false, "schema": { "type": "integer" } },
+          { "name": "calling_number", "in": "query", "required": false, "schema": { "type": "string" } },
+          { "name": "provider_number", "in": "query", "required": false, "schema": { "type": "string" } },
+          { "name": "status", "in": "query", "required": false, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Agents call history retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "datalist": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "agent_id": { "type": "integer" },
+                          "agent_name": { "type": "string" },
+                          "total_calls": { "type": "string" },
+                          "success_calls": { "type": "string" },
+                          "failed_calls": { "type": "string" },
+                          "total_duration": { "type": "string" },
+                          "call_from": { "type": "string", "nullable": true },
+                          "call_to": { "type": "string", "nullable": true }
+                        }
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "totalRecords": { "type": "integer" },
+                        "totalPages": { "type": "integer" },
+                        "currentPage": { "type": "integer" },
+                        "limit": { "type": "integer" }
+                      }
+                    },
+                    "total_calls": { "type": "integer" },
+                    "successful_calls": { "type": "integer" },
+                    "total_duration": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Bad Request - Invalid parameters" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Not Found" },
+          "500": { "description": "Internal Server Error" }
+        }
+      },
+      "post": {
+        "security": [],
+        "summary": "Post filters to get agents call history (grouped by agent)",
+        "tags": ["Call Logs"],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "page": { "type": "integer" },
+                  "limit": { "type": "integer" },
+                  "fromdate": { "type": "string" },
+                  "todate": { "type": "string" },
+                  "agent_id": { "type": "integer" },
+                  "calling_number": { "type": "string" },
+                  "provider_number": { "type": "string" },
+                  "status": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "OK" },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/agents/executions/list": {
+      "get": {
+        "security": [],
+        "summary": "Get agent executions list (per-call records)",
+        "tags": ["Call Logs"],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": { "type": "string" }
+          },
+          { "name": "agent_id", "in": "query", "required": false, "schema": { "type": "integer" } },
+          { "name": "calling_number", "in": "query", "required": false, "schema": { "type": "string" } },
+          { "name": "provider_number", "in": "query", "required": false, "schema": { "type": "string" } },
+          { "name": "status", "in": "query", "required": false, "schema": { "type": "string" } },
+          { "name": "fromdate", "in": "query", "required": false, "schema": { "type": "string" } },
+          { "name": "todate", "in": "query", "required": false, "schema": { "type": "string" } },
+          { "name": "page", "in": "query", "required": false, "schema": { "type": "integer" } },
+          { "name": "limit", "in": "query", "required": false, "schema": { "type": "integer" } },
+          { "name": "audio_url", "in": "query", "required": false, "schema": { "type": "string" } },
+          { "name": "transcript", "in": "query", "required": false, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Executions list retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "datalist": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "ID": { "type": "integer" },
+                          "AGENT_ID": { "type": "integer" },
+                          "agent_name": { "type": "string" },
+                          "CALLING_NUMBER": { "type": "string" },
+                          "PROVIDER_NUMBER": { "type": "string" },
+                          "STATUS": { "type": "string" },
+                          "CALL_STATUS": { "type": "string" },
+                          "TOTAL_DURATION": { "type": "integer" },
+                          "total_duration": { "type": "string" },
+                          "CREATED_AT": { "type": "string" },
+                          "TRANSCRIPT": { "type": "string", "nullable": true },
+                          "FILE_PATH": { "type": "string", "nullable": true },
+                          "DISPOSITION": { "type": "string" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Bad Request - Invalid parameters" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/transactions/calling-list-with-transaction": {
+      "get": {
+        "security": [],
+        "summary": "Get calling list with transaction (call cost)",
+        "tags": ["Call Logs"],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": { "type": "string" }
+          },
+          { "name": "agent_id", "in": "query", "required": false, "schema": { "type": "string" } },
+          { "name": "call_status", "in": "query", "required": false, "schema": { "type": "string" } },
+          { "name": "fromdate", "in": "query", "required": false, "schema": { "type": "string" } },
+          { "name": "todate", "in": "query", "required": false, "schema": { "type": "string" } },
+          { "name": "search", "in": "query", "required": false, "schema": { "type": "string" } },
+          { "name": "page", "in": "query", "required": false, "schema": { "type": "integer" } },
+          { "name": "limit", "in": "query", "required": false, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transactions retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "headers": {
+                      "type": "array",
+                      "items": { "type": "object" }
+                    },
+                    "transactions": {
+                      "type": "array",
+                      "items": { "type": "object" }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "totalRecords": { "type": "integer" },
+                        "currentPage": { "type": "integer" },
+                        "limit": { "type": "integer" },
+                        "totalPages": { "type": "integer" },
+                        "has_next": { "type": "boolean" },
+                        "has_prev": { "type": "boolean" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Bad Request - Invalid parameters" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      },
+      "post": {
+        "security": [],
+        "summary": "Post filters to get calling list with transaction",
+        "tags": ["Call Logs"],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "agent_id": { "type": "string" },
+                  "call_status": { "type": "string" },
+                  "fromdate": { "type": "string" },
+                  "todate": { "type": "string" },
+                  "search": { "type": "string" },
+                  "page": { "type": "integer" },
+                  "limit": { "type": "integer" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "OK" },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/call-summary": {
+      "get": {
+        "security": [],
+        "summary": "Get call summary",
+        "tags": ["Call Logs"],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "call_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Unique identifier of the call"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Call summary retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": { "type": "boolean" },
+                    "code": { "type": "integer" },
+                    "message": { "type": "string" },
+                    "timestamp": { "type": "integer" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "call_id": { "type": "string" },
+                        "calling_number": { "type": "string" },
+                        "called_number": { "type": "string" },
+                        "agent_id": { "type": "string" },
+                        "agent_name": { "type": "string" },
+                        "total_duration": { "type": "integer" },
+                        "duration_formatted": { "type": "string" },
+                        "recording_url": { "type": "string" },
+                        "call_status": { "type": "string" },
+                        "call_date": { "type": "string" },
+                        "call_date_formatted": { "type": "string" },
+                        "direction": { "type": "string" },
+                        "provider": { "type": "string" },
+                        "cost": { "type": "number" },
+                        "currency": { "type": "string" },
+                        "transcript": {
+                          "type": "object",
+                          "properties": {
+                            "available": { "type": "boolean" },
+                            "url": { "type": "string" }
+                          }
+                        },
+                        "metadata": { "type": "object" },
+                        "started_at": { "type": "string" },
+                        "ended_at": { "type": "string" },
+                        "timezone": { "type": "string" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Bad Request - Call ID is required" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Call not found" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+
+    "/chat-agent": {
+      "post": {
+        "summary": "Create chat agent",
+        "tags": ["Chatbots"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "language": { "type": "string" },
+                  "prompt": { "type": "string" }
+                },
+                "required": ["name"]
+              }
+            }
+          }
+        },
+        "responses": { "201": { "description": "Created" } }
+      }
+    },
+    "/chat-agent/update": {
+      "post": {
+        "summary": "Update chat agent",
+        "tags": ["Chatbots"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "chat_agent_id": { "type": "string", "format": "uuid" },
+                  "name": { "type": "string" },
+                  "language": { "type": "string" },
+                  "prompt": { "type": "string" }
+                },
+                "required": ["chat_agent_id"]
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/chat-agent/delete": {
+      "post": {
+        "summary": "Delete chat agent",
+        "tags": ["Chatbots"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "chat_agent_id": { "type": "string", "format": "uuid" }
+                },
+                "required": ["chat_agent_id"]
+              }
+            }
+          }
+        },
+        "responses": { "204": { "description": "Deleted" } }
+      }
+    },
+    "/chat-agent/all": {
+      "get": {
+        "summary": "List chat agents",
+        "tags": ["Chatbots"],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/chat-agent/conversations": {
+      "get": {
+        "summary": "Get chat agent conversations",
+        "tags": ["Chatbots"],
+        "parameters": [
+          { "name": "chat_agent_id", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "limit", "in": "query", "required": false, "schema": { "type": "integer" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/conversations": {
+      "get": {
+        "summary": "Get conversations",
+        "tags": ["Chatbots"],
+        "parameters": [
+          { "name": "conversation_id", "in": "query", "required": false, "schema": { "type": "string" } },
+          { "name": "limit", "in": "query", "required": false, "schema": { "type": "integer" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+
+    "/form": {
+      "post": {
+        "summary": "Create form",
+        "tags": ["Forms"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "fields": { "type": "array", "items": { "type": "object" } },
+                  "description": { "type": "string" }
+                },
+                "required": ["name", "fields"]
+              }
+            }
+          }
+        },
+        "responses": { "201": { "description": "Created" } }
+      }
+    },
+    "/form/update": {
+      "post": {
+        "summary": "Update form",
+        "tags": ["Forms"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "form_id": { "type": "string", "format": "uuid" },
+                  "name": { "type": "string" },
+                  "fields": { "type": "array", "items": { "type": "object" } },
+                  "description": { "type": "string" }
+                },
+                "required": ["form_id"]
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/form/delete": {
+      "post": {
+        "summary": "Delete form",
+        "tags": ["Forms"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "form_id": { "type": "string", "format": "uuid" }
+                },
+                "required": ["form_id"]
+              }
+            }
+          }
+        },
+        "responses": { "204": { "description": "Deleted" } }
+      }
+    },
+    "/form/all": {
+      "get": {
+        "summary": "List forms",
+        "tags": ["Forms"],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/form/data": {
+      "get": {
+        "summary": "Get form data",
+        "tags": ["Forms"],
+        "parameters": [
+          { "name": "form_id", "in": "query", "required": false, "schema": { "type": "string" } },
+          { "name": "limit", "in": "query", "required": false, "schema": { "type": "integer" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+
+    "/workflow/all": {
+      "get": {
+        "summary": "List workflows",
+        "tags": ["Workflows"],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/workflow": {
+      "get": {
+        "summary": "Get workflow",
+        "tags": ["Workflows"],
+        "parameters": [
+          { "name": "workflow_id", "in": "query", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "OK" }, "404": { "description": "Not Found" } }
+      }
+    },
+
+    "/workspace/all": {
+      "get": {
+        "summary": "List workspaces",
+        "tags": ["Workspaces"],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+
+    "/user": {
+      "post": {
+        "summary": "Create user",
+        "tags": ["Users"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "email": { "type": "string", "format": "email" },
+                  "role": { "type": "string" }
+                },
+                "required": ["name", "email"]
+              }
+            }
+          }
+        },
+        "responses": { "201": { "description": "Created" } }
+      },
+      "get": {
+        "summary": "Get user",
+        "tags": ["Users"],
+        "parameters": [
+          { "name": "user_id", "in": "query", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "OK" }, "404": { "description": "Not Found" } }
+      }
+    },
+    "/user/all": {
+      "get": {
+        "summary": "List users",
+        "tags": ["Users"],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/user/delete": {
+      "post": {
+        "summary": "Delete user",
+        "tags": ["Users"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user_id": { "type": "string", "format": "uuid" }
+                },
+                "required": ["user_id"]
+              }
+            }
+          }
+        },
+        "responses": { "204": { "description": "Deleted" } }
+      }
+    },
+
+    "/voice-list": {
+      "get": {
+        "security": [],
+        "summary": "List voices",
+        "tags": ["Voices"],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "provider_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["elevenlabs", "openai", "deepgram", "sarvam"]
+            },
+            "description": "Voice provider identifier"
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token for pagination to retrieve the next page of results"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Number of voices to return per page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": { "type": "boolean" },
+                    "code": { "type": "integer" },
+                    "message": { "type": "string" },
+                    "timestamp": { "type": "integer" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "provider_id": { "type": "string" },
+                        "provider_name": { "type": "string" },
+                        "total_count": { "type": "integer" },
+                        "next_page_token": { "type": "string" },
+                        "has_more": { "type": "boolean" },
+                        "voices": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": { "type": "string" },
+                              "title": { "type": "string" },
+                              "category": { "type": "string" },
+                              "description": { "type": "string" },
+                              "url": { "type": "string" },
+                              "language": { "type": "string" },
+                              "age": { "type": "string" },
+                              "gender": { "type": "string" },
+                              "image": { "type": "string", "nullable": true }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Bad Request - Provider ID is required" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Provider not found" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+
+    "/user/me": {
+      "get": {
+        "summary": "Get current user",
+        "tags": ["User"],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+
+    "/generate-token": {
+      "post": {
+        "summary": "Generate API token",
+        "tags": ["Token"],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "Login token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "API token generated successfully" },
+          "400": { "description": "LOGIN_TOKEN_REQUIRED" },
+          "401": { "description": "INVALID_LOGIN_TOKEN or SESSIONEXPIRED" }
+        }
+      }
+    },
+    "/get-token": {
+      "get": {
+        "summary": "Get API token details",
+        "tags": ["Token"],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "Login token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": { "description": "API token details fetched successfully" },
+          "400": { "description": "LOGIN_TOKEN_REQUIRED" },
+          "401": { "description": "INVALID_LOGIN_TOKEN" },
+          "404": { "description": "NO_API_TOKEN_FOUND" }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": { "type": "http", "scheme": "bearer" }
+    }
+  }
+}
