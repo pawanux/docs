@@ -13,7 +13,7 @@
       }
     ],
     "apiReference": {
-      "specPath": "./api-reference/myopenapi.json",
+      "specPath": "./api-reference/openapi.json",
       "tryIt": {
         "enabled": true
       }
