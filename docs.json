@@ -202,5 +202,10 @@
   "sidebar": {
     "collapsible": true,
     "collapsibleGroups": true
+  },
+  "api": {
+  "playground": {
+    "proxy": false
   }
+}
 }
