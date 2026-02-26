@@ -1,7 +1,7 @@
 {
-    "name": "Grest Docs",
-    "favicon": "/favicon.ico",
-    "head": {
+  "name": "Grest Docs",
+  "favicon": "/favicon.ico",
+  "head": {
     "scripts": [
       {
         "src": "https://www.googletagmanager.com/gtm.js?id=GTM-W9XGJ8BD",
@@ -9,30 +9,28 @@
       }
     ]
   },
-    "body": [
-      "<!-- Google Tag Manager (noscript) -->",
-      "<noscript><iframe src=\"https://www.googletagmanager.com/ns.html?id=GTM-W9XGJ8BD\"",
-      "height=\"0\" width=\"0\" style=\"display:none;visibility:hidden\"></iframe></noscript>",
-      "<!-- End Google Tag Manager (noscript) -->"
-    ],
-    "colors": {
-      "primary": "#6366f1"
-    },
-    "navigation": [
+  "body": {
+    "scripts": [
       {
-        "group": "API Reference",
-        "pages": [
-          "api-reference/introduction"
-        ]
+        "content": "<noscript><iframe src=\"https://www.googletagmanager.com/ns.html?id=GTM-W9XGJ8BD\" height=\"0\" width=\"0\" style=\"display:none;visibility:hidden\"></iframe></noscript>"
       }
-    ],
-    "apiReference": {
-      "specPath": "./api-reference/openapi.json",
-      "tryIt": {
-        "enabled": true
-      }
+    ]
+  },
+  "colors": {
+    "primary": "#6366f1"
+  },
+  "navigation": [
+    {
+      "group": "API Reference",
+      "pages": [
+        "api-reference/introduction"
+      ]
+    }
+  ],
+  "apiReference": {
+    "specPath": "./api-reference/openapi.json",
+    "tryIt": {
+      "enabled": true
     }
   }
-  
-  
-  
+}
