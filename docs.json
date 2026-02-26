@@ -8,6 +8,14 @@
     "dark": "#15803D"
   },
   "favicon": "/favicon.ico",
+  "integrations": {
+    "gtm": {
+      "tagId": "GTM-W9XGJ8BD"
+    },
+    "ga4": {
+      "measurementId": "G-9DMBVXZKY3"
+    }
+  },
   "navigation": {
     "tabs": [
       {
