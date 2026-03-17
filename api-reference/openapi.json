@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "https://dev.tryunleashx.com/api/v1/global/"
+      "url": "https://www.tryunleashx.com/api/v1/global/"
     }
   ],
   "security": [
