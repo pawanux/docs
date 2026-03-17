@@ -1,0 +1,111 @@
+---
+title: Audience List
+openapi: "api-reference/openapi.json GET /audience-list"
+---
+
+Use this endpoint to **retrieve a paginated list of audience records** for a campaign, with optional filters and two response modes.
+
+## Endpoint
+
+**GET** `/audience-list`
+
+**Authentication:** Required (workspace auth)
+
+## Query Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `campaign_id` | number | Yes | Campaign identifier |
+| `page` | number | No | Page number (default: `1`) |
+| `limit` | number | No | Records per page (default: `10`) |
+| `mobile_no` | string | No | Partial mobile number search (LIKE) |
+| `status` | number \| array | No | Audience status filter (see codes below) |
+| `call_status` | string \| array | No | Filter by call status |
+| `first_status` | string \| array | No | Filter by first call status |
+| `last_status` | string \| array | No | Filter by last call status |
+| `attempt` | number \| array | No | Filter by number of attempts made |
+| `is_new` | boolean | No | If `true`, returns simplified audience format (default: `false`) |
+
+## Audience Status Codes
+
+| Code | Status |
+|------|--------|
+| `0` | Fresh |
+| `1` | Completed |
+| `2` | Halted |
+| `3` | Inqueue |
+
+## Response (is_new=false — default)
+
+```json
+{
+  "datalist": [
+    {
+      "id": 101,
+      "mobile_no": "+12025550123",
+      "input_data": { "name": "John Doe", "plan": "premium" },
+      "total_attempt": "2/3",
+      "duration": "2m 30s",
+      "last_attempt": "2025-12-10 14:30:00",
+      "last_disposition": "Interested",
+      "last_call_status": "COMPLETED",
+      "status": "Completed",
+      "updated_by": "Jane Admin"
+    }
+  ],
+  "headers": [
+    { "key": "mobile_no", "label": "Mobile Number" },
+    { "key": "input_data", "label": "Input Data" },
+    { "key": "status", "label": "Lead Status" },
+    { "key": "total_attempt", "label": "Attempt" },
+    { "key": "last_call_status", "label": "Call Status" },
+    { "key": "duration", "label": "Duration" },
+    { "key": "last_disposition", "label": "Disposition" },
+    { "key": "last_attempt", "label": "Last Attempt" },
+    { "key": "updated_by", "label": "Modified By" }
+  ],
+  "pagination": {
+    "totalRecords": 500,
+    "totalPages": 50,
+    "currentPage": 1,
+    "limit": 10
+  }
+}
+```
+
+## Response (is_new=true — simplified)
+
+```json
+{
+  "datalist": [
+    {
+      "id": 101,
+      "mobile_no": "+12025550123",
+      "name": "John Doe",
+      "plan": "premium"
+    }
+  ],
+  "headers": [
+    { "key": "mobile_no", "label": "Mobile Number" },
+    { "key": "name", "label": "Name" },
+    { "key": "plan", "label": "Plan" }
+  ],
+  "metadata": [
+    { "key": "mobile_no", "label": "Mobile Number" },
+    { "key": "name", "label": "Name" }
+  ],
+  "pagination": {
+    "totalRecords": 500,
+    "totalPages": 50,
+    "currentPage": 1,
+    "limit": 10
+  }
+}
+```
+
+## Example cURL
+
+```bash
+curl -X GET "https://www.tryunleashx.com/api/v1/global/audience-list?campaign_id=42&page=1&limit=10" \
+  -H "Authorization: <api_key>"
+```

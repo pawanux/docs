@@ -1,0 +1,53 @@
+---
+title: Download Audience Format
+openapi: "api-reference/openapi.json GET /audience-format"
+---
+
+Use this endpoint to **download an Excel template** for uploading audience data to a campaign.
+
+## Endpoint
+
+**GET** `/audience-format`
+
+**Authentication:** Required (workspace auth)
+
+## Query Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `campaign_id` | number | Yes | Campaign identifier |
+
+## Response
+
+Returns a downloadable **Excel file** (`.xlsx`).
+
+- **Content-Type:** `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`
+- **Filename:** `audience_format_<timestamp>.xlsx`
+
+### Template Columns
+
+The Excel file always includes `mobile_no` as the first column. Additional columns are dynamically generated based on the **agent's configured metadata input fields**.
+
+| Column | Description |
+|--------|-------------|
+| `mobile_no` | Phone number in E.164 format (e.g. `+12025550123`) |
+| `<custom_field>` | Additional fields defined in the agent's metadata input |
+
+## Notes
+
+- The campaign must have an agent assigned. If no agent is linked, the request returns an error.
+- Fill the template and upload it when creating or updating a campaign via the `audience` field.
+
+## Error Cases
+
+| Error | Cause |
+|-------|-------|
+| `Campaign not exist Or Agent is not assigned to campaign` | Invalid `campaign_id` or no agent linked |
+
+## Example cURL
+
+```bash
+curl -X GET "https://www.tryunleashx.com/api/v1/global/audience-format?campaign_id=42" \
+  -H "Authorization: <api_key>" \
+  --output audience_template.xlsx
+```

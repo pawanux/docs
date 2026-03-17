@@ -6,15 +6,22 @@
     "description": "UnleashX - Your home for human like conversations"
   },
   "servers": [
-    { "url": "https://www.tryunleashx.com/api/v1/global/" }
+    {
+      "url": "https://dev.tryunleashx.com/api/v1/global/"
+    }
   ],
-  "security": [ { "bearerAuth": [] } ],
-  
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
   "paths": {
     "/agent": {
       "post": {
         "summary": "Create agent",
-        "tags": ["Agent"],
+        "tags": [
+          "Agent"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -22,21 +29,33 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "name": { "type": "string" },
-                  "language": { "type": "string" }
+                  "name": {
+                    "type": "string"
+                  },
+                  "language": {
+                    "type": "string"
+                  }
                 },
-                "required": ["name"]
+                "required": [
+                  "name"
+                ]
               }
             }
           }
         },
-        "responses": { "201": { "description": "Created" } }
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        }
       }
     },
     "/agent/update": {
       "post": {
         "summary": "Update agent",
-        "tags": ["Agent"],
+        "tags": [
+          "Agent"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -44,22 +63,37 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "agent_id": { "type": "string", "format": "uuid" },
-                  "name": { "type": "string" },
-                  "language": { "type": "string" }
+                  "agent_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "language": {
+                    "type": "string"
+                  }
                 },
-                "required": ["agent_id"]
+                "required": [
+                  "agent_id"
+                ]
               }
             }
           }
         },
-        "responses": { "200": { "description": "OK" } }
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     },
     "/agent/delete": {
       "post": {
         "summary": "Delete agent",
-        "tags": ["Agent"],
+        "tags": [
+          "Agent"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -67,28 +101,56 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "agent_id": { "type": "string", "format": "uuid" }
+                  "agent_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
                 },
-                "required": ["agent_id"]
+                "required": [
+                  "agent_id"
+                ]
               }
             }
           }
         },
-        "responses": { "204": { "description": "Deleted" } }
+        "responses": {
+          "204": {
+            "description": "Deleted"
+          }
+        }
       }
     },
     "/agent/activity-logs": {
       "get": {
         "summary": "Get agent activity logs",
-        "tags": ["Agent"],
-        "parameters": [
-          { "name": "agent_id", "in": "query", "required": true, "schema": { "type": "string" } },
-          { "name": "limit", "in": "query", "required": false, "schema": { "type": "integer" } }
+        "tags": [
+          "Agent"
         ],
-        "responses": { "200": { "description": "OK" } }
+        "parameters": [
+          {
+            "name": "agent_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     },
-
     "/create-agent": {
       "post": {
         "security": [],
@@ -104,7 +166,9 @@
           }
         ],
         "summary": "Create voice agent",
-        "tags": ["Voice AI"],
+        "tags": [
+          "Voice AI"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -112,44 +176,145 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "agent_id": { "type": "integer" },
-                  "agent_name": { "type": "string" },
-                  "description": { "type": "string" },
-                  "prompt": { "type": "string" },
-                  "timezone": { "type": "string" },
-                  "greeting": { "type": "string" },
-                  "session_data_webhook": { "type": "string" },
+                  "agent_id": {
+                    "type": "integer"
+                  },
+                  "agent_name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "prompt": {
+                    "type": "string"
+                  },
+                  "timezone": {
+                    "type": "string"
+                  },
+                  "greeting": {
+                    "type": "string"
+                  },
+                  "session_data_webhook": {
+                    "type": "string"
+                  },
                   "voice": {
                     "type": "object",
                     "properties": {
-                      "provider": { "type": "string", "enum": ["elevenlabs", "openai", "deepgram", "sarvam"] },
-                      "voice_id": { "type": "string" },
-                      "model": { "type": "string" },
-                      "settings": { "type": "object" }
+                      "provider": {
+                        "type": "string",
+                        "enum": [
+                          "elevenlabs",
+                          "openai",
+                          "deepgram",
+                          "sarvam"
+                        ]
+                      },
+                      "voice_id": {
+                        "type": "string"
+                      },
+                      "model": {
+                        "type": "string"
+                      },
+                      "settings": {
+                        "type": "object"
+                      }
                     }
                   },
                   "speech_to_text": {
                     "type": "object",
                     "properties": {
-                      "provider": { "type": "string" },
-                      "model": { "type": "string" },
+                      "provider": {
+                        "type": "string"
+                      },
+                      "model": {
+                        "type": "string"
+                      },
                       "language": {
                         "type": "string",
                         "enum": [
-                          "english", "hindi", "multi", "albanian", "arabic", "armenian", "azerbaijani",
-                          "belarusian", "bengali", "bosnian", "bulgarian", "catalan", "chinese",
-                          "croatian", "czech", "danish", "dutch", "english_australia", "english_india",
-                          "english_new_zealand", "english_uk", "english_us", "english_spanish",
-                          "estonian", "finnish", "french", "galician", "georgian", "german",
-                          "german_switzerland", "greek", "gujarati", "haitian_creole", "hausa",
-                          "hebrew", "afrikaans", "hungarian", "icelandic", "indonesian", "italian",
-                          "japanese", "javanese", "kannada", "kazakh", "khmer", "korean", "latvian",
-                          "lithuanian", "macedonian", "malay", "malayalam", "maori", "marathi",
-                          "nepali", "norwegian", "persian", "polish", "portuguese", "portuguese_brazil",
-                          "punjabi", "romanian", "russian", "serbian", "shona", "slovak", "slovenian",
-                          "somali", "spanish", "spanish_latin_america", "sundanese", "swahili",
-                          "swedish", "tagalog", "tamil", "tajik", "telugu", "thai", "tswana",
-                          "turkish", "ukrainian", "urdu", "vietnamese", "welsh"
+                          "english",
+                          "hindi",
+                          "multi",
+                          "albanian",
+                          "arabic",
+                          "armenian",
+                          "azerbaijani",
+                          "belarusian",
+                          "bengali",
+                          "bosnian",
+                          "bulgarian",
+                          "catalan",
+                          "chinese",
+                          "croatian",
+                          "czech",
+                          "danish",
+                          "dutch",
+                          "english_australia",
+                          "english_india",
+                          "english_new_zealand",
+                          "english_uk",
+                          "english_us",
+                          "english_spanish",
+                          "estonian",
+                          "finnish",
+                          "french",
+                          "galician",
+                          "georgian",
+                          "german",
+                          "german_switzerland",
+                          "greek",
+                          "gujarati",
+                          "haitian_creole",
+                          "hausa",
+                          "hebrew",
+                          "afrikaans",
+                          "hungarian",
+                          "icelandic",
+                          "indonesian",
+                          "italian",
+                          "japanese",
+                          "javanese",
+                          "kannada",
+                          "kazakh",
+                          "khmer",
+                          "korean",
+                          "latvian",
+                          "lithuanian",
+                          "macedonian",
+                          "malay",
+                          "malayalam",
+                          "maori",
+                          "marathi",
+                          "nepali",
+                          "norwegian",
+                          "persian",
+                          "polish",
+                          "portuguese",
+                          "portuguese_brazil",
+                          "punjabi",
+                          "romanian",
+                          "russian",
+                          "serbian",
+                          "shona",
+                          "slovak",
+                          "slovenian",
+                          "somali",
+                          "spanish",
+                          "spanish_latin_america",
+                          "sundanese",
+                          "swahili",
+                          "swedish",
+                          "tagalog",
+                          "tamil",
+                          "tajik",
+                          "telugu",
+                          "thai",
+                          "tswana",
+                          "turkish",
+                          "ukrainian",
+                          "urdu",
+                          "vietnamese",
+                          "welsh"
                         ]
                       }
                     }
@@ -157,23 +322,35 @@
                   "llm": {
                     "type": "object",
                     "properties": {
-                      "llm": { "type": "string" },
-                      "model": { "type": "string" }
+                      "llm": {
+                        "type": "string"
+                      },
+                      "model": {
+                        "type": "string"
+                      }
                     }
                   },
-                  "configurations": { "type": "object" }
+                  "configurations": {
+                    "type": "object"
+                  }
                 }
               }
             }
           }
         },
-        "responses": { "201": { "description": "Created" } }
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        }
       }
     },
     "/global/agents/update": {
       "post": {
         "summary": "Update voice agent",
-        "tags": ["Voice AI"],
+        "tags": [
+          "Voice AI"
+        ],
         "security": [],
         "parameters": [
           {
@@ -201,7 +378,9 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["agent_id"],
+                "required": [
+                  "agent_id"
+                ],
                 "properties": {
                   "agent_id": {
                     "type": "integer",
@@ -265,18 +444,30 @@
           }
         },
         "responses": {
-          "200": { "description": "Voice agent updated successfully" },
-          "400": { "description": "Bad Request - Agent ID is required" },
-          "401": { "description": "Unauthorized" },
-          "404": { "description": "Agent not found" },
-          "422": { "description": "Validation error" }
+          "200": {
+            "description": "Voice agent updated successfully"
+          },
+          "400": {
+            "description": "Bad Request - Agent ID is required"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Agent not found"
+          },
+          "422": {
+            "description": "Validation error"
+          }
         }
       }
     },
     "/delete-agent": {
       "post": {
         "summary": "Delete voice agent",
-        "tags": ["Voice AI"],
+        "tags": [
+          "Voice AI"
+        ],
         "security": [],
         "parameters": [
           {
@@ -304,7 +495,9 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["agent_id"],
+                "required": [
+                  "agent_id"
+                ],
                 "properties": {
                   "agent_id": {
                     "type": "integer",
@@ -316,17 +509,27 @@
           }
         },
         "responses": {
-          "200": { "description": "Voice agent deleted successfully" },
-          "400": { "description": "Bad Request - Agent ID is required" },
-          "401": { "description": "Unauthorized" },
-          "404": { "description": "Agent not found" }
+          "200": {
+            "description": "Voice agent deleted successfully"
+          },
+          "400": {
+            "description": "Bad Request - Agent ID is required"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Agent not found"
+          }
         }
       }
     },
     "/agents/call": {
       "post": {
         "summary": "Make call",
-        "tags": ["Voice AI"],
+        "tags": [
+          "Voice AI"
+        ],
         "security": [],
         "parameters": [
           {
@@ -345,7 +548,10 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["agent_id", "phone_number"],
+                "required": [
+                  "agent_id",
+                  "phone_number"
+                ],
                 "properties": {
                   "agent_id": {
                     "type": "integer",
@@ -365,22 +571,35 @@
           }
         },
         "responses": {
-          "200": { 
+          "200": {
             "description": "Call initiated successfully",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "success": { "type": "boolean" },
-                    "message": { "type": "string" },
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
                     "data": {
                       "type": "object",
                       "properties": {
-                        "execution_id": { "type": "string", "format": "uuid" },
-                        "agent_id": { "type": "integer" },
-                        "phone_number": { "type": "string" },
-                        "call_status": { "type": "string" }
+                        "execution_id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "agent_id": {
+                          "type": "integer"
+                        },
+                        "phone_number": {
+                          "type": "string"
+                        },
+                        "call_status": {
+                          "type": "string"
+                        }
                       }
                     }
                   }
@@ -388,17 +607,27 @@
               }
             }
           },
-          "400": { "description": "Bad Request - Phone Number or Agent ID is required" },
-          "401": { "description": "Unauthorized" },
-          "404": { "description": "Agent not found or not active" },
-          "422": { "description": "Validation error" }
+          "400": {
+            "description": "Bad Request - Phone Number or Agent ID is required"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Agent not found or not active"
+          },
+          "422": {
+            "description": "Validation error"
+          }
         }
       }
     },
     "/attach-phone-numbers": {
       "post": {
         "summary": "Attach phone numbers to an agent",
-        "tags": ["Voice AI"],
+        "tags": [
+          "Voice AI"
+        ],
         "security": [],
         "parameters": [
           {
@@ -417,7 +646,10 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["agent_id", "numbers"],
+                "required": [
+                  "agent_id",
+                  "numbers"
+                ],
                 "properties": {
                   "agent_id": {
                     "type": "integer",
@@ -426,7 +658,10 @@
                   "numbers": {
                     "type": "array",
                     "description": "Phone numbers to attach to the agent. Must include country code with + prefix (e.g., '+1234567890'). Provide one or more numbers.",
-                    "items": { "type": "string", "example": "+12025551234" },
+                    "items": {
+                      "type": "string",
+                      "example": "+12025551234"
+                    },
                     "minItems": 1
                   }
                 }
@@ -435,20 +670,31 @@
           }
         },
         "responses": {
-          "200": { 
+          "200": {
             "description": "Numbers attached successfully",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "success": { "type": "boolean" },
-                    "message": { "type": "string" },
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
                     "data": {
                       "type": "object",
                       "properties": {
-                        "agent_id": { "type": "integer" },
-                        "phone_numbers": { "type": "array", "items": { "type": "string" } }
+                        "agent_id": {
+                          "type": "integer"
+                        },
+                        "phone_numbers": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
                       }
                     }
                   }
@@ -456,17 +702,27 @@
               }
             }
           },
-          "400": { "description": "Bad Request - Phone Number or Agent ID is required" },
-          "401": { "description": "Unauthorized" },
-          "404": { "description": "Agent not found or not active" },
-          "422": { "description": "Validation error" }
+          "400": {
+            "description": "Bad Request - Phone Number or Agent ID is required"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Agent not found or not active"
+          },
+          "422": {
+            "description": "Validation error"
+          }
         }
       }
     },
     "/global/agents": {
       "post": {
         "summary": "Create voice agent",
-        "tags": ["Voice AI"],
+        "tags": [
+          "Voice AI"
+        ],
         "security": [],
         "parameters": [
           {
@@ -485,7 +741,10 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["agent_name", "agent_prompt"],
+                "required": [
+                  "agent_name",
+                  "agent_prompt"
+                ],
                 "properties": {
                   "agent_name": {
                     "type": "string",
@@ -537,17 +796,27 @@
           }
         },
         "responses": {
-          "200": { "description": "Voice agent created successfully" },
-          "400": { "description": "Bad Request - Agent Name is required" },
-          "401": { "description": "Unauthorized" },
-          "422": { "description": "Validation error" }
+          "200": {
+            "description": "Voice agent created successfully"
+          },
+          "400": {
+            "description": "Bad Request - Agent Name is required"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Validation error"
+          }
         }
       }
     },
     "/agents/get": {
       "get": {
         "summary": "Get voice agents",
-        "tags": ["Voice AI"],
+        "tags": [
+          "Voice AI"
+        ],
         "security": [],
         "parameters": [
           {
@@ -578,16 +847,26 @@
             }
           }
         ],
-        "responses": { 
-          "200": { "description": "Voice agents retrieved successfully" },
-          "400": { "description": "Bad Request" },
-          "401": { "description": "Unauthorized" },
-          "404": { "description": "Agent not found" }
+        "responses": {
+          "200": {
+            "description": "Voice agents retrieved successfully"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Agent not found"
+          }
         }
       },
       "post": {
         "summary": "Get voice agents",
-        "tags": ["Voice AI"],
+        "tags": [
+          "Voice AI"
+        ],
         "security": [],
         "parameters": [
           {
@@ -620,30 +899,59 @@
             }
           }
         },
-        "responses": { 
-          "200": { "description": "Voice agents retrieved successfully" },
-          "400": { "description": "Bad Request" },
-          "401": { "description": "Unauthorized" },
-          "404": { "description": "Agent not found" }
+        "responses": {
+          "200": {
+            "description": "Voice agents retrieved successfully"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Agent not found"
+          }
         }
       }
     },
     "/voice-agent/activity-logs": {
       "get": {
         "summary": "Get voice agent activity logs",
-        "tags": ["Voice AI"],
-        "parameters": [
-          { "name": "voice_agent_id", "in": "query", "required": true, "schema": { "type": "string" } },
-          { "name": "limit", "in": "query", "required": false, "schema": { "type": "integer" } }
+        "tags": [
+          "Voice AI"
         ],
-        "responses": { "200": { "description": "OK" } }
+        "parameters": [
+          {
+            "name": "voice_agent_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     },
-
     "/list-phone-numbers": {
       "get": {
         "summary": "List phone numbers",
-        "tags": ["Phone Numbers"],
+        "tags": [
+          "Phone Numbers"
+        ],
         "security": [],
         "parameters": [
           {
@@ -654,8 +962,7 @@
             "schema": {
               "type": "string"
             }
-          }
-          ,
+          },
           {
             "name": "provider",
             "in": "query",
@@ -663,17 +970,31 @@
             "description": "Filter by specific provider. Supported values: `san`, `ozonetell`, `twilio`, `exotel`",
             "schema": {
               "type": "string",
-              "enum": ["Exotel", "Twilio", "San Software", "Novus", "Deepijatel", "San Bajaj GSM", "Ozonetel"]
+              "enum": [
+                "Exotel",
+                "Twilio",
+                "San Software",
+                "Novus",
+                "Deepijatel",
+                "San Bajaj GSM",
+                "Ozonetel"
+              ]
             }
           }
         ],
-        "responses": { "200": { "description": "OK" } }
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     },
     "/phone-number/import": {
       "post": {
         "summary": "Import phone numbers",
-        "tags": ["Phone Numbers"],
+        "tags": [
+          "Phone Numbers"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -681,57 +1002,145 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "numbers": { "type": "array", "items": { "type": "string" } }
+                  "numbers": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
                 },
-                "required": ["numbers"]
+                "required": [
+                  "numbers"
+                ]
               }
             }
           }
         },
-        "responses": { "201": { "description": "Imported" } }
+        "responses": {
+          "201": {
+            "description": "Imported"
+          }
+        }
       }
     },
-
     "/call-logs": {
       "get": {
         "summary": "Get call logs",
-        "tags": ["Call Logs"],
-        "responses": { "200": { "description": "OK" } }
+        "tags": [
+          "Call Logs"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     },
     "/call-history": {
       "get": {
         "summary": "Get call history",
-        "tags": ["Call Logs"],
-        "responses": { "200": { "description": "OK" } }
+        "tags": [
+          "Call Logs"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       },
       "delete": {
         "summary": "Delete call history",
-        "tags": ["Call Logs"],
-        "responses": { "204": { "description": "Deleted" } }
+        "tags": [
+          "Call Logs"
+        ],
+        "responses": {
+          "204": {
+            "description": "Deleted"
+          }
+        }
       }
     },
     "/agents/call-history": {
       "get": {
         "security": [],
         "summary": "Get agents call history (grouped by agent)",
-        "tags": ["Call Logs"],
+        "tags": [
+          "Call Logs"
+        ],
         "parameters": [
           {
             "name": "token",
             "in": "header",
             "required": true,
             "description": "API token for authentication",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           },
-          { "name": "page", "in": "query", "required": false, "schema": { "type": "integer" } },
-          { "name": "limit", "in": "query", "required": false, "schema": { "type": "integer" } },
-          { "name": "fromdate", "in": "query", "required": false, "schema": { "type": "string" } },
-          { "name": "todate", "in": "query", "required": false, "schema": { "type": "string" } },
-          { "name": "agent_id", "in": "query", "required": false, "schema": { "type": "integer" } },
-          { "name": "calling_number", "in": "query", "required": false, "schema": { "type": "string" } },
-          { "name": "provider_number", "in": "query", "required": false, "schema": { "type": "string" } },
-          { "name": "status", "in": "query", "required": false, "schema": { "type": "string" } }
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "fromdate",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "todate",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "agent_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "calling_number",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "provider_number",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -746,51 +1155,95 @@
                       "items": {
                         "type": "object",
                         "properties": {
-                          "agent_id": { "type": "integer" },
-                          "agent_name": { "type": "string" },
-                          "total_calls": { "type": "string" },
-                          "success_calls": { "type": "string" },
-                          "failed_calls": { "type": "string" },
-                          "total_duration": { "type": "string" },
-                          "call_from": { "type": "string", "nullable": true },
-                          "call_to": { "type": "string", "nullable": true }
+                          "agent_id": {
+                            "type": "integer"
+                          },
+                          "agent_name": {
+                            "type": "string"
+                          },
+                          "total_calls": {
+                            "type": "string"
+                          },
+                          "success_calls": {
+                            "type": "string"
+                          },
+                          "failed_calls": {
+                            "type": "string"
+                          },
+                          "total_duration": {
+                            "type": "string"
+                          },
+                          "call_from": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "call_to": {
+                            "type": "string",
+                            "nullable": true
+                          }
                         }
                       }
                     },
                     "pagination": {
                       "type": "object",
                       "properties": {
-                        "totalRecords": { "type": "integer" },
-                        "totalPages": { "type": "integer" },
-                        "currentPage": { "type": "integer" },
-                        "limit": { "type": "integer" }
+                        "totalRecords": {
+                          "type": "integer"
+                        },
+                        "totalPages": {
+                          "type": "integer"
+                        },
+                        "currentPage": {
+                          "type": "integer"
+                        },
+                        "limit": {
+                          "type": "integer"
+                        }
                       }
                     },
-                    "total_calls": { "type": "integer" },
-                    "successful_calls": { "type": "integer" },
-                    "total_duration": { "type": "string" }
+                    "total_calls": {
+                      "type": "integer"
+                    },
+                    "successful_calls": {
+                      "type": "integer"
+                    },
+                    "total_duration": {
+                      "type": "string"
+                    }
                   }
                 }
               }
             }
           },
-          "400": { "description": "Bad Request - Invalid parameters" },
-          "401": { "description": "Unauthorized" },
-          "404": { "description": "Not Found" },
-          "500": { "description": "Internal Server Error" }
+          "400": {
+            "description": "Bad Request - Invalid parameters"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
         }
       },
       "post": {
         "security": [],
         "summary": "Post filters to get agents call history (grouped by agent)",
-        "tags": ["Call Logs"],
+        "tags": [
+          "Call Logs"
+        ],
         "parameters": [
           {
             "name": "token",
             "in": "header",
             "required": true,
             "description": "API token for authentication",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -800,24 +1253,48 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "page": { "type": "integer" },
-                  "limit": { "type": "integer" },
-                  "fromdate": { "type": "string" },
-                  "todate": { "type": "string" },
-                  "agent_id": { "type": "integer" },
-                  "calling_number": { "type": "string" },
-                  "provider_number": { "type": "string" },
-                  "status": { "type": "string" }
+                  "page": {
+                    "type": "integer"
+                  },
+                  "limit": {
+                    "type": "integer"
+                  },
+                  "fromdate": {
+                    "type": "string"
+                  },
+                  "todate": {
+                    "type": "string"
+                  },
+                  "agent_id": {
+                    "type": "integer"
+                  },
+                  "calling_number": {
+                    "type": "string"
+                  },
+                  "provider_number": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "type": "string"
+                  }
                 }
               }
             }
           }
         },
         "responses": {
-          "200": { "description": "OK" },
-          "400": { "description": "Bad Request" },
-          "401": { "description": "Unauthorized" },
-          "500": { "description": "Internal Server Error" }
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
         }
       }
     },
@@ -825,25 +1302,99 @@
       "get": {
         "security": [],
         "summary": "Get agent executions list (per-call records)",
-        "tags": ["Call Logs"],
+        "tags": [
+          "Call Logs"
+        ],
         "parameters": [
           {
             "name": "token",
             "in": "header",
             "required": true,
             "description": "API token for authentication",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           },
-          { "name": "agent_id", "in": "query", "required": false, "schema": { "type": "integer" } },
-          { "name": "calling_number", "in": "query", "required": false, "schema": { "type": "string" } },
-          { "name": "provider_number", "in": "query", "required": false, "schema": { "type": "string" } },
-          { "name": "status", "in": "query", "required": false, "schema": { "type": "string" } },
-          { "name": "fromdate", "in": "query", "required": false, "schema": { "type": "string" } },
-          { "name": "todate", "in": "query", "required": false, "schema": { "type": "string" } },
-          { "name": "page", "in": "query", "required": false, "schema": { "type": "integer" } },
-          { "name": "limit", "in": "query", "required": false, "schema": { "type": "integer" } },
-          { "name": "audio_url", "in": "query", "required": false, "schema": { "type": "string" } },
-          { "name": "transcript", "in": "query", "required": false, "schema": { "type": "string" } }
+          {
+            "name": "agent_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "calling_number",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "provider_number",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fromdate",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "todate",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "audio_url",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "transcript",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -858,19 +1409,47 @@
                       "items": {
                         "type": "object",
                         "properties": {
-                          "ID": { "type": "integer" },
-                          "AGENT_ID": { "type": "integer" },
-                          "agent_name": { "type": "string" },
-                          "CALLING_NUMBER": { "type": "string" },
-                          "PROVIDER_NUMBER": { "type": "string" },
-                          "STATUS": { "type": "string" },
-                          "CALL_STATUS": { "type": "string" },
-                          "TOTAL_DURATION": { "type": "integer" },
-                          "total_duration": { "type": "string" },
-                          "CREATED_AT": { "type": "string" },
-                          "TRANSCRIPT": { "type": "string", "nullable": true },
-                          "FILE_PATH": { "type": "string", "nullable": true },
-                          "DISPOSITION": { "type": "string" }
+                          "ID": {
+                            "type": "integer"
+                          },
+                          "AGENT_ID": {
+                            "type": "integer"
+                          },
+                          "agent_name": {
+                            "type": "string"
+                          },
+                          "CALLING_NUMBER": {
+                            "type": "string"
+                          },
+                          "PROVIDER_NUMBER": {
+                            "type": "string"
+                          },
+                          "STATUS": {
+                            "type": "string"
+                          },
+                          "CALL_STATUS": {
+                            "type": "string"
+                          },
+                          "TOTAL_DURATION": {
+                            "type": "integer"
+                          },
+                          "total_duration": {
+                            "type": "string"
+                          },
+                          "CREATED_AT": {
+                            "type": "string"
+                          },
+                          "TRANSCRIPT": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "FILE_PATH": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "DISPOSITION": {
+                            "type": "string"
+                          }
                         }
                       }
                     }
@@ -879,9 +1458,15 @@
               }
             }
           },
-          "400": { "description": "Bad Request - Invalid parameters" },
-          "401": { "description": "Unauthorized" },
-          "500": { "description": "Internal Server Error" }
+          "400": {
+            "description": "Bad Request - Invalid parameters"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
         }
       }
     },
@@ -889,22 +1474,75 @@
       "get": {
         "security": [],
         "summary": "Get calling list with transaction (call cost)",
-        "tags": ["Call Logs"],
+        "tags": [
+          "Call Logs"
+        ],
         "parameters": [
           {
             "name": "token",
             "in": "header",
             "required": true,
             "description": "API token for authentication",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           },
-          { "name": "agent_id", "in": "query", "required": false, "schema": { "type": "string" } },
-          { "name": "call_status", "in": "query", "required": false, "schema": { "type": "string" } },
-          { "name": "fromdate", "in": "query", "required": false, "schema": { "type": "string" } },
-          { "name": "todate", "in": "query", "required": false, "schema": { "type": "string" } },
-          { "name": "search", "in": "query", "required": false, "schema": { "type": "string" } },
-          { "name": "page", "in": "query", "required": false, "schema": { "type": "integer" } },
-          { "name": "limit", "in": "query", "required": false, "schema": { "type": "integer" } }
+          {
+            "name": "agent_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "call_status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fromdate",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "todate",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -916,21 +1554,37 @@
                   "properties": {
                     "headers": {
                       "type": "array",
-                      "items": { "type": "object" }
+                      "items": {
+                        "type": "object"
+                      }
                     },
                     "transactions": {
                       "type": "array",
-                      "items": { "type": "object" }
+                      "items": {
+                        "type": "object"
+                      }
                     },
                     "pagination": {
                       "type": "object",
                       "properties": {
-                        "totalRecords": { "type": "integer" },
-                        "currentPage": { "type": "integer" },
-                        "limit": { "type": "integer" },
-                        "totalPages": { "type": "integer" },
-                        "has_next": { "type": "boolean" },
-                        "has_prev": { "type": "boolean" }
+                        "totalRecords": {
+                          "type": "integer"
+                        },
+                        "currentPage": {
+                          "type": "integer"
+                        },
+                        "limit": {
+                          "type": "integer"
+                        },
+                        "totalPages": {
+                          "type": "integer"
+                        },
+                        "has_next": {
+                          "type": "boolean"
+                        },
+                        "has_prev": {
+                          "type": "boolean"
+                        }
                       }
                     }
                   }
@@ -938,22 +1592,32 @@
               }
             }
           },
-          "400": { "description": "Bad Request - Invalid parameters" },
-          "401": { "description": "Unauthorized" },
-          "500": { "description": "Internal Server Error" }
+          "400": {
+            "description": "Bad Request - Invalid parameters"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
         }
       },
       "post": {
         "security": [],
         "summary": "Post filters to get calling list with transaction",
-        "tags": ["Call Logs"],
+        "tags": [
+          "Call Logs"
+        ],
         "parameters": [
           {
             "name": "token",
             "in": "header",
             "required": true,
             "description": "API token for authentication",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -963,23 +1627,45 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "agent_id": { "type": "string" },
-                  "call_status": { "type": "string" },
-                  "fromdate": { "type": "string" },
-                  "todate": { "type": "string" },
-                  "search": { "type": "string" },
-                  "page": { "type": "integer" },
-                  "limit": { "type": "integer" }
+                  "agent_id": {
+                    "type": "string"
+                  },
+                  "call_status": {
+                    "type": "string"
+                  },
+                  "fromdate": {
+                    "type": "string"
+                  },
+                  "todate": {
+                    "type": "string"
+                  },
+                  "search": {
+                    "type": "string"
+                  },
+                  "page": {
+                    "type": "integer"
+                  },
+                  "limit": {
+                    "type": "integer"
+                  }
                 }
               }
             }
           }
         },
         "responses": {
-          "200": { "description": "OK" },
-          "400": { "description": "Bad Request" },
-          "401": { "description": "Unauthorized" },
-          "500": { "description": "Internal Server Error" }
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
         }
       }
     },
@@ -987,14 +1673,18 @@
       "get": {
         "security": [],
         "summary": "Get call summary",
-        "tags": ["Call Logs"],
+        "tags": [
+          "Call Logs"
+        ],
         "parameters": [
           {
             "name": "token",
             "in": "header",
             "required": true,
             "description": "API token for authentication",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "call_id",
@@ -1014,39 +1704,89 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "error": { "type": "boolean" },
-                    "code": { "type": "integer" },
-                    "message": { "type": "string" },
-                    "timestamp": { "type": "integer" },
+                    "error": {
+                      "type": "boolean"
+                    },
+                    "code": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "timestamp": {
+                      "type": "integer"
+                    },
                     "data": {
                       "type": "object",
                       "properties": {
-                        "call_id": { "type": "string" },
-                        "calling_number": { "type": "string" },
-                        "called_number": { "type": "string" },
-                        "agent_id": { "type": "string" },
-                        "agent_name": { "type": "string" },
-                        "total_duration": { "type": "integer" },
-                        "duration_formatted": { "type": "string" },
-                        "recording_url": { "type": "string" },
-                        "call_status": { "type": "string" },
-                        "call_date": { "type": "string" },
-                        "call_date_formatted": { "type": "string" },
-                        "direction": { "type": "string" },
-                        "provider": { "type": "string" },
-                        "cost": { "type": "number" },
-                        "currency": { "type": "string" },
+                        "call_id": {
+                          "type": "string"
+                        },
+                        "calling_number": {
+                          "type": "string"
+                        },
+                        "called_number": {
+                          "type": "string"
+                        },
+                        "agent_id": {
+                          "type": "string"
+                        },
+                        "agent_name": {
+                          "type": "string"
+                        },
+                        "total_duration": {
+                          "type": "integer"
+                        },
+                        "duration_formatted": {
+                          "type": "string"
+                        },
+                        "recording_url": {
+                          "type": "string"
+                        },
+                        "call_status": {
+                          "type": "string"
+                        },
+                        "call_date": {
+                          "type": "string"
+                        },
+                        "call_date_formatted": {
+                          "type": "string"
+                        },
+                        "direction": {
+                          "type": "string"
+                        },
+                        "provider": {
+                          "type": "string"
+                        },
+                        "cost": {
+                          "type": "number"
+                        },
+                        "currency": {
+                          "type": "string"
+                        },
                         "transcript": {
                           "type": "object",
                           "properties": {
-                            "available": { "type": "boolean" },
-                            "url": { "type": "string" }
+                            "available": {
+                              "type": "boolean"
+                            },
+                            "url": {
+                              "type": "string"
+                            }
                           }
                         },
-                        "metadata": { "type": "object" },
-                        "started_at": { "type": "string" },
-                        "ended_at": { "type": "string" },
-                        "timezone": { "type": "string" }
+                        "metadata": {
+                          "type": "object"
+                        },
+                        "started_at": {
+                          "type": "string"
+                        },
+                        "ended_at": {
+                          "type": "string"
+                        },
+                        "timezone": {
+                          "type": "string"
+                        }
                       }
                     }
                   }
@@ -1054,18 +1794,27 @@
               }
             }
           },
-          "400": { "description": "Bad Request - Call ID is required" },
-          "401": { "description": "Unauthorized" },
-          "404": { "description": "Call not found" },
-          "500": { "description": "Internal Server Error" }
+          "400": {
+            "description": "Bad Request - Call ID is required"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Call not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
         }
       }
     },
-
     "/chat-agent": {
       "post": {
         "summary": "Create chat agent",
-        "tags": ["Chatbots"],
+        "tags": [
+          "Chatbots"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -1073,22 +1822,36 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "name": { "type": "string" },
-                  "language": { "type": "string" },
-                  "prompt": { "type": "string" }
+                  "name": {
+                    "type": "string"
+                  },
+                  "language": {
+                    "type": "string"
+                  },
+                  "prompt": {
+                    "type": "string"
+                  }
                 },
-                "required": ["name"]
+                "required": [
+                  "name"
+                ]
               }
             }
           }
         },
-        "responses": { "201": { "description": "Created" } }
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        }
       }
     },
     "/chat-agent/update": {
       "post": {
         "summary": "Update chat agent",
-        "tags": ["Chatbots"],
+        "tags": [
+          "Chatbots"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -1096,23 +1859,40 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "chat_agent_id": { "type": "string", "format": "uuid" },
-                  "name": { "type": "string" },
-                  "language": { "type": "string" },
-                  "prompt": { "type": "string" }
+                  "chat_agent_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "language": {
+                    "type": "string"
+                  },
+                  "prompt": {
+                    "type": "string"
+                  }
                 },
-                "required": ["chat_agent_id"]
+                "required": [
+                  "chat_agent_id"
+                ]
               }
             }
           }
         },
-        "responses": { "200": { "description": "OK" } }
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     },
     "/chat-agent/delete": {
       "post": {
         "summary": "Delete chat agent",
-        "tags": ["Chatbots"],
+        "tags": [
+          "Chatbots"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -1120,50 +1900,106 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "chat_agent_id": { "type": "string", "format": "uuid" }
+                  "chat_agent_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
                 },
-                "required": ["chat_agent_id"]
+                "required": [
+                  "chat_agent_id"
+                ]
               }
             }
           }
         },
-        "responses": { "204": { "description": "Deleted" } }
+        "responses": {
+          "204": {
+            "description": "Deleted"
+          }
+        }
       }
     },
     "/chat-agent/all": {
       "get": {
         "summary": "List chat agents",
-        "tags": ["Chatbots"],
-        "responses": { "200": { "description": "OK" } }
+        "tags": [
+          "Chatbots"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     },
     "/chat-agent/conversations": {
       "get": {
         "summary": "Get chat agent conversations",
-        "tags": ["Chatbots"],
-        "parameters": [
-          { "name": "chat_agent_id", "in": "query", "required": true, "schema": { "type": "string" } },
-          { "name": "limit", "in": "query", "required": false, "schema": { "type": "integer" } }
+        "tags": [
+          "Chatbots"
         ],
-        "responses": { "200": { "description": "OK" } }
+        "parameters": [
+          {
+            "name": "chat_agent_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     },
     "/conversations": {
       "get": {
         "summary": "Get conversations",
-        "tags": ["Chatbots"],
-        "parameters": [
-          { "name": "conversation_id", "in": "query", "required": false, "schema": { "type": "string" } },
-          { "name": "limit", "in": "query", "required": false, "schema": { "type": "integer" } }
+        "tags": [
+          "Chatbots"
         ],
-        "responses": { "200": { "description": "OK" } }
+        "parameters": [
+          {
+            "name": "conversation_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     },
-
     "/form": {
       "post": {
         "summary": "Create form",
-        "tags": ["Forms"],
+        "tags": [
+          "Forms"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -1171,22 +2007,40 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "name": { "type": "string" },
-                  "fields": { "type": "array", "items": { "type": "object" } },
-                  "description": { "type": "string" }
+                  "name": {
+                    "type": "string"
+                  },
+                  "fields": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  },
+                  "description": {
+                    "type": "string"
+                  }
                 },
-                "required": ["name", "fields"]
+                "required": [
+                  "name",
+                  "fields"
+                ]
               }
             }
           }
         },
-        "responses": { "201": { "description": "Created" } }
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        }
       }
     },
     "/form/update": {
       "post": {
         "summary": "Update form",
-        "tags": ["Forms"],
+        "tags": [
+          "Forms"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -1194,23 +2048,43 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "form_id": { "type": "string", "format": "uuid" },
-                  "name": { "type": "string" },
-                  "fields": { "type": "array", "items": { "type": "object" } },
-                  "description": { "type": "string" }
+                  "form_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "fields": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  },
+                  "description": {
+                    "type": "string"
+                  }
                 },
-                "required": ["form_id"]
+                "required": [
+                  "form_id"
+                ]
               }
             }
           }
         },
-        "responses": { "200": { "description": "OK" } }
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     },
     "/form/delete": {
       "post": {
         "summary": "Delete form",
-        "tags": ["Forms"],
+        "tags": [
+          "Forms"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -1218,65 +2092,1132 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "form_id": { "type": "string", "format": "uuid" }
+                  "form_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
                 },
-                "required": ["form_id"]
+                "required": [
+                  "form_id"
+                ]
               }
             }
           }
         },
-        "responses": { "204": { "description": "Deleted" } }
+        "responses": {
+          "204": {
+            "description": "Deleted"
+          }
+        }
       }
     },
     "/form/all": {
       "get": {
         "summary": "List forms",
-        "tags": ["Forms"],
-        "responses": { "200": { "description": "OK" } }
+        "tags": [
+          "Forms"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     },
     "/form/data": {
       "get": {
         "summary": "Get form data",
-        "tags": ["Forms"],
-        "parameters": [
-          { "name": "form_id", "in": "query", "required": false, "schema": { "type": "string" } },
-          { "name": "limit", "in": "query", "required": false, "schema": { "type": "integer" } }
+        "tags": [
+          "Forms"
         ],
-        "responses": { "200": { "description": "OK" } }
+        "parameters": [
+          {
+            "name": "form_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     },
-
+    "/create-campaign": {
+      "post": {
+        "summary": "Create campaign",
+        "description": "Create a new outbound campaign.",
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "agent_id": {
+                    "type": "integer",
+                    "description": "Voice agent to use for this campaign"
+                  },
+                  "campaign_name": {
+                    "type": "string",
+                    "description": "Name of the campaign. Must be unique within a workspace."
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Description of the campaign"
+                  },
+                  "start_date": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "Campaign start date in YYYY-MM-DD format (e.g. 2025-12-01)"
+                  },
+                  "end_date": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "Campaign end date in YYYY-MM-DD format (e.g. 2025-12-31)"
+                  },
+                  "max_retry": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 50,
+                    "description": "Maximum number of retry attempts (cannot be greater than 50)"
+                  },
+                  "max_delay": {
+                    "type": "string",
+                    "description": "Delay between retries as a JSON string. Required when max_retry > 1. Keys: d (days), h (hours), m (minutes) with numeric values. Example: {\"d\":1,\"h\":2,\"m\":30}"
+                  }
+                },
+                "required": [
+                  "agent_id",
+                  "campaign_name",
+                  "description",
+                  "start_date",
+                  "end_date",
+                  "max_retry"
+                ],
+                "if": {
+                  "properties": {
+                    "max_retry": {
+                      "minimum": 2
+                    }
+                  },
+                  "required": [
+                    "max_retry"
+                  ]
+                },
+                "then": {
+                  "required": [
+                    "max_delay"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Campaign created successfully"
+          },
+          "400": {
+            "description": "Bad Request - validation failed or business rule violated (e.g., max_retry > 50, missing required fields when publishing, duplicate campaign name in workspace)"
+          }
+        }
+      }
+    },
+    "/update-campaign": {
+      "post": {
+        "summary": "Update campaign",
+        "description": "Update an existing campaign.",
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "description": "Campaign ID to update"
+                  },
+                  "agent_id": {
+                    "type": "integer",
+                    "description": "Updated voice agent to use for this campaign"
+                  },
+                  "campaign_name": {
+                    "type": "string",
+                    "description": "Updated campaign name (must remain unique within workspace)"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Updated description"
+                  },
+                  "start_date": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "Updated start date in YYYY-MM-DD format (e.g. 2025-12-05)"
+                  },
+                  "end_date": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "Updated end date in YYYY-MM-DD format (e.g. 2026-01-05)"
+                  },
+                  "max_retry": {
+                    "type": "integer",
+                    "maximum": 50,
+                    "description": "Updated maximum retry attempts (cannot be greater than 50)"
+                  },
+                  "max_delay": {
+                    "type": "string",
+                    "description": "Delay between retries as a JSON string. Keys: d (days), h (hours), m (minutes) with numeric values. Example: {\"d\":1,\"h\":2,\"m\":30}"
+                  },
+                  "campaign_status": {
+                    "type": "string",
+                    "enum": [
+                      "draft",
+                      "inprogress",
+                      "hold",
+                      "pause"
+                    ],
+                    "description": "Updated campaign status."
+                  },
+                  "conditions": {
+                    "type": "array",
+                    "description": "Condition groups with AND/OR logic. Each group contains rules joined by AND. Groups are joined by the 'join' field (OR or AND).",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "join": {
+                          "type": "string",
+                          "enum": ["OR", "AND"],
+                          "description": "How this group joins with the previous group. Omit or set null for the first group."
+                        },
+                        "rules": {
+                          "type": "array",
+                          "description": "Conditions within this group (joined by AND).",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "field": {
+                                "type": "string",
+                                "description": "Field name to evaluate"
+                              },
+                              "operator": {
+                                "type": "string",
+                                "enum": ["==", "!=", ">", ">=", "<", "<=", "contains", "startsWith", "endsWith"],
+                                "description": "Comparison operator"
+                              },
+                              "value": {
+                                "type": "string",
+                                "description": "Value to match against"
+                              }
+                            },
+                            "required": ["field", "operator", "value"]
+                          }
+                        }
+                      },
+                      "required": ["rules"]
+                    }
+                  }
+                },
+                "required": [
+                  "id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Campaign updated successfully"
+          },
+          "400": {
+            "description": "Bad Request - validation failed or business rule violated (e.g., max_retry > 50, missing required fields when publishing)"
+          },
+          "404": {
+            "description": "Campaign not found"
+          }
+        }
+      }
+    },
+    "/campaign-force-completed": {
+      "post": {
+        "summary": "Force complete campaign",
+        "description": "Force complete a running campaign immediately, halting all pending audience calls.",
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "campaign_id",
+                  "campaign_status"
+                ],
+                "properties": {
+                  "campaign_id": {
+                    "type": "integer",
+                    "description": "ID of the campaign to force complete"
+                  },
+                  "campaign_status": {
+                    "type": "string",
+                    "enum": [
+                      "force_completed"
+                    ],
+                    "description": "Must be force_completed to mark as Force Completed"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Campaign force completed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Campaign does not exist"
+          }
+        }
+      }
+    },
+    "/campaign-list": {
+      "get": {
+        "summary": "List campaigns",
+        "description": "Retrieve a paginated list of campaigns with optional filters.",
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Page number (default: 1)"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Records per page (default: 10)"
+          },
+          {
+            "name": "agent_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Filter by agent ID"
+          },
+          {
+            "name": "campaign_name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Partial name search (LIKE)"
+          },
+          {
+            "name": "campaign_status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "draft",
+                "inprogress",
+                "hold",
+                "pause",
+                "force_completed",
+                "deleted"
+              ]
+            },
+            "description": "Filter by status. Defaults to all except deleted."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Campaign list retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "datalist": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer"
+                          },
+                          "campaign_name": {
+                            "type": "string"
+                          },
+                          "is_published": {
+                            "type": "integer"
+                          },
+                          "agent_name": {
+                            "type": "string"
+                          },
+                          "start_end_date": {
+                            "type": "string"
+                          },
+                          "max_retry": {
+                            "type": "integer"
+                          },
+                          "progress": {
+                            "type": "string"
+                          },
+                          "campaign_status_name": {
+                            "type": "string"
+                          },
+                          "campaign_status": {
+                            "type": "string",
+                            "description": "Status as string: draft, inprogress, hold, pause, force_completed, deleted"
+                          },
+                          "last_updated": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "totalRecords": {
+                          "type": "integer"
+                        },
+                        "totalPages": {
+                          "type": "integer"
+                        },
+                        "currentPage": {
+                          "type": "integer"
+                        },
+                        "limit": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/campaign-details/{campaign_id}": {
+      "get": {
+        "summary": "Campaign details",
+        "description": "Retrieve full details of a specific campaign including knowledge base items.",
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "campaign_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID of the campaign"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Campaign details retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ID": {
+                      "type": "integer"
+                    },
+                    "AGENT_ID": {
+                      "type": "integer"
+                    },
+                    "CAMPAIGN_NAME": {
+                      "type": "string"
+                    },
+                    "START_DATE": {
+                      "type": "string"
+                    },
+                    "END_DATE": {
+                      "type": "string"
+                    },
+                    "CAMPAIGN_STATUS": {
+                      "type": "integer"
+                    },
+                    "CAMPAIGN_STATUS_NAME": {
+                      "type": "string"
+                    },
+                    "MAX_RETRY": {
+                      "type": "integer"
+                    },
+                    "MAX_DELAY": {
+                      "type": "object"
+                    },
+                    "CONDITIONS": {
+                      "type": "object"
+                    },
+                    "AGENT_NAME": {
+                      "type": "string"
+                    },
+                    "UPDATED_DATE": {
+                      "type": "string"
+                    },
+                    "campaign_knowledge_base": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    },
+                    "link_knowledge_base": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Campaign not found"
+          }
+        }
+      }
+    },
+    "/audience-list": {
+      "get": {
+        "summary": "Audience list",
+        "description": "Retrieve a paginated list of audience records for a campaign.",
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "campaign_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Campaign identifier"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Page number (default: 1)"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Records per page (default: 10)"
+          },
+          {
+            "name": "mobile_no",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Partial mobile number search"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "enum": [
+                0,
+                1,
+                2,
+                3
+              ]
+            },
+            "description": "0=Fresh, 1=Completed, 2=Halted, 3=Inqueue"
+          },
+          {
+            "name": "call_status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by call status"
+          },
+          {
+            "name": "attempt",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Filter by attempt count"
+          },
+          {
+            "name": "is_new",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "If true, returns simplified audience format"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Audience list retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "datalist": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    },
+                    "headers": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "totalRecords": {
+                          "type": "integer"
+                        },
+                        "totalPages": {
+                          "type": "integer"
+                        },
+                        "currentPage": {
+                          "type": "integer"
+                        },
+                        "limit": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - campaign_id is required"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/audience-format": {
+      "get": {
+        "summary": "Download audience format",
+        "description": "Download an Excel (.xlsx) template for uploading audience data to a campaign. Columns are dynamically generated based on the agent's metadata input fields.",
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "campaign_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Campaign identifier"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Excel file download",
+            "content": {
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Campaign not exist Or Agent is not assigned to campaign"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/update-knowledgebase-status": {
+      "post": {
+        "summary": "Update knowledge base status",
+        "description": "Update the status of a knowledge base item linked to a campaign. Resets the trained state, requiring re-training.",
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "knowledge_base_id",
+                  "status"
+                ],
+                "properties": {
+                  "knowledge_base_id": {
+                    "type": "integer",
+                    "description": "ID of the knowledge base record"
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": ["active", "inactive"],
+                    "description": "New status value to set. Use 'active' to enable or 'inactive' to disable."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Knowledge base status updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Knowledge base not found or associated agent not found"
+          }
+        }
+      }
+    },
+    "/campaign-audience-stats": {
+      "get": {
+        "summary": "Campaign audience stats",
+        "description": "Get aggregated call statistics for a campaign's audience.",
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "campaign_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Campaign identifier"
+          },
+          {
+            "name": "mobile_no",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by mobile number (partial match)"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Audience status filter"
+          },
+          {
+            "name": "call_status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Call status filter"
+          },
+          {
+            "name": "attempt",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Attempt count filter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Audience stats retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "total_audience": {
+                      "type": "integer",
+                      "description": "Total audience records matching filters"
+                    },
+                    "coverage": {
+                      "type": "number",
+                      "description": "Percentage of successful calls out of total attempts (2 decimal places)"
+                    },
+                    "total_attempt": {
+                      "type": "integer",
+                      "description": "Sum of all call attempts"
+                    },
+                    "total_duration": {
+                      "type": "integer",
+                      "description": "Total call duration in seconds"
+                    },
+                    "successful_calls": {
+                      "type": "integer",
+                      "description": "Calls with terminal success statuses"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - campaign_id is required"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/delete-audience": {
+      "post": {
+        "summary": "Delete audience",
+        "description": "Permanently delete audience records from a campaign. This action is irreversible.",
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "campaign_id"
+                ],
+                "properties": {
+                  "campaign_id": {
+                    "type": "integer",
+                    "description": "Campaign identifier"
+                  },
+                  "audience": {
+                    "description": "Array of audience record IDs to delete. Required when delete_all is not true.",
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  },
+                  "delete_all": {
+                    "type": "boolean",
+                    "description": "Set to true to delete all audience for this campaign. Only allowed when campaign is in draft status."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Audience deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Campaign not exist or audience array is required"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
     "/workflow/all": {
       "get": {
         "summary": "List workflows",
-        "tags": ["Workflows"],
-        "responses": { "200": { "description": "OK" } }
+        "tags": [
+          "Workflows"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     },
     "/workflow": {
       "get": {
         "summary": "Get workflow",
-        "tags": ["Workflows"],
-        "parameters": [
-          { "name": "workflow_id", "in": "query", "required": true, "schema": { "type": "string" } }
+        "tags": [
+          "Workflows"
         ],
-        "responses": { "200": { "description": "OK" }, "404": { "description": "Not Found" } }
+        "parameters": [
+          {
+            "name": "workflow_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
       }
     },
-
     "/workspace/all": {
       "get": {
         "summary": "List workspaces",
-        "tags": ["Workspaces"],
-        "responses": { "200": { "description": "OK" } }
+        "tags": [
+          "Workspaces"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     },
-
     "/user": {
       "post": {
         "summary": "Create user",
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -1284,37 +3225,75 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "name": { "type": "string" },
-                  "email": { "type": "string", "format": "email" },
-                  "role": { "type": "string" }
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "role": {
+                    "type": "string"
+                  }
                 },
-                "required": ["name", "email"]
+                "required": [
+                  "name",
+                  "email"
+                ]
               }
             }
           }
         },
-        "responses": { "201": { "description": "Created" } }
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        }
       },
       "get": {
         "summary": "Get user",
-        "tags": ["Users"],
-        "parameters": [
-          { "name": "user_id", "in": "query", "required": true, "schema": { "type": "string" } }
+        "tags": [
+          "Users"
         ],
-        "responses": { "200": { "description": "OK" }, "404": { "description": "Not Found" } }
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
       }
     },
     "/user/all": {
       "get": {
         "summary": "List users",
-        "tags": ["Users"],
-        "responses": { "200": { "description": "OK" } }
+        "tags": [
+          "Users"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     },
     "/user/delete": {
       "post": {
         "summary": "Delete user",
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -1322,22 +3301,32 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "user_id": { "type": "string", "format": "uuid" }
+                  "user_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
                 },
-                "required": ["user_id"]
+                "required": [
+                  "user_id"
+                ]
               }
             }
           }
         },
-        "responses": { "204": { "description": "Deleted" } }
+        "responses": {
+          "204": {
+            "description": "Deleted"
+          }
+        }
       }
     },
-
     "/voice-list": {
       "get": {
         "security": [],
         "summary": "List voices",
-        "tags": ["Voices"],
+        "tags": [
+          "Voices"
+        ],
         "parameters": [
           {
             "name": "token",
@@ -1354,7 +3343,12 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": ["elevenlabs", "openai", "deepgram", "sarvam"]
+              "enum": [
+                "elevenlabs",
+                "openai",
+                "deepgram",
+                "sarvam"
+              ]
             },
             "description": "Voice provider identifier"
           },
@@ -1385,32 +3379,69 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "error": { "type": "boolean" },
-                    "code": { "type": "integer" },
-                    "message": { "type": "string" },
-                    "timestamp": { "type": "integer" },
+                    "error": {
+                      "type": "boolean"
+                    },
+                    "code": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "timestamp": {
+                      "type": "integer"
+                    },
                     "data": {
                       "type": "object",
                       "properties": {
-                        "provider_id": { "type": "string" },
-                        "provider_name": { "type": "string" },
-                        "total_count": { "type": "integer" },
-                        "next_page_token": { "type": "string" },
-                        "has_more": { "type": "boolean" },
+                        "provider_id": {
+                          "type": "string"
+                        },
+                        "provider_name": {
+                          "type": "string"
+                        },
+                        "total_count": {
+                          "type": "integer"
+                        },
+                        "next_page_token": {
+                          "type": "string"
+                        },
+                        "has_more": {
+                          "type": "boolean"
+                        },
                         "voices": {
                           "type": "array",
                           "items": {
                             "type": "object",
                             "properties": {
-                              "id": { "type": "string" },
-                              "title": { "type": "string" },
-                              "category": { "type": "string" },
-                              "description": { "type": "string" },
-                              "url": { "type": "string" },
-                              "language": { "type": "string" },
-                              "age": { "type": "string" },
-                              "gender": { "type": "string" },
-                              "image": { "type": "string", "nullable": true }
+                              "id": {
+                                "type": "string"
+                              },
+                              "title": {
+                                "type": "string"
+                              },
+                              "category": {
+                                "type": "string"
+                              },
+                              "description": {
+                                "type": "string"
+                              },
+                              "url": {
+                                "type": "string"
+                              },
+                              "language": {
+                                "type": "string"
+                              },
+                              "age": {
+                                "type": "string"
+                              },
+                              "gender": {
+                                "type": "string"
+                              },
+                              "image": {
+                                "type": "string",
+                                "nullable": true
+                              }
                             }
                           }
                         }
@@ -1421,26 +3452,40 @@
               }
             }
           },
-          "400": { "description": "Bad Request - Provider ID is required" },
-          "401": { "description": "Unauthorized" },
-          "404": { "description": "Provider not found" },
-          "500": { "description": "Internal Server Error" }
+          "400": {
+            "description": "Bad Request - Provider ID is required"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Provider not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
         }
       }
     },
-
     "/user/me": {
       "get": {
         "summary": "Get current user",
-        "tags": ["User"],
-        "responses": { "200": { "description": "OK" } }
+        "tags": [
+          "User"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     },
-
     "/generate-token": {
       "post": {
         "summary": "Generate API token",
-        "tags": ["Token"],
+        "tags": [
+          "Token"
+        ],
         "security": [],
         "parameters": [
           {
@@ -1464,16 +3509,24 @@
           }
         },
         "responses": {
-          "200": { "description": "API token generated successfully" },
-          "400": { "description": "LOGIN_TOKEN_REQUIRED" },
-          "401": { "description": "INVALID_LOGIN_TOKEN or SESSIONEXPIRED" }
+          "200": {
+            "description": "API token generated successfully"
+          },
+          "400": {
+            "description": "LOGIN_TOKEN_REQUIRED"
+          },
+          "401": {
+            "description": "INVALID_LOGIN_TOKEN or SESSIONEXPIRED"
+          }
         }
       }
     },
     "/get-token": {
       "get": {
         "summary": "Get API token details",
-        "tags": ["Token"],
+        "tags": [
+          "Token"
+        ],
         "security": [],
         "parameters": [
           {
@@ -1487,17 +3540,28 @@
           }
         ],
         "responses": {
-          "200": { "description": "API token details fetched successfully" },
-          "400": { "description": "LOGIN_TOKEN_REQUIRED" },
-          "401": { "description": "INVALID_LOGIN_TOKEN" },
-          "404": { "description": "NO_API_TOKEN_FOUND" }
+          "200": {
+            "description": "API token details fetched successfully"
+          },
+          "400": {
+            "description": "LOGIN_TOKEN_REQUIRED"
+          },
+          "401": {
+            "description": "INVALID_LOGIN_TOKEN"
+          },
+          "404": {
+            "description": "NO_API_TOKEN_FOUND"
+          }
         }
       }
     }
   },
   "components": {
     "securitySchemes": {
-      "bearerAuth": { "type": "http", "scheme": "bearer" }
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
     }
   }
 }

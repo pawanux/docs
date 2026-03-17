@@ -16,6 +16,21 @@
       "pages": [
         "api-reference/introduction"
       ]
+    },
+    {
+      "group": "Campaigns",
+      "pages": [
+        "api-reference/campaigns/create-campaign",
+        "api-reference/campaigns/update-campaign",
+        "api-reference/campaigns/campaign-force-completed",
+        "api-reference/campaigns/campaign-list",
+        "api-reference/campaigns/campaign-details",
+        "api-reference/campaigns/audience-list",
+        "api-reference/campaigns/audience-format",
+        "api-reference/campaigns/update-knowledgebase-status",
+        "api-reference/campaigns/campaign-audience-stats",
+        "api-reference/campaigns/delete-audience"
+      ]
     }
   ],
   "apiReference": {

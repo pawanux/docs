@@ -1,0 +1,167 @@
+---
+title: Update Campaign
+openapi: "api-reference/openapi.json POST /update-campaign"
+---
+
+Use this endpoint to **update an existing campaign**.
+
+## Endpoint
+
+**POST** `/update-campaign`
+
+**Content-Type:** `application/json`
+**Authentication:** Required (workspace auth)
+
+## Request Body
+
+To update a campaign, send its `id` and any fields you want to change.
+
+```json
+{
+  "id": 42,
+  "agent_id": 123,
+  "campaign_name": "Winter Sale Campaign - Updated",
+  "description": "Updated description for winter offer campaign",
+  "start_date": "2025-12-05",
+  "end_date": "2026-01-05",
+  "max_retry": 5,
+  "max_delay": "{\"d\":1,\"h\":2,\"m\":30}",
+  "campaign_status": "inprogress",
+  "conditions": [
+    {
+      "rules": [
+        { "field": "status", "operator": "==", "value": "active" },
+        { "field": "region", "operator": "==", "value": "US" }
+      ]
+    },
+    {
+      "join": "OR",
+      "rules": [
+        { "field": "priority", "operator": "==", "value": "high" }
+      ]
+    }
+  ]
+}
+```
+
+### Notes
+
+- `id` is **required** — it identifies the campaign to update.
+- Only the fields you send are updated.
+- `campaign_status` accepts a string value: `draft`, `inprogress`, `hold`, or `pause`.
+- `max_delay` must be passed as a **JSON string** with keys `d` (days), `h` (hours), and `m` (minutes) as numbers.
+- `start_date` and `end_date` must be in **`YYYY-MM-DD`** format (e.g., `"2025-12-05"`).
+- `max_retry` cannot be greater than **50**.
+
+### Conditions Format
+
+The `conditions` field accepts an **array of groups**. Each group contains `rules` that are evaluated together.
+
+**Structure:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `join` | string | No | `"OR"` or `"AND"` — how this group connects with the previous group. Omit for the first group. |
+| `rules` | array | Yes | Array of condition rules within this group. Rules within a group are always joined with **AND**. |
+
+**Each rule:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `field` | string | Yes | The field name to evaluate (from agent's metadata input fields) |
+| `operator` | string | Yes | One of the allowed operators (see table below) |
+| `value` | string | Yes | The value to match against |
+
+**Allowed operators:**
+
+| Operator | Description |
+|----------|-------------|
+| `==` | Equals (case-insensitive) |
+| `!=` | Not equals |
+| `>` | Greater than (numeric) |
+| `>=` | Greater than or equal (numeric) |
+| `<` | Less than (numeric) |
+| `<=` | Less than or equal (numeric) |
+| `contains` | Value contains the substring |
+| `startsWith` | Value starts with the string |
+| `endsWith` | Value ends with the string |
+
+**Logic:**
+- Rules **within the same group** are joined with **AND**.
+- **Groups** are joined with each other using the `join` field (`"OR"` or `"AND"`).
+
+**Example — single condition:**
+
+```json
+"conditions": [
+  {
+    "rules": [
+      { "field": "status", "operator": "==", "value": "active" }
+    ]
+  }
+]
+```
+
+This means: **status == "active"**
+
+**Example — multiple conditions with AND (same group):**
+
+```json
+"conditions": [
+  {
+    "rules": [
+      { "field": "status", "operator": "==", "value": "active" },
+      { "field": "region", "operator": "==", "value": "US" }
+    ]
+  }
+]
+```
+
+This means: **status == "active" AND region == "US"**
+
+**Example — two groups with OR:**
+
+```json
+"conditions": [
+  {
+    "rules": [
+      { "field": "status", "operator": "==", "value": "active" },
+      { "field": "region", "operator": "==", "value": "US" }
+    ]
+  },
+  {
+    "join": "OR",
+    "rules": [
+      { "field": "priority", "operator": "==", "value": "high" }
+    ]
+  }
+]
+```
+
+This means: **(status == "active" AND region == "US") OR (priority == "high")**
+
+**To clear conditions**, send `"conditions": null`.
+
+## Example cURL
+
+```bash
+curl -X POST https://www.tryunleashx.com/api/v1/global/update-campaign \
+  -H "Content-Type: application/json" \
+  -H "token: <api_key>" \
+  -d '{
+    "id": 42,
+    "campaign_name": "Winter Sale Campaign - Updated",
+    "start_date": "2025-12-05",
+    "end_date": "2026-01-05",
+    "max_retry": 5,
+    "max_delay": "{\"d\":1,\"h\":2,\"m\":30}",
+    "campaign_status": "inprogress",
+    "conditions": [
+      {
+        "rules": [
+          { "field": "status", "operator": "==", "value": "active" }
+        ]
+      }
+    ]
+  }'
+```

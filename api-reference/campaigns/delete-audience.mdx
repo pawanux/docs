@@ -1,0 +1,82 @@
+---
+title: Delete Audience
+openapi: "api-reference/openapi.json POST /delete-audience"
+---
+
+Use this endpoint to **permanently delete audience records** from a campaign.
+
+## Endpoint
+
+**POST** `/delete-audience`
+
+**Content-Type:** `application/json`
+**Authentication:** Required (workspace auth)
+
+## Request Body
+
+### Delete specific audience
+
+```json
+{
+  "campaign_id": 42,
+  "audience": [101, 102, 103]
+}
+```
+
+### Delete all audience (draft campaigns only)
+
+```json
+{
+  "campaign_id": 42,
+  "delete_all": true
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `campaign_id` | number | Yes | Campaign identifier |
+| `audience` | array | No | Array of audience record IDs to delete. Required when `delete_all` is not `true`. |
+| `delete_all` | boolean | No | Set to `true` to delete all audience for this campaign. Only allowed when campaign is in **draft** status. |
+
+## Response
+
+```json
+{
+  "message": "Audience deleted successfully"
+}
+```
+
+When using `delete_all`:
+
+```json
+{
+  "message": "All audience deleted successfully"
+}
+```
+
+## Behavior
+
+- **Hard deletes** audience records — this action is **irreversible**.
+- When `delete_all` is `true`, all audience for the campaign are deleted. This is only allowed when the campaign is in **draft** status.
+- When `delete_all` is not set, `audience` array is required.
+- Only deletes records belonging to the specified campaign, company, and workspace.
+
+## Error Cases
+
+| Error | Cause |
+|-------|-------|
+| `Campaign not exist` | Invalid `campaign_id` |
+| `Audience array is required` | `audience` is empty or not provided (when `delete_all` is not set) |
+| `All audience can only be deleted when the campaign is in draft status` | `delete_all` is `true` but campaign is not in draft status |
+
+## Example cURL
+
+```bash
+curl -X POST https://www.tryunleashx.com/api/v1/global/delete-audience \
+  -H "Content-Type: application/json" \
+  -H "token: <api_key>" \
+  -d '{
+    "campaign_id": 42,
+    "delete_all": true
+  }'
+```

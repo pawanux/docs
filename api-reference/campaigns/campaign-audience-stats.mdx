@@ -1,0 +1,57 @@
+---
+title: Campaign Audience Stats
+openapi: "api-reference/openapi.json GET /campaign-audience-stats"
+---
+
+Use this endpoint to **get aggregated call statistics** for a campaign's audience.
+
+## Endpoint
+
+**GET** `/campaign-audience-stats`
+
+**Authentication:** Required (workspace auth)
+
+## Query Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `campaign_id` | number | Yes | Campaign identifier |
+| `mobile_no` | string | No | Filter by mobile number (partial match) |
+| `status` | number \| array | No | Audience status filter |
+| `call_status` | string \| array | No | Call status filter |
+| `first_status` | string \| array | No | First call status filter |
+| `last_status` | string \| array | No | Last call status filter |
+| `attempt` | number \| array | No | Attempt count filter |
+
+## Response
+
+```json
+{
+  "total_audience": 500,
+  "coverage": 84.50,
+  "total_attempt": 720,
+  "total_duration": 18540,
+  "successful_calls": 423
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `total_audience` | number | Total number of audience records matching filters |
+| `coverage` | number | Percentage of successful calls out of total attempts (2 decimal places) |
+| `total_attempt` | number | Sum of all call attempts made |
+| `total_duration` | number | Total call duration in **seconds** |
+| `successful_calls` | number | Calls with status: `AGENT_ENDED`, `USER_ENDED`, `COMPLETED`, or `ANSWER` |
+
+## Notes
+
+- `coverage` = `(successful_calls / total_attempt) * 100`, rounded to 2 decimal places.
+- Returns `0` for all fields if no matching records are found.
+- Same filters as the [Audience List](/api-reference/campaigns/audience-list) endpoint can be applied to narrow stats.
+
+## Example cURL
+
+```bash
+curl -X GET "https://www.tryunleashx.com/api/v1/global/campaign-audience-stats?campaign_id=42" \
+  -H "Authorization: <api_key>"
+```

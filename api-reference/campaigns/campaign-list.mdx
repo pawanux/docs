@@ -1,0 +1,73 @@
+---
+title: List Campaigns
+openapi: "api-reference/openapi.json GET /campaign-list"
+---
+
+Use this endpoint to **retrieve a paginated list of campaigns** with optional filters.
+
+## Endpoint
+
+**GET** `/campaign-list`
+
+**Authentication:** Required (workspace auth)
+
+## Query Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `page` | number | No | Page number (default: `1`) |
+| `limit` | number | No | Records per page (default: `10`) |
+| `agent_id` | number \| array | No | Filter by agent ID(s) |
+| `campaign_name` | string | No | Partial name search (LIKE) |
+| `campaign_status` | string | No | Filter by status. Valid values: `draft`, `inprogress`, `hold`, `pause`, `force_completed`, `deleted`. Defaults to all except `deleted`. |
+
+## Campaign Status Values
+
+| Status | Description |
+|--------|-------------|
+| `draft` | Campaign is in draft mode |
+| `inprogress` | Campaign is actively running |
+| `hold` | Campaign is on hold |
+| `pause` | Campaign is paused |
+| `force_completed` | Campaign was force completed |
+| `deleted` | Campaign has been deleted |
+
+## Response
+
+```json
+{
+  "datalist": [
+    {
+      "id": 42,
+      "campaign_name": "Winter Sale Campaign",
+      "agent_name": "Sales Agent",
+      "start_end_date": "1 Dec - 31 Dec",
+      "max_retry": 3,
+      "max_delay": "5m - 30m",
+      "progress": "120/500",
+      "campaign_status_name": "Inprogress",
+      "campaign_status": "inprogress",
+      "last_updated": "2 days ago"
+    }
+  ],
+  "pagination": {
+    "totalRecords": 25,
+    "totalPages": 3,
+    "currentPage": 1,
+    "limit": 10
+  }
+}
+```
+
+## Notes
+
+- `campaign_status` defaults to all statuses except `deleted`.
+- A campaign is automatically labeled **Completed** if its `end_date` has passed.
+- `progress` is formatted as `called/total` audience count.
+
+## Example cURL
+
+```bash
+curl -X GET "https://www.tryunleashx.com/api/v1/global/campaign-list?page=1&limit=10&campaign_status=inprogress" \
+  -H "token: <api_key>"
+```
