@@ -1,0 +1,64 @@
+---
+title: Force Complete Campaign
+openapi: "api-reference/openapi.json POST /campaign-force-completed"
+---
+
+Use this endpoint to **force complete a running campaign** immediately, halting all pending audience calls.
+
+## Endpoint
+
+**POST** `/campaign-force-completed`
+
+**Content-Type:** `application/json`
+**Authentication:** Required (workspace auth)
+
+## Request Body
+
+```json
+{
+  "campaign_id": 42,
+  "campaign_status": "force_completed"
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `campaign_id` | number | Yes | ID of the campaign to update |
+| `campaign_status` | string | Yes | Target status as a string (see values below) |
+
+## Campaign Status Values
+
+| Value | Description |
+|-------|-------------|
+| `draft` | Campaign is in draft state |
+| `inprogress` | Campaign is actively running |
+| `hold` | Campaign is on hold |
+| `pause` | Campaign is paused |
+| `force_completed` | Immediately halts all pending calls and marks campaign as completed |
+| `deleted` | Marks the campaign as deleted |
+
+## Response
+
+```json
+{
+  "message": "Campaign force completed successfully"
+}
+```
+
+## Behavior
+
+- Maps the string `campaign_status` to its internal numeric code before processing.
+- When set to `force_completed`: all audience records with status `fresh` or `inqueue` are immediately set to `halted`.
+- This action is **irreversible** — the campaign cannot be resumed after force completion.
+
+## Example cURL
+
+```bash
+curl -X POST https://www.tryunleashx.com/api/v1/global/campaign-force-completed \
+  -H "Content-Type: application/json" \
+  -H "Authorization: <api_key>" \
+  -d '{
+    "campaign_id": 42,
+    "campaign_status": "force_completed"
+  }'
+```

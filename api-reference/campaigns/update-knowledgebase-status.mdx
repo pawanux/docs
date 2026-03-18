@@ -1,0 +1,65 @@
+---
+title: Update Knowledge Base Status
+openapi: "api-reference/openapi.json POST /update-knowledgebase-status"
+---
+
+Use this endpoint to **update the status of a knowledge base item** linked to a campaign.
+
+## Endpoint
+
+**POST** `/update-knowledgebase-status`
+
+**Content-Type:** `application/json`
+**Authentication:** Required (workspace auth)
+
+## Request Body
+
+```json
+{
+  "knowledge_base_id": 7,
+  "status": "active"
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `knowledge_base_id` | number | Yes | ID of the knowledge base record |
+| `status` | string | Yes | `active` or `inactive` |
+
+## Response
+
+```json
+{
+  "message": "Knowledge base status updated successfully",
+  "data": {
+    "id": 7,
+    "name": "faq.pdf",
+    "status": 1
+  }
+}
+```
+
+## Behavior
+
+- Updates the knowledge base `STATUS` and resets `TRAINED` to `0` (untrained), requiring re-training.
+- Validates that the knowledge base record exists and is not deleted.
+- Validates that the associated agent exists and is not deleted.
+
+## Error Cases
+
+| Error | Cause |
+|-------|-------|
+| `Knowledge base not found` | Invalid `knowledge_base_id` or record is deleted |
+| `Associated agent not found` | The linked agent has been removed |
+
+## Example cURL
+
+```bash
+curl -X POST https://www.tryunleashx.com/api/v1/global/update-knowledgebase-status \
+  -H "Content-Type: application/json" \
+  -H "token: <api_key>" \
+  -d '{
+    "knowledge_base_id": 7,
+    "status": "active"
+  }'
+```

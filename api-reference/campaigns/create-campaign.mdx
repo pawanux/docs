@@ -1,0 +1,52 @@
+---
+title: Create Campaign
+openapi: "api-reference/openapi.json POST /create-campaign"
+---
+
+Use this endpoint to **create a new campaign**.
+
+## Endpoint
+
+**POST** `/create-campaign`
+
+**Content-Type:** `application/json`
+**Authentication:** Required (workspace auth)
+
+## Request Body
+
+```json
+{
+  "agent_id": 123,
+  "campaign_name": "Winter Sale Campaign",
+  "description": "Outbound calls to promote winter offers",
+  "start_date": "2025-12-01",
+  "end_date": "2025-12-31",
+  "max_retry": 3,
+  "max_delay": "{\"d\":1,\"h\":2,\"m\":30}"
+}
+```
+
+### Notes
+
+- All fields (`agent_id`, `campaign_name`, `description`, `start_date`, `end_date`, `max_retry`) are **required**.
+- `campaign_name` **must be unique** within a workspace.
+- `max_retry` cannot be greater than **50**.
+- `max_delay` is **required** when `max_retry` is greater than **1**. It must be passed as a **JSON string** (not an object) with keys `d` (days), `h` (hours), and `m` (minutes) as numbers. Example: `"{\"d\":1,\"h\":2,\"m\":30}"`.
+- `start_date` and `end_date` must be in **`YYYY-MM-DD`** format (e.g., `"2025-12-01"`).
+
+## Example cURL
+
+```bash
+curl -X POST https://www.tryunleashx.com/api/v1/global/create-campaign \
+  -H "Content-Type: application/json" \
+  -H "Authorization: <api_key>" \
+  -d '{
+    "agent_id": 123,
+    "campaign_name": "Winter Sale Campaign",
+    "description": "Outbound calls to promote winter offers",
+    "start_date": "2025-12-01",
+    "end_date": "2025-12-31",
+    "max_retry": 3,
+    "max_delay": "{\"d\":1,\"h\":2,\"m\":30}"
+  }'
+```

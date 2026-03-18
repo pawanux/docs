@@ -1,0 +1,78 @@
+---
+title: Campaign Details
+openapi: "api-reference/openapi.json GET /campaign-details/{campaign_id}"
+---
+
+Use this endpoint to **retrieve full details of a specific campaign**, including its knowledge base items.
+
+## Endpoint
+
+**GET** `/campaign-details/:campaign_id`
+
+**Authentication:** Required (workspace auth)
+
+## Path Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `campaign_id` | number | Yes | ID of the campaign |
+
+## Response
+
+```json
+{
+  "ID": 42,
+  "AGENT_ID": 123,
+  "CAMPAIGN_NAME": "Winter Sale Campaign",
+  "START_DATE": "1 Dec, 2025",
+  "END_DATE": "31 Dec, 2025",
+  "CAMPAIGN_STATUS": 1,
+  "CAMPAIGN_STATUS_NAME": "Inprogress",
+  "MAX_RETRY": 3,
+  "MAX_DELAY": {
+    "min": 5,
+    "max": 30,
+    "unit": "minutes"
+  },
+  "CONDITIONS": {
+    "max_daily_calls": 500,
+    "time_window": {
+      "start": "09:00",
+      "end": "18:00",
+      "timezone": "America/New_York"
+    }
+  },
+  "AGENT_NAME": "Sales Agent",
+  "UPDATED_DATE": "2 days ago",
+  "campaign_knowledge_base": [
+    {
+      "ID": 1,
+      "KNOWLEDGEBASE_NAME": "faq.pdf",
+      "KNOWLEDGEBASE_TYPE": 1,
+      "KNOWLEDGEBASE_LOCATION": "https://your-bucket.s3.amazonaws.com/faq.pdf"
+    }
+  ],
+  "link_knowledge_base": [
+    {
+      "ID": 2,
+      "KNOWLEDGEBASE_NAME": "Support Articles",
+      "KNOWLEDGEBASE_TYPE": 2,
+      "KNOWLEDGEBASE_LOCATION": "https://docs.yourdomain.com/support"
+    }
+  ]
+}
+```
+
+### Knowledge Base Types
+
+| Type | Description |
+|------|-------------|
+| `1` | File (PDF, document) — URL is an AWS S3 link |
+| `2` | Link (web URL) |
+
+## Example cURL
+
+```bash
+curl -X GET "https://www.tryunleashx.com/api/v1/global/campaign-details/42" \
+  -H "Authorization: <api_key>"
+```
