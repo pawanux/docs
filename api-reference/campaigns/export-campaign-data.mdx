@@ -1,0 +1,67 @@
+---
+title: Export Campaign Data
+openapi: "api-reference/openapi.json GET /export-campaign-data"
+---
+
+Use this endpoint to **export campaign data as an Excel file** (.xlsx) with optional filters.
+
+## Endpoint
+
+**GET** `/export-campaign-data`
+
+**Authentication:** Required (workspace auth)
+
+## Query Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `agent_id` | number \| array | No | Filter by agent ID(s) |
+| `campaign_name` | string | No | Partial name search (LIKE) |
+| `campaign_status` | string \| array | No | Filter by status. Defaults to all except `deleted`. |
+| `date_range` | string | No | Date range filter |
+
+## Campaign Status Values
+
+| Status | Description |
+|--------|-------------|
+| `draft` | Campaign is in draft mode |
+| `inprogress` | Campaign is actively running |
+| `hold` | Campaign is on hold |
+| `pause` | Campaign is paused |
+| `force_completed` | Campaign was force completed |
+
+## Response
+
+Returns an Excel file (`.xlsx`) with the following columns:
+
+| Column | Description |
+|--------|-------------|
+| ID | Campaign identifier |
+| Campaign Name | Name of the campaign |
+| Description | Campaign description |
+| Agent Name | Associated agent name |
+| Start Date | Campaign start date |
+| End Date | Campaign end date |
+| Status | Campaign status label |
+| Max Retry | Maximum retry attempts |
+| Max Delay | Delay between retries |
+| Total Audience | Total audience count |
+| Called Audience | Number of audiences called |
+| Created By | User who created the campaign |
+| Created Date | Campaign creation date |
+| Updated Date | Last update date |
+
+## Notes
+
+- The response is a binary Excel file stream, not JSON.
+- Set your HTTP client to handle binary/file responses.
+- If no `campaign_status` is provided, all statuses except `deleted` are included.
+- Date filter applies to `CREATED_DATE` of the campaign.
+
+## Example cURL
+
+```bash
+curl -X GET "https://www.tryunleashx.com/api/v1/global/export-campaign-data?campaign_status=inprogress&agent_id=5" \
+  -H "token: <api_key>" \
+  -o campaign_data.xlsx
+```

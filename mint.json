@@ -29,7 +29,9 @@
         "api-reference/campaigns/audience-format",
         "api-reference/campaigns/update-knowledgebase-status",
         "api-reference/campaigns/campaign-audience-stats",
-        "api-reference/campaigns/delete-audience"
+        "api-reference/campaigns/delete-audience",
+        "api-reference/campaigns/export-campaign-data",
+        "api-reference/campaigns/export-campaign-audience-data"
       ]
     }
   ],
