@@ -1,0 +1,67 @@
+---
+title: Export Campaign Audience Data
+openapi: "api-reference/openapi.json GET /export-campaign-audience-data"
+---
+
+Use this endpoint to **export campaign audience data as an Excel file** (.xlsx) with optional filters.
+
+## Endpoint
+
+**GET** `/export-campaign-audience-data`
+
+**Authentication:** Required (workspace auth)
+
+## Query Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `campaign_id` | number | **Yes** | Campaign identifier |
+| `mobile_no` | string | No | Partial mobile number search (LIKE) |
+| `status` | string \| array | No | Audience status filter (see values below) |
+| `call_status` | string \| array | No | Filter by call status |
+| `first_status` | string \| array | No | Filter by first call status |
+| `last_status` | string \| array | No | Filter by last call status |
+| `attempt` | number \| array | No | Filter by number of attempts made |
+| `date_range` | string | No | Date range filter |
+
+## Audience Status Values
+
+| Status | Description |
+|--------|-------------|
+| `fresh` | Not yet called |
+| `completed` | Call completed |
+| `halted` | Call halted |
+| `inqueue` | In queue for calling |
+
+## Response
+
+Returns an Excel file (`.xlsx`) with the following columns:
+
+| Column | Description |
+|--------|-------------|
+| ID | Audience record identifier |
+| Mobile No | Audience mobile number |
+| *Dynamic Columns* | Columns based on agent metadata input fields |
+| Status | Audience status label |
+| Attempt | Attempts made vs max retry (e.g., `2/3`) |
+| Call Status | Last call status |
+| Duration | Total call duration |
+| Disposition | Last disposition |
+| Modified By | User who last modified |
+| Updated Date | Last update date |
+
+## Notes
+
+- The response is a binary Excel file stream, not JSON.
+- Set your HTTP client to handle binary/file responses.
+- Dynamic columns are derived from the agent's metadata input configuration.
+- The `campaign_id` must belong to the authenticated company and workspace.
+- Date filter applies to `CREATED_DATE` of the audience record.
+
+## Example cURL
+
+```bash
+curl -X GET "https://www.tryunleashx.com/api/v1/global/export-campaign-audience-data?campaign_id=42&status=completed" \
+  -H "token: <api_key>" \
+  -o campaign_audience.xlsx
+```
