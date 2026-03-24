@@ -66,7 +66,7 @@ Changes are automatically deployed to production when you push to the main branc
 
 - [UnleashX Dashboard](https://tryunleashx.com)
 - [API Documentation](https://docs.unleashx.ai)
-- [Status Page](https://status.unleashx.ai)
+- [Status Page](https://unleashx.statuspage.io/)
 - [Support](mailto:cs@unleashx.ai)
 
 ---
