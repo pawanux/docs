@@ -156,6 +156,13 @@
               "api-reference/campaigns/export-campaign-data",
               "api-reference/campaigns/export-campaign-audience-data"
             ]
+          },
+          {
+            "group": "Users",
+            "pages": [
+              "api-reference/users/onboard-user",
+              "api-reference/users/get-token-by-customerid"
+            ]
           }
         ]
       },

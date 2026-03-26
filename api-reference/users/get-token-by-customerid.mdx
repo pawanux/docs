@@ -1,0 +1,80 @@
+---
+title: Get Token by Customer ID
+openapi: "api-reference/openapi.json POST /users/gettokenbycustomerid"
+---
+
+Use this endpoint to **generate an API token** for an onboarded customer using their `customer_salt` (Customer ID).
+
+## Endpoint
+
+**POST** `/users/gettokenbycustomerid`
+
+**Content-Type:** `application/json`
+**Authentication:** Required (API token)
+
+## Request Body
+
+```json
+{
+  "customer_id": "048372910564",
+  "name": "My API Token",
+  "expiration_days": 30
+}
+```
+
+### Parameters
+
+| Parameter         | Type   | Required | Description                                                                 |
+| ----------------- | ------ | -------- | --------------------------------------------------------------------------- |
+| `customer_id`     | string | Yes      | The 12-digit customer identifier returned from the [Onboard User](/api-reference/users/onboard-user) endpoint. Also accepts `customerid` or `customer_salt`. |
+| `name`            | string | No       | A friendly name for the token.                                              |
+| `expiration_days` | number | No       | Number of days until the token expires. If omitted, the token does not expire. |
+
+### Notes
+
+- The `customer_id` must belong to an **active, non-blocked** user.
+- The user must have at least one **active workspace**.
+- If `expiration_days` is provided, it must be a **positive integer**.
+- Each call generates a **new token** — previous tokens are not revoked.
+
+## Success Response
+
+```json
+{
+  "message": "API token generated successfully",
+  "customerid": "048372910564",
+  "customer_api_key": "a1b2c3d4e5f6...generated_token_hex",
+  "name": "My API Token",
+  "expires": 1743033600
+}
+```
+
+### Response Fields
+
+| Field              | Type        | Description                                              |
+| ------------------ | ----------- | -------------------------------------------------------- |
+| `customerid`       | string      | The customer identifier used in the request.             |
+| `customer_api_key` | string      | The newly generated API token.                           |
+| `name`             | string/null | The token name, if provided.                             |
+| `expires`          | number/null | Unix timestamp when the token expires, or `null` if no expiration. |
+
+## Error Responses
+
+| Error                      | Description                                                 |
+| -------------------------- | ----------------------------------------------------------- |
+| `CUSTOMER_ID_NOT_FOUND`    | No active user found with the given customer ID.            |
+| `WORKSPACE_NOT_FOUND`      | The user does not have an active workspace.                 |
+| `INVALID_EXPIRATION_DAYS`  | The `expiration_days` value is not a valid positive number. |
+
+## Example cURL
+
+```bash
+curl -X POST https://www.tryunleashx.com/api/v1/global/users/gettokenbycustomerid \
+  -H "Content-Type: application/json" \
+  -H "Authorization: <api_key>" \
+  -d '{
+    "customer_id": "048372910564",
+    "name": "My API Token",
+    "expiration_days": 30
+  }'
+```

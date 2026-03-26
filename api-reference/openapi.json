@@ -3744,6 +3744,206 @@
           }
         }
       }
+    },
+    "/users/onboard": {
+      "post": {
+        "summary": "Onboard user",
+        "description": "Onboard a new user/customer into the portal. Creates a complete account setup including registration, company, user, and workspace in a single API call.",
+        "tags": [
+          "Users"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email_id",
+                  "first_name",
+                  "last_name",
+                  "company_name"
+                ],
+                "properties": {
+                  "email_id": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Email address of the user to onboard. Also accepts 'email'."
+                  },
+                  "first_name": {
+                    "type": "string",
+                    "description": "First name of the user. Also accepts 'firstName'."
+                  },
+                  "last_name": {
+                    "type": "string",
+                    "description": "Last name of the user. Also accepts 'lastName'."
+                  },
+                  "company_name": {
+                    "type": "string",
+                    "description": "Company name for the new account. Must be unique. Also accepts 'companyName'."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User onboarded successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "registration_id": {
+                          "type": "integer",
+                          "description": "ID of the registration record created"
+                        },
+                        "user_id": {
+                          "type": "integer",
+                          "description": "ID of the newly created user"
+                        },
+                        "company_id": {
+                          "type": "integer",
+                          "description": "ID of the newly created company"
+                        },
+                        "workspace_id": {
+                          "type": "integer",
+                          "description": "ID of the default workspace created for the user"
+                        },
+                        "customer_salt": {
+                          "type": "string",
+                          "description": "Unique 12-digit customer identifier. Use this to generate API tokens via the /users/gettokenbycustomerid endpoint."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - EMAIL_ALREADY_REGISTERED, WORKFLOW_NAME_ALREADY_REGISTERED, or COMPANY_DOMAIN_ALREADY_REGISTERED"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Validation error - missing required fields"
+          }
+        }
+      }
+    },
+    "/users/gettokenbycustomerid": {
+      "post": {
+        "summary": "Get token by customer ID",
+        "description": "Generate an API token for an onboarded customer using their customer_salt (Customer ID).",
+        "tags": [
+          "Users"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "customer_id"
+                ],
+                "properties": {
+                  "customer_id": {
+                    "type": "string",
+                    "description": "The 12-digit customer identifier returned from the /users/onboard endpoint. Also accepts 'customerid' or 'customer_salt'."
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "A friendly name for the token"
+                  },
+                  "expiration_days": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Number of days until the token expires. If omitted, the token does not expire."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "API token generated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "customerid": {
+                      "type": "string",
+                      "description": "The customer identifier used in the request"
+                    },
+                    "customer_api_key": {
+                      "type": "string",
+                      "description": "The newly generated API token"
+                    },
+                    "name": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "The token name, if provided"
+                    },
+                    "expires": {
+                      "type": "integer",
+                      "nullable": true,
+                      "description": "Unix timestamp when the token expires, or null if no expiration"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - CUSTOMER_ID_NOT_FOUND, WORKSPACE_NOT_FOUND, or INVALID_EXPIRATION_DAYS"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Validation error - customerid is required"
+          }
+        }
+      }
     }
   },
   "components": {

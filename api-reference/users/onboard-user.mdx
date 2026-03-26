@@ -1,0 +1,89 @@
+---
+title: Onboard User
+openapi: "api-reference/openapi.json POST /users/onboard"
+---
+
+Use this endpoint to **onboard a new user/customer** into the portal. This creates a complete account setup including registration, company, user, and workspace in a single API call.
+
+## Endpoint
+
+**POST** `/users/onboard`
+
+**Content-Type:** `application/json`
+**Authentication:** Required (API token)
+
+## Request Body
+
+```json
+{
+  "email_id": "john@example.com",
+  "first_name": "John",
+  "last_name": "Doe",
+  "company_name": "Acme Corp"
+}
+```
+
+### Parameters
+
+| Parameter      | Type   | Required | Description                          |
+| -------------- | ------ | -------- | ------------------------------------ |
+| `email_id`     | string | Yes      | Email address of the user to onboard. Also accepts `email`. |
+| `first_name`   | string | Yes      | First name of the user. Also accepts `firstName`. |
+| `last_name`    | string | Yes      | Last name of the user. Also accepts `lastName`. |
+| `company_name` | string | Yes      | Company name for the new account. Also accepts `companyName`. |
+
+### Notes
+
+- All four fields are **required**.
+- The `email_id` must not already be registered in the system.
+- The `company_name` must be **unique** — it cannot match an existing company.
+- The email domain is validated against restricted domains. If the domain is restricted, the request will be rejected.
+- A unique 12-digit `customer_salt` is auto-generated and returned in the response. This can be used later to generate API tokens via the [Get Token by Customer ID](/api-reference/users/get-token-by-customerid) endpoint.
+- The onboarded user is created as an **Admin** with a default workspace and **20 free minutes**.
+
+## Success Response
+
+```json
+{
+  "message": "User onboarded successfully",
+  "data": {
+    "registration_id": 101,
+    "user_id": 55,
+    "company_id": 12,
+    "workspace_id": 8,
+    "customer_salt": "048372910564"
+  }
+}
+```
+
+### Response Fields
+
+| Field             | Type   | Description                                      |
+| ----------------- | ------ | ------------------------------------------------ |
+| `registration_id` | number | ID of the registration record created.           |
+| `user_id`         | number | ID of the newly created user.                    |
+| `company_id`      | number | ID of the newly created company.                 |
+| `workspace_id`    | number | ID of the default workspace created for the user.|
+| `customer_salt`   | string | Unique 12-digit customer identifier. Use this to generate API tokens. |
+
+## Error Responses
+
+| Error                              | Description                                      |
+| ---------------------------------- | ------------------------------------------------ |
+| `EMAIL_ALREADY_REGISTERED`         | The email is already associated with an account. |
+| `WORKFLOW_NAME_ALREADY_REGISTERED` | The company name is already taken.               |
+| `COMPANY_DOMAIN_ALREADY_REGISTERED`| The email domain is already registered.          |
+
+## Example cURL
+
+```bash
+curl -X POST https://www.tryunleashx.com/api/v1/global/users/onboard \
+  -H "Content-Type: application/json" \
+  -H "Authorization: <api_key>" \
+  -d '{
+    "email_id": "john@example.com",
+    "first_name": "John",
+    "last_name": "Doe",
+    "company_name": "Acme Corp"
+  }'
+```
