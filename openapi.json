@@ -1337,7 +1337,7 @@
       "get": {
         "security": [],
         "summary": "List voices",
-        "tags": ["Voices"],
+        "tags": ["Voice AI"],
         "parameters": [
           {
             "name": "token",
