@@ -501,7 +501,7 @@ curl -X POST https://api.yourdomain.com/create-agent \
 
 1. **Required Fields**: Only `agent_name` and `prompt` are required. The `voice` object is optional — include `voice` (with `provider` and `voice_id`) when you want to configure TTS for the agent. All other fields are optional.
 
-2. **Voice IDs**: Get available voice IDs from the [List Voices API](/api-reference/voices/list-voices).
+2. **Voice IDs**: Get available voice IDs from the [List Voices API](/api-reference/voice-ai/list-voices).
 
 3. **Webhooks**: If you provide a `session_data_webhook`, ensure your endpoint can handle POST requests with session data.
 
@@ -519,7 +519,7 @@ curl -X POST https://api.yourdomain.com/create-agent \
 
 ## Related Endpoints
 
-- [List Voices](/api-reference/voices/list-voices) - Get available voice IDs
+- [List Voices](/api-reference/voice-ai/list-voices) - Get available voice IDs
 - [Update Voice Agent](/api-reference/voice-ai/update-voice-agent) - Modify agent settings
 - [List Voice Agents](/api-reference/voice-ai/list-voice-agents) - View all agents
 - [Delete Voice Agent](/api-reference/voice-ai/delete-voice-agent) - Remove an agent
