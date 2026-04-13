@@ -1,0 +1,188 @@
+---
+title: "Campaigns FAQ"
+description: "Frequently asked questions about campaigns in UnleashX"
+---
+
+A Campaign in UnleashX is a structured outbound calling programme. You connect a list of contacts to a Voice Agent, define a schedule, configure retry logic, and start. The agent works through every contact in your audience list, placing calls, logging outcomes, and retrying unanswered contacts until the campaign is complete or you stop it.
+
+Once a campaign is running, your role is to monitor results and adjust if needed. You can pause, add contacts, edit settings, and resume at any point before the campaign finishes.
+
+## When to use a Campaign
+
+Campaigns are suited for any outbound calling task where you have a defined contact list and want consistent, automated follow-up. Common uses include:
+
+- **Insurance & subscriptions** — Renewal reminders
+- **Payment follow-up** — Contacting customers with overdue balances, with conditions to skip those who have already responded
+- **Lead follow-up** — Calling inbound enquiries or trial signups while intent is still high
+- **Appointment reminders** — Notifying patients, candidates, or customers before scheduled appointments
+- **Post-service surveys** — Collecting structured feedback at scale after a purchase or support interaction
+- **Candidate screening** — Working through large applicant pools with a consistent screening script
+
+## Creating a Campaign
+
+From the Campaigns screen, click **+ New Campaign**. You will move through three steps. You can save a draft at any point. The campaign will not start until you click **Start Campaign**.
+
+### Step 1 — Basic Details
+
+Set the campaign name, the date range it should run, and the Voice Agent that will handle all calls. You also configure re-attempt behaviour here: how many times the agent should retry an unanswered contact, and how long to wait between each attempt.
+
+The agent you choose is the most consequential decision in this step. Agents configured for different purposes (a renewal agent, a collections agent, a recruitment screener) behave very differently on the same call. Choose the agent built for the specific objective of this campaign.
+
+| Field | Description |
+|-------|-------------|
+| Campaign name | A label to identify this campaign in the listing. |
+| Start & end date | The date range the campaign is active. Calls are placed within this window. |
+| Voice Agent | The agent that will handle all outbound calls for this campaign. |
+| Re-attempt count | How many additional attempts to make after the first call. Setting to 3 means up to 4 total calls per contact. |
+| Retry delay | Minimum gap between consecutive attempts to the same contact. Options range from 30 minutes to 1 day. |
+| Retry conditions | Optional rules that must be true before a retry fires. Without a condition, all failed calls are retried automatically. |
+
+### Step 2 — Knowledge Base
+
+Upload documents the agent should reference during calls for this campaign. These are campaign-specific and supplement the agent's own knowledge base. Good candidates include offer sheets, updated pricing, FAQs, and objection-handling scripts you don't want to bake permanently into the agent.
+
+This step is optional. If the agent is already configured with everything it needs, you can skip it. Accepted formats: PDF, Word (.docx), and plain text.
+
+### Step 3 — Audience
+
+Add the contacts this campaign will call. Each contact requires a phone number at minimum. You can also add a name and a custom variable, which is a single value passed to the agent as an input at the start of each call.
+
+Custom variables are how you personalise calls at scale. If your agent is configured to receive a `policy_number` or `loan_id` input, populating that field per contact means the agent knows each customer's specific detail before the call begins.
+
+Contacts can be entered manually or imported via CSV. You can add or remove contacts after the campaign has started, including while it is running. New additions are picked up and queued automatically.
+
+<Tip>
+**Validate with a small batch first**
+
+Before importing your full contact list, add 10–20 test contacts and start the campaign. Verify that the agent behaves as expected, custom variables are mapping correctly, and dispositions are being logged properly. Then pause, import the full list, and resume.
+</Tip>
+
+## Campaign Statuses
+
+A campaign moves through the following statuses as it progresses. The status determines what the agent is doing and which actions are available to you at that moment.
+
+| Status | Description | Available Actions |
+|--------|-------------|-------------------|
+| **Draft** | Campaign saved but not started. The agent is inactive. All settings including agent, contacts, re-attempt rules, and knowledge base are fully editable. | Start, Edit, Delete |
+| **In Progress** | The campaign is live. The agent is actively placing calls. Agent configuration and contact input variables are locked. To make changes, pause the campaign first. | Pause, Mark as Complete |
+| **On Hold** | Campaign is paused. Calls currently in progress will finish; no new calls will be initiated. Contact list and re-attempt settings are editable. Resume at any time. | Resume, Edit, Mark as Complete |
+| **Completed** | All contacts have been through their allowed attempts and the campaign has run its full course. The record is read-only. All results remain accessible. | View only |
+| **Force Completed** | Campaign stopped manually before all contacts were reached. Remaining contacts are marked as Halted and will not be called again within this campaign. This cannot be undone. | View only |
+
+<Note>
+**Pausing vs Force Completing**
+
+Use **Pause** when you need to temporarily stop the campaign to make changes. You can resume it and the agent will continue from where it left off. Use **Mark as Complete** only when you intend to permanently end the campaign. Contacts that have not been reached are marked as Halted and cannot be re-queued within the same campaign.
+</Note>
+
+## Re-attempts & Conditions
+
+When a call goes unanswered, hits a busy signal, or fails to connect, the campaign can automatically retry that contact. Re-attempt settings control how many times this happens and how long the agent waits between attempts.
+
+| Setting | What it does | Example |
+|---------|-------------|---------|
+| Re-attempt count | Additional call attempts after the first. Setting to 3 means up to 4 total calls per contact. | A contact is called at 10am, 2pm, 6pm, and 10am the next day. |
+| Retry delay | Minimum gap before calling a contact again. Options from 30 minutes to 1 day. | A 4-hour delay means the same contact won't be called again for at least 4 hours. |
+| Condition | A rule the last call must satisfy before a retry fires. Without a condition, all failed calls are retried. | Only retry if Last Call Status = Unanswered. Declined contacts are skipped. |
+
+### Using Conditions
+
+Conditions give you precise control over which contacts get retried. Without a condition, the agent retries all failed calls by default. When you need more granularity — for example retrying only contacts who were genuinely unreachable and not those who answered and declined — conditions let you express that logic precisely.
+
+Conditions support two logical operators:
+
+- **AND**: all rules within the group must be true for the retry to fire
+- **OR**: at least one group must match. You can have multiple independent groups
+
+**Example condition:**
+
+Retry a contact if the last call was unanswered and lasted under 10 seconds with no engagement, OR if the line returned a busy signal. Contacts where the call lasted longer are not retried.
+
+## Campaigns & Voice Agents
+
+Every campaign runs through exactly one Voice Agent. The agent handles all outbound calls, draws on the documents you've uploaded as context, and logs call outcomes including status, duration, and disposition back to the campaign automatically.
+
+### Context the agent uses on each call
+
+| Source | What it contains | Configured in |
+|--------|-----------------|---------------|
+| Agent configuration | The agent's persona, call script, instructions, and general behaviour | Voice Agent settings |
+| Agent knowledge base | Shared documents across all campaigns using this agent: company info, product catalogue, and general FAQs | Voice Agent → Knowledge Base |
+| Campaign knowledge base | Documents specific to this campaign: current offer sheet, updated pricing, and campaign-specific scripts | Campaign → Step 2 |
+| Contact variable | A single value per contact passed as an agent input such as policy number, loan reference, or account tier | Campaign → Audience list |
+
+### What gets locked when a campaign is running
+
+Once a campaign moves to In Progress, certain settings on both the campaign and its agent become read-only. This protects the consistency of calls already in progress.
+
+| Agent setting | Draft | In Progress | On Hold | Reason for lock |
+|---------------|-------|-------------|---------|-----------------|
+| Script & persona | Editable | Locked | Editable | Changing the script mid-run alters the experience for contacts still in the queue |
+| Input variables | Editable | Locked | Editable | Inputs map to contact data in the audience list. Changes break existing variable mappings |
+| Output variables | Editable | Locked | Editable | Outputs feed call records and reporting. Changes make historical data inconsistent |
+| Dispositions | Editable | Locked | Editable | Changing disposition labels retroactively alters how completed calls are classified |
+| Campaign knowledge base | Editable | Add only | Editable | New files can be added while running; removing files mid-campaign may affect call quality |
+
+<Note>
+**Agent settings appearing locked?**
+
+This means the agent is attached to a campaign that is currently In Progress or On Hold. Go to the Campaigns screen, pause the relevant campaign, make your changes to the agent, then resume.
+</Note>
+
+<Info>
+**One agent per campaign**
+
+A campaign is always paired with exactly one Voice Agent. If you want to run the same contact list through two different agents — for example as an A/B test — create two separate campaigns with the same imported contact list, each with a different agent assigned. A single agent can be assigned to multiple campaigns simultaneously.
+</Info>
+
+## Audience & Contact Management
+
+The audience is the list of contacts the campaign will call. View, add, and manage contacts from the **Audience** tab inside any campaign. The tab shows each contact's full call history including status, attempt count, duration, and disposition updated in real time.
+
+### Adding contacts
+
+| Method | Best for | Notes |
+|--------|----------|-------|
+| Manual entry | Small lists, one-off additions, or test contacts before a full import | Enter phone number, name, and custom variable directly. Contact is added immediately. |
+| CSV import | Bulk imports from a CRM, database, or spreadsheet | Download the CSV template from the Bulk Import modal. Fill in contacts using the provided column headers and upload. The system validates and imports automatically. |
+
+### Contact statuses
+
+| Status | Meaning |
+|--------|---------|
+| **Fresh** | No call has been attempted yet. The contact is queued and will be called when the agent reaches it. |
+| **In Progress** | At least one call has been made. Re-attempts may still follow if the last call met the retry condition. |
+| **Completed** | All allowed attempts for this contact are done. Either the contact was answered or the re-attempt limit was reached. |
+| **Halted** | The campaign was force completed before this contact was reached. No further calls will be made within this campaign. |
+
+### Reading the Audience tab
+
+| Column | What it shows |
+|--------|--------------|
+| Attempts | Calls made vs maximum allowed. `2/4` means 2 calls made out of a maximum of 4 total. |
+| Call Status | Outcome of the most recent call: Answered, Unanswered, Busy, or Failed. |
+| Duration | Length of the most recent call. A very short duration on an answered call may indicate the contact disconnected immediately. |
+| Disposition | The agent's classification of the call outcome: Interested, Declined, Callback Requested, Not Reachable, and so on. Dispositions are defined on the agent. |
+| Last Attempt | Timestamp of the most recent call. Useful when deciding whether to add a contact to a follow-up campaign. |
+
+## Best Practices
+
+**Match the agent to the campaign objective**
+
+A renewal reminder agent and a payment recovery agent need different scripts, tones, and disposition classifications. Build agents specifically for each campaign type rather than reusing a generic one. The difference in outcomes is significant at scale.
+
+**Populate contact variables**
+
+A call that opens with a customer's name and specific account detail converts at a higher rate than a generic opening. If your agent is configured with input variables, include those values in your CSV import. For most campaigns this is a one-time export from your CRM.
+
+**Set retry delays appropriate to the context**
+
+A 30-minute delay across 500 contacts creates a concentrated burst of call volume. For most campaigns, a 4 to 6-hour delay between attempts is more effective as it gives contacts time to be available and avoids the campaign feeling aggressive. For high-value contacts, a 1-day delay with 2 to 3 total attempts is often ideal.
+
+**Pause rather than force complete when issues arise**
+
+If something needs fixing mid-campaign — such as an incorrect variable, a wrong document, or a script issue — pause the campaign, fix it, and resume. Force completing is permanent. Contacts marked as Halted cannot be re-queued within the same campaign.
+
+**Monitor the Audience tab during the first run**
+
+In the first hour of a new campaign, check the Audience tab to confirm that call statuses and dispositions are being recorded as expected. Catching a misconfigured disposition or a missing contact variable early avoids data issues across the full run.
