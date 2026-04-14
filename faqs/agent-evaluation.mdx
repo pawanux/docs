@@ -1,0 +1,364 @@
+---
+title: "Agent Evaluation"
+description: "Automated call quality assurance and scoring for AI voice agents on UnleashX."
+---
+
+Agent Evaluation transforms call quality assurance from a reactive, manual process into a continuous, automated intelligence layer across every customer interaction.
+
+Organisations deploying AI voice agents at scale face a fundamental quality assurance challenge: how do you maintain consistent standards, meet regulatory obligations, and drive continuous agent improvement when call volumes exceed the capacity of human reviewers?
+
+Agent Evaluation addresses this directly. It scores every call, immediately after it ends, against a configurable set of quality criteria. Results are available in real time. No sampling. No lag. No reviewer bias.
+
+## Key Capabilities
+
+- Automated scoring of 100% of calls against configurable quality criteria
+- Composite scoring with weighted criteria to reflect business priorities
+- Independent threshold configuration per criterion and per evaluation
+- Real-time Dashboard with agent performance trends and criteria health
+
+## The Business Case
+
+The business case for automated call evaluation is grounded in four strategic outcomes: quality at scale, risk reduction, operational efficiency, and customer experience consistency.
+
+### Quality at Scale
+
+Traditional quality assurance processes evaluate between 2 and 5 percent of call volume. This sampling rate is insufficient to detect systemic issues, identify individual agent performance trends, or provide meaningful coaching data. Agent Evaluation scores every call, providing a complete and statistically reliable view of quality across the entire agent population.
+
+<Tip>
+Organisations that transition from sampled QA to 100% automated evaluation typically identify coaching opportunities three to four times faster, because patterns become visible across full call populations rather than small samples.
+</Tip>
+
+### Compliance and Risk Management
+
+Regulated industries require evidence that compliance obligations are being met on every customer interaction. Agent Evaluation provides a complete, timestamped audit record of every call scored against compliance criteria including identity verification, privacy handling, and accurate information disclosure.
+
+### Operational Efficiency
+
+By automating the scoring process, quality assurance teams can redirect their time from listening to calls toward higher-value activities: analysing trends, designing coaching programmes, refining evaluation criteria, and working directly with agents on improvement.
+
+### Consistent Customer Experience
+
+When quality standards are enforced by configuration rather than by individual reviewer judgment, the customer experience is more consistent. Every agent, on every call, is held to the same objective standard.
+
+| | Traditional Manual QA | Agent Evaluation |
+|---|---|---|
+| Coverage | 2 to 5% of calls reviewed | 100% of calls scored automatically |
+| Visibility | Patterns only visible in sampled data | Aggregate trends visible in real time |
+| Speed | Results available in days or weeks | Results available immediately after each call |
+| Consistency | Inconsistent standards across reviewers | Identical rubric applied uniformly to every call |
+| Effort | Significant supervisor time investment | Fully automated with no human scoring required |
+
+---
+
+## Use Cases
+
+Agent Evaluation is purpose-built for enterprise teams operating AI voice agents in customer-facing roles.
+
+### Continuous Quality Assurance
+
+Deploy a standing evaluation for each voice agent in production. Every call is scored the moment it ends, and results are immediately visible in the Dashboard. Quality leadership can monitor composite score trends daily, identify declining performance early, and respond before issues affect customer satisfaction metrics.
+
+<Note>
+This use case replaces the traditional weekly or monthly QA cycle with a continuous real-time signal. Teams typically configure one evaluation per agent, with criteria and thresholds aligned to their internal quality standards.
+</Note>
+
+### Regulatory Compliance Monitoring
+
+Configure evaluations with compliance-specific criteria such as Privacy Compliance, No Misrepresentation, and No Offensive Content. Assign high weights to these criteria to ensure they drive the composite score. Every call is checked automatically, providing a complete audit trail for regulatory review.
+
+### Agent Performance Benchmarking
+
+Run the same evaluation template across multiple agent versions or agent populations to compare performance objectively. Composite scores and per-criterion breakdowns provide a standardised basis for benchmarking that is not affected by reviewer subjectivity or sampling variance.
+
+<Tip>
+Use the Agent filter on the Dashboard to compare individual agent performance within the same evaluation, or create separate evaluation templates to apply different standards to different agent roles.
+</Tip>
+
+### Targeted Coaching and Development
+
+Use evaluation results to structure coaching conversations. When an agent scores below the configured threshold on a specific criterion, the scoring rationale and transcript evidence provide a concrete, objective basis for feedback. This removes subjectivity from the coaching process and enables coaching conversations to be focused on specific, documented behaviours.
+
+### New Agent Validation
+
+Evaluate newly deployed agent versions from their first call without requiring human oversight. Monitor composite score trends in the early deployment period and compare performance against established agent benchmarks to determine whether additional tuning is required before broader rollout.
+
+### Multi-Market Quality Standards
+
+Create separate evaluation templates for different markets, regions, or compliance contexts. Each template can apply different criteria, different weights, and different thresholds to reflect the quality standards that apply in each context. A single agent can be evaluated against multiple templates simultaneously.
+
+---
+
+## How Agent Evaluation Works
+
+Agent Evaluation operates as a fully automated pipeline. Once an evaluation is configured and activated, no manual intervention is required for calls to be scored and results to be surfaced.
+
+### Evaluation Pipeline
+
+1. The voice agent completes a customer call and the recording is captured by the platform.
+2. The recording is transmitted to the configured transcription provider, which converts audio to text.
+3. The transcript is passed to the evaluator model along with the system prompt, evaluation criteria, and scoring rubrics.
+4. The evaluator model scores each criterion independently, producing a score from 0 to 100 for each.
+5. Criterion scores are combined using their configured weights to produce a composite call score visible in the Dashboard and Activities log.
+
+<Note>
+The evaluator model is entirely independent of the voice agent. It functions as an objective, automated reviewer that reads the transcript and applies the scoring rubric configured by the administrator. It has no access to the live call and no ability to influence agent behaviour.
+</Note>
+
+### Composite Score Calculation
+
+Each call receives a composite score representing overall call quality. The composite score is calculated as the weighted average of all criterion scores for that call.
+
+**Example**: An evaluation has three criteria with weights of 50, 30, and 20. The criterion scores for a specific call are 88, 71, and 52. The composite score is calculated as (88 × 50 + 71 × 30 + 52 × 20) ÷ 100 = **76**.
+
+### Criterion-Level Scoring
+
+Each criterion is scored on a scale of 0 to 100. Criterion scores are entirely independent of each other. A high score on one criterion does not influence the score on another. The only relationship between criterion scores is their weighted contribution to the composite score.
+
+---
+
+## Dashboard
+
+The Dashboard provides executive-level visibility into call quality, agent performance, and criteria health. It is designed to surface actionable insights without requiring users to navigate individual call records.
+
+### Filters
+
+| Filter | Options and Default |
+|--------|---------------------|
+| Date Range | Today \| Last 7 Days (default) \| This Month \| Last 3 Months |
+| Agent | All agents or a specific voice agent |
+
+All metrics on the Dashboard update dynamically when filters are changed.
+
+### Call Overview
+
+| Metric | Definition | Operational Significance |
+|--------|-----------|--------------------------|
+| Total Calls | Number of calls evaluated in the selected period | Confirms evaluation coverage. A lower-than-expected count may indicate a paused evaluation or a recording integration issue. |
+| Avg Composite Score | Weighted average composite score across all evaluated calls | The primary quality indicator. A declining trend over consecutive periods signals a systemic performance issue. |
+
+### Criteria Performance Table
+
+The Criteria Performance table shows how each criterion is performing across all evaluated calls in the selected period, sorted from highest to lowest average score.
+
+| Column | Description |
+|--------|-------------|
+| Rank | Criteria ordered by average score. The lowest-ranked criterion represents the most significant quality gap in the current period. |
+| Criterion | The quality dimension being measured. |
+| Avg Score | Average score for this criterion across all evaluated calls in the selected period. |
+| Distribution Bar | A colour-coded bar showing the proportion of calls scoring in the Pass band (green), Review band (amber), and Fail band (red). |
+
+<Tip>
+A criterion with a high average score alongside a significant red band in the distribution bar indicates an inconsistency problem rather than a training gap. The agent performs well in most cases but fails in specific scenarios — often pointing to edge cases that require targeted attention rather than broad retraining.
+</Tip>
+
+### Agent Performance Panels
+
+- **Top Performing** displays the three agents with the highest average composite scores. Each row is clickable and navigates to Activities filtered to that agent.
+- **Needs Attention** displays agents with the lowest average composite scores, representing the priority coaching queue.
+
+<Note>
+Every element of the Dashboard is interactive. Clicking a KPI card, a row in the Criteria table, or an agent panel navigates directly to the Activities tab with the corresponding filter applied.
+</Note>
+
+---
+
+## Activities
+
+The Activities tab is the complete operational record of every call processed by Agent Evaluation.
+
+### Call Table
+
+| Column | Description |
+|--------|-------------|
+| Call ID | Unique identifier for the call. Click to open the call detail drawer. A flag icon appears when no agent audio is detected. |
+| Agent | The voice agent that handled the call. |
+| Evaluation | The evaluation template applied to this call. |
+| Score | The composite score, displayed as a colour-coded badge. |
+| Sentiment | Detected customer sentiment: Positive, Neutral, or Negative. |
+| Duration | Length of the call recording. |
+| Timestamp | Date and time the evaluation was completed. |
+| Status | Pass, Review, Fail, or Skipped. |
+| Actions | View Details opens the call detail drawer. Copy Call ID copies the identifier to the clipboard. |
+
+### Call Status Definitions
+
+| Status | Definition | Recommended Action |
+|--------|-----------|-------------------|
+| **Pass** | Composite score meets the configured quality standard | No immediate action required. Monitor for trend changes over time. |
+| **Review** | Composite score falls in the borderline band between pass and fail thresholds | Recommend human review. Open the criteria breakdown to identify underperforming dimensions. |
+| **Fail** | Composite score falls below the configured minimum threshold | Prioritise for agent coaching. Use the per-criterion breakdown to identify specific improvement areas. |
+| **Skipped** | Call duration was below the configured minimum threshold | No quality action required. Review skip threshold configuration if volume is unexpectedly high. |
+
+### Call Detail Drawer
+
+Selecting any Call ID opens a side panel with:
+
+- Composite score with status classification
+- Call metadata including duration, detected sentiment, and evaluation timestamp
+- Per-criterion breakdown showing the individual score for each criterion with a progress bar relative to configured thresholds
+- Flagged status indicator when the call has been manually flagged for human review
+
+### Manual Recording Upload
+
+To evaluate recordings not automatically captured through the integration:
+
+1. Select **Upload Recordings** from the Activities toolbar
+2. Select the evaluation template to apply
+3. Upload the recording file — supported formats: ZIP, MP4, WAV, MP3 (max 50 MB)
+4. Select **Upload and Evaluate** — results appear in the Activities table once processing is complete
+
+---
+
+## Configuration
+
+The Configuration tab is the central management interface for evaluation templates.
+
+### Evaluation Table
+
+| Column | Description |
+|--------|-------------|
+| Name | The evaluation template name and its system-assigned unique identifier. |
+| Agent | The voice agent assigned to this evaluation template. |
+| LLM Model | The evaluator model configured to score transcripts. |
+| Criteria | The number of quality criteria defined in this evaluation template. |
+| Calls Run | The cumulative count of calls scored since activation. |
+| Status | Active (currently scoring new calls) or Paused (inactive). |
+
+### Template Actions
+
+| Action | Behaviour |
+|--------|-----------|
+| Edit | Opens the setup wizard to modify any aspect of the evaluation template. The Voice Agent field is locked while Active. |
+| Start / Pause | Activates or deactivates the evaluation. A paused evaluation does not score new calls. All historical results are preserved. |
+| Archive | Removes the template from the active list. All historical scoring data remains accessible. |
+
+<Note>
+The Voice Agent assigned to an evaluation template cannot be changed while the template is set to Active. Pause the evaluation before modifying the agent assignment. This constraint ensures scoring continuity is maintained for active call populations.
+</Note>
+
+---
+
+## Creating an Evaluation
+
+Select **Create Evaluation** in the Configuration tab to launch the three-step configuration wizard.
+
+### Step 1: Setup
+
+**Evaluation Name** — Assign a name that clearly communicates purpose and scope. Recommended naming conventions include agent role, quality focus, and period. Examples: `Customer Support Quality Q2 2026` or `Outbound Sales Compliance EMEA`.
+
+**Voice Agent** — Select the voice agent whose calls this evaluation will score. All calls completed by the selected agent will be evaluated automatically once activated.
+
+<Note>
+The Voice Agent field is locked once the evaluation is set to Active. To reassign an evaluation to a different agent, the evaluation must first be paused.
+</Note>
+
+**Call Settings**:
+- **Include Past Call Recordings** — When disabled (default), only calls made after activation are scored. When enabled, all existing recordings for the assigned agent are also scored.
+- **Skip Calls Shorter Than** — The minimum call duration for evaluation eligibility. Calls below this threshold are classified as Skipped. Default: 10 seconds.
+
+**Evaluator Model** — Select the language model that will score each criterion. A primary model and a fallback model must both be specified. The temperature parameter controls scoring determinism — a value of 0.3 is recommended for consistent, repeatable results.
+
+### Step 2: QA Instructions
+
+The system prompt is the instruction set provided to the evaluator model. It defines the evaluation context, the standards to apply, and the required output format. A default prompt is pre-populated.
+
+<Tip>
+Keep the system prompt focused on evaluation principles and context. Criterion-specific scoring guidance belongs in the individual Scoring Prompt fields configured in Step 3. Separating these concerns produces more consistent and predictable scoring outcomes.
+</Tip>
+
+### Step 3: Criteria
+
+Criteria define the quality dimensions evaluated on every call. Each criterion is scored independently. Select **Add Criteria** to add a criterion to the evaluation. Selecting a preset auto-populates the scoring rubric with an industry-standard prompt. Custom criteria can be defined from scratch.
+
+---
+
+## Criteria and Scoring
+
+### Criterion Configuration Fields
+
+| Field | Description |
+|-------|-------------|
+| Criterion Preset | Fifteen standard presets are available. The Custom option allows fully bespoke criteria definition. |
+| Weight | A relative value determining this criterion's proportional contribution to the composite score. The platform calculates percentage contributions automatically. |
+| Pass Threshold | The minimum score (0–100) required for this criterion to be classified as Passed. |
+| Fail Threshold | The score below which this criterion is classified as Failed. |
+| Review Range | The band between the fail and pass thresholds, calculated automatically by the platform. |
+| Scoring Prompt | The rubric provided to the evaluator model describing expected performance at each score band: 90–100, 60–89, and 0–59. |
+
+### Standard Criterion Library
+
+Fifteen criteria are available as presets, each with a pre-validated scoring rubric:
+
+| Criterion | Quality Dimension Evaluated |
+|-----------|---------------------------|
+| **Empathy** | Whether the agent acknowledged customer emotions appropriately and maintained a warm, natural tone. |
+| **Language Switch** | Whether the agent detected and adapted to the customer's preferred language without friction. |
+| **Turn Taking** | Whether the conversation was balanced and natural, with appropriate pauses and no agent interruptions. |
+| **Context Awareness** | Whether the agent leveraged available customer history and avoided requesting information already on record. |
+| **Recovery From Errors** | Whether the agent acknowledged and corrected errors promptly, maintaining customer confidence. |
+| **Intent Recognition** | Whether the customer's intent was correctly identified on the first attempt without unnecessary rerouting. |
+| **Greeting Accuracy** | Whether the call opening included all required elements: brand identification, agent identification, professional tone, and offer of assistance. |
+| **Intent Confirmation** | Whether the agent confirmed their understanding of the customer's request before taking action. |
+| **Probing Questions** | Whether the agent used targeted, open-ended questions to establish the full context required for resolution. |
+| **Call Closing** | Whether the agent summarised agreed next steps, confirmed customer satisfaction, and completed the call professionally. |
+| **No Offensive Content** | Whether the call was free from offensive, discriminatory, or non-compliant language throughout. |
+| **No Misrepresentation** | Whether all information provided by the agent was accurate and no misleading claims were made. |
+| **Privacy Compliance** | Whether identity verification procedures were followed correctly and sensitive data was handled appropriately. |
+| **Confidence Level** | Whether the agent projected competence and authority, remained composed under pressure, and responded decisively. |
+| **Input Metadata Consistency** | Whether all required post-call fields were accurately completed and consistent with the content of the interaction. |
+
+### Threshold Configuration
+
+Pass and Fail thresholds are configured independently for each criterion within each evaluation template.
+
+<Note>
+Pass and Fail thresholds apply at the criterion level, not at the composite score level. A call may have a high composite score while one criterion falls below its configured Fail threshold, if other criteria with higher weights offset it. Review the per-criterion breakdown in the call detail drawer when investigating calls with borderline composite scores.
+</Note>
+
+### Weight Configuration
+
+Criterion weights determine the relative contribution of each criterion to the composite score. Compliance-critical criteria such as Privacy Compliance, No Offensive Content, and No Misrepresentation should typically be assigned higher weights in regulated contexts.
+
+**Example**: If Privacy Compliance has a weight of 40 and Empathy has a weight of 10, a fail on Privacy Compliance will have four times the impact on the composite score as a fail on Empathy.
+
+---
+
+## Call Settings
+
+### Include Past Call Recordings
+
+| Configuration | Behaviour |
+|--------------|-----------|
+| Disabled (default) | Only calls completed after the evaluation template is activated will be scored. |
+| Enabled | All existing recordings for the assigned agent will be scored in addition to all subsequent calls. Enabling this setting will increase processing time and cost in proportion to the volume of historical recordings available. |
+
+### Skip Calls Shorter Than
+
+This setting establishes the minimum call duration threshold for evaluation eligibility. Calls below this duration are automatically classified as Skipped and excluded from all quality metrics.
+
+<Tip>
+The default skip threshold of 10 seconds is appropriate for most deployments. If your agent population handles very short, transactional interactions, consider lowering this threshold. If your environment produces a high volume of test calls, consider raising it.
+</Tip>
+
+Configuration range: 0 to 300 seconds. Default: **10 seconds**.
+
+---
+
+## Glossary
+
+| Term | Definition |
+|------|-----------|
+| **Agent Evaluation** | The UnleashX module that automatically scores calls made by AI voice agents against configurable quality criteria. |
+| **Composite Score** | The weighted average of all criterion scores for a single call, representing the overall quality of that interaction. |
+| **Criterion** | A single, defined quality dimension evaluated on a call. Examples include Empathy, Call Closing, and Privacy Compliance. |
+| **Criteria Score** | The score from 0 to 100 assigned to a single criterion for a single call by the evaluator model. |
+| **Evaluation Template** | A saved configuration defining which criteria to score, the associated rubrics, thresholds, evaluator model, and agent assignment. |
+| **Evaluator Model** | The language model that reads call transcripts and assigns criterion scores. Fully independent of the voice agent. |
+| **Fail Threshold** | The score below which a criterion is classified as Failed for a given call. |
+| **Pass Threshold** | The minimum score required for a criterion to be classified as Passed for a given call. |
+| **Review** | A status indicating a criterion or composite score falls in the band between the configured fail and pass thresholds. |
+| **Scoring Prompt** | The rubric provided to the evaluator model describing expected performance at each score band for a specific criterion. |
+| **Skipped** | A call status applied when call duration falls below the configured minimum threshold. Excluded from all quality calculations. |
+| **Temperature** | An evaluator model parameter controlling output determinism. Lower values produce more consistent results. Recommended: 0.3. |
+| **Transcription Provider** | The third-party service that converts call audio recordings to text prior to evaluation scoring. |
+| **Weight** | A relative numerical value assigned to a criterion that determines its proportional contribution to the composite score. |

@@ -1,0 +1,526 @@
+---
+title: "Voice Agents"
+description: "A complete guide to building, configuring, and operating AI voice agents on UnleashX."
+---
+
+## Introduction
+
+### What is an UnleashX Voice Agent?
+
+A Voice Agent talks to your customers on the phone, just like a human agent would. It listens, understands intent, responds naturally, and can take real actions during the call: looking up account details in your CRM, scheduling appointments, capturing structured information, sending emails or SMS, and transferring to a human when the situation calls for it.
+
+Voice agents on UnleashX are designed to handle the high-volume, repetitive calls that take up most of your team's time, freeing your human agents to focus on the conversations where empathy and judgment really matter.
+
+### Who Is This For?
+
+This documentation is written for product managers, contact center leaders, operations teams, and anyone responsible for designing, deploying, or maintaining voice agents on UnleashX. Some sections (Tools, API triggers) reference technical concepts, but no prior coding experience is required to build a working agent.
+
+### What You Can Do With UnleashX Voice Agents
+
+- **Outbound Calling at Scale**: Run lead outreach, renewal reminders, payment follow-ups, and customer surveys across thousands of contacts without growing your team. Use UnleashX Campaigns to handle batch dialing, pacing, and retries.
+- **Inbound Support and Self-Service**: Let customers call in for FAQs, order status, account help, and appointment booking, 24 hours a day, in any language you support. Inbound agents are always on, so customer queries get resolved 24/7.
+- **Workflow-Triggered Calls**: Automatically reach customers when something important happens: a new lead, a missed payment, a delivery delay, an abandoned cart. UnleashX Workflows let you drop the agent into any event-driven flow.
+- **Conversation Intelligence**: Every call is automatically transcribed, summarized, scored for sentiment, and tagged with dispositions and structured outputs that flow straight into your CRM, data warehouse, or analytics tool.
+
+<Info>
+**Key Idea**
+
+A voice agent is not a script reader. It's a conversational AI that understands context, handles unexpected questions, and adapts in real time. The configuration steps in this guide are how you give it the right knowledge, voice, tools, and guardrails to do its job well on UnleashX.
+</Info>
+
+---
+
+## Core Concepts
+
+### The Anatomy of a Voice Agent
+
+Every voice agent on the platform is made up of six core components. Understanding what each one does will help you make better configuration decisions later.
+
+- **The Brain (Prompt + LLM)**: The instructions you write are combined with a large language model that decides what the agent says next.
+- **The Voice (TTS)**: The text-to-speech engine that turns the agent's responses into spoken audio.
+- **The Ears (Transcriber / STT)**: The speech-to-text engine that converts what the caller says into text the agent can understand.
+- **The Knowledge Base**: The documents, FAQs, and policies the agent draws on to answer factual questions accurately.
+- **The Tools**: External actions the agent can take during a call — CRM lookup, booking a meeting, sending an email, triggering a webhook.
+- **The Guardrails**: The trust and safety controls that keep the agent compliant, accurate, and respectful with DNC detection, restricted topics, PII redaction, and more.
+
+### Inbound vs Outbound Agents
+
+Voice agents come in two flavors based on who initiates the call:
+
+| Type | Description |
+|------|-------------|
+| **Inbound** | The customer dials in. The agent waits for the call, picks it up, and handles the conversation. Best for support, FAQs, account help, order status, appointment booking, and self-service workflows. |
+| **Outbound** | The agent makes the call. You feed it a contact list (via Campaign) or trigger it from a workflow event. Best for lead outreach, reminders, renewals, surveys, collections, and re-engagement. |
+
+### Single-Prompt vs Multi-Prompt Conversation Flow
+
+One of the most important decisions you'll make when building an agent on UnleashX is how to structure its conversation logic. The platform supports two approaches, and the right choice depends on the complexity of your use case.
+
+#### Single-Prompt Agent
+
+You write one comprehensive prompt that defines everything: the agent's role, goals, tone, conversation style, fallback handling, and instructions for every situation. The agent uses that prompt for the entire call and decides what to say next based on context.
+
+**Best for**: Short, focused calls where the agent has one clear job and the conversation doesn't really branch. Quick to ship, easy to iterate.
+
+Real examples on UnleashX:
+- Order status and delivery tracking calls
+- Appointment reminders and confirmations
+- Quick post-purchase feedback surveys
+- FAQ bot answering questions from a product knowledge base
+- Outbound notifications (policy renewals, EMI reminders)
+
+**Why pick this**: Fastest path from idea to live agent. Just one prompt to write, debug, and tune. Lower latency and lower cost per call.
+
+**Single-Prompt Structure**
+
+A well-written single prompt on UnleashX typically follows a six-section structure:
+
+```
+## Identity & Persona
+You are Riya, a friendly customer service representative
+calling on behalf of Acme Insurance. You are warm,
+professional, and respectful of the customer's time.
+
+## Goal
+Remind the customer that their motor insurance policy
+is due for renewal in 7 days, confirm whether they
+want to renew, and capture their preferred renewal date.
+
+## Conversation Flow
+1. Greet the customer by name and introduce yourself
+2. Confirm you are speaking to {customer_name}
+3. Mention the policy due date and amount
+4. Ask if they want to renew
+5. If yes, capture their preferred renewal date
+6. Confirm next steps and end the call politely
+
+## Tone & Style
+- Speak in short, natural sentences
+- Use the customer's first name occasionally
+- Never sound pushy or robotic
+- Match the customer's energy
+
+## Handling Edge Cases
+- If the customer is busy, offer to call back
+- If they decline, ask the reason briefly and thank them
+- If they have questions about coverage, direct them
+  to the knowledge base
+- If they ask for a human, transfer to support
+
+## Closing
+Always thank the customer for their time and confirm
+the next action before ending the call.
+```
+
+Each section serves a purpose: Identity tells the agent who it is, Goal tells it why the call is happening, Conversation Flow gives the high-level structure, Tone shapes how it talks, Edge Cases handle the unexpected, and Closing ensures consistent endings.
+
+#### Multi-Prompt Flow
+
+You break the call into states — for example, 'greet', 'identify caller', 'collect details', 'resolve issue', 'confirm and close' — and write a focused prompt for each one. The agent moves between states as the conversation unfolds, carrying information forward through dynamic variables.
+
+**Best for**: Multi-step calls with branches, conditional logic, or distinct phases where the agent needs to behave differently depending on what the customer says.
+
+Real examples on UnleashX:
+- AI receptionist that books, reschedules, or cancels appointments
+- IT helpdesk that identifies the employee and issue, then walks through fixes
+- Insurance claim intake with verification, documentation, and assessment steps
+- Loan eligibility check with KYC, income verification, and document collection
+- Inbound support that triages, troubleshoots, and escalates to a human
+- Hospital appointment booking with department routing and slot confirmation
+
+**Why pick this**: The agent stays on track. No drifting off-topic, no skipped steps, no repeating questions it already asked. Easier to debug and maintain at scale.
+
+**Multi-Prompt Structure**
+
+A multi-prompt agent on UnleashX is built as a tree of states (also called nodes). Each state has its own focused prompt, a clear goal, and transition rules that decide which state comes next based on what the customer says.
+
+```
+STATE 1: Greeting & Intent
+Prompt: "Greet the caller, introduce yourself as the
+Bright Smile Dental assistant, and ask how you can help.
+Identify whether they want to book, reschedule, cancel,
+or ask a question."
+Transitions:
+  → Booking flow (if intent = book)
+  → Reschedule flow (if intent = reschedule)
+  → Cancel flow (if intent = cancel)
+  → FAQ flow (if intent = question)
+
+STATE 2A: Booking Flow
+Prompt: "Ask for the patient's full name, preferred
+date, and reason for visit. Check available slots in
+the calendar tool. Offer the closest 3 slots."
+Transitions:
+  → Confirmation (when slot selected)
+  → Reschedule flow (if slots don't work)
+
+STATE 2B: Reschedule Flow
+Prompt: "Ask for the patient's name and current
+appointment date. Look up the booking. Confirm the
+new preferred slot."
+Transitions:
+  → Confirmation
+
+STATE 2C: Cancel Flow
+Prompt: "Confirm the patient's name and appointment
+date. Ask for the cancellation reason. Update the
+calendar."
+Transitions:
+  → Closing
+
+STATE 2D: FAQ Flow
+Prompt: "Answer questions using the clinic knowledge
+base. If the question is outside scope, offer to
+transfer to a human."
+Transitions:
+  → Closing
+  → Transfer to human
+
+STATE 3: Confirmation
+Prompt: "Repeat back the appointment details, confirm
+the patient's contact number, and let them know they'll
+receive an SMS confirmation."
+Transitions:
+  → Closing
+
+STATE 4: Closing
+Prompt: "Thank the patient warmly, remind them of any
+next steps, and end the call."
+```
+
+Information captured in earlier states (like patient name and contact number) is automatically passed forward as dynamic variables, so the agent never has to ask the same question twice.
+
+**Common Multi-Prompt Patterns**
+
+- **Linear Flow** — States happen in a fixed order: Greet → Verify → Collect → Confirm → Close. Used for forms, surveys, and intake calls where the sequence doesn't change.
+- **Branching Tree** — An initial state routes to one of several specialized flows based on intent. Used for receptionist agents, support triage, and any call where the customer's first answer determines what happens next.
+- **Loop with Exit** — The agent loops through a state (e.g., 'answer questions') until a condition is met (customer says they're done). Used for open-ended Q&A and consultation calls.
+- **Verification Gate** — Mandatory verification states must pass before the agent moves into sensitive flows. Used for KYC, account access, and high-risk actions.
+
+**When to switch from Single to Multi-Prompt**
+
+Start with Single-Prompt — it's the fastest way to get something live on UnleashX. Move to Multi-Prompt the moment any of these signals appear: your prompt grows past ~1000 words, the agent uses more than 5 tools, the agent keeps skipping steps or repeating itself, or the conversation naturally splits into distinct phases that need different behavior.
+
+---
+
+## Building Your First Agent
+
+Building a voice agent on the platform is a six-step process. You can move forward and backward freely between steps — nothing is final until you click Publish.
+
+### Step 1: Agent Setup & Brain
+
+The first step is where your agent gets its identity and its instructions. Everything you configure here shapes how the agent thinks and behaves on every call.
+
+**About** — Give your agent a name, a short description, and a category. A good name is specific to the use case, like 'Q2 Outreach Agent' or 'Insurance Renewal Bot' — not just 'Agent 1'.
+
+**Language** — Pick the primary language your customers speak. This decision determines which transcribers and voices you can choose in Step 2 — not all engines support every language with the same quality.
+
+**Purpose** — Tell the platform what the agent is for: Sales, Support, Reminders, Surveys, Collections, Onboarding, and so on. We use this to suggest the right prompt templates, recommended dispositions, and best practices specific to that use case.
+
+**Inbound or Outbound** — Choose whether this agent receives calls (inbound) or makes them (outbound). This changes the configuration options that show up in later steps and the triggers available in Step 6.
+
+**Prompt & Templates** — This is the most important configuration in the entire setup. The prompt is the agent's brain — it tells the agent what to say, how to say it, and what to do in tricky situations. Don't start from a blank page. The platform ships with industry-specific templates for common use cases.
+
+<Tip>
+**Writing Effective Prompts**
+
+Start your prompt with the agent's identity and tone (e.g., 'You are Riya, a friendly customer service representative for Acme Corp'). Then specify the goal of the call, the conversation flow, and what to do when something unexpected happens. Avoid vague instructions like 'be helpful' — instead, give specific examples of what the agent should and shouldn't say.
+</Tip>
+
+**Input Variables** — Define placeholders like `{customer_name}`, `{order_id}`, or `{appointment_date}` once in your prompt, then pass real values at call time. The agent fills them in automatically — same agent, personalized for every call.
+
+**Knowledge Base** — Drop in your product docs, FAQs, policies, pricing sheets, or any reference material the agent might need. The platform supports:
+- **Document Upload** — PDF, DOCX, TXT, or Markdown. Best for static content.
+- **URL Extraction** — Paste a website URL and we'll automatically extract and index the content. Best for documentation that's already published online.
+
+**Tools** — Tools let the agent do things during the call, not just talk:
+- **CRM Lookup** — Fetch customer details, account history, or order information in real time.
+- **Send Email** — Trigger a transactional email mid-call.
+- **Calendar Booking** — Check availability and book meetings directly from the call.
+- **Send SMS** — Send a text message to the caller during or after the conversation.
+- **Custom Webhook** — Trigger any HTTP endpoint with call data.
+- **API Action** — Call any REST API as an action.
+
+<Tip>
+Start with the minimum tools you actually need. Every additional tool adds complexity to the prompt and increases the chance of the agent calling the wrong tool at the wrong time. Add tools incrementally as you validate behavior.
+</Tip>
+
+### Step 2: Voice & Transcription
+
+**Transcriber (Speech-to-Text)** — This is how the agent hears the caller. Accuracy here is non-negotiable: if the agent mishears the caller, the entire response will be wrong. Pick a transcriber optimized for your language and the typical accents of your customers.
+
+**Voice (Text-to-Speech)** — How your agent sounds. Pick a voice that matches your brand and use case:
+- Warm and friendly for customer support and care
+- Confident and crisp for outbound sales and lead qualification
+- Calm and clear for healthcare, insurance, and financial services
+- Professional and neutral for B2B and enterprise calls
+
+Always preview voices before deciding. The platform lets you play a sample greeting in each voice so you can hear how it actually sounds with your script.
+
+**LLM Model** — The brain behind the agent. Different models offer different trade-offs:
+- **Faster Models** — Lower latency means more natural, conversational pacing. Better for high-volume use cases where conversations are relatively simple.
+- **Smarter Models** — Better at handling complex questions, long conversations, multi-step reasoning, and edge cases. Better for sales, support, and any use case where conversation quality matters more than raw speed.
+
+### Step 3: Phone Number
+
+Your agent needs a phone number either to receive calls (inbound) or to make calls (outbound). The platform gives you three options:
+
+**Buy a Number** — Buy one directly from the platform. Pick a country, area code, and number type (local, toll-free, or mobile) and you're ready to go in minutes.
+
+**Bring Your Own Number** — Already have phone numbers with Twilio, Plivo, Exotel, or any SIP provider? Connect them via SIP trunk and keep the numbers your customers already know.
+
+**Number Assignment** — Once you have a number, assign it to the agent:
+- For inbound agents, this is the number customers will dial to reach the agent.
+- For outbound agents, this is the caller ID customers will see when the agent calls them.
+
+<Note>
+**Compliance Note**
+
+Different regions have different rules about caller ID, number type, and disclosure requirements. If you're calling customers across countries, work with your compliance team to ensure the right number type and consent handling for each region.
+</Note>
+
+### Step 4: Outputs & Success Metrics
+
+**Structured Outputs** — Tell the agent exactly what information to extract from every call. Each output is defined as a key-value pair with a type:
+
+| Key | Type | What it captures |
+|-----|------|-----------------|
+| `customer_name` | string | The customer's name as stated during the call |
+| `customer_email` | email | The email address the customer wants to be contacted at |
+| `appointment_date` | string | The date and time of any booked or rescheduled appointment |
+| `demo_scheduled` | boolean | Whether the customer agreed to schedule a product demo |
+| `satisfaction_score` | number | The customer satisfaction rating captured at end of call |
+
+**Dispositions** — Dispositions are the labels the agent assigns to each call's outcome. Define the dispositions that matter to your business. The agent will automatically tag every call with one based on what happened during the conversation.
+
+**Disposition Templates** — UnleashX ships with disposition templates for common industries:
+
+<AccordionGroup>
+  <Accordion title="BFSI / Insurance Renewal Agent">
+    - **Renewal Completed** — Customer agreed and the renewal was processed end-to-end on the call. ✓ Success
+    - **Renewal Promised** — Customer agreed to renew but wants to pay later or via a different channel. ✓ Success
+    - **Callback Requested** — Customer is busy but asked to be called back at a specific time.
+    - **Not Interested** — Customer explicitly declined the renewal.
+    - **Already Renewed** — Customer has already completed the renewal through another channel.
+    - **Switched Provider** — Customer has moved to a competitor.
+    - **Documents Pending** — Customer wants to renew but needs to submit additional documents first.
+    - **Wrong Number** — The number does not belong to the intended customer.
+    - **Do Not Call** — Customer requested no further calls (DNC).
+    - **Unreachable** — Customer did not answer after maximum retry attempts.
+  </Accordion>
+  <Accordion title="E-Commerce Inbound Support Agent">
+    - **Issue Resolved** — Customer's question was answered or problem fixed on the call. ✓ Success
+    - **Order Tracked** — Customer received the order status they were calling about. ✓ Success
+    - **Refund Initiated** — A refund was processed during the call. ✓ Success
+    - **Ticket Created** — Issue is too complex for self-service; ticket created and assigned.
+    - **Escalated to Human** — Call was transferred to a human agent.
+    - **Complaint Logged** — Customer raised a complaint that needs offline follow-up.
+    - **Repeat Caller** — Customer called about an existing open ticket.
+  </Accordion>
+  <Accordion title="Healthcare Appointment Booking Agent">
+    - **Appointment Booked** — New appointment confirmed in the calendar. ✓ Success
+    - **Appointment Rescheduled** — Existing appointment moved to a new date or time. ✓ Success
+    - **Appointment Cancelled** — Existing appointment was cancelled at customer's request.
+    - **Slot Unavailable** — No suitable slots were available for the customer's preference.
+    - **Wrong Department** — Customer needs a specialty not handled by this agent.
+    - **Emergency Routed** — Urgent medical query was transferred immediately to a human.
+  </Accordion>
+  <Accordion title="Lending / Loan Outreach Agent">
+    - **Qualified Lead** — Customer met all eligibility criteria and showed interest. ✓ Success
+    - **Application Started** — Customer began the loan application during the call. ✓ Success
+    - **Documents Pending** — Customer is interested but needs to submit KYC documents.
+    - **Not Eligible** — Customer did not meet basic eligibility criteria.
+    - **Not Interested** — Customer is not currently looking for a loan.
+    - **Callback Requested** — Customer asked to be reached at another time.
+  </Accordion>
+</AccordionGroup>
+
+**Agent Success Benchmark** — Mark the successful dispositions and UnleashX will calculate your Agent Success Benchmark as the percentage of calls that hit one of these outcomes. This is the single most important number on your dashboard.
+
+You can also benchmark the agent's success rate against your human team's success rate on the same use case.
+
+### Step 5: Configurations
+
+**Scheduling & Timing**
+- **Outbound Agents** — Stick to permitted calling hours typically 9 AM to 9 PM in the customer's local time. UnleashX will only place calls during the window you define.
+- **Inbound Agents** — Set this to 24 hours so customers can get help any time of day, including nights, weekends, and holidays.
+
+<Tip>
+**Recommended Default**: Outbound: 9:00 AM start, 12-hour window in customer's local timezone. Inbound: 24 hours, always-on coverage.
+</Tip>
+
+**Background Denoising** — Strips out background noise so the agent hears the caller clearly. Intensity is adjustable from 0.1 (light) to 1.0 (aggressive). Recommended default: **0.5**.
+
+**Voicemail Detection** — Stops the agent from talking to a voicemail or answering machine. Recommended: **ON for outbound, OFF for inbound**.
+
+**Voice Detection Confidence** — How confident the system must be that audio is actually human speech before the agent reacts. Recommended default: **0.9**.
+
+**Noise Ambience** — Optionally adds subtle background ambience so the agent sounds more like a real person in a real place.
+
+**Agent Interruption Handling** — Requires a minimum number of words before the agent yields the floor. Recommended default: **3 words**.
+
+**Inactivity Handling** — If the customer goes silent for too long, the agent gently checks in ('Are you still there?') instead of immediately hanging up.
+
+**Call Follow-Up** — When a customer asks to be called back later, the agent automatically schedules and triggers the follow-up call at the requested time.
+
+**Call Transfer (Warm Handoff)** — Configure the destination phone number for escalations to a human. Currently supported with Twilio and select SIP providers.
+
+**Do Not Call (DNC) Detection** — If a customer says 'don't call me again,' the agent picks that up immediately and adds them to your DNC list. Critical for compliance with telemarketing regulations.
+
+**Memory & Context Recall** — Let the agent remember details from previous conversations with the same caller so calls pick up where the previous conversation left off.
+
+### Step 6: Guardrails
+
+Guardrails are the trust and safety controls that keep your agent compliant, accurate, and respectful. We strongly recommend turning on every guardrail relevant to your use case before going live.
+
+**Restricted Topics** — Define topics the agent should never discuss. When these come up, the agent gracefully steers the conversation away or escalates to a human.
+
+**Profanity & Abuse Filters** — Blocks offensive language from the agent's responses and detects when callers are being abusive.
+
+**Hallucination Prevention** — The agent only answers factual questions using information from your knowledge base. If it doesn't know something, it says so honestly.
+
+<Note>
+**Why This Matters**
+
+An agent that confidently makes up answers will erode customer trust faster than any other failure mode. Hallucination prevention is the single most effective control for keeping your agent reliable in production. Always enable it.
+</Note>
+
+**PII Handling & Redaction** — Automatically detects and redacts personally identifiable information from transcripts and recordings.
+
+**Recording Consent** — Plays a quick consent disclosure at the start of every call. Required by law in many jurisdictions.
+
+**Escalation Rules** — Define what triggers an automatic handoff to a human:
+- Frustrated or angry customer (detected by sentiment analysis)
+- Repeated misunderstanding
+- Sensitive topic (complaint, legal issue, urgent medical situation)
+- Explicit customer request ('I want to speak to a person')
+- High-value or VIP customer (based on input variables)
+
+---
+
+## Testing & Publishing
+
+### Why Test Before You Publish
+
+A voice agent is a complex system. Even a small change to the prompt, the voice, or a tool configuration can have unexpected effects on the conversation. Always test before you publish, and test again any time you make a meaningful change.
+
+### Browser Test Calls
+
+Click **Start Browser Call** on the Agent Test tab and talk to the agent through your laptop microphone. You'll hear it speak, see the live transcript, and watch which tools it triggers in real time.
+
+### Live Phone Test Calls
+
+Click **Dial via Phone** and the agent will call your number from the assigned caller ID. This gives you a real-world feel for how the call sounds over an actual phone connection.
+
+### Pre-Publish Checklist
+
+- Run at least 5 browser test calls covering happy paths and edge cases
+- Run at least 2 live phone tests from different devices and network conditions
+- Verify that all structured outputs are being captured correctly
+- Verify that the agent assigns the right disposition for each scenario
+- Confirm that all guardrails are enabled (DNC, restricted topics, hallucination prevention, recording consent)
+- Test the call transfer to a human agent if you have escalation enabled
+- Validate the recording consent message matches your legal requirements
+
+---
+
+## Putting Your Agent to Work
+
+### Campaigns (Batch Calling)
+
+Upload a contact list as a campaign and the agent will work through the list automatically. Campaigns include smart pacing, retry logic, time-of-day rules, and disposition-based branching.
+
+### Workflows
+
+Trigger a call when something happens in your business. Workflows can be triggered from webhook events, CRM triggers, form submissions, scheduled events, and custom triggers via API.
+
+### Inbound
+
+Give the agent a phone number and let customers call in. Best for customer support, order status, account help, appointment booking, and after-hours coverage.
+
+### API
+
+Trigger calls programmatically from your own backend using the platform's REST API. Ideal for custom workflows, integrations with proprietary systems, and high-frequency event-driven calls.
+
+---
+
+## Monitoring & Analytics
+
+### The Agent Dashboard
+
+- **Total Calls** — How many calls the agent has handled in the selected time window.
+- **Successful Calls** — How many calls hit a success disposition. This is your main KPI.
+- **Unanswered Calls** — How many outbound calls didn't connect.
+- **Failed Calls** — How many calls failed due to technical issues or errors.
+- **Average Duration** — How long the average call lasts.
+- **Disposition Breakdown** — A horizontal bar chart showing the percentage of calls per disposition.
+- **Agent Success Benchmark** — The percentage of calls that hit a success disposition, plus secondary metrics like CSAT, Resolution Rate, and First Call Resolution.
+
+### Activity Logs
+
+The Activities tab shows every single call your agent has ever handled. Filter by status, duration, campaign, or date range, and search by phone number or call ID.
+
+### Conversation Analytics (Per-Call Deep Dive)
+
+- **Summary** — An AI-generated summary of the call in 3–5 sentences, plus Key Outcomes.
+- **Analysis** — Sentiment breakdown, call metrics (talk-to-listen ratio, response time, interruption count), and Actionable Insights tagged as Strengths or Improvement opportunities.
+- **Structured Outputs** — All variables the agent extracted from the call.
+- **Transcript** — The complete conversation with timestamps and per-turn sentiment indicators.
+
+<Tip>
+**Use Analytics to Improve Your Agent**
+
+The most successful teams review their bottom 10% of calls weekly. Look for patterns, use the Actionable Insights to guide prompt updates, and keep iterating.
+</Tip>
+
+---
+
+## Best Practices
+
+**Designing Effective Prompts**
+- Start with identity — Open with who the agent is, who it represents, and what its goal is.
+- Use examples, not just instructions — Show the agent what to say with example exchanges.
+- Handle the unhappy path — Spend at least as much time on edge cases as on the happy path.
+- Keep it focused — A focused agent that does one thing well outperforms a generalist agent every time.
+- Iterate based on real calls — Review real call transcripts and refine the prompt based on what you actually see.
+
+**Choosing the Right Voice**
+- Match the brand and use case — Calm and reassuring for healthcare; confident and energetic for outbound sales.
+- Test with real customers — The voice that sounds best in your office may not be the one your customers respond to best.
+
+**Building Trust with Guardrails**
+- Always enable hallucination prevention, DNC detection, and recording disclosure.
+- Configure call transfer to a human agent for any sensitive situation.
+
+**Iterating from Real Data**
+
+Set aside time each week to review the dashboard, listen to a sample of recent calls, read the Actionable Insights, update your prompt based on patterns, test changes with browser calls before publishing, and compare metrics before and after changes to validate improvements.
+
+---
+
+## Glossary
+
+| Term | Definition |
+|------|-----------|
+| **Agent** | An AI-powered conversational system configured to handle voice calls for a specific use case. |
+| **Agent Success Benchmark** | The percentage of calls that result in a disposition marked as successful. The primary KPI. |
+| **BYO Number** | Bring Your Own Number: connecting an existing phone number via SIP. |
+| **Campaign** | A batch outbound calling job that processes a list of contacts according to defined pacing, retry, and timing rules. |
+| **Disposition** | A label assigned to each call to indicate its outcome. |
+| **DNC** | Do Not Call — a customer's request to be excluded from future outbound calls. |
+| **Guardrails** | Built-in trust and safety controls that keep the agent compliant and trustworthy. |
+| **Hallucination** | When an LLM generates information that sounds plausible but is not true. |
+| **Input Variable** | A placeholder in the prompt (like `{customer_name}`) filled with a real value at call time. |
+| **Knowledge Base** | Documents and reference material attached to the agent for factual grounding. |
+| **LLM** | Large Language Model: the AI model that powers the agent's reasoning and response generation. |
+| **Multi-Prompt Flow** | A conversation structure using different focused prompts for different stages of the call. |
+| **PII** | Personally Identifiable Information: sensitive customer data that should be redacted from transcripts. |
+| **Prompt** | The instructions that define how the agent behaves: its identity, goals, tone, and conversation flow. |
+| **Single-Prompt** | A conversation structure where the entire agent behavior is defined in one comprehensive prompt. |
+| **SIP** | Session Initiation Protocol: the standard for connecting third-party phone numbers and PBX systems. |
+| **Structured Output** | A defined variable the agent extracts from each call. |
+| **Transcriber** | The speech-to-text engine that converts caller audio into text. |
+| **TTS** | Text-to-Speech: the engine that converts the agent's text responses into spoken audio. |
+| **Voicemail Detection** | Automatic detection of an answering machine on an outbound call. |
+| **Webhook** | An HTTP callback the agent can trigger during a call to integrate with your own systems. |
+| **Workflow** | An event-driven trigger that calls the agent in response to something happening in your business systems. |

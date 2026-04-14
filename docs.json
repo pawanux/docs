@@ -183,9 +183,13 @@
           {
             "group": "Frequently Asked Questions",
             "pages": [
+              "faqs/platform-guide",
               "faqs/general",
-              "faqs/api",
-              "faqs/billing"
+              "faqs/voice-agents",
+              "faqs/campaigns",
+              "faqs/agent-evaluation",
+              "faqs/billing",
+              "faqs/api"
             ]
           }
         ]
