@@ -186,6 +186,8 @@
               "faqs/platform-guide",
               "faqs/general",
               "faqs/voice-agents",
+              "faqs/twilio-integration",
+              "faqs/plivo-integration",
               "faqs/campaigns",
               "faqs/agent-evaluation",
               "faqs/billing",
