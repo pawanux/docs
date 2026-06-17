@@ -1,0 +1,156 @@
+---
+title: "Kwiqreply MCP"
+icon: "https://kwiqreply.io/favicon.ico"
+description: "Send WhatsApp text, link-preview, button, and list messages through Kwiqreply, and read/write UnleashX datasource records."
+tags: [mcp, kwiqreply, integration]
+---
+
+# Kwiqreply MCP
+
+> **In one line:** Connect Kwiqreply so your UnleashX agent can send rich WhatsApp messages (text, link previews, reply buttons, and interactive lists) and read or write your UnleashX datasource records in the same flow.
+
+| | |
+|---|---|
+| **Category** | Communication |
+| **Authentication** | API Key (Kwiqreply gateway token) |
+| **Setup time** | ~5 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Teams using Kwiqreply for WhatsApp who want their agent to send interactive messages and sync data with UnleashX objects |
+
+## 1. Overview
+
+Kwiqreply is a WhatsApp messaging gateway that lets businesses send rich, interactive WhatsApp messages — plain text, link previews, reply-button menus, and selectable lists — through a single API.
+
+Once connected to UnleashX, your agent can send all of those message types to your customers, and also read and write records in your **UnleashX datasource objects** — so a single request can both message a customer and log or update the related record.
+
+Connecting Kwiqreply to UnleashX is ideal for conversational workflows: present a customer with button or list choices over WhatsApp, then record their details or look up their status against your UnleashX data — all driven by natural language.
+
+## 2. What you'll need
+
+- A **Kwiqreply** account with WhatsApp messaging enabled.
+- Your **Kwiqreply API token** (the bearer token used to authenticate with the Kwiqreply gateway).
+- An UnleashX account with the datasource **objects** you want to read from or write to (each has an `object_id`).
+
+<Note>
+If you don't have access to your company's Kwiqreply token, ask your Kwiqreply account admin to generate or share it. You won't be able to send messages without it.
+</Note>
+
+## 3. Get your credentials
+
+Kwiqreply authenticates with a single **API token** (a bearer token). You'll get it from your Kwiqreply dashboard.
+
+<Steps>
+<Step title="Sign in to Kwiqreply">
+Go to [app.kwiqreply.io](https://app.kwiqreply.io) and sign in to your account.
+</Step>
+<Step title="Open API / Developer settings">
+In the dashboard, open the **API** / **Developers** / **Settings** area where your access token is shown.
+</Step>
+<Step title="Generate or copy your API token">
+Copy the **API token** (used as `Authorization: Bearer <token>` for the messaging endpoint).
+</Step>
+</Steps>
+
+<Warning>
+Treat your Kwiqreply token like a password. If it is shown only once on generation, **copy it now** and store it somewhere safe — you may not be able to view it again.
+</Warning>
+
+**Credentials UnleashX needs and why:**
+
+| Credential | Why UnleashX needs it |
+|---|---|
+| Kwiqreply API token (bearer) | Authenticates every WhatsApp send to the Kwiqreply gateway |
+| UnleashX object `object_id`(s) | Identifies which UnleashX datasource object to read or write (provided per request, not at connect time) |
+
+<Note>
+The datasource tools (`get_list_data`, `insert_datasource`, `get_datasource`, `update_datasource`) read and write your UnleashX objects. These calls use UnleashX's own platform token — you don't supply a separate key for them.
+</Note>
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Sign in at [tryunleashx.com](https://tryunleashx.com) and open the agent you want to connect.
+</Step>
+<Step title="Go to Data Connectors">
+Open **Data Connectors** inside the agent.
+</Step>
+<Step title="Find Kwiqreply and Configure">
+Locate **Kwiqreply** and click **Connect** / **Add** / **Configure**.
+</Step>
+<Step title="Paste your API token">
+Enter your **Kwiqreply API token** from Section 3 and save.
+</Step>
+<Step title="Confirm it's connected">
+The connector shows a **Connected** badge once your token is accepted. You're ready to send.
+</Step>
+</Steps>
+
+![01 connect kwiqreply](/images/mcp/kwiqreply/01-connect-kwiqreply.png)
+
+## 5. Available tools
+
+| Tool (technical name) | What it does | Changes data? |
+|---|---|---|
+| `get_list_data` | Fetch object data counts by conditions from UnleashX | No |
+| `insert_datasource` | Insert a new datasource record into UnleashX | ✏️ Yes |
+| `get_datasource` | Fetch datasource records from UnleashX by where-conditions | No |
+| `update_datasource` | Update an existing UnleashX datasource record | ✏️ Yes |
+| `send_text_message` | Send a plain WhatsApp text message via Kwiqreply | ✏️ Yes |
+| `send_text_message_with_url` | Send a WhatsApp text message with link preview enabled | ✏️ Yes |
+| `send_button_message` | Send a WhatsApp interactive reply-button message (max 3 buttons) | ✏️ Yes |
+| `send_list_message` | Send a WhatsApp interactive list message with selectable rows | ✏️ Yes |
+
+## 6. Example usage
+
+**"Ask 9876543210 over WhatsApp whether they want Plan A, Plan B, or Plan C, with tappable buttons."**
+Behind the scenes: `send_button_message` (three reply buttons).
+
+**"Save this lead — name Priya, phone 98765 43210 — to our Leads object, then text her a welcome message."**
+Behind the scenes: `insert_datasource` (write the record) → `send_text_message` (welcome message).
+
+## 7. Permissions & data access
+
+**UnleashX CAN:**
+- Send WhatsApp text, link-preview, reply-button, and interactive list messages via Kwiqreply.
+- Read counts and records from your UnleashX datasource objects.
+- Insert and update records in your UnleashX datasource objects.
+
+**UnleashX CANNOT:**
+- Delete records (no delete tool is exposed by this server).
+- Send message types beyond those listed (e.g. media/templates are not part of this connector).
+- Access Kwiqreply account settings or billing.
+
+**How to disconnect:** In UnleashX, open **Data Connectors → Kwiqreply → Disconnect**. To fully cut messaging access, also revoke or regenerate the API token in your Kwiqreply dashboard. Disconnecting takes effect immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| 401 — Missing Authorization | No Kwiqreply token was sent or it's blank | Reconnect and re-enter your Kwiqreply API token |
+| 401 / 403 from gateway | The token is invalid, expired, or revoked | Generate a fresh token in Kwiqreply and reconnect |
+| "At most 3 reply buttons" error | A button message included more than 3 buttons | Reduce to 3 or fewer buttons, or use `send_list_message` instead |
+| "At least one section/row is required" | A list message had no rows | Provide at least one section with at least one row |
+| Datasource call fails / UNLEASHX_URL error | The UnleashX datasource endpoint isn't reachable or the object_id is wrong | Verify the `object_id` exists; contact support if the platform endpoint is unavailable |
+
+For general connector issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Can this connector delete records?**
+No. It can read (`get_list_data`, `get_datasource`), insert (`insert_datasource`), and update (`update_datasource`) UnleashX records, but it exposes no delete operation.
+
+**What's the difference between text and list/button messages?**
+Text messages are plain (optionally with a link preview). Button messages show up to 3 tappable reply buttons; list messages show a menu of selectable rows grouped into sections — useful for letting customers pick an option.
+
+**How do I rotate my Kwiqreply token?**
+Generate a new token in your Kwiqreply dashboard, then reconnect in UnleashX with the new value. Revoke the old one in Kwiqreply.
+
+**Do the WhatsApp messages come from my own number?**
+Yes — they're sent through your Kwiqreply account, which is tied to your configured WhatsApp sender.
+
+## 10. References
+
+- Kwiqreply: https://app.kwiqreply.io
+- Kwiqreply website / docs: https://kwiqreply.io
+- UnleashX dashboard: https://tryunleashx.com

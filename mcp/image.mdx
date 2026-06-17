@@ -1,0 +1,135 @@
+---
+title: "Image Generation MCP"
+icon: "image"
+description: "Generate original images from a text prompt with Google Gemini / Imagen."
+tags: [mcp, image, integration]
+---
+
+# Image Generation MCP
+
+> **In one line:** Let your UnleashX agent create original images from a written description and return ready-to-use image links.
+
+| | |
+|---|---|
+| **Category** | AI & Media |
+| **Authentication** | Platform-managed |
+| **Setup time** | ~1 minute |
+| **Difficulty** | Easy |
+| **Best for** | Marketing visuals, social posts, mockups, and illustrations from a prompt |
+
+## 1. Overview
+
+Image Generation turns a text prompt into a brand-new picture using Google's Imagen models via the Gemini API. Describe what you want — a style, a subject, a mood — and it produces one or more images.
+
+Once connected, your agent can generate images from a prompt, request several at once, and choose an aspect ratio. Generated images are uploaded to UnleashX media storage and returned as links you can drop into a post, a doc, or a campaign.
+
+Connecting Image Generation to UnleashX means your agents can produce visuals on demand — no stock library, no design tool, no manual export.
+
+## 2. What you'll need
+
+<Note>
+Image Generation is **built into UnleashX**. There is no Google or Gemini account for you to create and no API key for you to manage.
+</Note>
+
+- An active UnleashX account.
+- The image-generation feature enabled on your workspace/plan.
+- A clear text prompt describing the image you want.
+- Permission to edit the agent (admin or editor role). Without it, ask a workspace admin to enable the feature.
+
+## 3. Get your credentials
+
+<Info>
+There are **no credentials to create**. Image Generation is platform-managed — UnleashX provisions and rotates the underlying Gemini key and handles media storage. You never see or handle an API key.
+</Info>
+
+If you are a workspace admin, optional platform-side configuration includes the image model (with automatic fallbacks) and the default aspect ratio. UnleashX ships sensible defaults (an Imagen 4 model, square 1:1); most teams never change them.
+
+| Platform-managed setting | Plain-English reason it exists |
+|---|---|
+| Image model (+ fallbacks) | Controls image quality and auto-retries if a model is unavailable. |
+| Default aspect ratio | Sets the default image shape (e.g. 1:1 square). |
+| Gemini API key & media storage | Provisioned and rotated by UnleashX so images generate and save automatically. |
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to [https://tryunleashx.com](https://tryunleashx.com) and open the agent that should generate images.
+</Step>
+<Step title="Open Data Connectors">
+In the agent, click **Data Connectors**.
+</Step>
+<Step title="Find Image Generation and add it">
+Locate **Image Generation** and click **Connect** / **Add**. It's platform-managed — no key to paste, it activates immediately.
+</Step>
+<Step title="Confirm it's connected">
+The Image Generation tool should now show a **Connected** badge.
+</Step>
+</Steps>
+
+## 5. Available tools
+
+![01 image tools](/images/mcp/image/01-tools.png)
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| `gemini_image_created` | Generate one or more images from a text prompt | ✏️ Yes |
+| `generate_image` | Generate images with Imagen via the Gemini API (namespaced `image_generate_image`) | ✏️ Yes |
+| `get_info_tool` | Report Image MCP configuration and readiness (namespaced `image_get_info_tool`) | No |
+
+<Note>
+The generate tools are marked ✏️ Yes because they create new image files and save them to UnleashX media storage. They do not modify or delete existing data. `gemini_image_created` and `generate_image` are equivalent entry points for the same generation flow.
+</Note>
+
+## 6. Example usage
+
+**"Create a square image of a friendly robot waving, flat-illustration style."**
+→ Runs `generate_image` (or `gemini_image_created`) with that prompt and a 1:1 aspect ratio, returning an image URL.
+
+**"Give me three banner options for a summer sale, wide format."**
+→ Runs the generation tool with `number_of_images` = 3 and a wide aspect ratio.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- Send your prompt to the image model and generate images.
+- Save the generated images to UnleashX media storage and return links.
+
+**UnleashX cannot:**
+- Generate images from content you don't provide.
+- Edit or delete images created elsewhere.
+- Access your device or cloud storage on its own.
+
+**To disconnect:** Open the agent → **Data Connectors** → **Image Generation** → **Disconnect**. Access is revoked immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| "prompt is required" | No text prompt was supplied | Provide a descriptive prompt |
+| "number_of_images must be greater than 0" | Asked for zero images | Request at least one image |
+| "did not return any generated images" | The model returned nothing (e.g. safety filtering) | Adjust the prompt and retry |
+| 401 / credential error | The platform-managed Gemini key is unavailable | Platform-side — contact **cs@unleashx.ai** |
+| 403 / feature not enabled | Image generation isn't enabled on your plan | Ask a workspace admin or contact support |
+
+For general connector issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Are my images stored?**
+Yes — generated images are uploaded to UnleashX media storage so you can use the returned link. Your prompt is used to generate them and isn't retained as part of the integration.
+
+**Do I need a Google or Gemini account?**
+No. Image Generation is platform-managed — UnleashX provides and rotates the key.
+
+**Can I generate more than one image at a time?**
+Yes. Set `number_of_images` to request a batch.
+
+**What aspect ratios are supported?**
+Common shapes including square (1:1), portrait, and landscape. The default is square.
+
+## 10. References
+
+- Google Imagen / Gemini image generation docs: https://ai.google.dev/gemini-api/docs/image-generation
+- UnleashX dashboard: https://tryunleashx.com
+- UnleashX integrations help: [/mcp/integrations](/mcp/integrations)

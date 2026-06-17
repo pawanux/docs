@@ -1,0 +1,164 @@
+---
+title: "Cal.com MCP"
+icon: "https://cal.com/favicon.ico"
+description: "Let your UnleashX agent book, reschedule, and cancel Cal.com meetings and check availability."
+tags: [mcp, calcom, integration]
+---
+
+# Cal.com MCP
+
+> **In one line:** Connect Cal.com so your UnleashX agent can check availability, book meetings, reschedule or cancel them, and manage webhooks automatically.
+
+| | |
+|---|---|
+| **Category** | Productivity |
+| **Authentication** | API Key |
+| **Setup time** | ~5 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Anyone who wants their agent to schedule and manage meetings on their behalf |
+
+## 1. Overview
+
+Cal.com is an open-source scheduling platform. You publish event types (like "30-minute intro call"), share a booking link, and invitees pick a time that fits your availability — no back-and-forth emails.
+
+Once connected, your UnleashX agent can look up your event types, check open slots, create bookings, reschedule or cancel them, and set up webhooks so other systems hear about new bookings. That lets your agent handle scheduling end to end during a call or chat.
+
+Connecting Cal.com to UnleashX is useful for sales, support, and customer teams who want to turn "let's find a time" into a confirmed meeting instantly, without leaving the conversation.
+
+## 2. What you'll need
+
+- A Cal.com account (cloud at cal.com or your self-hosted instance).
+- At least one **event type** set up so there's something to book.
+- A Cal.com **API key**.
+
+<Note>
+Any Cal.com user can create an API key for their own account. The key acts as you, so the agent can only manage the bookings and event types your account owns.
+</Note>
+
+## 3. Get your credentials
+
+Cal.com uses an **API Key**.
+
+<Steps>
+<Step title="Open Cal.com settings">
+Sign in at [https://app.cal.com](https://app.cal.com) and open **Settings**.
+</Step>
+<Step title="Go to Developer → API keys">
+In the sidebar, choose **Developer**, then **API keys**. (Direct link: [https://app.cal.com/settings/developer/api-keys](https://app.cal.com/settings/developer/api-keys))
+</Step>
+<Step title="Create a key">
+Click **Add** / **Create new API key**, name it `UnleashX`, optionally set an expiration, and confirm.
+</Step>
+<Step title="Copy the key">
+Copy the generated API key.
+
+<Warning>
+The API key is shown only once. Copy it now — if you lose it, delete it and create a new one.
+</Warning>
+</Step>
+</Steps>
+
+**What the key can access**
+
+| Scope / Access | Why UnleashX needs it |
+|---|---|
+| Read event types | To know what meetings can be booked and their durations |
+| Read availability | To find open time slots before booking |
+| Create & manage bookings | To book, reschedule, and cancel meetings |
+| Manage webhooks | To notify other systems when bookings change |
+
+<Note>
+A Cal.com API key reflects your account's access. UnleashX only calls the endpoints needed for the tools listed in Section 5.
+</Note>
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to [https://tryunleashx.com](https://tryunleashx.com) and open the agent you want to connect.
+</Step>
+<Step title="Open Data Connectors">
+In the agent, go to **Data Connectors**.
+</Step>
+<Step title="Find Cal.com">
+Locate **Cal.com** in the list and click **Connect** / **Add** / **Configure**.
+</Step>
+<Step title="Paste your API key">
+Paste your Cal.com **API key**. UnleashX sends it as a Bearer token (`access-token` / `token` header).
+</Step>
+<Step title="Confirm success">
+Save. When the status shows a **Connected** badge, your agent can start scheduling with Cal.com.
+</Step>
+</Steps>
+
+![01 calcom data connector](/images/mcp/calcom/01-data-connector.png)
+
+## 5. Available tools
+
+| Tool (technical) | What it does | Changes data? |
+|---|---|---|
+| `calcom_get_booking` | Gets details of a single booking | No |
+| `calcom_list_bookings` | Lists bookings | No |
+| `calcom_list_bookings_with_changes` | Lists bookings including recent changes | No |
+| `calcom_create_booking` | Creates a new booking | ✏️ Yes |
+| `calcom_reschedule_booking` | Reschedules an existing booking | ✏️ Yes |
+| `calcom_delete_booking` | Cancels/deletes a booking | ⚠️ Yes |
+| `calcom_list_event_types` | Lists your event types | No |
+| `calcom_get_availability` | Checks available time slots | No |
+| `calcom_create_webhook` | Creates a webhook subscription | ✏️ Yes |
+| `calcom_list_webhooks` | Lists your webhooks | No |
+| `calcom_delete_webhook` | Deletes a webhook | ⚠️ Yes |
+
+## 6. Example usage
+
+**"Book a 30-minute intro call with this lead tomorrow at 2pm."**
+Behind the scenes: `calcom_list_event_types` → `calcom_get_availability` → `calcom_create_booking`.
+
+**"Move my 3pm meeting with Sam to Thursday morning."**
+Behind the scenes: `calcom_list_bookings` → `calcom_get_availability` → `calcom_reschedule_booking`.
+
+## 7. Permissions & data access
+
+**UnleashX CAN:**
+- Read your event types, availability, and bookings.
+- Create, reschedule, and cancel bookings.
+- Create, list, and delete webhooks.
+
+**UnleashX CANNOT:**
+- Access another user's Cal.com account or bookings.
+- Change Cal.com account, billing, or team settings.
+- Act beyond what your API key's account can do.
+
+**To disconnect:** In UnleashX, open your agent → **Data Connectors** → **Cal.com** → **Disconnect**. To fully revoke access, delete the key in Cal.com **Settings → Developer → API keys**. Either action stops access immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| `401 Unauthorized` | The API key is wrong, expired, or deleted | Create a new key in **Settings → Developer → API keys** and reconnect |
+| `403 Forbidden` | The key's account lacks permission for that action | Verify the account owns the event type/booking, then retry |
+| `404 Not Found` | The booking or event type ID doesn't exist | Re-list to get a current ID; it may have been cancelled |
+| No slots returned | The event type has no open availability | Check the event type's availability schedule in Cal.com |
+| Booking fails | Required fields (name/email/time) missing or slot taken | Re-check availability and provide all attendee details |
+
+For general connection issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Is my data stored by UnleashX?**
+UnleashX calls Cal.com live with your key when a tool runs. It doesn't keep a separate copy of your calendar.
+
+**Can multiple team members connect?**
+Yes. Each person creates their own API key and connects it to their agent.
+
+**How do I rotate my key?**
+Create a new key in Cal.com, update it in UnleashX, then delete the old one. Access switches over immediately.
+
+**Does this work with self-hosted Cal.com?**
+Yes, as long as your instance exposes the Cal.com API and you provide a valid API key.
+
+## 10. References
+
+- Cal.com API documentation: [https://cal.com/docs/api-reference](https://cal.com/docs/api-reference)
+- API keys page: [https://app.cal.com/settings/developer/api-keys](https://app.cal.com/settings/developer/api-keys)
+- Cal.com developer docs: [https://cal.com/docs](https://cal.com/docs)

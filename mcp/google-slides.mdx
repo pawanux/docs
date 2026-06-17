@@ -1,0 +1,179 @@
+---
+title: "Google Slides MCP"
+icon: "https://www.gstatic.com/images/branding/product/2x/slides_2020q4_48dp.png"
+description: "Let your UnleashX agent create presentations, add slides, and update slide content automatically."
+tags: [mcp, google-slides, integration]
+---
+
+# Google Slides MCP
+
+> **In one line:** Connect Google Slides so your UnleashX agent can build presentations, add and edit slides, and update text from natural language.
+
+| | |
+|---|---|
+| **Category** | Productivity |
+| **Authentication** | OAuth (Google sign-in) |
+| **Setup time** | ~2 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Generating decks from AI output and automating recurring report and summary slides |
+
+## 1. Overview
+
+Google Slides is Google's presentation service for creating and editing slide decks stored in Drive.
+
+Once connected, your UnleashX agent can create presentations, read presentations and individual pages, list layouts and templates, add and delete slides, insert text and text boxes, create populated title-and-body slides, replace text across a deck, and fetch slide thumbnails.
+
+Connecting Google Slides to UnleashX makes deck-building conversational: ask "create a 3-slide summary of this report" or "add a closing slide with these bullet points," and the agent assembles the slides for you.
+
+## 2. What you'll need
+
+<Steps>
+<Step title="A Google account with Slides">
+Any personal Google account or a Google Workspace account with Slides enabled.
+</Step>
+<Step title="Permission to grant access">
+You must be able to complete the Google sign-in and approve the requested permissions.
+</Step>
+<Step title="An UnleashX agent">
+An agent in your UnleashX workspace where you'll add the Slides connector.
+</Step>
+</Steps>
+
+<Note>
+No admin access? On a managed Google Workspace account, your admin may need to allow UnleashX before authorization succeeds.
+</Note>
+
+## 3. Get your credentials
+
+Google Slides uses **Google OAuth 2.0**. You do **not** create or paste an API key. UnleashX redirects you to Google, you sign in once, and Google issues an access token to UnleashX automatically.
+
+<Steps>
+<Step title="Start the connection in UnleashX">
+In your agent's **Data Connectors**, find **Google Slides** and click **Connect** (see Section 4).
+</Step>
+<Step title="Sign in with Google">
+Choose the Google account whose presentations you want to connect.
+</Step>
+<Step title="Review and approve the requested scopes">
+Click **Allow** to grant access and return to UnleashX.
+</Step>
+</Steps>
+
+<Info>
+There is no key to copy. Access is granted by your Google sign-in and can be revoked anytime at your [Google Account permissions page](https://myaccount.google.com/permissions).
+</Info>
+
+**Scopes UnleashX requests for Google Slides:**
+
+| Scope | Why UnleashX needs it |
+|---|---|
+| `https://www.googleapis.com/auth/presentations` | Create and edit presentations, slides, and text. |
+| `https://www.googleapis.com/auth/drive` | List and create presentation files in Drive. |
+| `https://www.googleapis.com/auth/drive.file` | Access the specific presentation files you open or create. |
+| `https://www.googleapis.com/auth/drive.readonly` | Find and list your presentations and templates. |
+| `https://www.googleapis.com/auth/userinfo.email` | Identify which account is connected. |
+| `https://www.googleapis.com/auth/userinfo.profile` | Read your basic profile (name, picture). |
+| `openid` | Sign-in / identity verification. |
+
+
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Sign in at [https://tryunleashx.com](https://tryunleashx.com) and open your agent.
+</Step>
+<Step title="Go to Data Connectors">
+In the agent, open **Data Connectors**.
+</Step>
+<Step title="Find Google Slides and connect">
+Locate **Google Slides** and click **Connect** / **Add** / **Configure**.
+</Step>
+<Step title="Authorize with Google">
+Click **Authorize**, sign in with Google, and approve the requested permissions.
+</Step>
+<Step title="Confirm success">
+You'll return to UnleashX and the connector status will show a **Connected** badge.
+</Step>
+</Steps>
+
+![01 slides connector](/images/mcp/google-slides/01-connector.png)
+
+## 5. Available tools
+
+| Tool (technical) | What it does | Changes data? |
+|---|---|---|
+| `slides_create_presentation` | Create a new presentation. | ✏️ Yes |
+| `slides_get_presentation` | Get a presentation's full structure. | No |
+| `slides_get_page` | Get a single page (slide) by object ID. | No |
+| `slides_get_thumbnail` | Get a thumbnail image of a slide. | No |
+| `slides_replace_text` | Replace matching text across the deck. | ✏️ Yes |
+| `slides_add_slide` | Add a new slide at an index with a layout. | ✏️ Yes |
+| `slides_delete_slide` | Delete a slide. | ⚠️ Yes |
+| `slides_get_slides` | List the slides in a presentation. | No |
+| `slides_list_presentations` | List available presentations. | No |
+| `slides_get_presentation_templates` | Get available presentation templates. | No |
+| `slides_get_slide_templates` | Get available slide templates. | No |
+| `slides_list_layouts` | List available slide layouts. | No |
+| `slides_get_layout_content` | Get the content of a specific layout. | No |
+| `slides_list_presentation_template` | List presentation templates. | No |
+| `slides_list_slides_template` | List slide templates. | No |
+| `slides_insert_text` | Insert text into an existing shape/placeholder. | ✏️ Yes |
+| `slides_create_textbox` | Create a text box on a slide and fill it. | ✏️ Yes |
+| `slides_create_slide_with_content` | Create a populated title+body slide in one call. | ✏️ Yes |
+
+## 6. Example usage
+
+> **"Create a new presentation called 'Q3 Review' with a title slide and a slide listing our three key wins."**
+>
+> Runs `slides_create_presentation`, then `slides_create_slide_with_content`.
+
+> **"In the Q3 Review deck, replace 'DRAFT' with 'FINAL' everywhere."**
+>
+> Runs `slides_replace_text`.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- Create presentations and read their structure and thumbnails.
+- Add and delete slides.
+- Insert text and text boxes, create populated slides, and replace text.
+- List layouts and templates.
+
+**UnleashX cannot:**
+- Access Gmail, Calendar, or other Google services unless connected separately.
+- Change your Google account settings or password.
+- Edit presentations you don't have access to.
+
+**To disconnect:** In UnleashX, open **Data Connectors → Google Slides → Disconnect**, or revoke at [https://myaccount.google.com/permissions](https://myaccount.google.com/permissions). Revoking takes effect immediately.
+
+The connection authenticates each request with your Google OAuth access token (resolved from an `access-token` header, a `google_slides_access_token` header, or an `Authorization: Bearer` header, falling back to your UnleashX session), refreshed automatically when it expires.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| `401 Unauthorized` | The access token is missing or expired. | Reconnect Google Slides in **Data Connectors**. |
+| `403 Forbidden` | Missing scope, or you lack edit rights on the presentation. | Re-authorize all scopes; confirm you can edit the file. |
+| `404 Not Found` | The presentation or slide ID is wrong or not shared with you. | Verify the `presentation_id`/object ID and your access. |
+| Text inserted in the wrong place | The target object ID was incorrect. | Use `slides_get_presentation`/`slides_get_page` to get the right `object_id`. |
+
+For general connector issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Does UnleashX store my presentations?**
+No. It reads and writes through Google's API in real time to fulfill your requests.
+
+**Can multiple team members connect Slides?**
+Yes. Each person authorizes their own Google account.
+
+**Can it apply custom themes?**
+The tools work with layouts and templates exposed by Slides; full custom theming beyond those isn't exposed here.
+
+## 10. References
+
+- [Google Slides API documentation](https://developers.google.com/slides/api)
+- [Google Slides API OAuth scopes](https://developers.google.com/slides/api/concepts/auth)
+- [Google Cloud Console](https://console.cloud.google.com/)
+- [Manage third-party access to your Google Account](https://myaccount.google.com/permissions)

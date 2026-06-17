@@ -1,0 +1,185 @@
+---
+title: "Gmail MCP"
+icon: "https://www.google.com/gmail/about/static/images/logo-gmail.png"
+description: "Let your UnleashX agent read, send, organize, and manage Gmail email on your behalf."
+tags: [mcp, gmail, integration]
+---
+
+# Gmail MCP
+
+> **In one line:** Connect your Gmail account so your UnleashX agent can send, search, label, and triage email for you.
+
+| | |
+|---|---|
+| **Category** | Communication |
+| **Authentication** | OAuth (Google sign-in) |
+| **Setup time** | ~2 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Teams who want an AI assistant to draft, send, and organize email without leaving UnleashX |
+
+## 1. Overview
+
+Gmail is Google's email service, part of Google Workspace. It holds your inbox, sent mail, drafts, labels, and attachments.
+
+Once connected, your UnleashX agent can send emails (including CC/BCC and attachments), search and read messages, create and send drafts, apply or remove labels, and triage your inbox — marking messages read/unread, important, archived, or trashed.
+
+Connecting Gmail to UnleashX turns email into something your agent can act on directly: it can answer "did the invoice from Acme arrive?", send a follow-up, or label and archive a thread — all from a natural-language request, so you spend less time clicking around your inbox.
+
+## 2. What you'll need
+
+<Steps>
+<Step title="A Google account with Gmail">
+Any personal Gmail account or a Google Workspace account with Gmail enabled.
+</Step>
+<Step title="Permission to grant access">
+You must be able to complete the Google sign-in and approve the requested permissions. On Workspace accounts, your admin may restrict third-party app access.
+</Step>
+<Step title="An UnleashX agent">
+An agent in your UnleashX workspace where you'll add the Gmail connector.
+</Step>
+</Steps>
+
+<Note>
+No admin access? On personal Gmail you can connect yourself. On a managed Google Workspace account, your admin may need to allow UnleashX in the Google Admin console before the authorize step succeeds.
+</Note>
+
+## 3. Get your credentials
+
+Gmail uses **Google OAuth 2.0**. You do **not** create or paste an API key. Instead, UnleashX redirects you to Google, you sign in once, and Google issues an access token to UnleashX automatically.
+
+<Steps>
+<Step title="Start the connection in UnleashX">
+In your agent's **Data Connectors**, find **Gmail** and click **Connect** (see Section 4). This launches Google's secure sign-in page.
+</Step>
+<Step title="Sign in with Google">
+Choose the Google account whose Gmail you want to connect.
+</Step>
+<Step title="Review and approve the requested scopes">
+Google shows exactly what UnleashX is asking for. Click **Allow** to grant access. Google then sends you back to UnleashX and the connection completes.
+</Step>
+</Steps>
+
+<Info>
+There is no key to copy. Access is granted by your Google sign-in, and you can revoke it at any time from your [Google Account permissions page](https://myaccount.google.com/permissions).
+</Info>
+
+**Scopes UnleashX requests for Gmail:**
+
+| Scope | Why UnleashX needs it |
+|---|---|
+| `https://www.googleapis.com/auth/gmail.readonly` | Read messages, search emails, list labels and attachments. |
+| `https://www.googleapis.com/auth/gmail.send` | Send emails and send drafts on your behalf. |
+| `https://www.googleapis.com/auth/gmail.compose` | Create drafts in your account. |
+| `https://www.googleapis.com/auth/gmail.modify` | Apply/remove labels, mark read/unread/important, archive, and trash/untrash. |
+| `https://www.googleapis.com/auth/userinfo.email` | Identify which account is connected. |
+| `https://www.googleapis.com/auth/userinfo.profile` | Read your basic profile (name, picture). |
+| `openid` | Sign-in / identity verification. |
+
+
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Sign in at [https://tryunleashx.com](https://tryunleashx.com) and open the agent you want to give email access to.
+</Step>
+<Step title="Go to Data Connectors">
+In the agent, open **Data Connectors**.
+</Step>
+<Step title="Find Gmail and connect">
+Locate **Gmail** and click **Connect** / **Add** / **Configure**.
+</Step>
+<Step title="Authorize with Google">
+Click **Authorize**, sign in with Google, and approve the requested permissions.
+</Step>
+<Step title="Confirm success">
+You'll return to UnleashX and the connector status will show a **Connected** badge.
+</Step>
+</Steps>
+
+![01 gmail connector](/images/mcp/gmail/01-connector.png)
+
+## 5. Available tools
+
+| Tool (technical) | What it does | Changes data? |
+|---|---|---|
+| `gmail_send_email` | Send an email, with optional CC/BCC. | ✏️ Yes |
+| `gmail_fetch_recent_emails` | Fetch recent emails from a folder (e.g. INBOX). | No |
+| `gmail_download_attachment` | Download an attachment from a URL. | No |
+| `gmail_list_attachments` | List attachments on a message (name, size, id). | No |
+| `gmail_send_email_with_url_attachment` | Send an email with an attachment pulled from a URL. | ✏️ Yes |
+| `gmail_get_prestaged_attachment` | Get the path of a pre-staged attachment. | No |
+| `gmail_send_email_with_prestaged_attachment` | Send an email with a pre-staged attachment. | ✏️ Yes |
+| `gmail_get_profile` | Get the connected Gmail account's profile info. | No |
+| `gmail_search_emails` | Search emails using Gmail search syntax. | No |
+| `gmail_get_email` | Get a specific email by message ID. | No |
+| `gmail_create_draft` | Create a draft email. | ✏️ Yes |
+| `gmail_send_draft` | Send an existing draft. | ✏️ Yes |
+| `gmail_add_label` | Add a label to a message. | ✏️ Yes |
+| `gmail_remove_label` | Remove a label from a message. | ✏️ Yes |
+| `gmail_fetch_labels` | List all available Gmail labels. | No |
+| `gmail_create_label` | Create a new Gmail label. | ✏️ Yes |
+| `gmail_trash_email` | Move an email to Trash. | ⚠️ Yes |
+| `gmail_untrash_email` | Restore an email from Trash. | ✏️ Yes |
+| `gmail_mark_as_read` | Mark a message as read. | ✏️ Yes |
+| `gmail_mark_as_unread` | Mark a message as unread. | ✏️ Yes |
+| `gmail_mark_as_important` | Mark a message as important. | ✏️ Yes |
+| `gmail_mark_as_unimportant` | Remove the important marker. | ✏️ Yes |
+| `gmail_archive_email` | Archive a message (remove from inbox). | ✏️ Yes |
+| `gmail_unarchive_email` | Unarchive a message (return to inbox). | ✏️ Yes |
+
+## 6. Example usage
+
+> **"Send an email to maria@acme.com with the subject 'Q3 report' and attach the file at this link."**
+>
+> Runs `gmail_send_email_with_url_attachment` (or `gmail_send_email` if there's no attachment).
+
+> **"Find the unread emails from billing and mark them as read."**
+>
+> Runs `gmail_search_emails` to find them, then `gmail_mark_as_read` on each.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- Send emails and send your drafts.
+- Read messages and search your mailbox.
+- Create drafts and labels.
+- Apply/remove labels and mark messages read, unread, important, archived, or trashed.
+
+**UnleashX cannot:**
+- Permanently delete email (trashing is reversible via untrash).
+- Change your Gmail account password or security settings.
+- Access other Google services unless you connect those integrations separately.
+
+**To disconnect:** In UnleashX, open **Data Connectors → Gmail → Disconnect**. You can also revoke access at [https://myaccount.google.com/permissions](https://myaccount.google.com/permissions). Revoking takes effect immediately.
+
+The connection authenticates each request with your Google OAuth access token (resolved from an `access-token` header, a `gmail_access_token` header, or an `Authorization: Bearer` header, falling back to your UnleashX session), and refreshes it automatically when it expires.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| `401 Unauthorized` | The access token is missing or expired. | Reconnect Gmail in **Data Connectors** to refresh the Google sign-in. |
+| `403 Forbidden` | The granted scopes don't cover the action, or admin policy blocks the app. | Re-authorize and approve all requested scopes; on Workspace, ask your admin to allow UnleashX. |
+| `Invalid grant` after a while | Google revoked or expired the refresh token. | Disconnect and reconnect to start a fresh OAuth session. |
+| Attachment fails to send | The source URL is unreachable or too large. | Verify the URL is public/valid and within Gmail's 25 MB attachment limit. |
+
+For general connector issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Is my email stored by UnleashX?**
+UnleashX reads and acts on messages to fulfill your requests. It does not create a permanent copy of your mailbox; it works through Google's API in real time.
+
+**Can multiple team members connect Gmail?**
+Yes. Each person authorizes their own Google account, and the agent acts as that connected user.
+
+**How do I rotate or revoke access?**
+There's no key to rotate. To revoke, disconnect in UnleashX or remove UnleashX at [https://myaccount.google.com/permissions](https://myaccount.google.com/permissions), then reconnect to grant fresh access.
+
+## 10. References
+
+- [Gmail API documentation](https://developers.google.com/gmail/api)
+- [Gmail API OAuth scopes](https://developers.google.com/gmail/api/auth/scopes)
+- [Google Cloud Console](https://console.cloud.google.com/)
+- [Manage third-party access to your Google Account](https://myaccount.google.com/permissions)

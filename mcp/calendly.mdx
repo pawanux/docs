@@ -1,0 +1,162 @@
+---
+title: "Calendly MCP"
+icon: "https://calendly.com/favicon.ico"
+description: "Let your UnleashX agent check Calendly availability, list events, and create scheduling links."
+tags: [mcp, calendly, integration]
+---
+
+# Calendly MCP
+
+> **In one line:** Connect Calendly so your UnleashX agent can see your upcoming events, check when you're free or busy, and generate booking links automatically.
+
+| | |
+|---|---|
+| **Category** | Productivity |
+| **Authentication** | OAuth / Personal Access Token |
+| **Setup time** | ~5 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Anyone who wants their agent to surface their schedule and hand out booking links during conversations |
+
+## 1. Overview
+
+Calendly is a scheduling tool that lets people book time with you based on your real availability. You set up event types (like "15-minute call"), and invitees pick a slot from a shareable link.
+
+Once connected, your UnleashX agent can list your upcoming and past events, look up event details, check your availability and busy times, browse your event types, and create scheduling links on the fly. That means your agent can answer "when are you free?" and send a booking link without you lifting a finger.
+
+Connecting Calendly to UnleashX is useful for sales, support, and customer-facing teams who want to keep scheduling moving inside a live call or chat.
+
+## 2. What you'll need
+
+- A Calendly account.
+- At least one **event type** configured so there's something to share or book.
+- A Calendly **Personal Access Token** (or an OAuth connection).
+
+<Note>
+Personal Access Tokens are available on Calendly's paid plans (Standard and above). If you're on the free plan or don't see the API section, ask your account owner to enable it or upgrade.
+</Note>
+
+## 3. Get your credentials
+
+Calendly uses a **Personal Access Token** (or OAuth).
+
+<Steps>
+<Step title="Open Calendly Integrations">
+Sign in at [https://calendly.com](https://calendly.com), then go to **Account → Integrations & apps**. (Direct link: [https://calendly.com/integrations/api_webhooks](https://calendly.com/integrations/api_webhooks))
+</Step>
+<Step title="Go to API & webhooks">
+Open the **API & webhooks** section.
+</Step>
+<Step title="Generate a Personal Access Token">
+Click **Generate new token**, name it `UnleashX`, and create it.
+</Step>
+<Step title="Copy the token">
+Copy the generated token.
+
+<Warning>
+The Personal Access Token is shown only once. Copy it now — if you lose it, revoke it and generate a new one.
+</Warning>
+</Step>
+</Steps>
+
+**What the token can access**
+
+| Scope / Access | Why UnleashX needs it |
+|---|---|
+| Read scheduled events | To list and show your upcoming and past meetings |
+| Read event types | To know what can be booked and via which link |
+| Read availability / busy times | To answer "when are you free?" accurately |
+| Create scheduling links | To generate single-use booking links for invitees |
+
+<Note>
+A Personal Access Token reflects your Calendly account's access. UnleashX only calls the endpoints needed for the tools listed in Section 5.
+</Note>
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to [https://tryunleashx.com](https://tryunleashx.com) and open the agent you want to connect.
+</Step>
+<Step title="Open Data Connectors">
+In the agent, go to **Data Connectors**.
+</Step>
+<Step title="Find Calendly">
+Locate **Calendly** in the list and click **Connect** / **Add** / **Configure**.
+</Step>
+<Step title="Authenticate">
+Either complete the OAuth flow or paste your **Personal Access Token**. UnleashX sends it as the `calendly_access_token` header (Bearer).
+</Step>
+<Step title="Confirm success">
+Save. When the status shows a **Connected** badge, your agent can start working with Calendly.
+</Step>
+</Steps>
+
+![01 calendly data connector](/images/mcp/calendly/01-data-connector.png)
+
+## 5. Available tools
+
+| Tool (technical) | What it does | Changes data? |
+|---|---|---|
+| `calendly_list_upcoming_events` | Lists your upcoming scheduled events | No |
+| `calendly_get_event_details` | Gets details of a single event | No |
+| `calendly_search_events` | Searches your scheduled events | No |
+| `calendly_check_availability` | Checks your available time slots | No |
+| `calendly_get_busy_times` | Gets the times you're already booked | No |
+| `calendly_list_event_types` | Lists your event types | No |
+| `calendly_get_event_type_details` | Gets details of a single event type | No |
+| `calendly_create_scheduling_link` | Creates a single-use scheduling link | ✏️ Yes |
+| `calendly_create_booking` | Creates a booking (schedules an event) | ✏️ Yes |
+
+## 6. Example usage
+
+**"What meetings do I have coming up this week?"**
+Behind the scenes: `calendly_list_upcoming_events` (and `calendly_get_event_details` for specifics).
+
+**"Send this prospect a link to book a 30-minute demo."**
+Behind the scenes: `calendly_list_event_types` → `calendly_create_scheduling_link`.
+
+## 7. Permissions & data access
+
+**UnleashX CAN:**
+- Read your scheduled events and event details.
+- Read your event types and availability/busy times.
+- Create scheduling links and bookings.
+
+**UnleashX CANNOT:**
+- Access another user's Calendly account.
+- Change Calendly account, billing, or team settings.
+- Act beyond what your token's account can do.
+
+**To disconnect:** In UnleashX, open your agent → **Data Connectors** → **Calendly** → **Disconnect**. To fully revoke access, delete the token in Calendly's **API & webhooks** page (or revoke the OAuth app). Either action stops access immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| `401 Unauthorized` | The token is wrong, expired, or revoked | Generate a new Personal Access Token and reconnect in UnleashX |
+| `403 Forbidden` | Your plan or account lacks API access | Confirm you're on a plan that includes the API, then retry |
+| `404 Not Found` | The event or event type URI doesn't exist | Re-list to get a current URI; it may have been removed |
+| No availability shown | The event type has no open slots in range | Check the event type's availability schedule in Calendly |
+| Token feature missing | API is not enabled on a free plan | Upgrade or ask the account owner to enable API access |
+
+For general connection issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Is my data stored by UnleashX?**
+UnleashX calls Calendly live with your token when a tool runs. It doesn't keep a separate copy of your calendar.
+
+**Can multiple team members connect?**
+Yes. Each person creates their own token (or completes OAuth) and connects it to their agent.
+
+**How do I rotate my key?**
+Generate a new Personal Access Token in Calendly's API & webhooks page, update it in UnleashX, then revoke the old one.
+
+**Can the agent cancel meetings?**
+The exposed tools focus on reading your schedule and creating links/bookings; there is no cancel tool in this integration.
+
+## 10. References
+
+- Calendly API documentation: [https://developer.calendly.com/](https://developer.calendly.com/)
+- API & webhooks page: [https://calendly.com/integrations/api_webhooks](https://calendly.com/integrations/api_webhooks)
+- Personal Access Token guide: [https://developer.calendly.com/api-docs/ZG9jOjI3ODM2MTAz-getting-started](https://developer.calendly.com/api-docs/ZG9jOjI3ODM2MTAz-getting-started)

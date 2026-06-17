@@ -1,0 +1,165 @@
+---
+title: "Brevo MCP"
+icon: "https://www.brevo.com/favicon.ico"
+description: "Let UnleashX manage your Brevo contacts, companies and deals, and send transactional email and SMS."
+tags: [mcp, brevo, integration]
+---
+
+# Brevo MCP
+
+> **In one line:** Connect Brevo so UnleashX can manage contacts, companies and deals, track events, and send transactional emails and SMS straight from a conversation or automation.
+
+| | |
+|---|---|
+| **Category** | Marketing |
+| **Authentication** | API Key |
+| **Setup time** | ~3 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Teams using Brevo for email/SMS marketing and a lightweight CRM who want their agent to update records and send messages automatically. |
+
+## 1. Overview
+
+Brevo (formerly Sendinblue) is an all-in-one marketing and CRM platform for managing contacts, running email and SMS campaigns, and tracking a simple sales pipeline of companies and deals.
+
+Once connected to UnleashX, your agent can add or update a contact after a call, attach them to a company, open or progress a deal, fire a tracking event, or send a transactional email or SMS — all without anyone touching the Brevo dashboard.
+
+Connecting Brevo to UnleashX turns conversations into clean CRM data and instant follow-up messages, so leads get captured and contacted while they're still warm.
+
+## 2. What you'll need
+
+- A Brevo account (the free plan includes API access).
+- A **verified sender** if you plan to send transactional email.
+- Permission to create an **API key** (account owner or a user with API access).
+
+<Note>
+No admin access? Ask your Brevo account owner to generate an API key and share it with you. The key is all UnleashX needs.
+</Note>
+
+## 3. Get your credentials
+
+UnleashX authenticates to Brevo with an **API key**.
+
+<Steps>
+<Step title="Open API keys">
+In Brevo, click your account name (top-right) → **SMTP & API**, then the **API Keys** tab: `https://app.brevo.com/settings/keys/api`
+</Step>
+<Step title="Generate a new key">
+Click **Generate a new API key**, give it a name like "UnleashX", and confirm.
+</Step>
+<Step title="Copy the key">
+Copy the key immediately.
+<Warning>
+Brevo shows the full API key only once, at creation. If you lose it, you'll need to generate a new one.
+</Warning>
+</Step>
+<Step title="(For email) verify a sender">
+If you'll send email, go to **Senders, Domains & Dedicated IPs** and verify the sender address you'll use as the "from" email.
+</Step>
+</Steps>
+
+| Capability the key grants | Why UnleashX needs it |
+|---|---|
+| Contacts (read/write) | Create, update, list and find contacts; manage list membership. |
+| Companies & Deals (read/write) | Create and update companies and deals and link them together. |
+| Events | Track custom events against a contact. |
+| Transactional email (SMTP) | Send transactional emails from a verified sender. |
+| Transactional SMS | Send transactional SMS messages. |
+
+<Info>
+A Brevo API key is account-wide — it isn't scoped per feature. Only share it with tools you trust.
+</Info>
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Sign in at `https://tryunleashx.com` and open the agent you want to connect.
+</Step>
+<Step title="Find Brevo">
+Go to **Data Connectors** and find **Brevo**.
+</Step>
+<Step title="Connect">
+Click **Connect** / **Add** / **Configure** and paste your Brevo API key.
+</Step>
+<Step title="Confirm">
+Save. The status will switch to a **Connected** badge.
+</Step>
+</Steps>
+
+![01 brevo connected](/images/mcp/brevo/01-connected.png)
+
+## 5. Available tools
+
+| Tool (technical) | What it does | Changes data? |
+|---|---|---|
+| `brevo_create_contact` | Create a new contact. | ✏️ Yes |
+| `brevo_update_contact` | Update a contact by email or ID. | ✏️ Yes |
+| `brevo_find_contact` | Get a single contact by email or ID. | No |
+| `brevo_list_contacts` | List contacts. | No |
+| `brevo_list_companies` | List companies. | No |
+| `brevo_list_attributes` | List available contact attribute fields. | No |
+| `brevo_unsubscribe_contact` | Remove contacts from a list. | ⚠️ Yes |
+| `brevo_add_company` | Create a new company. | ✏️ Yes |
+| `brevo_update_company` | Update an existing company. | ✏️ Yes |
+| `brevo_find_company` | Get a single company by ID. | No |
+| `brevo_delete_company` | Permanently delete a company. | ⚠️ Yes |
+| `brevo_add_deal` | Create a new deal (optionally link contacts/companies, add a task). | ✏️ Yes |
+| `brevo_update_deal` | Update an existing deal. | ✏️ Yes |
+| `brevo_find_deal` | Get a single deal by ID. | No |
+| `brevo_delete_deal` | Permanently delete a deal. | ⚠️ Yes |
+| `brevo_add_associations` | Link two CRM records (e.g. contact ↔ deal). | ✏️ Yes |
+| `brevo_remove_associations` | Unlink two CRM records. | ⚠️ Yes |
+| `brevo_create_event` | Track a custom event against a contact. | ✏️ Yes |
+| `brevo_send_email` | Send a transactional email. | ✏️ Yes |
+| `brevo_send_sms` | Send a transactional SMS. | ✏️ Yes |
+
+## 6. Example usage
+
+**"Add raj@acme.com as a contact, then send him a welcome email from hello@mycompany.com."**
+Runs `brevo_create_contact`, then `brevo_send_email`.
+
+**"Create a deal called 'Acme renewal' worth 50000 INR and link it to contact raj@acme.com."**
+Runs `brevo_add_deal` with the amount and `contact_search` set to the email so it links the contact automatically.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- Create, read, update and delete contacts, companies and deals.
+- Manage list membership and CRM associations.
+- Send transactional email and SMS, and track events.
+
+**UnleashX cannot:**
+- Access Brevo data the API key's account can't access.
+- Send email from an unverified sender address.
+- Change your Brevo billing or account settings.
+
+**To disconnect:** In UnleashX go to **Data Connectors → Brevo → Disconnect**. To fully revoke, delete the API key in **Brevo → SMTP & API → API Keys**. Revocation is immediate.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| `401 Unauthorized` | The API key is missing, wrong or deleted. | Reconnect in UnleashX with a valid key. |
+| `403 Forbidden` | Your plan or account doesn't allow that action. | Check your Brevo plan/permissions, then retry. |
+| Email rejected / sender error | The "from" address isn't a verified sender. | Verify the sender in Brevo and use that exact address. |
+| `400 Bad Request` on a deal/company | A referenced contact, company or pipeline/stage ID is invalid. | Look up the correct ID first, then retry. |
+| `429 Too Many Requests` | You hit Brevo's rate limit. | Wait a moment and retry. |
+
+For general connector issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Is my Brevo data stored by UnleashX?**
+No. Tools call the Brevo API live and return the result. UnleashX doesn't keep a copy of your contacts or campaigns.
+
+**Can I send marketing campaigns through this?**
+These tools cover transactional email/SMS and CRM records, not bulk campaign creation. Build campaigns in Brevo; use UnleashX for per-contact actions and messages.
+
+**How do I rotate my key?**
+Generate a new key in Brevo, reconnect in UnleashX, then delete the old key.
+
+## 10. References
+
+- Brevo API getting started: https://developers.brevo.com/docs/getting-started
+- API keys page: https://app.brevo.com/settings/keys/api
+- Senders & verification: https://help.brevo.com/hc/en-us/articles/208836149

@@ -1,0 +1,175 @@
+---
+title: "WordPress MCP"
+icon: "https://s.w.org/favicon.ico"
+description: "Let your UnleashX agent publish and edit WordPress posts, categories, users, and featured images."
+tags: [mcp, wordpress, integration]
+---
+
+# WordPress MCP
+
+> **In one line:** Connect WordPress so your UnleashX agent can create and update posts, manage categories and users, set featured images, and even generate AI cover art.
+
+| | |
+|---|---|
+| **Category** | CMS |
+| **Authentication** | Application Password |
+| **Setup time** | ~6 minutes |
+| **Difficulty** | Medium |
+| **Best for** | Content teams and site owners who want to draft, publish, and organize WordPress content hands-free |
+
+## 1. Overview
+
+WordPress is the world's most popular content management system, used to run blogs, marketing sites, and online publications. Content is organized into posts, grouped by categories, and managed by users with different roles.
+
+Once connected, your UnleashX agent can create and edit posts, search existing content, manage categories and users, attach featured images, and generate AI cover images — all through the WordPress REST API. That lets you turn an idea or briefing into a published (or drafted) post without logging into wp-admin.
+
+Connecting WordPress to UnleashX is useful for content marketers and site managers who want to speed up publishing, keep categories tidy, and handle routine site administration through conversation.
+
+## 2. What you'll need
+
+- A self-hosted WordPress site (or one where you control the REST API) reachable over HTTPS.
+- Your site's **base URL** (e.g. `https://yourblog.com`).
+- A WordPress user account with a role that can do what you need (Author/Editor to post; Administrator to manage users).
+- An **Application Password** for that account.
+
+<Note>
+Application Passwords require WordPress 5.6+ and an HTTPS site. If you don't see the option, an administrator may have disabled it, or your hosting may need it enabled. Managing other users requires an **Administrator** account.
+</Note>
+
+## 3. Get your credentials
+
+WordPress uses an **Application Password** with the REST API over Basic auth.
+
+<Steps>
+<Step title="Open your WordPress profile">
+Sign in to your site's admin (`https://yoursite.com/wp-admin`) and go to **Users → Profile** (your own profile).
+</Step>
+<Step title="Find Application Passwords">
+Scroll to the **Application Passwords** section near the bottom of the profile page.
+</Step>
+<Step title="Create a new password">
+Enter a name like `UnleashX` and click **Add New Application Password**.
+</Step>
+<Step title="Copy the password">
+Copy the generated password (it looks like `xxxx xxxx xxxx xxxx xxxx xxxx`).
+
+<Warning>
+The Application Password is shown only once. Copy it now — if you lose it, revoke it and create a new one. Keep the spaces or remove them as your client expects.
+</Warning>
+</Step>
+<Step title="Note your username and site URL">
+You'll need your WordPress **username**, the **Application Password**, and your **site URL** to connect.
+</Step>
+</Steps>
+
+**What the credentials can access**
+
+| Scope / Access | Why UnleashX needs it |
+|---|---|
+| Read & write Posts | To create, update, fetch, search, and delete posts |
+| Read & write Categories | To create, update, and organize content categories |
+| Read & write Users | To create, update, and manage site users (Admin only) |
+| Manage Media | To upload images and set featured images on posts |
+
+<Note>
+An Application Password inherits the role of the user it belongs to. To manage users you must create it on an **Administrator** account; for posting only, an Author/Editor account is enough.
+</Note>
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to [https://tryunleashx.com](https://tryunleashx.com) and open the agent you want to connect.
+</Step>
+<Step title="Open Data Connectors">
+In the agent, go to **Data Connectors**.
+</Step>
+<Step title="Find WordPress">
+Locate **WordPress** in the list and click **Connect** / **Add** / **Configure**.
+</Step>
+<Step title="Enter your details">
+Provide your **site URL**, **username**, and **Application Password**. UnleashX combines the username and password as HTTP Basic auth against your REST API.
+</Step>
+<Step title="Confirm success">
+Save. When the status shows a **Connected** badge, your agent can start working with WordPress.
+</Step>
+</Steps>
+
+![01 wordpress data connector](/images/mcp/wordpress/01-data-connector.png)
+
+## 5. Available tools
+
+| Tool (technical) | What it does | Changes data? |
+|---|---|---|
+| `wordpress_create_post` | Creates a new post (draft or published) | ✏️ Yes |
+| `wordpress_update_post` | Updates an existing post | ✏️ Yes |
+| `wordpress_get_post` | Gets a single post by ID | No |
+| `wordpress_delete_post` | Deletes a post | ⚠️ Yes |
+| `wordpress_search_posts` | Searches posts by status, author, etc. | No |
+| `wordpress_create_category` | Creates a category | ✏️ Yes |
+| `wordpress_update_category` | Updates a category | ✏️ Yes |
+| `wordpress_get_category` | Gets a single category by ID | No |
+| `wordpress_delete_category` | Deletes a category | ⚠️ Yes |
+| `wordpress_search_categories` | Searches categories | No |
+| `wordpress_create_user` | Creates a new site user | ✏️ Yes |
+| `wordpress_update_user` | Updates a user | ✏️ Yes |
+| `wordpress_get_user` | Gets a single user by ID | No |
+| `wordpress_delete_user` | Deletes a user | ⚠️ Yes |
+| `wordpress_search_users` | Searches users by role or name | No |
+| `wordpress_set_featured_image` | Sets a media item as a post's featured image | ✏️ Yes |
+| `wordpress_generate_ai_image` | Generates an AI image, uploads it to Media, optionally sets it as featured | ✏️ Yes |
+
+## 6. Example usage
+
+**"Draft a blog post titled 'Spring Sale Tips' in the Marketing category and generate a cover image."**
+Behind the scenes: `wordpress_search_categories` → `wordpress_create_post` → `wordpress_generate_ai_image` (sets it as featured).
+
+**"Find all draft posts by Maria and publish the one about onboarding."**
+Behind the scenes: `wordpress_search_users` → `wordpress_search_posts` → `wordpress_update_post`.
+
+## 7. Permissions & data access
+
+**UnleashX CAN:**
+- Read, create, update, and delete posts and categories.
+- Search posts, categories, and users.
+- Manage users (when connected with an Administrator account).
+- Upload media, set featured images, and generate AI cover images.
+
+**UnleashX CANNOT:**
+- Do anything the connected user's role doesn't permit.
+- Change WordPress core settings, themes, or plugins.
+- Access sites other than the one you connected.
+
+**To disconnect:** In UnleashX, open your agent → **Data Connectors** → **WordPress** → **Disconnect**. To fully revoke access, go to **Users → Profile → Application Passwords** in WordPress and click **Revoke**. Either action stops access immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| `401 Unauthorized` | Wrong username/Application Password, or it was revoked | Recreate the Application Password and re-enter username + password |
+| `403 Forbidden` | The connected user's role can't perform that action | Connect with an account that has the needed role (e.g. Administrator for users) |
+| `404 Not Found` | The post/category/user ID doesn't exist, or REST API is disabled | Verify the ID and that `/wp-json/` is reachable on your site |
+| Application Passwords missing | Disabled or site not on HTTPS | Enable HTTPS and Application Passwords (WordPress 5.6+) |
+| Connection refused | Site URL wrong or REST API blocked by a plugin/firewall | Confirm the base URL and that the REST API isn't blocked |
+
+For general connection issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Is my data stored by UnleashX?**
+UnleashX calls your WordPress REST API live with your credentials when a tool runs. It doesn't keep a separate copy of your site content.
+
+**Can multiple team members connect?**
+Yes. Each person creates their own Application Password on their own WordPress account, and each connection inherits that user's role.
+
+**How do I rotate my key?**
+Create a new Application Password in **Users → Profile**, update it in UnleashX, then revoke the old one. Access switches over immediately.
+
+**Does the AI image tool need anything extra?**
+`wordpress_generate_ai_image` generates images via OpenAI, so an OpenAI API key must be supplied (passed in or configured at the platform level).
+
+## 10. References
+
+- WordPress REST API handbook: [https://developer.wordpress.org/rest-api/](https://developer.wordpress.org/rest-api/)
+- Application Passwords reference: [https://developer.wordpress.org/rest-api/using-the-rest-api/authentication/#application-passwords](https://developer.wordpress.org/rest-api/using-the-rest-api/authentication/#application-passwords)
+- REST API authentication overview: [https://developer.wordpress.org/rest-api/using-the-rest-api/authentication/](https://developer.wordpress.org/rest-api/using-the-rest-api/authentication/)

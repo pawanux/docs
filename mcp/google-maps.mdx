@@ -1,0 +1,174 @@
+---
+title: "Google Maps MCP"
+icon: "https://maps.google.com/favicon.ico"
+description: "Search places, geocode addresses, get directions, and look up timezones and elevation from your UnleashX agent."
+tags: [mcp, google-maps, integration]
+---
+
+# Google Maps MCP
+
+> **In one line:** Give your UnleashX agent location superpowers — find places, convert addresses to coordinates, calculate routes and travel times, and look up timezones and elevation.
+
+| | |
+|---|---|
+| **Category** | Productivity |
+| **Authentication** | API Key (Google Maps Platform) |
+| **Setup time** | ~5 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Agents that need geographic context — finding nearby businesses, validating addresses, planning routes, or estimating travel time. |
+
+## 1. Overview
+
+Google Maps Platform is Google's suite of location services. It can find places by name or keyword, turn an address into latitude/longitude (geocoding) and back again, calculate driving/walking/transit routes, estimate travel times and distances, and answer questions about timezones, roads, and ground elevation.
+
+Once you connect Google Maps to UnleashX, your agent can answer location-aware questions and enrich its workflows with real geographic data. It can find the nearest open store, confirm a customer's address, tell a caller how long the drive will take, or look up the local time at a destination.
+
+Connecting Google Maps is great for booking, delivery, dispatch, and concierge-style agents. Instead of guessing, the agent uses Google's live map data to give accurate places, directions, and times. All Google Maps tools here are **read-only** — they look things up and never change your data.
+
+## 2. What you'll need
+
+- A **Google Cloud** account ([console.cloud.google.com](https://console.cloud.google.com)).
+- A Google Cloud **project** with **billing enabled** (Maps Platform requires a billing account, though it includes a generous free tier).
+- Permission to create credentials (typically **Editor** / **Owner** or a role with `serviceusage` and credential access).
+- The relevant **Maps Platform APIs enabled**: Places API, Geocoding API, Directions API, Distance Matrix API, Time Zone API, Roads API, and Elevation API.
+
+<Note>
+If you can't enable APIs or create keys, ask a Google Cloud project admin to create a Maps Platform API key for you. Connecting only needs the API key string.
+</Note>
+
+## 3. Get your credentials
+
+Google Maps MCP authenticates with a **Maps Platform API key**.
+
+<Steps>
+<Step title="Open Credentials">
+Go to the [Google Cloud Console](https://console.cloud.google.com) and select your project, then open **APIs & Services → Credentials**.
+</Step>
+<Step title="Create the API key">
+Click **Create credentials → API key**. Google generates a key string immediately.
+
+<Warning>
+Treat the API key like a password. Copy it now and store it securely. For safety, restrict the key (see below) so it can't be misused if leaked.
+</Warning>
+</Step>
+<Step title="Enable the required APIs">
+In **APIs & Services → Library**, enable: **Places API**, **Geocoding API**, **Directions API**, **Distance Matrix API**, **Time Zone API**, **Roads API**, and **Elevation API**. Without these, the matching tools will return errors.
+</Step>
+<Step title="Restrict the key (recommended)">
+Back in **Credentials**, edit the key and under **API restrictions** limit it to just the APIs above. This keeps the key safe without breaking any tool.
+</Step>
+</Steps>
+
+### Permissions / APIs this key uses
+
+| API | Plain-English reason UnleashX needs it |
+|---|---|
+| Places API | Search for places and fetch place details. |
+| Geocoding API | Convert addresses ↔ coordinates. |
+| Directions API | Calculate routes between points. |
+| Distance Matrix API | Estimate travel times and distances. |
+| Time Zone API | Look up the local timezone for a location. |
+| Roads API | Snap GPS points to the nearest roads. |
+| Elevation API | Get ground elevation for coordinates or a path. |
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Sign in at [tryunleashx.com](https://tryunleashx.com) and open the agent you want to give Google Maps access to.
+</Step>
+<Step title="Go to Data Connectors">
+Open **Data Connectors** and find **Google Maps** in the list.
+</Step>
+<Step title="Connect">
+Click **Connect** / **Add** / **Configure** and paste your Maps Platform **API key** (sent as the `api-key` / `api_key` credential). Authenticate once.
+</Step>
+<Step title="Confirm success">
+When the key works, the status changes to a **Connected** badge. Your agent can now use the Google Maps tools below.
+</Step>
+</Steps>
+
+![01 google maps connect](/images/mcp/google-maps/01-connect.png)
+
+## 5. Available tools
+
+This server exposes **14 tools**. All Google Maps tools are **read-only** (they look up data and never change anything in your account).
+
+| Tool name (technical) | What it does | Changes data? |
+|---|---|---|
+| `maps_search_nearby` | Find places near a location, with radius/rating/open-now filters. | No |
+| `maps_get_place_details` | Get full details for a place by place ID. | No |
+| `maps_geocode` | Convert an address into coordinates. | No |
+| `maps_reverse_geocode` | Convert coordinates back into an address. | No |
+| `maps_distance_matrix` | Calculate travel time/distance between many origins and destinations. | No |
+| `maps_directions` | Get a route between an origin and destination. | No |
+| `maps_elevation` | Get ground elevation for a list of coordinates. | No |
+| `googlemaps_search_places` | Search places by text query (with optional location bias). | No |
+| `googlemaps_search_place_details` | Search places and enrich each with detailed info (phone, hours, website, rating). | No |
+| `googlemaps_get_place_details` | Get details for a single place by place ID. | No |
+| `googlemaps_get_directions` | Get directions with optional waypoints and travel mode. | No |
+| `googlemaps_get_timezone` | Look up the timezone for a location and timestamp. | No |
+| `googlemaps_get_roads` | Snap a path of points to the nearest roads. | No |
+| `googlemaps_get_elevation` | Get elevation for places/coordinates, optionally sampled along a path. | No |
+
+<Info>
+There are two families of tools (`maps_*` and `googlemaps_*`) with overlapping capabilities. Your agent picks whichever best fits the request — both run read-only lookups against Google Maps Platform.
+</Info>
+
+## 6. Example usage
+
+**"Find coffee shops within 1 km of MG Road, Bengaluru that are open now and rated 4+."**
+→ Runs `maps_search_nearby` (geocodes the location, then filters by radius, open-now, and minimum rating).
+
+**"How long does it take to drive from Indiranagar to Bangalore Airport right now?"**
+→ Runs `maps_directions` (or `maps_distance_matrix`) to estimate the route and travel time.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- Search for places and fetch place details (name, address, phone, hours, rating, website).
+- Geocode and reverse-geocode addresses and coordinates.
+- Calculate routes, travel times, and distances.
+- Look up timezones, snap points to roads, and get elevation.
+
+**UnleashX cannot:**
+- Create, edit, or delete anything in Google Maps — every tool is read-only.
+- Access your personal Google Maps history, saved places, or Timeline.
+- Change your Google Cloud project, billing, or API settings.
+
+**How to disconnect:** In your agent's **Data Connectors**, open Google Maps and choose **Disconnect** to stop UnleashX from using the key immediately. To fully revoke access, **delete or regenerate** the API key in **APIs & Services → Credentials**.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| `401 Unauthorized` / "API key is required" | No valid API key was provided. | Reconnect Google Maps with a valid Maps Platform API key. |
+| `REQUEST_DENIED` / 403 | The API isn't enabled, billing is off, or the key is restricted away from that API. | Enable the needed API in **APIs & Services → Library**, confirm billing is on, and check the key's API restrictions. |
+| `OVER_QUERY_LIMIT` / 429 | You've hit your usage quota or rate limit. | Wait, raise your quota, or enable billing/upgrade in Google Cloud. |
+| `ZERO_RESULTS` | The query was valid but no places/routes matched. | Broaden the search, increase the radius, or check the spelling of the address. |
+| "Invalid coordinate format" | A location wasn't a recognizable address or `lat,lng` pair. | Provide a real address or coordinates as `latitude,longitude`. |
+
+For general connector issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Does this cost money?**
+Google Maps Platform is billed by usage, but includes a substantial monthly free tier. Light agent use often stays within it; heavy use may incur charges from Google (not UnleashX).
+
+**Is any data changed in my account?**
+No. Every tool here is read-only — it only looks up location information.
+
+**Can I use one key across multiple agents?**
+Yes. The same Maps Platform API key can be connected to multiple agents. For security, restrict the key to only the APIs you use.
+
+**Why did a tool fail with "REQUEST_DENIED"?**
+Usually the specific API (e.g. Directions API) isn't enabled for your project, or your key is restricted away from it. Enable the API and adjust the key restrictions.
+
+## 10. References
+
+- [Google Cloud Console — Credentials](https://console.cloud.google.com/apis/credentials)
+- [Google Maps Platform documentation](https://developers.google.com/maps/documentation)
+- [Get an API key](https://developers.google.com/maps/documentation/javascript/get-api-key)
+- [API key best practices & restrictions](https://developers.google.com/maps/api-security-best-practices)
+- [Places API](https://developers.google.com/maps/documentation/places/web-service/overview)
+- [Maps Platform pricing](https://mapsplatform.google.com/pricing/)

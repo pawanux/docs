@@ -1,0 +1,169 @@
+---
+title: "WhatsApp Business MCP"
+icon: "https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
+description: "Send WhatsApp messages, templates, media, and voice notes to customers through the Meta WhatsApp Cloud API."
+tags: [mcp, whatsapp-business, integration]
+---
+
+# WhatsApp Business MCP
+
+> **In one line:** Connect the official Meta WhatsApp Cloud API so your UnleashX agent can send text, template, image, document, audio, and video messages to your customers on WhatsApp.
+
+| | |
+|---|---|
+| **Category** | Communication |
+| **Authentication** | OAuth / Access Token (Meta Cloud API access token + phone number ID and WABA ID) |
+| **Setup time** | ~15 minutes |
+| **Difficulty** | Medium |
+| **Best for** | Businesses sending notifications, support replies, and template campaigns to customers on WhatsApp at scale |
+
+## 1. Overview
+
+WhatsApp Business (via Meta's WhatsApp Cloud API) is the official way for companies to message customers on WhatsApp — sending order updates, reminders, support replies, and approved marketing templates from a verified business number.
+
+Once connected to UnleashX, your agent can send plain text messages, pre-approved templates (with variables), images, documents, audio/voice notes, and videos, and mark inbound messages as read — all through your own WhatsApp Business number.
+
+Connecting this to UnleashX lets your agent automate customer communication end to end: trigger a template when an event happens, reply with a document on request, or send a voice note — using the same compliant Cloud API that Meta requires for business messaging.
+
+## 2. What you'll need
+
+- A **Meta for Developers** account and a **Meta App** with the **WhatsApp** product added.
+- A **WhatsApp Business Account (WABA)** and a registered **business phone number**.
+- Three values from the Meta dashboard: an **access token**, your **Phone Number ID**, and your **WhatsApp Business Account ID (WABA ID)**.
+- Approved message **templates** if you plan to send template messages (Meta must approve these in advance).
+
+<Note>
+If you don't manage the Meta App yourself, ask whoever administers your company's Meta Business / WhatsApp setup to add you as an app admin or to share the access token, Phone Number ID, and WABA ID.
+</Note>
+
+## 3. Get your credentials
+
+You'll collect three values from the **Meta for Developers / WhatsApp Cloud API** dashboard.
+
+<Steps>
+<Step title="Open your app's WhatsApp setup">
+Go to [developers.facebook.com](https://developers.facebook.com), open **My Apps → (your app) → WhatsApp → API Setup**.
+</Step>
+<Step title="Copy the temporary access token">
+On the **API Setup** page, copy the **Temporary access token** shown at the top. For production, generate a **permanent System User access token** under **Business Settings → System Users** with the `whatsapp_business_messaging` and `whatsapp_business_management` permissions.
+</Step>
+<Step title="Copy the Phone Number ID">
+On the same **API Setup** page, find the **Phone number ID** for your sending number and copy it. (This is the long numeric ID, not the phone number itself.)
+</Step>
+<Step title="Copy the WhatsApp Business Account ID (WABA ID)">
+Still on **API Setup** (or under **Business Settings → Accounts → WhatsApp Accounts**), copy your **WhatsApp Business Account ID**. UnleashX needs this to list your message templates.
+</Step>
+</Steps>
+
+<Warning>
+A **temporary** access token expires in about 24 hours. For anything beyond testing, create a **permanent System User token** so your integration keeps working.
+</Warning>
+
+**Credentials / scopes UnleashX needs and why:**
+
+| Credential / scope | Why UnleashX needs it |
+|---|---|
+| Access token (`access-token`) | Authenticates every call to the WhatsApp Cloud API on your behalf |
+| Phone Number ID (`phone-number-id`) | Identifies which business number sends the message |
+| WABA ID (`waba-id`) | Lets UnleashX list your approved message templates |
+| `whatsapp_business_messaging` permission | Required to send messages and media |
+| `whatsapp_business_management` permission | Required to read your message templates |
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Sign in at [tryunleashx.com](https://tryunleashx.com) and open the agent you want to connect.
+</Step>
+<Step title="Go to Data Connectors">
+Open **Data Connectors** inside the agent.
+</Step>
+<Step title="Find WhatsApp Business and Configure">
+Locate **WhatsApp Business** and click **Connect** / **Add** / **Configure**.
+</Step>
+<Step title="Paste your credentials">
+Enter your **access token**, **Phone Number ID**, and **WABA ID** from Section 3, then save.
+</Step>
+<Step title="Confirm it's connected">
+The connector shows a **Connected** badge once your credentials validate. You're ready to send.
+</Step>
+</Steps>
+
+![01 connect whatsapp business](/images/mcp/whatsapp-business/01-connect-whatsapp-business.png)
+
+## 5. Available tools
+
+| Tool (technical name) | What it does | Changes data? |
+|---|---|---|
+| `wa_send_message` | Send a plain WhatsApp text message | ✏️ Yes |
+| `wa_list_templates` | List your approved message templates | No |
+| `wa_send_template` | Send an approved template message with optional variables | ✏️ Yes |
+| `wa_send_image_url` | Send an image by public URL (optional caption) | ✏️ Yes |
+| `wa_send_document` | Send a document by uploaded media ID | ✏️ Yes |
+| `wa_send_document_url` | Send a document by public URL | ✏️ Yes |
+| `wa_send_audio` | Send an audio/voice message by media ID | ✏️ Yes |
+| `wa_send_voice_message` | Download audio from a URL, upload it, and send as a voice note | ✏️ Yes |
+| `wa_send_video` | Send a video by media ID (optional caption) | ✏️ Yes |
+| `wa_mark_read` | Mark an inbound message as read | ✏️ Yes |
+| `get_insurance_detail` | Get car insurance quotes for a vehicle registration number | No |
+| `zimyo_employee_detail` | Look up Zimyo employee details by phone number | No |
+
+<Note>
+`get_insurance_detail` and `zimyo_employee_detail` are helper lookups bundled into this server for specific business workflows (insurance quoting and HR employee lookup). They don't send WhatsApp messages themselves.
+</Note>
+
+## 6. Example usage
+
+**"Text +91 98765 43210 their order #4521 has shipped."**
+Behind the scenes: `wa_send_message` (UnleashX normalizes the number and posts to the Cloud API).
+
+**"Send the 'appointment_reminder' template to this customer for 3 PM tomorrow."**
+Behind the scenes: `wa_list_templates` (confirm the template) → `wa_send_template` (with the time as a variable).
+
+## 7. Permissions & data access
+
+**UnleashX CAN:**
+- Send text, template, image, document, audio/voice, and video messages from your business number.
+- List your approved message templates.
+- Mark inbound messages as read.
+
+**UnleashX CANNOT:**
+- Send free-form messages outside WhatsApp's 24-hour customer service window — those require an approved template.
+- Create or approve templates (that happens in the Meta dashboard).
+- Message numbers that haven't opted in, or bypass Meta's messaging policies.
+- Access your Meta account settings or billing.
+
+**How to disconnect:** In UnleashX, open **Data Connectors → WhatsApp Business → Disconnect**. To fully cut access, also revoke or regenerate the access token in **Meta → Business Settings → System Users**. Disconnecting takes effect immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| 401 — No access token found | The access token is missing, malformed, or not sent | Reconnect and re-enter a valid `access-token` (and re-check it hasn't expired) |
+| 401 — No Phone Number ID | The `phone-number-id` is missing | Add your Phone Number ID from the Meta API Setup page |
+| Token expired (Graph API error) | A temporary token expired (~24h) | Generate a permanent System User token and reconnect |
+| 403 / permission error | The token lacks `whatsapp_business_messaging` or `_management` | Add the missing permission to the System User and regenerate the token |
+| Template not found / not approved | The template name/language is wrong or not yet approved | Use `wa_list_templates` to confirm the exact name and language; approve it in Meta if pending |
+
+For general connector issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Do I need approved templates to message customers?**
+Yes — to start a conversation or message outside the 24-hour service window, WhatsApp requires a pre-approved template. Plain text messages only work within an open customer service window.
+
+**Why does my access token keep expiring?**
+You're likely using a temporary token. Create a permanent **System User** access token in Meta Business Settings for production use.
+
+**Is my customer message data stored by UnleashX?**
+UnleashX sends messages on demand through Meta's API. Inbound webhook events may be logged for delivery and analytics; outbound message content is not retained beyond what's needed to complete the request.
+
+**Can I use my own phone number?**
+You use the business number registered to your WhatsApp Business Account in Meta. The `phone-number-id` you provide tells UnleashX which number to send from.
+
+## 10. References
+
+- WhatsApp Cloud API documentation: https://developers.facebook.com/docs/whatsapp/cloud-api
+- Get started / API Setup: https://developers.facebook.com/docs/whatsapp/cloud-api/get-started
+- Message templates guide: https://developers.facebook.com/docs/whatsapp/business-management-api/message-templates
+- System User access tokens: https://developers.facebook.com/docs/whatsapp/business-management-api/get-started

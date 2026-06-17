@@ -1,0 +1,142 @@
+---
+title: "Reporting & Dashboards MCP"
+icon: "chart-line"
+description: "Read your agent, call, campaign, and workflow metrics straight from UnleashX."
+tags: [mcp, reporting, integration]
+---
+
+# Reporting & Dashboards MCP
+
+> **In one line:** Let your UnleashX assistant pull the same numbers you see on the Conversations, Agent Dashboard, Campaign, and Workflow screens — and answer questions about them.
+
+| | |
+|---|---|
+| **Category** | Dev Tools |
+| **Authentication** | Platform-managed |
+| **Setup time** | ~0 minutes (always available) |
+| **Difficulty** | Easy |
+| **Best for** | Dashboards, call/campaign analytics, and on-demand performance questions |
+
+## 1. Overview
+
+Reporting & Dashboards is the read-only analytics surface for your UnleashX workspace. It wraps the endpoints behind the Conversations, Agent Dashboard, Campaign, and Workflow screens, so an assistant can answer "how did we do?" with real numbers.
+
+Once available, your assistant can summarize conversations, list your agents, pull dashboard KPIs and duration histograms, list campaigns and their audiences, get per-call records, and review workflow run history — all scoped to your own data automatically.
+
+Because it reads only the data you already own, it's platform-native: it uses your signed-in session, requires no connection step, and is always available. Everything it returns is read-only — it never creates, edits, or deletes.
+
+## 2. What you'll need
+
+<Note>
+Reporting is **native to UnleashX** and **always available** — there's no connection step, no third-party account, and no API key to manage. It reads your own metrics using your signed-in session.
+</Note>
+
+- An active UnleashX account (signed in).
+- Existing agents/campaigns/workflows whose metrics you want to view.
+- That's it — no admin setup is required for read-only reporting.
+
+## 3. Get your credentials
+
+<Info>
+There are **no credentials to create and no connection step**. Reporting authenticates with your session JWT (sent in a `token` header). The token resolves to your company/workspace server-side, so you never pass workspace or company identifiers by hand.
+</Info>
+
+There is nothing for an admin to configure for normal use. The integration reuses the same UnleashX base URL and session-token plumbing as the rest of the platform; in standalone/CLI contexts a token can be supplied via environment, but in the product it's automatic.
+
+| Platform-managed setting | Plain-English reason it exists |
+|---|---|
+| Session JWT (`token` header) | Authenticates you and scopes every report to your workspace. |
+| UnleashX base URL | Points reporting at the environment you signed into. |
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to [https://tryunleashx.com](https://tryunleashx.com) and open your assistant.
+</Step>
+<Step title="No connection needed">
+Reporting is platform-native and **always on** — you won't find a Connect button because there's nothing to authorize beyond your session.
+</Step>
+<Step title="Just ask">
+Ask a reporting question (e.g. "show today's call KPIs"). The assistant runs the right reporting tool using your session.
+</Step>
+<Step title="Confirm it works">
+If numbers come back scoped to your workspace, it's working. If you see a session error, sign in again.
+</Step>
+</Steps>
+
+## 5. Available tools
+
+![01 reporting tools](/images/mcp/reporting/01-tools.png)
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| `reporting_conversations_summary` | Grouped or flat summary of calling executions (Conversations screen) | No |
+| `reporting_agents_list` | List your agents as `[{id, name}]`, filtered by type (default voice) | No |
+| `reporting_agent_executions_list` | Detailed per-call execution records (recent-calls table) | No |
+| `reporting_dashboard_data` | Main calling dashboard KPIs (totals, answered/failed, in/outbound, cost) | No |
+| `reporting_dashboard_meta` | Dashboard meta widgets (active agents, call-duration histogram) | No |
+| `reporting_campaign_list` | Paginated campaign list with audience progress counts | No |
+| `reporting_campaign_audience_list` | Per-contact audience list for one campaign | No |
+| `reporting_campaign_audience_stats` | Aggregate audience KPIs for one campaign | No |
+| `reporting_campaign_conversation_list` | Per-call records for one campaign | No |
+| `reporting_workflow_execution_history` | Paginated workflow run history (parent runs) | No |
+| `reporting_workflow_data_list` | Workflow definitions with per-workflow execution stats | No |
+
+<Note>
+Every reporting tool is read-only. Creation and mutation (agents, campaigns) live in the separate **Agents** integration.
+</Note>
+
+## 6. Example usage
+
+**"Show me today's call KPIs for our main voice agent."**
+→ Runs `reporting_agents_list` to resolve the agent, then `reporting_dashboard_data` (and `reporting_dashboard_meta`) scoped to that agent.
+
+**"How is the Winter Sale campaign doing — pickup rate and remaining contacts?"**
+→ Runs `reporting_campaign_list` to find the campaign, then `reporting_campaign_audience_stats` for the aggregate numbers.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- Read conversation, agent-dashboard, campaign, and workflow metrics for your workspace.
+- List your agents and campaigns and return per-call records.
+- Auto-paginate large result sets and trim bulky fields for fast answers.
+
+**UnleashX cannot:**
+- Create, edit, or delete any agent, campaign, or record (read-only by design).
+- Access data outside the workspace tied to your session.
+- Show another company's metrics.
+
+**To disconnect:** There's no connection to revoke — Reporting only ever reads your own data using your session. Signing out ends access.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| 401 / "session expired" | The session JWT is missing or expired | Sign in again on UnleashX |
+| 403 / "session expired" with valid token | Token minted on a different environment than the base URL | Use the environment you signed into (prod JWT with prod URL) |
+| Empty results | No data in the selected date range or filters | Widen the date range or remove filters |
+| Agent type returns 0 | `agent_type` not specified (defaults to voice = 3) | Pass `agent_type` = 2 (chatbot) or 4 (general) explicitly |
+| Wrong/blank trend data | Some blocks (e.g. `trend`) are intentionally stripped | Use a dedicated time-series source if you need volume curves |
+
+For general issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Do I need to connect anything?**
+No. Reporting is native and always available — it reads your own metrics using your session JWT.
+
+**Can it change my data?**
+No. Every reporting tool is strictly read-only. Mutations live in the Agents integration.
+
+**Why is my data scoped automatically?**
+The session token resolves to your company/workspace server-side, so reports always reflect your data without you passing IDs.
+
+**Can multiple team members use it?**
+Yes. Each member sees the metrics their own session and role allow.
+
+## 10. References
+
+- UnleashX dashboard: https://tryunleashx.com
+- UnleashX integrations help: [/mcp/integrations](/mcp/integrations)
+- Support: cs@unleashx.ai

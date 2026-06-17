@@ -1,0 +1,157 @@
+---
+title: "Airtable MCP"
+icon: "https://airtable.com/favicon.ico"
+description: "Let UnleashX read, create, update and delete Airtable records and watch tables for new rows."
+tags: [mcp, airtable, integration]
+---
+
+# Airtable MCP
+
+> **In one line:** Connect Airtable so UnleashX can read and search records, add and update rows, create tables, and detect new records — turning your bases into a live data source for your agent.
+
+| | |
+|---|---|
+| **Category** | Productivity |
+| **Authentication** | Personal Access Token |
+| **Setup time** | ~4 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Teams that run operations, CRMs or trackers in Airtable and want their agent to log and look up records automatically. |
+
+## 1. Overview
+
+Airtable is a flexible database that looks like a spreadsheet. Teams use it as a lightweight CRM, content calendar, inventory tracker, project board and much more — organized into bases, tables, records and fields.
+
+Once connected to UnleashX, your agent can add a new record after a call, update a status, search for a row by any value, list what's in a table, or watch a table and react when a new record appears.
+
+Connecting Airtable to UnleashX means your operational data stays current automatically, and your agent can both read context from a base and write results back into it.
+
+## 2. What you'll need
+
+- An Airtable account.
+- The base(s) and table(s) you want UnleashX to access.
+- Permission to create a **Personal Access Token** with access to those bases.
+
+<Note>
+No access to a base? Ask the base owner to share it with you (or with the account that creates the token). The token only reaches bases it's explicitly granted.
+</Note>
+
+## 3. Get your credentials
+
+UnleashX authenticates to Airtable with a **Personal Access Token (PAT)**.
+
+<Steps>
+<Step title="Open Personal access tokens">
+Go to **Airtable → Builder hub → Personal access tokens**: `https://airtable.com/create/tokens`
+</Step>
+<Step title="Create a token">
+Click **Create token** and give it a name like "UnleashX".
+</Step>
+<Step title="Add scopes">
+Add the scopes from the table below.
+</Step>
+<Step title="Grant base access">
+Under **Access**, add the specific base(s) (or workspace) the token may reach.
+</Step>
+<Step title="Create and copy">
+Click **Create token** and copy it.
+<Warning>
+Airtable shows the token only once. Copy it now and store it safely — you can't view it again.
+</Warning>
+</Step>
+</Steps>
+
+| Scope | Why UnleashX needs it |
+|---|---|
+| `data.records:read` | Read, list and search records. |
+| `data.records:write` | Create, update and delete records. |
+| `schema.bases:read` | List your bases, tables and fields so you can pick them. |
+| `schema.bases:write` | Create new tables (only needed for `airtable_create_table`). |
+| `user.email:read` | Identify which Airtable account is connected. |
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Sign in at `https://tryunleashx.com` and open the agent you want to connect.
+</Step>
+<Step title="Find Airtable">
+Go to **Data Connectors** and find **Airtable**.
+</Step>
+<Step title="Connect">
+Click **Connect** / **Add** / **Configure** and paste your Personal Access Token.
+</Step>
+<Step title="Confirm">
+Save. The status will switch to a **Connected** badge.
+</Step>
+</Steps>
+
+![01 airtable connected](/images/mcp/airtable/01-connected.png)
+
+## 5. Available tools
+
+| Tool (technical) | What it does | Changes data? |
+|---|---|---|
+| `airtable_create_record` | Create a new record in a table. | ✏️ Yes |
+| `airtable_get_record` | Read a single record by ID. | No |
+| `airtable_update_record` | Update fields on an existing record. | ✏️ Yes |
+| `airtable_delete_record` | Permanently delete a record. | ⚠️ Yes |
+| `airtable_search_records` | Search records by field, value, formula or date range. | No |
+| `airtable_list_bases` | List the bases the token can access. | No |
+| `airtable_list_tables` | List tables in a base. | No |
+| `airtable_create_table` | Create a new table in a base. | ✏️ Yes |
+| `airtable_list_columns` | List the fields/columns of a table. | No |
+| `airtable_list_records` | List records in a table. | No |
+| `airtable_get_record_ids` | List record IDs in a table. | No |
+| `airtable_on_new_record_added` | Detect newly added records since last check (trigger). | No |
+| `airtable_clear_snapshots` | Clear stored trigger snapshots so the next check starts fresh. | ⚠️ Yes |
+
+## 6. Example usage
+
+**"Add a row to my 'Leads' table with name Jane Doe, email jane@acme.com, status New."**
+Runs `airtable_list_bases` / `airtable_list_tables` to resolve the table, then `airtable_create_record`.
+
+**"Find the lead with email jane@acme.com and mark their status as Contacted."**
+Runs `airtable_search_records` to find the record, then `airtable_update_record`.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- Read, search, create, update and delete records in bases the token can reach.
+- List bases, tables and fields, and create new tables.
+- Watch a table for new records and reset that watch.
+
+**UnleashX cannot:**
+- Access any base the token wasn't explicitly granted.
+- Change Airtable account settings, billing or sharing.
+- Delete entire bases.
+
+**To disconnect:** In UnleashX go to **Data Connectors → Airtable → Disconnect**. To fully revoke, delete the token in **Airtable → Builder hub → Personal access tokens**. Revocation is immediate.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| `401 Unauthorized` | The token is missing, wrong or revoked. | Reconnect in UnleashX with a valid Personal Access Token. |
+| `403 Forbidden` | The token lacks a scope or wasn't granted this base. | Edit the token to add the scope and add the base under Access, then reconnect. |
+| `404 Not Found` | The base, table or record ID is wrong. | Use `airtable_list_bases` / `airtable_list_tables` to get correct IDs and retry. |
+| `422 Unprocessable Entity` | A field name or value doesn't match the table schema. | Check field names with `airtable_list_columns` and retry. |
+| `429 Too Many Requests` | You hit Airtable's rate limit (5 req/sec/base). | Wait a moment and retry. |
+
+For general connector issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Is my Airtable data stored by UnleashX?**
+No. Tools call the Airtable API live and return the result. Small snapshots of record IDs are kept only to power the "new record" trigger, and you can clear them with `airtable_clear_snapshots`.
+
+**Can multiple team members connect Airtable?**
+Yes. Each agent stores its own token. Grant each token only the bases it needs.
+
+**How do I rotate my token?**
+Create a new Personal Access Token, reconnect in UnleashX, then delete the old token.
+
+## 10. References
+
+- Airtable Web API introduction: https://airtable.com/developers/web/api/introduction
+- Personal access tokens page: https://airtable.com/create/tokens
+- Scopes & permissions reference: https://airtable.com/developers/web/api/scopes

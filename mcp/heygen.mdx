@@ -1,0 +1,135 @@
+---
+title: "HeyGen MCP"
+icon: "https://heygen.com/favicon.ico"
+description: "Create talking-avatar and talking-photo videos from text with HeyGen."
+tags: [mcp, heygen, integration]
+---
+
+# HeyGen MCP
+
+> **In one line:** Let your UnleashX agent turn a script into a video of a presenter — either a digital avatar or a talking version of a photo you provide.
+
+| | |
+|---|---|
+| **Category** | AI & Media |
+| **Authentication** | Platform-managed |
+| **Setup time** | ~1 minute |
+| **Difficulty** | Easy |
+| **Best for** | Spokesperson videos, personalized outreach, training clips, and announcements |
+
+## 1. Overview
+
+HeyGen creates avatar videos: you give it text and it produces a video of a lifelike presenter speaking your words. It can use a built-in avatar, or animate a still photo into a "talking photo."
+
+Once connected, your agent can generate text-to-video (an avatar reads your script) and image-to-video (a supplied photo becomes the speaker), optionally choosing a voice. The agent can submit the job and either return immediately with a video ID or wait for the finished video URL.
+
+Connecting HeyGen to UnleashX lets your agents produce on-brand presenter videos at scale — personalized welcome messages, product walkthroughs, or campaign clips — straight from a script.
+
+## 2. What you'll need
+
+<Note>
+HeyGen is **built into UnleashX**. There is no HeyGen account for you to create and no API key for you to manage.
+</Note>
+
+- An active UnleashX account.
+- The HeyGen / avatar-video feature enabled on your workspace/plan.
+- A script (the text the avatar will say). For talking-photo, a public image URL.
+- Permission to edit the agent (admin or editor role). Without it, ask a workspace admin to enable the feature.
+
+## 3. Get your credentials
+
+<Info>
+There are **no credentials to create**. HeyGen is platform-managed — UnleashX provisions and rotates the underlying HeyGen API key. You never see or handle it.
+</Info>
+
+If you are a workspace admin, optional platform-side configuration includes the HeyGen base URL and the generation endpoint (UnleashX ships working defaults). Avatar IDs and voice IDs are optional inputs you can pass per request.
+
+| Platform-managed setting | Plain-English reason it exists |
+|---|---|
+| HeyGen API key | Provisioned and rotated by UnleashX so videos generate securely. |
+| Base URL / generate endpoint | Points UnleashX at the correct HeyGen API. Defaults are preset. |
+| Avatar ID / Voice ID (optional) | Lets you pick a specific presenter or voice per request. |
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to [https://tryunleashx.com](https://tryunleashx.com) and open the agent that should generate avatar videos.
+</Step>
+<Step title="Open Data Connectors">
+In the agent, click **Data Connectors**.
+</Step>
+<Step title="Find HeyGen and add it">
+Locate **HeyGen** and click **Connect** / **Add**. It's platform-managed — no key to paste, it activates immediately.
+</Step>
+<Step title="Confirm it's connected">
+The HeyGen tool should now show a **Connected** badge.
+</Step>
+</Steps>
+
+## 5. Available tools
+
+![01 heygen tools](/images/mcp/heygen/01-tools.png)
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| `heygen_text_to_video` | Generate a talking-avatar video from a text script | ✏️ Yes |
+| `heygen_image_to_video` | Generate a talking-photo video from an image plus text | ✏️ Yes |
+| `heygen_get_info` | Report HeyGen configuration and readiness | No |
+
+<Note>
+The generate tools are marked ✏️ Yes because they create a new video. They do not modify or delete any existing data.
+</Note>
+
+## 6. Example usage
+
+**"Have an avatar read this welcome message for new customers."**
+→ Runs `heygen_text_to_video` with the script (and optional avatar/voice), returning a video ID or URL.
+
+**"Turn this headshot into a short talking-photo intro."**
+→ Runs `heygen_image_to_video` with the image URL and the script.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- Send your script (and optional image URL, avatar, voice) to HeyGen.
+- Submit the generation job and fetch the resulting video status/URL.
+
+**UnleashX cannot:**
+- Generate video from content you don't provide.
+- Edit or delete videos created outside this flow.
+- Access your HeyGen account assets beyond what you pass in.
+
+**To disconnect:** Open the agent → **Data Connectors** → **HeyGen** → **Disconnect**. Access is revoked immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| "prompt is required" | No script text was supplied | Provide the text the avatar should say |
+| "image_url is required" | Talking-photo called without an image | Pass a public image URL |
+| Status stuck / timeout | The video is still rendering | Poll again, or call with `wait_for_completion` set |
+| 401 / credential error | The platform-managed HeyGen key is unavailable | Platform-side — contact **cs@unleashx.ai** |
+| 403 / feature not enabled | HeyGen isn't enabled on your plan | Ask a workspace admin or contact support |
+
+For general connector issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Is my script or photo stored?**
+They're sent to HeyGen to render the video. They are not retained by the integration beyond producing your result.
+
+**Do I need a HeyGen account?**
+No. HeyGen is platform-managed — UnleashX provides and rotates the key.
+
+**Can I choose the avatar and voice?**
+Yes. Pass an `avatar_id`, `voice_id`, or `talking_photo_id` per request; otherwise sensible defaults are used.
+
+**Can multiple team members use it?**
+Yes. Once enabled on the workspace, anyone with access to the agent can generate videos.
+
+## 10. References
+
+- HeyGen API docs: https://docs.heygen.com/
+- UnleashX dashboard: https://tryunleashx.com
+- UnleashX integrations help: [/mcp/integrations](/mcp/integrations)

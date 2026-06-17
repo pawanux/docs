@@ -1,0 +1,167 @@
+---
+title: "Zoho Mail MCP"
+icon: "https://www.zoho.com/favicon.ico"
+description: "Let your UnleashX agent read, search, draft, and send email and organize folders in your Zoho Mail."
+tags: [mcp, zoho-mail, integration]
+---
+
+# Zoho Mail MCP
+
+> **In one line:** Connect your Zoho Mail mailbox so your UnleashX agent can search and read email, draft and send messages, and organize your inbox with folders and tags.
+
+| | |
+|---|---|
+| **Category** | Communication |
+| **Authentication** | OAuth (Zoho) |
+| **Setup time** | ~2 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Teams on Zoho Mail who want an AI agent to handle email triage, drafting, and inbox organization |
+
+## 1. Overview
+
+Zoho Mail is Zoho's business email service. It holds your mailbox, folders, tags (labels), and the messages you send and receive — and it's where day-to-day correspondence lives for many Zoho-based teams.
+
+Once connected to UnleashX, your agent can search your messages, list your inbox, draft and send email, create folders and tags to organize mail, and even create tasks from messages. It works against your live Zoho Mail account using your own Zoho sign-in.
+
+Connecting Zoho Mail to UnleashX makes email hands-free. Instead of clicking around your mailbox, you can ask your agent to "find the latest message from the supplier and draft a reply" and it handles the Zoho Mail side for you.
+
+## 2. What you'll need
+
+- A Zoho Mail account (free or paid) with an active mailbox.
+- Your Zoho Mail **account ID** (UnleashX retrieves this for you via the connector once you authorize).
+- An UnleashX account with access to **Data Connectors**.
+
+<Note>
+No API key to paste. Zoho Mail uses OAuth — you click **Authorize** and sign in with Zoho.
+</Note>
+
+<Warning>
+Zoho Mail actions are scoped to the signed-in mailbox. The agent can only read and send mail for the account you authorize — it can't reach other users' mailboxes.
+</Warning>
+
+## 3. Get your credentials
+
+There's no key to copy. Authentication runs through Zoho's secure OAuth sign-in.
+
+<Steps>
+<Step title="Start the connection in UnleashX">
+Connecting Zoho Mail (Section 4) opens a Zoho **Authorize** window.
+</Step>
+<Step title="Sign in with Zoho">
+Sign in with your Zoho account at `https://accounts.zoho.com` (use your data center domain — `.eu`, `.in`, `.com.au`, etc. — if your org is hosted there). Complete two-factor authentication if prompted.
+</Step>
+<Step title="Review and accept the scopes">
+Zoho shows the access UnleashX is requesting (see the scopes table). Click **Accept**.
+</Step>
+<Step title="Return to UnleashX">
+Zoho redirects you back automatically. Behind the scenes UnleashX calls Zoho Mail with a `Zoho-oauthtoken` authorization header — you never handle the token yourself.
+</Step>
+</Steps>
+
+![01 zoho authorize](/images/mcp/zoho-mail/01-zoho-authorize.png)
+
+**Permissions (Zoho OAuth scopes) UnleashX requests:**
+
+| Scope | Why UnleashX needs it |
+|---|---|
+| `ZohoMail.messages.ALL` | Read, search, draft, and send messages in your mailbox. |
+| `ZohoMail.folders.ALL` | List and create folders to organize your mail. |
+| `ZohoMail.tags.ALL` | Create and apply tags (labels) to messages. |
+| `ZohoMail.accounts.READ` | Read your mail account details (including the account ID). |
+| `offline_access` | Refresh access automatically so you don't re-authorize every session. |
+
+<Note>
+Zoho OAuth scopes are granular. UnleashX requests only what these tools need, and Zoho — not UnleashX — enforces the limits.
+</Note>
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to `https://tryunleashx.com` and open the agent you want to connect.
+</Step>
+<Step title="Open Data Connectors">
+Inside the agent, go to **Data Connectors**.
+</Step>
+<Step title="Find Zoho Mail">
+Locate **Zoho Mail** and click **Connect** (or **Add** / **Configure**).
+</Step>
+<Step title="Authorize with Zoho">
+Click **Authorize**, sign in with Zoho, and accept the scopes.
+</Step>
+<Step title="Confirm success">
+You return to UnleashX and the Zoho Mail connector shows a **Connected** badge.
+</Step>
+</Steps>
+
+![02 connected badge](/images/mcp/zoho-mail/02-connected-badge.png)
+
+## 5. Available tools
+
+| Tool (technical name) | What it does | Changes data? |
+|---|---|---|
+| `zoho_mail_create_draft` | Creates a draft email in your mailbox. | ✏️ Yes |
+| `zoho_mail_send_email` | Sends an email on your behalf. | ✏️ Yes |
+| `zoho_mail_create_tag` | Creates a new tag (label). | ✏️ Yes |
+| `zoho_mail_create_folder` | Creates a new mail folder. | ✏️ Yes |
+| `zoho_mail_create_task` | Creates a task (e.g. from a message). | ✏️ Yes |
+| `zoho_mail_search_messages` | Searches your mailbox for matching messages. | No |
+| `zoho_mail_list_emails` | Lists emails from your inbox or a folder. | No |
+| `zoho_mail_get_accounts` | Retrieves your Zoho Mail account details, including the account ID. | No |
+| `zoho_mail_trigger_new_message` | Checks for new messages matching a search (e.g. `in:inbox`) for automation triggers. | No |
+
+## 6. Example usage
+
+**"Find the latest email from our supplier and draft a reply confirming the order."**
+→ Runs `zoho_mail_search_messages` to locate the thread, then `zoho_mail_create_draft` so you can review the reply before sending.
+
+**"Create a 'Receipts' folder and send the accountant this month's summary."**
+→ Runs `zoho_mail_create_folder` to add the folder, then `zoho_mail_send_email` to send the summary.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- Search, list, and read messages in your mailbox.
+- Draft and send email as you.
+- Create folders and tags to organize mail, and create tasks from messages.
+- Read your mail account details (account ID).
+
+**UnleashX cannot:**
+- Permanently delete your emails (no delete tool is exposed in this connector).
+- Access other users' mailboxes or other Zoho products (Zoho CRM, Zoho Desk) — those are separate connectors.
+- Change your Zoho account password or security settings.
+
+**To disconnect:** In UnleashX, open **Data Connectors → Zoho Mail → Disconnect**. You can also revoke access at `https://accounts.zoho.com/home#sessions/usersession` (Connected Apps). Disconnecting revokes access immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| **401 Unauthorized** | The Zoho token expired or is invalid. | Reconnect Zoho Mail in **Data Connectors** and sign in again. |
+| **403 Forbidden** | A required mail scope wasn't granted. | Reconnect and accept all the requested scopes, then retry. |
+| **Account ID missing** | The agent couldn't resolve which mailbox to use. | Ask the agent to run `zoho_mail_get_accounts` first, or reconnect. |
+| **Wrong data center** | You signed in at the wrong Zoho domain (e.g. `.com` vs `.eu`). | Reconnect using your account's data center. |
+| **Send failed** | An invalid recipient address or a Zoho sending limit was hit. | Verify the recipient and check your Zoho Mail sending limits. |
+
+For general MCP issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Is my email data stored by UnleashX?**
+No. UnleashX accesses your mailbox live through the Zoho Mail API per request; it doesn't keep a copy of your inbox.
+
+**Can multiple team members connect their own Zoho Mail?**
+Yes. Each person authorizes their own Zoho account, so the agent works against each user's own mailbox.
+
+**Can the agent send mail as someone else?**
+No. It can only send from the mailbox you signed in with.
+
+**Which data center should I use?**
+Use the one your Zoho account lives in (US `.com`, EU `.eu`, India `.in`, Australia `.com.au`, etc.). The wrong one causes auth errors.
+
+## 10. References
+
+- Zoho Mail API documentation: https://www.zoho.com/mail/help/api/
+- Zoho Mail OAuth scopes: https://www.zoho.com/mail/help/api/using-oauth-2.html
+- Zoho Connected Apps / revoke access: https://accounts.zoho.com/home#sessions/usersession
+- Zoho sign-in: https://accounts.zoho.com

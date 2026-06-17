@@ -1,0 +1,243 @@
+---
+title: "Introduction"
+description: "Welcome to MCP: what MCP servers are, how they work, and why to use them."
+---
+
+# Connect your AI to the tools that matter
+
+MCP is an open standard that lets AI agents securely talk to external services — spreadsheets, databases, calendars, CRMs — using a single, consistent protocol. This guide explains what it is, how it works under the hood, and how to put it to work in your own workflows.
+
+---
+
+## On this page
+
+1. [What is MCP?](#what-is-mcp)
+2. [Why MCP exists](#why-mcp-exists)
+3. [Core concepts](#core-concepts)
+4. [How it works](#how-it-works)
+5. [Tools vs resources](#tools-vs-resources)
+6. [Using MCP in your workflow](#using-mcp-in-your-workflow)
+7. [Advantages](#advantages)
+8. [Real-world use cases](#real-world-use-cases)
+9. [Glossary](#glossary)
+10. [Next steps](#next-steps)
+
+---
+
+## What is MCP?
+
+**Model Context Protocol (MCP)** is an open standard that defines how AI agents — like large language models — communicate with external tools and data sources. Think of it as a universal adapter: instead of building a bespoke connector for every integration you need, MCP gives you one consistent interface that works across all of them.
+
+At its core, MCP is a client–server protocol. Your AI application is the *client*. Each external system — Google Sheets, Airtable, your company's CRM, a custom database — runs an *MCP server* that wraps that system's capabilities in a standardised way. When your agent needs to read from a spreadsheet or write a row to a database, it speaks MCP, and the server translates that into whatever native API the underlying service requires.
+
+> **One-liner definition:** MCP is the protocol that lets your AI agent securely call actions on external services through a consistent, well-defined interface — without rewriting integration logic for every tool.
+
+This might sound abstract, so here is a concrete example. Imagine you are building an AI assistant that can update a project tracker in Airtable when it detects a deadline is at risk. Without MCP, you would write custom code to authenticate with Airtable's API, format the payload, handle rate limits, and parse the response — and then repeat that work for every other tool your assistant needs. With MCP, you connect the Airtable MCP server once, and your agent can immediately call `update_record`, `create_record`, or `search_records` using the same pattern it uses for every other MCP server.
+
+---
+
+## Why MCP exists
+
+Before MCP, connecting an AI agent to external tools was messy. Every integration was handcrafted. Teams spent weeks writing, testing, and maintaining "glue code" — thin wrappers around third-party APIs that had to be rebuilt whenever an API changed or a new tool was added. This created a fragmentation problem: a workflow connecting five services required five different patterns, five authentication schemes, and five sets of error-handling logic.
+
+The deeper issue is that AI agents are inherently dynamic. They decide at runtime which actions to take. A hardcoded integration assumes you know in advance exactly what the agent will do. MCP solves this by giving the agent a discovery mechanism: at connection time, the server tells the agent exactly which tools are available, what inputs they expect, and what outputs they return. The agent can then reason about which tool to use — dynamically, without any pre-programmed logic on the client side.
+
+> **The fragmentation problem:** Without MCP — 10 integrations = 10 custom code paths, 10 auth flows, 10 maintenance burdens. With MCP — 10 integrations = 10 server connections, one protocol, one pattern everywhere.
+
+MCP was developed with security as a first-class concern. Every tool invocation is explicit and structured. Servers declare exactly what they can do, making it easy to audit what an agent is allowed to access. Authentication is handled at the server boundary, which means your agent never needs to hold raw API keys or access tokens for the services it works with.
+
+---
+
+## Core concepts
+
+MCP has a small, well-defined vocabulary. Understanding these five concepts is enough to get started with any MCP integration.
+
+| Term | Definition |
+|------|------------|
+| **MCP Server** | A process that wraps an external service and exposes its capabilities (tools and resources) over the MCP protocol. One server per service — e.g., a Google Sheets MCP server, an Airtable MCP server. |
+| **MCP Client** | The AI application or agent that connects to one or more MCP servers. The client asks servers what they can do, then calls the tools it needs during task execution. |
+| **Tool** | A callable function exposed by a server — for example, `create_row`, `send_email`, or `query_database`. Tools can read or write data and may have side effects. |
+| **Resource** | A read-only data endpoint exposed by a server — for example, a list of available spreadsheets, schema definitions, or a current configuration. Resources provide context without changing anything. |
+| **Tool Schema** | A structured description of a tool: its name, what it does, the inputs it expects, and the output it returns. Written in JSON Schema, it allows the agent to call tools correctly without needing hard-coded knowledge of them. |
+
+---
+
+## How it works
+
+When your agent needs to do something in the world — create a task, fetch a record, send a message — the MCP protocol handles every step of that interaction in a predictable, four-phase sequence.
+
+### 1. Connection & discovery
+
+Your application connects to one or more MCP servers. Each server responds with a manifest: a complete list of the tools and resources it offers, along with their schemas. The agent now knows exactly what it can do without any hardcoded knowledge.
+
+### 2. Tool selection
+
+When a task requires external action, the agent inspects the available tools, picks the one that matches its intent, and prepares a structured call using the tool's declared input schema. If multiple tools are relevant, the agent reasons about which is most appropriate.
+
+### 3. Invocation
+
+The agent sends the tool call to the MCP server with the required inputs — formatted as structured JSON, not natural language. The server validates the inputs, authenticates the request, and executes the action on the target service (e.g., creating a row in Airtable or sending a Slack message).
+
+### 4. Structured response
+
+The server returns a typed, structured result. The agent reads the output, incorporates it into its reasoning, and decides whether to call another tool, return a final answer, or ask the user a follow-up question.
+
+This sequence repeats as many times as needed within a single agent turn. A complex task might involve a dozen tool calls in sequence — reading data, transforming it, writing results, sending notifications — all orchestrated by the agent through the same protocol.
+
+> **Key insight:** The agent never talks directly to third-party APIs. Every action goes through the MCP server, which acts as a typed, auditable gateway. This separation is what makes MCP integrations safe to deploy in production environments.
+
+---
+
+## Tools vs resources
+
+MCP distinguishes between two kinds of server-side capability: **tools** and **resources**. The distinction matters because it determines how the agent interacts with them and what kinds of checks you need around each.
+
+| Property | Tools | Resources |
+|----------|-------|-----------|
+| **Purpose** | Perform actions — read, write, create, delete, send | Provide context — schema, lists, config, current state |
+| **Side effects** | ✅ May modify data or trigger external actions | ❌ Read-only, no state changes |
+| **Examples** | `create_task`, `send_email`, `update_record` | List of workspaces, table schemas, user permissions |
+| **Access pattern** | Called explicitly by the agent with structured inputs | Loaded at connection time or polled for context |
+| **Auditing** | Every call is logged; inputs and outputs captured | Typically cached; lower audit priority |
+
+In practice, most of your day-to-day work with MCP will involve tools. Resources are more relevant during the setup phase — for example, listing available Airtable bases before the agent decides which one to write to — or for keeping the agent informed about the current state of a system it is managing.
+
+---
+
+## Using MCP in your workflow
+
+Getting an MCP integration running involves four practical steps. The exact details differ by platform, but the pattern is the same everywhere.
+
+### Step 1 — Choose your integration
+
+Start with the service your workflow needs to talk to. There are MCP servers available for popular platforms including Google Sheets, Airtable, Notion, Salesforce, Slack, GitHub, PostgreSQL, and many more. Check the MCP integrations catalogue for the current list. If a server does not exist for your target service, you can build your own using the MCP SDK.
+
+### Step 2 — Sign in to your chosen service
+
+Before your AI can access a service like Google Sheets or Airtable, it needs permission to do so — just like any app you connect to your Google account. This is handled through a simple sign-in flow, not any technical setup on your part.
+
+Here is what it looks like in practice:
+
+1. In your MCP-enabled tool or platform, click **Connect** next to the service you want to use.
+2. A sign-in window opens — for example, "Sign in with Google" or "Connect your Airtable account."
+3. Log in and click **Allow** to grant access.
+4. That's it. The connection is saved and your AI can now work with that service.
+
+> **No passwords, no code required.** You never paste keys or touch any settings files. It works the same way as connecting Spotify to your TV, or linking your calendar to a scheduling app — a familiar "log in and allow" screen does everything.
+
+Once connected, the service stays linked until you choose to disconnect it. You can manage or remove connections at any time from your account settings.
+
+### Step 3 — Call tools in your agent flow
+
+Once connected, your agent can call tools in the same way it would call any other function. The model receives the tool schemas alongside your prompt context, selects the right tool for each step, and invokes it with structured parameters.
+
+```javascript
+// Agent decides to create a record in Airtable
+const result = await client.callTool("create_record", {
+  base_id:  "appXXXXXXXX",
+  table:    "Tasks",
+  fields: {
+    Name:     "Review Q3 budget proposal",
+    Status:   "In progress",
+    Due:      "2026-04-15",
+    Assignee: "priya@example.com"
+  }
+});
+
+// result.record_id = "recABCDEF1234"
+```
+
+### Step 4 — Use outputs in your logic
+
+Every tool returns a structured result. Your agent can read that result, pass it to the next tool, store it in memory for later in the conversation, surface it to the user as part of its final response, or use it to make a branching decision. Because the outputs are typed and structured rather than raw text, they are reliable inputs for downstream automation steps.
+
+---
+
+## Advantages
+
+Why use MCP rather than calling APIs directly? There are six reasons that matter in production.
+
+### Standardised integration layer
+
+One protocol covers every tool. Add a new service by connecting its MCP server — no new code patterns to learn or maintain. Your team only ever needs to understand one integration model, regardless of how many services you connect.
+
+### Faster setup
+
+Connect a pre-built MCP server and your agent has full access to that service's capabilities within minutes, not days. Discovery is automatic: the server tells the client what it can do at connection time, with no manual configuration of individual tool definitions.
+
+### Reusable interfaces
+
+A tool schema written once works for any agent, any model, any workflow. Build the server once and share it across your entire organisation. Teams can publish internal MCP servers the same way they publish internal libraries.
+
+### Observability
+
+Every tool invocation is structured and loggable. You can audit exactly which tools were called, with which inputs, and what came back. This makes debugging straightforward and compliance reporting tractable.
+
+### Security by design
+
+Credentials stay in the server. The agent never handles raw API keys. Scope and permissions are declared explicitly in the server's configuration, making it easy to apply least-privilege access to every integration.
+
+### Maintainability
+
+When an underlying API changes, you update one server, not every agent that uses it. The agent-side code stays the same; only the server adapts. This dramatically reduces the long-term cost of keeping integrations current.
+
+---
+
+## Real-world use cases
+
+MCP is general-purpose — it works for any scenario where an AI agent needs to take action in an external system. Here are some of the patterns that teams use most often.
+
+### Automated reporting pipelines
+
+An agent reads source data from Google Sheets, transforms it, writes summary rows to Airtable, and sends a formatted digest to Slack — all through MCP tool calls, triggered on a schedule or by an event.
+
+### Sales workflow automation
+
+When a lead replies to an outreach email, an agent reads the conversation, updates the contact record in Salesforce, creates a follow-up task, and drafts a reply — all without a human touching the keyboard.
+
+### AI code review assistant
+
+An agent fetches open pull requests from GitHub, analyses the diffs, posts review comments inline, and labels the PR with the appropriate category — using three MCP tools from the GitHub server in a single workflow run.
+
+### Intelligent ticket triage
+
+An agent reads incoming support tickets, queries the order database for the customer's history, classifies the ticket by urgency, and routes it to the right queue — with a draft response already attached.
+
+### Expense reconciliation
+
+An agent reads bank transaction exports, matches entries against a budgeting spreadsheet, flags anomalies, and writes a reconciliation summary — turning a two-hour manual task into a two-minute automated one.
+
+### Competitive intelligence gathering
+
+An agent queries a web search MCP server, extracts structured data from results, and populates a tracking sheet with competitor pricing and feature changes — updated daily with zero manual effort.
+
+The common thread across all of these is that MCP eliminates the "last mile" friction between an AI's reasoning and real-world action. The agent is not just telling you what to do — it is doing it, through a protocol that is auditable, reversible, and safe.
+
+---
+
+## Glossary
+
+| Term | Definition |
+|------|------------|
+| **Agent** | An AI system that can take sequences of actions autonomously to complete a goal. In the MCP context, the agent is the entity that decides which tools to call and in what order. |
+| **Protocol** | A defined set of rules for how two systems communicate. MCP specifies the message formats, connection lifecycle, tool schema structure, and response types that every client and server must follow. |
+| **Tool schema** | A JSON Schema description of a tool: its name, description, required and optional parameters, and the shape of its output. Schemas are how the agent knows how to call a tool correctly at runtime. |
+| **SSE** | Server-Sent Events — the transport mechanism most MCP servers use to stream responses back to the client. You will see `/sse` URLs when configuring server connections. |
+| **Structured output** | A response from a tool or resource that is typed and machine-readable (typically JSON), as opposed to freeform text. Structured outputs are what make MCP results reliable inputs for downstream automation. |
+| **Capability manifest** | The list of tools and resources a server returns when first connected. The agent uses this manifest to understand what the server can do, without needing any hardcoded knowledge of the underlying service. |
+
+---
+
+## Next steps
+
+You now have a solid mental model of what MCP is, why it was designed the way it was, and how it fits into an AI-powered workflow. From here, you have two paths forward.
+
+If you want to **connect an existing integration**, head to the MCP Integrations overview. It lists every available server with setup instructions, authentication requirements, and the full tool catalogue for each service. Most integrations take under fifteen minutes to configure.
+
+If you want to **build a custom MCP server** — because your target service does not have an existing server, or because you want to expose internal tools to your agents — see the Building MCP Servers guide. It walks through the MCP SDK, tool schema authoring, and deployment patterns for both local and hosted servers.
+
+> **Good to know:** MCP servers are stateless by design. They do not store conversation history or session state. All context lives in your agent. This makes servers easy to scale horizontally and simple to reason about — each tool call is independent.
+
+---
+
+*Previous: [Overview](#) · Next: [MCP Integrations →](#)*

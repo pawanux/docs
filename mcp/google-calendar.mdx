@@ -1,0 +1,180 @@
+---
+title: "Google Calendar MCP"
+icon: "https://calendar.google.com/googlecalendar/images/favicons_2020q4/calendar_31.ico"
+description: "Let your UnleashX agent check availability and create, update, and manage Google Calendar events."
+tags: [mcp, google-calendar, integration]
+---
+
+# Google Calendar MCP
+
+> **In one line:** Connect Google Calendar so your UnleashX agent can find free time, book meetings, and manage events for you.
+
+| | |
+|---|---|
+| **Category** | Productivity |
+| **Authentication** | OAuth (Google sign-in) |
+| **Setup time** | ~2 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Scheduling, availability checks, and automated meeting booking from natural language |
+
+## 1. Overview
+
+Google Calendar is Google's scheduling service. It stores your calendars, events, attendees, and free/busy information.
+
+Once connected, your UnleashX agent can list your calendars, check availability, find open time slots, create and update events (including meetings with attendees), add quick events from plain text, and delete events.
+
+Connecting Google Calendar to UnleashX means scheduling becomes conversational: ask "when am I free Thursday afternoon?" or "book a 30-minute call with Sam tomorrow at 4pm," and the agent reads your calendar and acts — no manual clicking through day views.
+
+## 2. What you'll need
+
+<Steps>
+<Step title="A Google account with Calendar">
+Any personal Google account or a Google Workspace account with Calendar enabled.
+</Step>
+<Step title="Permission to grant access">
+You must be able to complete the Google sign-in and approve the requested permissions.
+</Step>
+<Step title="An UnleashX agent">
+An agent in your UnleashX workspace where you'll add the Calendar connector.
+</Step>
+</Steps>
+
+<Note>
+No admin access? On a managed Google Workspace account, your admin may need to allow UnleashX in the Google Admin console before authorization succeeds.
+</Note>
+
+## 3. Get your credentials
+
+Google Calendar uses **Google OAuth 2.0**. You do **not** create or paste an API key. UnleashX redirects you to Google, you sign in once, and Google issues an access token to UnleashX automatically.
+
+<Steps>
+<Step title="Start the connection in UnleashX">
+In your agent's **Data Connectors**, find **Google Calendar** and click **Connect** (see Section 4). This launches Google's secure sign-in page.
+</Step>
+<Step title="Sign in with Google">
+Choose the Google account whose calendar you want to connect.
+</Step>
+<Step title="Review and approve the requested scopes">
+Google shows exactly what UnleashX is asking for. Click **Allow** to grant access and return to UnleashX.
+</Step>
+</Steps>
+
+<Info>
+There is no key to copy. Access is granted by your Google sign-in and can be revoked anytime at your [Google Account permissions page](https://myaccount.google.com/permissions).
+</Info>
+
+**Scopes UnleashX requests for Google Calendar:**
+
+| Scope | Why UnleashX needs it |
+|---|---|
+| `https://www.googleapis.com/auth/calendar` | Read and manage calendars and events (create, update, delete). |
+| `https://www.googleapis.com/auth/calendar.events` | Create, update, and delete individual events. |
+| `https://www.googleapis.com/auth/calendar.readonly` | List calendars and read events and free/busy info. |
+| `https://www.googleapis.com/auth/userinfo.email` | Identify which account is connected. |
+| `https://www.googleapis.com/auth/userinfo.profile` | Read your basic profile (name, picture). |
+| `openid` | Sign-in / identity verification. |
+
+
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Sign in at [https://tryunleashx.com](https://tryunleashx.com) and open your agent.
+</Step>
+<Step title="Go to Data Connectors">
+In the agent, open **Data Connectors**.
+</Step>
+<Step title="Find Google Calendar and connect">
+Locate **Google Calendar** and click **Connect** / **Add** / **Configure**.
+</Step>
+<Step title="Authorize with Google">
+Click **Authorize**, sign in with Google, and approve the requested permissions.
+</Step>
+<Step title="Confirm success">
+You'll return to UnleashX and the connector status will show a **Connected** badge.
+</Step>
+</Steps>
+
+![01 calendar connector](/images/mcp/google-calendar/01-connector.png)
+
+## 5. Available tools
+
+| Tool (technical) | What it does | Changes data? |
+|---|---|---|
+| `calendar_get_availability` | Get free/busy windows for a calendar in a time range. | No |
+| `calendar_create_event` | Create an event (flexible date/time parsing). | ✏️ Yes |
+| `calendar_create_meeting` | Create a meeting event with details. | ✏️ Yes |
+| `calendar_delete_event` | Delete an event. | ⚠️ Yes |
+| `calendar_get_event` | Get a single event by ID. | No |
+| `calendar_get_events` | Get events between a start and end time. | No |
+| `calendar_update_event` | Update an existing event. | ✏️ Yes |
+| `calendar_get_current_datetime` | Get the current date/time (optional timezone). | No |
+| `calendar_list_calendars` | List calendars on the account. | No |
+| `calendar_list_events` | List a calendar's events (from now if no range given). | No |
+| `calendar_find_available_times` | Find open time slots in a range. | No |
+| `calendar_check_availability` | Check whether a time range is free or busy. | No |
+| `calendar_retrieve_calendar_details` | Get details of a specific calendar. | No |
+| `calendar_view_calendars` | View calendars (alternate of list). | No |
+| `calendar_view_events` | View events in a required time range. | No |
+| `calendar_retrieve_event_details` | Retrieve full details of an event. | No |
+| `calendar_get_event_details` | Get details of an event by ID. | No |
+| `calendar_create_event_based_on_past_event` | Create a new event modeled on a past one. | ✏️ Yes |
+| `calendar_add_attendees_to_event` | Add attendees to an existing event. | ✏️ Yes |
+| `calendar_add_quick_event` | Add an event from plain-text ("Quick Add"). | ✏️ Yes |
+| `calendar_quick_add_event` | Add an event from plain-text ("Quick Add"). | ✏️ Yes |
+
+## 6. Example usage
+
+> **"Am I free Thursday between 2pm and 5pm? If so, book a 45-minute review with priya@acme.com."**
+>
+> Runs `calendar_find_available_times` / `calendar_check_availability`, then `calendar_create_meeting` (with `calendar_add_attendees_to_event`).
+
+> **"Move tomorrow's 10am standup to 11am."**
+>
+> Runs `calendar_list_events` / `calendar_get_events` to locate it, then `calendar_update_event`.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- List calendars and read events and free/busy data.
+- Create, update, and delete events.
+- Add attendees and create quick events from text.
+
+**UnleashX cannot:**
+- Access Gmail, Drive, or other Google services unless connected separately.
+- Change your Google account settings or password.
+- Act on calendars you don't have access to.
+
+**To disconnect:** In UnleashX, open **Data Connectors → Google Calendar → Disconnect**, or revoke at [https://myaccount.google.com/permissions](https://myaccount.google.com/permissions). Revoking takes effect immediately.
+
+The connection authenticates each request with your Google OAuth access token (resolved from an `access-token` header, a `google_calendar_access_token` header, or an `Authorization: Bearer` header, falling back to your UnleashX session), refreshed automatically when it expires.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| `401 Unauthorized` | The access token is missing or expired. | Reconnect Google Calendar in **Data Connectors**. |
+| `403 Forbidden` | Missing scope or admin policy blocks the app. | Re-authorize and approve all scopes; ask your Workspace admin to allow UnleashX. |
+| `404 Not Found` | The calendar or event ID doesn't exist or isn't shared with you. | Verify the calendar/event ID and your access to it. |
+| Event created at the wrong time | Time zone wasn't specified. | Provide an explicit time zone; the agent defaults to Asia/Kolkata when none is given. |
+
+For general connector issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Does UnleashX store my calendar?**
+No. It reads and writes events through Google's API in real time to fulfill your requests.
+
+**Can multiple team members connect their calendars?**
+Yes. Each person authorizes their own Google account.
+
+**Can it invite external attendees?**
+Yes — adding attendees sends Google Calendar invitations as usual.
+
+## 10. References
+
+- [Google Calendar API documentation](https://developers.google.com/workspace/calendar/api/guides/overview)
+- [Google Calendar API OAuth scopes](https://developers.google.com/workspace/calendar/api/auth)
+- [Google Cloud Console](https://console.cloud.google.com/)
+- [Manage third-party access to your Google Account](https://myaccount.google.com/permissions)
