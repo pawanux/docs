@@ -60,6 +60,21 @@
             ]
           },
           {
+            "group": "MCP Servers",
+            "pages": [
+              "mcp-server/introduction",
+              "mcp-server/authentication",
+              "mcp-server/slack",
+              "mcp-server/gmail",
+              "mcp-server/github",
+              "mcp-server/linear",
+              "mcp-server/notion",
+              "mcp-server/google-drive",
+              "mcp-server/salesforce",
+              "mcp-server/hubspot"
+            ]
+          },
+          {
             "group": "Features",
             "pages": [
               "features/connect-providers",

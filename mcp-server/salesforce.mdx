@@ -1,0 +1,138 @@
+---
+title: "Salesforce"
+description: "Connect Salesforce to look up records, create leads, and log activity from UnleashX"
+---
+
+> **In one line:** Connect Salesforce so your UnleashX agents can look up records, create leads, and log activity.
+
+| | |
+|---|---|
+| **Authentication** | OAuth |
+| **Setup time** | ~4 minutes |
+| **Difficulty** | Medium |
+| **Best for** | Sales teams who want agents to read and update CRM records during calls |
+
+## 1. Overview
+
+**What is Salesforce?**
+Salesforce is an enterprise CRM for managing leads, contacts, accounts, and opportunities.
+
+**What can you do once it's connected?**
+Search and read records (leads, contacts, accounts, opportunities), create leads, update records, and log activity.
+
+**Why connect it to UnleashX?**
+Your agent can pull up a caller's account, create a lead from a conversation, or log a call to the right record — without anyone opening Salesforce.
+
+## 2. What you'll need
+
+Before you begin, make sure you have:
+
+- A Salesforce account (Professional edition or higher for API access).
+- The **API Enabled** permission on your user profile.
+- For org-wide setup: an admin who can approve connected apps.
+
+<Warning>
+  **API access is plan-dependent.** Some Salesforce editions require an add-on for API access. If connecting fails with an API error, check your edition with your Salesforce admin.
+</Warning>
+
+## 3. Get your credentials
+
+Salesforce uses **OAuth**, so there's nothing to copy. You'll approve access in the next section by signing in to Salesforce directly.
+
+<Info>
+  If your org restricts connected apps, an admin may need to approve UnleashX once under **Setup → Connected Apps**. After that, permitted users can connect.
+</Info>
+
+## 4. Connect on UnleashX
+
+<Steps>
+  <Step title="Open Integrations">
+    In UnleashX, go to **Integrations** and search for **Salesforce**.
+  </Step>
+  <Step title="Choose environment">
+    Select **Production** or **Sandbox** to match the org you're connecting.
+  </Step>
+  <Step title="Authorize">
+    Click **Connect**, then **Authorize**. Sign in to Salesforce and click **Allow**.
+  </Step>
+  <Step title="Assign to an agent">
+    You'll return to UnleashX automatically. Assign Salesforce to the agent(s) that should use it.
+  </Step>
+</Steps>
+
+✅ **You're connected** when the status shows a green **Connected** badge. The tools below are now available.
+
+### Permissions / scopes requested
+
+| Permission | Why UnleashX needs it |
+|------------|----------------------|
+| `api` | To read and write records via the Salesforce API |
+| `refresh_token` | To keep the connection active without re-authorizing |
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|------|--------------|:---:|
+| `search_records` | Find leads, contacts, accounts, or opportunities | No |
+| `get_record` | Read a specific record's fields | No |
+| `create_lead` | Create a new lead | ✏️ Yes |
+| `update_record` | Update fields on a record | ✏️ Yes |
+| `log_activity` | Log a task or call to a record | ✏️ Yes |
+
+> ✏️ = creates or edits data
+
+## 6. Example usage
+
+**Example 1 — Look up an account**
+
+> You type: _"Pull up the Acme Corp account and its open opportunities."_
+
+What happens: UnleashX uses `search_records` to find the account, then `get_record` to read its opportunities.
+
+**Example 2 — Capture a lead**
+
+> You type: _"Create a lead for Jordan at Acme, phone on file, source inbound call."_
+
+What happens: UnleashX uses `create_lead` to add it. You'll see a confirmation when it's done.
+
+## 7. Permissions & data access
+
+When you connect Salesforce, UnleashX can:
+
+- Search and read records your Salesforce user can see.
+- Create and update records, and log activity, within your user's permissions.
+
+It **cannot**:
+
+- Access records your user profile can't see (it respects Salesforce sharing rules).
+- Change org setup, users, or permissions.
+
+You can disconnect at any time from **Integrations → Salesforce → Disconnect**, or revoke the connected app in Salesforce. Disconnecting immediately revokes UnleashX's access.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---------|---------------|---------------|
+| `401` / `INVALID_SESSION_ID` | The session expired or was revoked | Reconnect from **Integrations → Salesforce** |
+| `API_DISABLED_FOR_ORG` | Your edition or profile lacks API access | Ask your admin to enable API access |
+| `INSUFFICIENT_ACCESS` | Your user can't see or edit that record | Adjust sharing/permissions in Salesforce |
+| Wrong data | You connected the wrong environment | Disconnect and reconnect choosing Production vs Sandbox |
+
+Still stuck? See [Authentication basics](/mcp-server/authentication) or contact [cs@unleashx.ai](mailto:cs@unleashx.ai).
+
+## 9. Frequently asked questions
+
+**Is my CRM data stored by UnleashX?**
+UnleashX reads records only when a tool call needs them during a conversation; it does not copy your org.
+
+**Does it respect our sharing rules?**
+Yes. The connection acts as your Salesforce user, so it only sees and edits what that user is allowed to.
+
+**Production or Sandbox?**
+Connect Sandbox to test safely, then connect Production when you're ready to use real data.
+
+## 10. References
+
+- [Salesforce Help](https://help.salesforce.com)
+- [Connected Apps overview](https://help.salesforce.com/s/articleView?id=sf.connected_app_overview.htm)
+- [Salesforce REST API](https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/)

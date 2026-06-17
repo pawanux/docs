@@ -1,0 +1,163 @@
+---
+title: "GitHub"
+description: "Connect GitHub to read repositories, manage issues, and review pull requests from UnleashX"
+---
+
+> **In one line:** Connect GitHub so your UnleashX agents can read repositories, manage issues, and review pull requests.
+
+| | |
+|---|---|
+| **Authentication** | Personal Access Token |
+| **Setup time** | ~3 minutes |
+| **Difficulty** | Medium |
+| **Best for** | Engineering teams who want agents to triage issues, summarize PRs, or look up code |
+
+## 1. Overview
+
+**What is GitHub?**
+GitHub is where developers host code, track issues, and review changes through pull requests.
+
+**What can you do once it's connected?**
+Read repositories and files, list and create issues, comment on pull requests, and search code — all driven by your UnleashX agent.
+
+**Why connect it to UnleashX?**
+Your agent can answer questions about your codebase, file issues from a conversation, or summarize what changed in a PR, without anyone leaving the call.
+
+## 2. What you'll need
+
+Before you begin, make sure you have:
+
+- A GitHub account (free plan is fine).
+- Access to the repositories you want the agent to use.
+- For organization repos: permission to authorize tokens, or an admin who can.
+
+<Warning>
+  **Don't have access to a private org repo?** Ask an organization owner to approve the token's access, or have them complete Step 3 and share scope guidance with you.
+</Warning>
+
+## 3. Get your credentials
+
+You'll create a **fine-grained personal access token** inside GitHub and copy it.
+
+<Steps>
+  <Step title="Open the token settings">
+    Sign in to GitHub and go to **Settings → Developer settings → Personal access tokens → Fine-grained tokens** (`https://github.com/settings/tokens?type=beta`).
+  </Step>
+  <Step title="Generate a new token">
+    Click **Generate new token**.
+  </Step>
+  <Step title="Name it">
+    Set the **Token name** to `UnleashX` so you recognize it later, and choose an expiration.
+  </Step>
+  <Step title="Choose repository access">
+    Under **Repository access**, select the specific repositories the agent should reach.
+  </Step>
+  <Step title="Select permissions">
+    Add the permissions in the table below.
+  </Step>
+  <Step title="Generate and copy">
+    Click **Generate token**, then **copy the token** and keep it somewhere safe.
+  </Step>
+</Steps>
+
+<Warning>
+  **Copy it now.** GitHub shows the token only once. If you lose it, generate a new one. Never share it publicly or commit it to code — treat it like a password.
+</Warning>
+
+### Permissions / scopes to select
+
+| Permission | Why UnleashX needs it |
+|------------|----------------------|
+| `Contents: Read` | To read repository files and code |
+| `Issues: Read and write` | To list, create, and comment on issues |
+| `Pull requests: Read and write` | To read and comment on pull requests |
+| `Metadata: Read` | Required by GitHub for any access (added automatically) |
+
+## 4. Connect on UnleashX
+
+<Steps>
+  <Step title="Open Integrations">
+    In UnleashX, go to **Integrations** and search for **GitHub**.
+  </Step>
+  <Step title="Connect">
+    Click **Connect**.
+  </Step>
+  <Step title="Paste your token">
+    Paste the token you copied in Step 3.
+  </Step>
+  <Step title="Save">
+    Click **Save**, then assign GitHub to the agent(s) that should use it.
+  </Step>
+</Steps>
+
+✅ **You're connected** when the status shows a green **Connected** badge. The tools below are now available.
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|------|--------------|:---:|
+| `search_repositories` | Find repositories you can access | No |
+| `get_file_contents` | Read a file from a repository | No |
+| `list_issues` | List issues in a repository | No |
+| `create_issue` | Open a new issue | ✏️ Yes |
+| `add_issue_comment` | Comment on an issue | ✏️ Yes |
+| `list_pull_requests` | List pull requests | No |
+
+> ✏️ = creates or edits data
+
+## 6. Example usage
+
+**Example 1 — Triage a bug from a call**
+
+> You type: _"Open an issue in acme/web titled 'Checkout button unresponsive on Safari'."_
+
+What happens: UnleashX uses `create_issue` to file it and returns a link to the new issue.
+
+**Example 2 — Summarize recent work**
+
+> You type: _"What pull requests are open in acme/web?"_
+
+What happens: UnleashX uses `list_pull_requests` and reads back the open PRs.
+
+## 7. Permissions & data access
+
+When you connect GitHub, UnleashX can:
+
+- Read files and metadata in the repositories you selected.
+- Create and comment on issues and pull requests in those repositories.
+
+It **cannot**:
+
+- Access repositories you didn't grant in the token.
+- Change account or organization settings.
+- Push code or delete repositories.
+
+You can disconnect at any time from **Integrations → GitHub → Disconnect**. Disconnecting immediately revokes UnleashX's access.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---------|---------------|---------------|
+| `401 Unauthorized` | The token is wrong, expired, or revoked | Generate a new token (Step 3) and reconnect |
+| `403 Forbidden` | A required permission is missing | Re-check the permissions in Step 3 and reconnect |
+| `404 Not Found` on a repo | The token doesn't include that repository | Edit the token's **Repository access** to add it |
+| Org repo not visible | The org hasn't approved the token | Ask an org owner to approve it in org settings |
+
+Still stuck? See [Authentication basics](/mcp-server/authentication) or contact [cs@unleashx.ai](mailto:cs@unleashx.ai).
+
+## 9. Frequently asked questions
+
+**Is my code stored by UnleashX?**
+UnleashX reads file contents only when a tool call needs them during a conversation; it does not clone or store your repositories.
+
+**Can multiple team members connect the same repos?**
+Yes. Each person creates their own token, so access always reflects that person's GitHub permissions.
+
+**How do I rotate my token?**
+Generate a new fine-grained token, reconnect on UnleashX, then delete the old token in GitHub settings.
+
+## 10. References
+
+- [GitHub documentation](https://docs.github.com)
+- [Create a fine-grained personal access token](https://github.com/settings/tokens?type=beta)
+- [Fine-grained token permissions reference](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)

@@ -1,0 +1,43 @@
+---
+title: "Authentication basics"
+description: "Understand the ways MCP servers authenticate before you connect one"
+---
+
+Every MCP server needs to confirm it's really you before UnleashX can use it on your behalf. There are three common ways this happens. Knowing which one a server uses tells you what to expect during setup.
+
+## The three auth types
+
+| Type | What you do | Used by |
+|------|-------------|---------|
+| **OAuth** | Click **Authorize**, sign in to the tool, and approve access. No keys to copy. | Slack, Google, Notion |
+| **API Key** | Generate a key in the tool's settings and paste it into UnleashX. | Linear, HubSpot |
+| **Personal Access Token** | Create a token (a long-lived key tied to your account) and paste it in. | GitHub |
+
+<Info>
+  OAuth is the easiest — you never handle a secret directly. API keys and tokens require one copy-paste step, but give you precise control over scopes.
+</Info>
+
+## Keep your credentials safe
+
+<Warning>
+  Treat every API key and token exactly like a password.
+</Warning>
+
+- Never share a key publicly or commit it to source control.
+- Give each key a recognizable name (e.g. "UnleashX") so you can revoke the right one later.
+- Most tools show a key **only once** at creation. Copy it immediately.
+- Rotate keys periodically: generate a new one, reconnect, then delete the old one.
+
+## Disconnecting
+
+You can disconnect any server at any time from **Integrations → _server_ → Disconnect**. Disconnecting immediately revokes UnleashX's access — the server's tools stop being available to your agents.
+
+## Common errors
+
+| Problem | What it means | How to fix it |
+|---------|---------------|---------------|
+| `401 Unauthorized` | The key is wrong, expired, or revoked | Generate a new key and reconnect |
+| `403 Forbidden` | A required permission/scope is missing | Re-check the scopes on the tool's side and reconnect |
+| Connected, but no data | The account has no data, or the scope is too narrow | Verify the account and requested permissions |
+
+Still stuck? Contact [cs@unleashx.ai](mailto:cs@unleashx.ai).

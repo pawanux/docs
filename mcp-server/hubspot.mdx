@@ -1,0 +1,152 @@
+---
+title: "HubSpot"
+description: "Connect HubSpot to look up contacts, create deals, and log activity from UnleashX"
+---
+
+> **In one line:** Connect HubSpot so your UnleashX agents can look up contacts, create deals, and log activity.
+
+| | |
+|---|---|
+| **Authentication** | API Key (Private App token) |
+| **Setup time** | ~2 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Sales and support teams who want agents to read and update CRM records |
+
+## 1. Overview
+
+**What is HubSpot?**
+HubSpot is a CRM platform for managing contacts, companies, deals, and customer activity.
+
+**What can you do once it's connected?**
+Search and read contacts and companies, create or update deals, and log notes and activity.
+
+**Why connect it to UnleashX?**
+Your agent can pull up a caller's history, create a deal from a conversation, or log a call to the right contact — without anyone opening HubSpot.
+
+## 2. What you'll need
+
+Before you begin, make sure you have:
+
+- A HubSpot account.
+- **Super Admin** access (or the App Marketplace permission) — needed to create a private app.
+
+<Warning>
+  **Not an admin?** Creating a private app requires admin rights. Ask a HubSpot Super Admin to complete Step 3 and share the token with you.
+</Warning>
+
+## 3. Get your credentials
+
+You'll create a **private app** in HubSpot and copy its access token.
+
+<Steps>
+  <Step title="Open private apps">
+    Sign in to HubSpot and go to **Settings → Integrations → Private Apps** (`https://app.hubspot.com/private-apps`).
+  </Step>
+  <Step title="Create a private app">
+    Click **Create a private app** and name it `UnleashX`.
+  </Step>
+  <Step title="Select scopes">
+    Open the **Scopes** tab and add the scopes in the table below.
+  </Step>
+  <Step title="Create and copy">
+    Click **Create app**, confirm, then **copy the access token** and keep it somewhere safe.
+  </Step>
+</Steps>
+
+<Warning>
+  **Copy it now.** Treat the token like a password — never share it publicly or commit it to code. You can view it again later in the app's settings, but rotate it if it's ever exposed.
+</Warning>
+
+### Permissions / scopes to select
+
+| Permission | Why UnleashX needs it |
+|------------|----------------------|
+| `crm.objects.contacts.read` / `.write` | To look up and update contacts |
+| `crm.objects.companies.read` | To look up companies |
+| `crm.objects.deals.read` / `.write` | To read and create deals |
+
+## 4. Connect on UnleashX
+
+<Steps>
+  <Step title="Open Integrations">
+    In UnleashX, go to **Integrations** and search for **HubSpot**.
+  </Step>
+  <Step title="Connect">
+    Click **Connect**.
+  </Step>
+  <Step title="Paste your token">
+    Paste the access token you copied in Step 3.
+  </Step>
+  <Step title="Save">
+    Click **Save**, then assign HubSpot to the agent(s) that should use it.
+  </Step>
+</Steps>
+
+✅ **You're connected** when the status shows a green **Connected** badge. The tools below are now available.
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|------|--------------|:---:|
+| `search_contacts` | Find contacts by name, email, or phone | No |
+| `get_contact` | Read a contact's details | No |
+| `create_or_update_contact` | Add a contact or update an existing one | ✏️ Yes |
+| `create_deal` | Create a new deal | ✏️ Yes |
+| `log_activity` | Log a note or call to a record | ✏️ Yes |
+
+> ✏️ = creates or edits data
+
+## 6. Example usage
+
+**Example 1 — Look up a caller**
+
+> You type: _"Pull up the contact for the number that just called."_
+
+What happens: UnleashX uses `search_contacts` to find the record and reads back their details and recent activity.
+
+**Example 2 — Create a deal**
+
+> You type: _"Create a deal for Acme worth $12,000 in the Sales pipeline."_
+
+What happens: UnleashX uses `create_deal` to add it. You'll see a confirmation when it's done.
+
+## 7. Permissions & data access
+
+When you connect HubSpot, UnleashX can:
+
+- Search and read contacts, companies, and deals.
+- Create and update contacts and deals, and log activity.
+
+It **cannot**:
+
+- Access objects whose scopes you didn't grant.
+- Change account, billing, or user settings.
+
+You can disconnect at any time from **Integrations → HubSpot → Disconnect**, or delete the private app in HubSpot. Disconnecting immediately revokes UnleashX's access.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---------|---------------|---------------|
+| `401 Unauthorized` | The token is wrong or was rotated | Copy the current token from the private app and reconnect |
+| `403 Forbidden` | A required scope is missing | Add the scope in the private app, save, then reconnect |
+| Contact not found | The record doesn't exist or is in a different account | Confirm the right HubSpot account is connected |
+
+Still stuck? See [Authentication basics](/mcp-server/authentication) or contact [cs@unleashx.ai](mailto:cs@unleashx.ai).
+
+## 9. Frequently asked questions
+
+**Is my CRM data stored by UnleashX?**
+UnleashX reads records only when a tool call needs them during a conversation; it does not copy your CRM.
+
+**Can multiple team members use the same connection?**
+A private app token represents the account, not a person. Create one app for UnleashX and reuse it, or create separate apps to scope access differently.
+
+**How do I rotate the token?**
+In HubSpot, open the private app → **Auth** → **Rotate**, then reconnect on UnleashX with the new token.
+
+## 10. References
+
+- [HubSpot Knowledge Base](https://knowledge.hubspot.com)
+- [Create a private app](https://app.hubspot.com/private-apps)
+- [HubSpot private apps & scopes](https://developers.hubspot.com/docs/api/private-apps)

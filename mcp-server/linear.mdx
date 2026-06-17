@@ -1,0 +1,144 @@
+---
+title: "Linear"
+description: "Connect Linear to create, search, and update issues from UnleashX"
+---
+
+> **In one line:** Connect Linear so your UnleashX agents can create, search, and update issues.
+
+| | |
+|---|---|
+| **Authentication** | API Key |
+| **Setup time** | ~2 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Product and engineering teams who want agents to file or look up issues |
+
+## 1. Overview
+
+**What is Linear?**
+Linear is an issue tracker for software teams — it organizes work into issues, projects, and cycles.
+
+**What can you do once it's connected?**
+Create issues, search and read existing ones, update status, and add comments.
+
+**Why connect it to UnleashX?**
+Your agent can turn a conversation into a tracked issue, check the status of work, or update a ticket — without anyone opening Linear.
+
+## 2. What you'll need
+
+Before you begin, make sure you have:
+
+- A Linear account (free plan is fine).
+- Membership in the workspace whose issues the agent should manage.
+
+<Warning>
+  A personal API key acts with **your** permissions. If you can't see a team in Linear, the key won't either — ask a workspace admin to add you to that team.
+</Warning>
+
+## 3. Get your credentials
+
+You'll create a **personal API key** inside Linear and copy it.
+
+<Steps>
+  <Step title="Open API settings">
+    Sign in to Linear and go to **Settings → Security & access → Personal API keys** (`https://linear.app/settings/account/security`).
+  </Step>
+  <Step title="Create a key">
+    Click **New API key**.
+  </Step>
+  <Step title="Name it">
+    Label it `UnleashX` so you recognize it later.
+  </Step>
+  <Step title="Create and copy">
+    Click **Create**, then **copy the key** and keep it somewhere safe.
+  </Step>
+</Steps>
+
+<Warning>
+  **Copy it now.** Linear shows the key only once. If you lose it, create a new one. Never share it publicly or commit it to code — treat it like a password.
+</Warning>
+
+## 4. Connect on UnleashX
+
+<Steps>
+  <Step title="Open Integrations">
+    In UnleashX, go to **Integrations** and search for **Linear**.
+  </Step>
+  <Step title="Connect">
+    Click **Connect**.
+  </Step>
+  <Step title="Paste your key">
+    Paste the key you copied in Step 3.
+  </Step>
+  <Step title="Save">
+    Click **Save**, then assign Linear to the agent(s) that should use it.
+  </Step>
+</Steps>
+
+✅ **You're connected** when the status shows a green **Connected** badge. The tools below are now available.
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|------|--------------|:---:|
+| `list_issues` | List issues in a team | No |
+| `search_issues` | Find issues by text | No |
+| `create_issue` | Open a new issue | ✏️ Yes |
+| `update_issue` | Change an issue's status or fields | ✏️ Yes |
+| `add_comment` | Comment on an issue | ✏️ Yes |
+
+> ✏️ = creates or edits data
+
+## 6. Example usage
+
+**Example 1 — File an issue from a call**
+
+> You type: _"Create a Linear issue in the Web team: 'Pricing page 404s on mobile'."_
+
+What happens: UnleashX uses `create_issue` and returns a link to the new issue.
+
+**Example 2 — Check status**
+
+> You type: _"What's the status of the 'Checkout redesign' issue?"_
+
+What happens: UnleashX uses `search_issues` to find it and reads back the current status.
+
+## 7. Permissions & data access
+
+When you connect Linear, UnleashX can:
+
+- Read and search issues in the teams you belong to.
+- Create, update, and comment on those issues.
+
+It **cannot**:
+
+- Access teams or workspaces you're not a member of.
+- Change billing or workspace admin settings.
+
+You can disconnect at any time from **Integrations → Linear → Disconnect**. Disconnecting immediately revokes UnleashX's access.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---------|---------------|---------------|
+| `401 Unauthorized` | The key is wrong, expired, or revoked | Create a new key (Step 3) and reconnect |
+| `403 Forbidden` | The key's account lacks access to that team | Ask an admin to add you to the team, then reconnect |
+| Issue not found | The issue is in a team you can't see | Confirm your team membership in Linear |
+
+Still stuck? See [Authentication basics](/mcp-server/authentication) or contact [cs@unleashx.ai](mailto:cs@unleashx.ai).
+
+## 9. Frequently asked questions
+
+**Is my Linear data stored by UnleashX?**
+UnleashX reads issues only when a tool call needs them during a conversation; it does not copy your workspace.
+
+**Can multiple team members connect the same workspace?**
+Yes. Each person uses their own key, so access reflects that person's Linear permissions.
+
+**How do I rotate my key?**
+Create a new key, reconnect on UnleashX, then revoke the old key in Linear settings.
+
+## 10. References
+
+- [Linear documentation](https://linear.app/docs)
+- [Linear API keys](https://linear.app/settings/account/security)
+- [Linear API reference](https://developers.linear.app)
