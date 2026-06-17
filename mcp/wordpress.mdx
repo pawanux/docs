@@ -42,25 +42,33 @@ WordPress uses an **Application Password** with the REST API over Basic auth.
 
 <Steps>
 <Step title="Open your WordPress profile">
-Sign in to your site's admin (`https://yoursite.com/wp-admin`) and go to **Users → Profile** (your own profile).
+Sign in to your site's admin (`https://yoursite.com/wp-admin`). In the left sidebar, go to **Users**, then open **Profile** (your own account).
+
+![WordPress Users menu](/images/mcp/wordpress/01-users-menu.png)
 </Step>
-<Step title="Find Application Passwords">
-Scroll to the **Application Passwords** section near the bottom of the profile page.
+<Step title="Scroll to Application Passwords">
+On the profile page, scroll past **Account Management** to the **Application Passwords** section.
+
+![WordPress Application Passwords section](/images/mcp/wordpress/02-application-passwords.png)
 </Step>
-<Step title="Create a new password">
-Enter a name like `UnleashX` and click **Add New Application Password**.
+<Step title="Name the password">
+In the **New Application Password Name** field, type a name you'll recognize — for example, `UnleashX`.
 </Step>
-<Step title="Copy the password">
-Copy the generated password (it looks like `xxxx xxxx xxxx xxxx xxxx xxxx`).
+<Step title="Add the Application Password">
+Click **Add Application Password**. WordPress generates a password that looks like `xxxx xxxx xxxx xxxx xxxx xxxx`.
 
 <Warning>
-The Application Password is shown only once. Copy it now — if you lose it, revoke it and create a new one. Keep the spaces or remove them as your client expects.
+The Application Password is shown only once. Copy it now — if you lose it, revoke it and create a new one. You can paste it with or without the spaces; UnleashX accepts either.
 </Warning>
 </Step>
 <Step title="Note your username and site URL">
-You'll need your WordPress **username**, the **Application Password**, and your **site URL** to connect.
+You'll need three things to connect: your WordPress **username**, this **Application Password**, and your **site URL** (e.g. `https://yoursite.com`).
 </Step>
 </Steps>
+
+<Note>
+Don't see an **Application Passwords** section? It's built into WordPress 5.6+ but is hidden on sites served over plain HTTP or where a security plugin has disabled it. Use HTTPS, or enable Application Passwords, then refresh the profile page.
+</Note>
 
 **What the credentials can access**
 
@@ -79,53 +87,64 @@ An Application Password inherits the role of the user it belongs to. To manage u
 
 <Steps>
 <Step title="Open your agent">
-Go to [https://tryunleashx.com](https://tryunleashx.com) and open the agent you want to connect.
+Go to [https://www.tryunleashx.com](https://www.tryunleashx.com) and open the agent you want to connect.
 </Step>
 <Step title="Open Data Connectors">
 In the agent, go to **Data Connectors**.
 </Step>
 <Step title="Find WordPress">
-Locate **WordPress** in the list and click **Connect** / **Add** / **Configure**.
+Locate **WordPress** in the list and click **Connect** / **Add** / **Configure**. A form opens with four fields.
 </Step>
-<Step title="Enter your details">
-Provide your **site URL**, **username**, and **Application Password**. UnleashX combines the username and password as HTTP Basic auth against your REST API.
+<Step title="Fill in the four fields">
+| Field | What to enter |
+|---|---|
+| **WP Site URL** | Your site's address, e.g. `https://yoursite.com` (no `/wp-admin`). |
+| **WP Username** | The WordPress account you were signed in as when you created the Application Password — e.g. `admin`. The Application Password belongs to this user, so the username here **must match** that account. |
+| **Account Name** | A label for this connection inside UnleashX — usually your name or a name for the site (e.g. "Marketing blog"). This is just for you; it doesn't affect WordPress. |
+| **WP App Password** | The Application Password you copied in Section 3 (`xxxx xxxx xxxx xxxx xxxx xxxx`). |
+
+UnleashX combines **WP Username** + **WP App Password** as HTTP Basic auth against your site's REST API.
 </Step>
-<Step title="Confirm success">
-Save. When the status shows a **Connected** badge, your agent can start working with WordPress.
+<Step title="Add the tool">
+Click **Add Tool**. When the status shows a **Connected** badge, your agent can start working with WordPress.
 </Step>
 </Steps>
+
+<Warning>
+The **WP Username** must be the exact account the Application Password was generated under. If an admin created the password while signed in as `admin`, enter `admin` here — not your display name or email. A mismatch causes a `401 Unauthorized` even when the password is correct.
+</Warning>
 
 ![01 wordpress data connector](/images/mcp/wordpress/01-data-connector.png)
 
 ## 5. Available tools
 
-| Tool (technical) | What it does | Changes data? |
+| Tool | What it does | Changes data? |
 |---|---|---|
-| `wordpress_create_post` | Creates a new post (draft or published) | ✏️ Yes |
-| `wordpress_update_post` | Updates an existing post | ✏️ Yes |
-| `wordpress_get_post` | Gets a single post by ID | No |
-| `wordpress_delete_post` | Deletes a post | ⚠️ Yes |
-| `wordpress_search_posts` | Searches posts by status, author, etc. | No |
-| `wordpress_create_category` | Creates a category | ✏️ Yes |
-| `wordpress_update_category` | Updates a category | ✏️ Yes |
-| `wordpress_get_category` | Gets a single category by ID | No |
-| `wordpress_delete_category` | Deletes a category | ⚠️ Yes |
-| `wordpress_search_categories` | Searches categories | No |
-| `wordpress_create_user` | Creates a new site user | ✏️ Yes |
-| `wordpress_update_user` | Updates a user | ✏️ Yes |
-| `wordpress_get_user` | Gets a single user by ID | No |
-| `wordpress_delete_user` | Deletes a user | ⚠️ Yes |
-| `wordpress_search_users` | Searches users by role or name | No |
-| `wordpress_set_featured_image` | Sets a media item as a post's featured image | ✏️ Yes |
-| `wordpress_generate_ai_image` | Generates an AI image, uploads it to Media, optionally sets it as featured | ✏️ Yes |
+| Create Post | Creates a new post (draft or published) | ✏️ Yes |
+| Update Post | Updates an existing post | ✏️ Yes |
+| Get Post | Gets a single post by ID | No |
+| Delete Post | Deletes a post | ⚠️ Yes |
+| Search Posts | Searches posts by status, author, etc. | No |
+| Create Category | Creates a category | ✏️ Yes |
+| Update Category | Updates a category | ✏️ Yes |
+| Get Category | Gets a single category by ID | No |
+| Delete Category | Deletes a category | ⚠️ Yes |
+| Search Categories | Searches categories | No |
+| Create User | Creates a new site user | ✏️ Yes |
+| Update User | Updates a user | ✏️ Yes |
+| Get User | Gets a single user by ID | No |
+| Delete User | Deletes a user | ⚠️ Yes |
+| Search Users | Searches users by role or name | No |
+| Set Featured Image | Sets a media item as a post's featured image | ✏️ Yes |
+| Generate AI Image | Generates an AI image, uploads it to Media, optionally sets it as featured | ✏️ Yes |
 
 ## 6. Example usage
 
 **"Draft a blog post titled 'Spring Sale Tips' in the Marketing category and generate a cover image."**
-Behind the scenes: `wordpress_search_categories` → `wordpress_create_post` → `wordpress_generate_ai_image` (sets it as featured).
+Behind the scenes: Search Categories → Create Post → Generate AI Image (sets it as featured).
 
 **"Find all draft posts by Maria and publish the one about onboarding."**
-Behind the scenes: `wordpress_search_users` → `wordpress_search_posts` → `wordpress_update_post`.
+Behind the scenes: Search Users → Search Posts → Update Post.
 
 ## 7. Permissions & data access
 
@@ -166,7 +185,7 @@ Yes. Each person creates their own Application Password on their own WordPress a
 Create a new Application Password in **Users → Profile**, update it in UnleashX, then revoke the old one. Access switches over immediately.
 
 **Does the AI image tool need anything extra?**
-`wordpress_generate_ai_image` generates images via OpenAI, so an OpenAI API key must be supplied (passed in or configured at the platform level).
+Generate AI Image generates images via OpenAI, so an OpenAI API key must be supplied (passed in or configured at the platform level).
 
 ## 10. References
 

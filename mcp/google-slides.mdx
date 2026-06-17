@@ -81,7 +81,7 @@ There is no key to copy. Access is granted by your Google sign-in and can be rev
 
 <Steps>
 <Step title="Open your agent">
-Sign in at [https://tryunleashx.com](https://tryunleashx.com) and open your agent.
+Sign in at [https://www.tryunleashx.com](https://www.tryunleashx.com) and open your agent.
 </Step>
 <Step title="Go to Data Connectors">
 In the agent, open **Data Connectors**.
@@ -101,36 +101,36 @@ You'll return to UnleashX and the connector status will show a **Connected** bad
 
 ## 5. Available tools
 
-| Tool (technical) | What it does | Changes data? |
+| Tool | What it does | Changes data? |
 |---|---|---|
-| `slides_create_presentation` | Create a new presentation. | ✏️ Yes |
-| `slides_get_presentation` | Get a presentation's full structure. | No |
-| `slides_get_page` | Get a single page (slide) by object ID. | No |
-| `slides_get_thumbnail` | Get a thumbnail image of a slide. | No |
-| `slides_replace_text` | Replace matching text across the deck. | ✏️ Yes |
-| `slides_add_slide` | Add a new slide at an index with a layout. | ✏️ Yes |
-| `slides_delete_slide` | Delete a slide. | ⚠️ Yes |
-| `slides_get_slides` | List the slides in a presentation. | No |
-| `slides_list_presentations` | List available presentations. | No |
-| `slides_get_presentation_templates` | Get available presentation templates. | No |
-| `slides_get_slide_templates` | Get available slide templates. | No |
-| `slides_list_layouts` | List available slide layouts. | No |
-| `slides_get_layout_content` | Get the content of a specific layout. | No |
-| `slides_list_presentation_template` | List presentation templates. | No |
-| `slides_list_slides_template` | List slide templates. | No |
-| `slides_insert_text` | Insert text into an existing shape/placeholder. | ✏️ Yes |
-| `slides_create_textbox` | Create a text box on a slide and fill it. | ✏️ Yes |
-| `slides_create_slide_with_content` | Create a populated title+body slide in one call. | ✏️ Yes |
+| Create Presentation | Create a new presentation. | ✏️ Yes |
+| Get Presentation | Get a presentation's full structure. | No |
+| Get Page | Get a single page (slide) by object ID. | No |
+| Get Thumbnail | Get a thumbnail image of a slide. | No |
+| Replace Text | Replace matching text across the deck. | ✏️ Yes |
+| Add Slide | Add a new slide at an index with a layout. | ✏️ Yes |
+| Delete Slide | Delete a slide. | ⚠️ Yes |
+| Get Slides | List the slides in a presentation. | No |
+| List Presentations | List available presentations. | No |
+| Get Presentation Templates | Get available presentation templates. | No |
+| Get Slide Templates | Get available slide templates. | No |
+| List Layouts | List available slide layouts. | No |
+| Get Layout Content | Get the content of a specific layout. | No |
+| List Presentation Template | List presentation templates. | No |
+| List Slides Template | List slide templates. | No |
+| Insert Text | Insert text into an existing shape/placeholder. | ✏️ Yes |
+| Create Textbox | Create a text box on a slide and fill it. | ✏️ Yes |
+| Create Slide with Content | Create a populated title+body slide in one call. | ✏️ Yes |
 
 ## 6. Example usage
 
 > **"Create a new presentation called 'Q3 Review' with a title slide and a slide listing our three key wins."**
 >
-> Runs `slides_create_presentation`, then `slides_create_slide_with_content`.
+> Runs **Create Presentation**, then **Create Slide with Content**.
 
 > **"In the Q3 Review deck, replace 'DRAFT' with 'FINAL' everywhere."**
 >
-> Runs `slides_replace_text`.
+> Runs **Replace Text**.
 
 ## 7. Permissions & data access
 
@@ -156,7 +156,7 @@ The connection authenticates each request with your Google OAuth access token (r
 | `401 Unauthorized` | The access token is missing or expired. | Reconnect Google Slides in **Data Connectors**. |
 | `403 Forbidden` | Missing scope, or you lack edit rights on the presentation. | Re-authorize all scopes; confirm you can edit the file. |
 | `404 Not Found` | The presentation or slide ID is wrong or not shared with you. | Verify the `presentation_id`/object ID and your access. |
-| Text inserted in the wrong place | The target object ID was incorrect. | Use `slides_get_presentation`/`slides_get_page` to get the right `object_id`. |
+| Text inserted in the wrong place | The target object ID was incorrect. | Use **Get Presentation**/**Get Page** to get the right `object_id`. |
 
 For general connector issues, see [/mcp/integrations](/mcp/integrations).
 

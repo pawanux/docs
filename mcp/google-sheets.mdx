@@ -81,7 +81,7 @@ There is no key to copy. Access is granted by your Google sign-in and can be rev
 
 <Steps>
 <Step title="Open your agent">
-Sign in at [https://tryunleashx.com](https://tryunleashx.com) and open your agent.
+Sign in at [https://www.tryunleashx.com](https://www.tryunleashx.com) and open your agent.
 </Step>
 <Step title="Go to Data Connectors">
 In the agent, open **Data Connectors**.
@@ -101,42 +101,42 @@ You'll return to UnleashX and the connector status will show a **Connected** bad
 
 ## 5. Available tools
 
-| Tool (technical) | What it does | Changes data? |
+| Tool | What it does | Changes data? |
 |---|---|---|
-| `gs_create_spreadsheet` | Create a new spreadsheet. | ✏️ Yes |
-| `gs_delete_spreadsheet` | Delete a spreadsheet. | ⚠️ Yes |
-| `gs_append_or_update_row_in_sheet` | Append a row, or update it if it already exists. | ✏️ Yes |
-| `gs_append_row_in_sheet` | Append a row to a sheet. | ✏️ Yes |
-| `gs_clear_sheet` | Clear values from a sheet/range. | ⚠️ Yes |
-| `gs_create_sheet` | Create a new sheet (tab). | ✏️ Yes |
-| `gs_delete_sheet` | Delete a sheet (tab) by ID. | ⚠️ Yes |
-| `gs_delete_rows_or_columns_from_sheet` | Delete rows or columns. | ⚠️ Yes |
-| `gs_delete_row` | Delete a single row. | ⚠️ Yes |
-| `gs_get_sheet_columns` | Get the columns of a sheet. | No |
-| `gs_update_row_in_sheet` | Update a row by row number. | ✏️ Yes |
-| `gs_get_spreadsheet` | Get spreadsheet metadata. | No |
-| `gs_get_cell` | Get a cell value (or a default range). | No |
-| `gs_update_cell` | Update a single cell. | ✏️ Yes |
-| `gs_list_spreadsheets` | List available spreadsheets. | No |
-| `gs_list_sheets` | List sheets (tabs) in a spreadsheet. | No |
-| `gs_list_worksheets` | List worksheets in a spreadsheet. | No |
-| `gs_clear_rows` | Clear a range of rows. | ⚠️ Yes |
-| `gs_update_column` | Update one or more columns. | ✏️ Yes |
-| `gs_get_sheet_updates` | Get sheet updates (trigger-style). | No |
-| `gs_create_row` | Create a row with key/value columns. | ✏️ Yes |
-| `gs_update_row` | Update a row by number with key/value columns. | ✏️ Yes |
-| `gs_get_rows_in_sheet` | Get rows from a sheet. | No |
-| `gs_find_row` | Find a row matching criteria. | No |
+| Create Spreadsheet | Create a new spreadsheet. | ✏️ Yes |
+| Delete Spreadsheet | Delete a spreadsheet. | ⚠️ Yes |
+| Append or Update Row | Append a row, or update it if it already exists. | ✏️ Yes |
+| Append Row | Append a row to a sheet. | ✏️ Yes |
+| Clear Sheet | Clear values from a sheet/range. | ⚠️ Yes |
+| Create Sheet | Create a new sheet (tab). | ✏️ Yes |
+| Delete Sheet | Delete a sheet (tab) by ID. | ⚠️ Yes |
+| Delete Rows or Columns | Delete rows or columns. | ⚠️ Yes |
+| Delete Row | Delete a single row. | ⚠️ Yes |
+| Get Sheet Columns | Get the columns of a sheet. | No |
+| Update Row in Sheet | Update a row by row number. | ✏️ Yes |
+| Get Spreadsheet | Get spreadsheet metadata. | No |
+| Get Cell | Get a cell value (or a default range). | No |
+| Update Cell | Update a single cell. | ✏️ Yes |
+| List Spreadsheets | List available spreadsheets. | No |
+| List Sheets | List sheets (tabs) in a spreadsheet. | No |
+| List Worksheets | List worksheets in a spreadsheet. | No |
+| Clear Rows | Clear a range of rows. | ⚠️ Yes |
+| Update Column | Update one or more columns. | ✏️ Yes |
+| Get Sheet Updates | Get sheet updates (trigger-style). | No |
+| Create Row | Create a row with key/value columns. | ✏️ Yes |
+| Update Row | Update a row by number with key/value columns. | ✏️ Yes |
+| Get Rows in Sheet | Get rows from a sheet. | No |
+| Find Row | Find a row matching criteria. | No |
 
 ## 6. Example usage
 
 > **"Add a new lead to the Leads tab: name Alice, email alice@acme.com, status New."**
 >
-> Runs `gs_list_sheets` to confirm the tab, then `gs_append_row_in_sheet`.
+> Runs **List Sheets** to confirm the tab, then **Append Row**.
 
 > **"What's in cell B3 of the Budget sheet, and set it to 5000."**
 >
-> Runs `gs_get_cell`, then `gs_update_cell`.
+> Runs **Get Cell**, then **Update Cell**.
 
 ## 7. Permissions & data access
 

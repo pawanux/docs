@@ -54,7 +54,7 @@ If you are a workspace admin, optional platform-side configuration includes the 
 
 <Steps>
 <Step title="Open your agent">
-Go to [https://tryunleashx.com](https://tryunleashx.com) and open the agent that should generate avatar videos.
+Go to [https://www.tryunleashx.com](https://www.tryunleashx.com) and open the agent that should generate avatar videos.
 </Step>
 <Step title="Open Data Connectors">
 In the agent, click **Data Connectors**.
@@ -73,9 +73,9 @@ The HeyGen tool should now show a **Connected** badge.
 
 | Tool | What it does | Changes data? |
 |---|---|---|
-| `heygen_text_to_video` | Generate a talking-avatar video from a text script | ✏️ Yes |
-| `heygen_image_to_video` | Generate a talking-photo video from an image plus text | ✏️ Yes |
-| `heygen_get_info` | Report HeyGen configuration and readiness | No |
+| Text to Video | Generate a talking-avatar video from a text script | ✏️ Yes |
+| Image to Video | Generate a talking-photo video from an image plus text | ✏️ Yes |
+| Get Info | Report HeyGen configuration and readiness | No |
 
 <Note>
 The generate tools are marked ✏️ Yes because they create a new video. They do not modify or delete any existing data.
@@ -84,10 +84,10 @@ The generate tools are marked ✏️ Yes because they create a new video. They d
 ## 6. Example usage
 
 **"Have an avatar read this welcome message for new customers."**
-→ Runs `heygen_text_to_video` with the script (and optional avatar/voice), returning a video ID or URL.
+→ Runs **Text to Video** with the script (and optional avatar/voice), returning a video ID or URL.
 
 **"Turn this headshot into a short talking-photo intro."**
-→ Runs `heygen_image_to_video` with the image URL and the script.
+→ Runs **Image to Video** with the image URL and the script.
 
 ## 7. Permissions & data access
 
@@ -131,5 +131,5 @@ Yes. Once enabled on the workspace, anyone with access to the agent can generate
 ## 10. References
 
 - HeyGen API docs: https://docs.heygen.com/
-- UnleashX dashboard: https://tryunleashx.com
+- UnleashX dashboard: https://www.tryunleashx.com
 - UnleashX integrations help: [/mcp/integrations](/mcp/integrations)

@@ -73,7 +73,7 @@ Razorpay API keys are account-wide and are not scoped to specific permissions. U
 
 <Steps>
 <Step title="Open your agent">
-Sign in at [tryunleashx.com](https://tryunleashx.com) and open the agent you want to give Razorpay access to.
+Sign in at [tryunleashx.com](https://www.tryunleashx.com) and open the agent you want to give Razorpay access to.
 </Step>
 <Step title="Go to Data Connectors">
 Open **Data Connectors** and find **Razorpay** in the list.
@@ -94,86 +94,86 @@ This server exposes **32 tools**. Tools marked **⚠️** are guarded — destru
 
 ### Payments
 
-| Tool name (technical) | What it does | Changes data? |
+| Tool name | What it does | Changes data? |
 |---|---|---|
-| `razorpay_payment_fetch` | Fetch a single payment by `payment_id`. | No |
-| `razorpay_payments_list` | List recent payments (default 100). | No |
-| `razorpay_payment_capture` | Capture an authorized payment. | ✏️ Yes |
-| `razorpay_order_payments` | List all payments made against an order. | No |
+| **Fetch Payment** | Fetch a single payment by `payment_id`. | No |
+| **List Payments** | List recent payments (default 100). | No |
+| **Capture Payment** | Capture an authorized payment. | ✏️ Yes |
+| **Order Payments** | List all payments made against an order. | No |
 
 ### Refunds
 
-| Tool name (technical) | What it does | Changes data? |
+| Tool name | What it does | Changes data? |
 |---|---|---|
-| `razorpay_refund_create` | Create a refund (full or partial). **Requires `confirm=True`.** | ⚠️ Yes |
-| `razorpay_refund_fetch` | Fetch a refund by `refund_id`. | No |
-| `razorpay_refunds_list` | List all refunds across the account. | No |
-| `razorpay_payment_refunds` | List all refunds for a specific payment. | No |
+| **Create Refund** | Create a refund (full or partial). **Requires `confirm=True`.** | ⚠️ Yes |
+| **Fetch Refund** | Fetch a refund by `refund_id`. | No |
+| **List Refunds** | List all refunds across the account. | No |
+| **Payment Refunds** | List all refunds for a specific payment. | No |
 
 ### Orders
 
-| Tool name (technical) | What it does | Changes data? |
+| Tool name | What it does | Changes data? |
 |---|---|---|
-| `razorpay_order_create` | Create a new order. | ✏️ Yes |
-| `razorpay_order_fetch` | Fetch an order by `order_id`. | No |
-| `razorpay_orders_list` | List recent orders (default 100). | No |
+| **Create Order** | Create a new order. | ✏️ Yes |
+| **Fetch Order** | Fetch an order by `order_id`. | No |
+| **List Orders** | List recent orders (default 100). | No |
 
 ### Customers
 
-| Tool name (technical) | What it does | Changes data? |
+| Tool name | What it does | Changes data? |
 |---|---|---|
-| `razorpay_customer_create` | Create a customer (optionally with an address). | ✏️ Yes |
-| `razorpay_customer_add_address` | Attach an address to an existing customer. | ✏️ Yes |
-| `razorpay_customer_fetch` | Fetch a customer by `customer_id`. | No |
+| **Create Customer** | Create a customer (optionally with an address). | ✏️ Yes |
+| **Add Customer Address** | Attach an address to an existing customer. | ✏️ Yes |
+| **Fetch Customer** | Fetch a customer by `customer_id`. | No |
 
 ### Payment links
 
-| Tool name (technical) | What it does | Changes data? |
+| Tool name | What it does | Changes data? |
 |---|---|---|
-| `razorpay_payment_link_create` | Create a shareable payment link. | ✏️ Yes |
-| `razorpay_payment_link_fetch` | Fetch a payment link by ID. | No |
-| `razorpay_payment_link_cancel` | Cancel a payment link. **Requires `confirm=True`.** | ⚠️ Yes |
+| **Create Payment Link** | Create a shareable payment link. | ✏️ Yes |
+| **Fetch Payment Link** | Fetch a payment link by ID. | No |
+| **Cancel Payment Link** | Cancel a payment link. **Requires `confirm=True`.** | ⚠️ Yes |
 
 ### Settlements
 
-| Tool name (technical) | What it does | Changes data? |
+| Tool name | What it does | Changes data? |
 |---|---|---|
-| `razorpay_settlement_fetch` | Fetch a settlement by ID. | No |
-| `razorpay_settlements_list` | List settlements (default 100). | No |
-| `razorpay_settlement_create_ondemand` | Create an on-demand settlement (early payout). **Requires `confirm=True`.** | ✏️ Yes |
-| `razorpay_settlement_report` | Get the combined settlement reconciliation report. | No |
+| **Fetch Settlement** | Fetch a settlement by ID. | No |
+| **List Settlements** | List settlements (default 100). | No |
+| **Create On-demand Settlement** | Create an on-demand settlement (early payout). **Requires `confirm=True`.** | ✏️ Yes |
+| **Settlement Report** | Get the combined settlement reconciliation report. | No |
 
 ### Subscriptions
 
-| Tool name (technical) | What it does | Changes data? |
+| Tool name | What it does | Changes data? |
 |---|---|---|
-| `razorpay_subscription_fetch` | Fetch a subscription by ID. | No |
-| `razorpay_subscriptions_list` | List subscriptions (default 100). | No |
-| `razorpay_subscription_create` | Create a new subscription. | ✏️ Yes |
-| `razorpay_subscription_update` | Update an existing subscription. | ✏️ Yes |
-| `razorpay_subscription_cancel` | Cancel a subscription. **Requires `confirm=True`.** | ⚠️ Yes |
-| `razorpay_subscription_pause` | Pause a subscription. | ⚠️ Yes |
-| `razorpay_subscription_resume` | Resume a paused subscription. | ✏️ Yes |
+| **Fetch Subscription** | Fetch a subscription by ID. | No |
+| **List Subscriptions** | List subscriptions (default 100). | No |
+| **Create Subscription** | Create a new subscription. | ✏️ Yes |
+| **Update Subscription** | Update an existing subscription. | ✏️ Yes |
+| **Cancel Subscription** | Cancel a subscription. **Requires `confirm=True`.** | ⚠️ Yes |
+| **Pause Subscription** | Pause a subscription. | ⚠️ Yes |
+| **Resume Subscription** | Resume a paused subscription. | ✏️ Yes |
 
 ### Plans
 
-| Tool name (technical) | What it does | Changes data? |
+| Tool name | What it does | Changes data? |
 |---|---|---|
-| `razorpay_plan_fetch` | Fetch a plan by ID. | No |
-| `razorpay_plans_list` | List plans (default 100). | No |
-| `razorpay_plan_create` | Create a billing plan. | ✏️ Yes |
+| **Fetch Plan** | Fetch a plan by ID. | No |
+| **List Plans** | List plans (default 100). | No |
+| **Create Plan** | Create a billing plan. | ✏️ Yes |
 
 <Warning>
-`razorpay_refund_create`, `razorpay_payment_link_cancel`, `razorpay_subscription_cancel`, and `razorpay_settlement_create_ondemand` are protected. They return a preview and **do not execute** until they are re-invoked with `confirm=True`. This prevents accidental refunds, cancellations, or payouts.
+**Create Refund**, **Cancel Payment Link**, **Cancel Subscription**, and **Create On-demand Settlement** are protected. They return a preview and **do not execute** until they are re-invoked with `confirm=True`. This prevents accidental refunds, cancellations, or payouts.
 </Warning>
 
 ## 6. Example usage
 
 **"Did payment `pay_ NfX29kLm` go through? If it did, refund it in full."**
-→ Runs `razorpay_payment_fetch` to check status, then `razorpay_refund_create` (asks you to confirm before issuing the refund).
+→ Runs **Fetch Payment** to check status, then **Create Refund** (asks you to confirm before issuing the refund).
 
 **"Create a ₹1,499 payment link for this customer and text it to them."**
-→ Runs `razorpay_payment_link_create` (amount in paise, i.e. `149900`) and returns the shareable link with SMS/email notification enabled.
+→ Runs **Create Payment Link** (amount in paise, i.e. `149900`) and returns the shareable link with SMS/email notification enabled.
 
 ## 7. Permissions & data access
 

@@ -75,7 +75,7 @@ A Cal.com API key reflects your account's access. UnleashX only calls the endpoi
 
 <Steps>
 <Step title="Open your agent">
-Go to [https://tryunleashx.com](https://tryunleashx.com) and open the agent you want to connect.
+Go to [https://www.tryunleashx.com](https://www.tryunleashx.com) and open the agent you want to connect.
 </Step>
 <Step title="Open Data Connectors">
 In the agent, go to **Data Connectors**.
@@ -95,27 +95,27 @@ Save. When the status shows a **Connected** badge, your agent can start scheduli
 
 ## 5. Available tools
 
-| Tool (technical) | What it does | Changes data? |
+| Tool | What it does | Changes data? |
 |---|---|---|
-| `calcom_get_booking` | Gets details of a single booking | No |
-| `calcom_list_bookings` | Lists bookings | No |
-| `calcom_list_bookings_with_changes` | Lists bookings including recent changes | No |
-| `calcom_create_booking` | Creates a new booking | ✏️ Yes |
-| `calcom_reschedule_booking` | Reschedules an existing booking | ✏️ Yes |
-| `calcom_delete_booking` | Cancels/deletes a booking | ⚠️ Yes |
-| `calcom_list_event_types` | Lists your event types | No |
-| `calcom_get_availability` | Checks available time slots | No |
-| `calcom_create_webhook` | Creates a webhook subscription | ✏️ Yes |
-| `calcom_list_webhooks` | Lists your webhooks | No |
-| `calcom_delete_webhook` | Deletes a webhook | ⚠️ Yes |
+| Get Booking | Gets details of a single booking | No |
+| List Bookings | Lists bookings | No |
+| List Bookings with Changes | Lists bookings including recent changes | No |
+| Create Booking | Creates a new booking | ✏️ Yes |
+| Reschedule Booking | Reschedules an existing booking | ✏️ Yes |
+| Delete Booking | Cancels/deletes a booking | ⚠️ Yes |
+| List Event Types | Lists your event types | No |
+| Get Availability | Checks available time slots | No |
+| Create Webhook | Creates a webhook subscription | ✏️ Yes |
+| List Webhooks | Lists your webhooks | No |
+| Delete Webhook | Deletes a webhook | ⚠️ Yes |
 
 ## 6. Example usage
 
 **"Book a 30-minute intro call with this lead tomorrow at 2pm."**
-Behind the scenes: `calcom_list_event_types` → `calcom_get_availability` → `calcom_create_booking`.
+Behind the scenes: List Event Types → Get Availability → Create Booking.
 
 **"Move my 3pm meeting with Sam to Thursday morning."**
-Behind the scenes: `calcom_list_bookings` → `calcom_get_availability` → `calcom_reschedule_booking`.
+Behind the scenes: List Bookings → Get Availability → Reschedule Booking.
 
 ## 7. Permissions & data access
 

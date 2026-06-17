@@ -79,7 +79,7 @@ There is no key to copy. Access is granted by your Google sign-in and can be rev
 
 <Steps>
 <Step title="Open your agent">
-Sign in at [https://tryunleashx.com](https://tryunleashx.com) and open your agent.
+Sign in at [https://www.tryunleashx.com](https://www.tryunleashx.com) and open your agent.
 </Step>
 <Step title="Go to Data Connectors">
 In the agent, open **Data Connectors**.
@@ -99,31 +99,31 @@ You'll return to UnleashX and the connector status will show a **Connected** bad
 
 ## 5. Available tools
 
-| Tool (technical) | What it does | Changes data? |
+| Tool | What it does | Changes data? |
 |---|---|---|
-| `gf_create_form` | Create a new form. | ✏️ Yes |
-| `gf_get_response` | Get a single response by ID. | No |
-| `gf_list_responses` | List submitted responses for a form. | No |
-| `gf_get_form_properties` | Get a form's properties/settings. | No |
-| `gf_delete_response` | Delete response row(s) from the linked sheet. | ⚠️ Yes |
-| `gf_update_response` | Update a response row in the linked sheet. | ✏️ Yes |
-| `gf_delete_form` | Delete a form. | ⚠️ Yes |
-| `gf_list_columns` | List a form's columns. | No |
-| `gf_list_forms` | List available forms. | No |
-| `gf_list_sheets` | List sheets (tabs) in a linked spreadsheet. | No |
-| `gf_list_spreadsheets` | List available spreadsheets. | No |
-| `gf_add_text_question` | Add a text question to a form. | ✏️ Yes |
-| `gf_add_multiple_choice_question` | Add a multiple-choice question to a form. | ✏️ Yes |
+| Create Form | Create a new form. | ✏️ Yes |
+| Get Response | Get a single response by ID. | No |
+| List Responses | List submitted responses for a form. | No |
+| Get Form Properties | Get a form's properties/settings. | No |
+| Delete Response | Delete response row(s) from the linked sheet. | ⚠️ Yes |
+| Update Response | Update a response row in the linked sheet. | ✏️ Yes |
+| Delete Form | Delete a form. | ⚠️ Yes |
+| List Columns | List a form's columns. | No |
+| List Forms | List available forms. | No |
+| List Sheets | List sheets (tabs) in a linked spreadsheet. | No |
+| List Spreadsheets | List available spreadsheets. | No |
+| Add Text Question | Add a text question to a form. | ✏️ Yes |
+| Add Multiple Choice Question | Add a multiple-choice question to a form. | ✏️ Yes |
 
 ## 6. Example usage
 
 > **"Create a feedback form titled 'Event Survey' with a text question 'What went well?' and a multiple-choice rating question."**
 >
-> Runs `gf_create_form`, then `gf_add_text_question` and `gf_add_multiple_choice_question`.
+> Runs **Create Form**, then **Add Text Question** and **Add Multiple Choice Question**.
 
 > **"Show me the latest responses to the Event Survey."**
 >
-> Runs `gf_list_forms` to find the form, then `gf_list_responses`.
+> Runs **List Forms** to find the form, then **List Responses**.
 
 ## 7. Permissions & data access
 

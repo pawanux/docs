@@ -1,11 +1,11 @@
 ---
 title: "Introduction"
-description: "Welcome to MCP: what MCP servers are, how they work, and why to use them."
+description: "Plug your AI into real-world tools and data."
 ---
 
-# Connect your AI to the tools that matter
+# Connect AI to the tools that power your business
 
-MCP is an open standard that lets AI agents securely talk to external services — spreadsheets, databases, calendars, CRMs — using a single, consistent protocol. This guide explains what it is, how it works under the hood, and how to put it to work in your own workflows.
+Explore production-ready MCP Servers designed to extend the capabilities of modern AI agents. Connect with business applications, automate repetitive workflows, access real-time information, and build intelligent systems that can interact with the tools your teams use every day.
 
 ---
 
@@ -19,8 +19,9 @@ MCP is an open standard that lets AI agents securely talk to external services �
 6. [Using MCP in your workflow](#using-mcp-in-your-workflow)
 7. [Advantages](#advantages)
 8. [Real-world use cases](#real-world-use-cases)
-9. [Glossary](#glossary)
-10. [Next steps](#next-steps)
+9. [Examples](#examples)
+10. [Glossary](#glossary)
+11. [Next steps](#next-steps)
 
 ---
 
@@ -132,19 +133,18 @@ Once connected, the service stays linked until you choose to disconnect it. You 
 Once connected, your agent can call tools in the same way it would call any other function. The model receives the tool schemas alongside your prompt context, selects the right tool for each step, and invokes it with structured parameters.
 
 ```javascript
-// Agent decides to create a record in Airtable
-const result = await client.callTool("create_record", {
-  base_id:  "appXXXXXXXX",
-  table:    "Tasks",
-  fields: {
-    Name:     "Review Q3 budget proposal",
-    Status:   "In progress",
-    Due:      "2026-04-15",
-    Assignee: "priya@example.com"
+// Agent decides to add a new lead row in Google Sheets
+const result = await client.callTool("Add Row", {
+  spreadsheet: "Leads",
+  row: {
+    Name:   "Review Q3 budget proposal",
+    Phone:  "+15551234567",
+    Status: "New",
+    Date:   "2026-04-15"
   }
 });
 
-// result.record_id = "recABCDEF1234"
+// result.updated_range = "Leads!A42:D42"
 ```
 
 ### Step 4 — Use outputs in your logic
@@ -212,6 +212,96 @@ An agent reads bank transaction exports, matches entries against a budgeting spr
 An agent queries a web search MCP server, extracts structured data from results, and populates a tracking sheet with competitor pricing and feature changes — updated daily with zero manual effort.
 
 The common thread across all of these is that MCP eliminates the "last mile" friction between an AI's reasoning and real-world action. The agent is not just telling you what to do — it is doing it, through a protocol that is auditable, reversible, and safe.
+
+---
+
+## Examples
+
+Three end-to-end examples using MCP servers available in UnleashX. Each one connects once (see [MCP Integrations](/mcp/integrations)), then the agent calls the tools as part of its flow.
+
+### Example 1 — Log leads to Google Sheets
+
+**Scenario:** During a call or chat, your agent captures a lead and records it in a spreadsheet — no copy-paste.
+
+**Flow:**
+
+1. The agent collects the person's name, phone, and interest during the conversation.
+2. It uses **Find Row** to check whether that phone number is already in the sheet.
+3. If new, it uses **Add Row** to add a row; if it already exists, it uses **Update Row** to update the status.
+4. The agent confirms back to the user: "You're on the list — we'll reach out Thursday."
+
+```javascript
+// New lead → Add Row; existing lead → Update Row
+const existing = await client.callTool("Find Row", {
+  spreadsheet: "Leads",
+  query: "+15551234567"
+});
+
+if (!existing.row) {
+  await client.callTool("Add Row", {
+    spreadsheet: "Leads",
+    row: { Name: "Asha Rao", Phone: "+15551234567", Status: "New" }
+  });
+}
+```
+
+Behind the scenes: **Google Sheets MCP** → [`/mcp/google-sheets`](/mcp/google-sheets).
+
+### Example 2 — Auto-publish a blog post to WordPress
+
+**Scenario:** Your agent turns a short brief into a published draft on your WordPress site, with a generated cover image.
+
+**Flow:**
+
+1. The agent drafts the title and body from the user's brief.
+2. It uses **Generate AI Image** to create a cover image.
+3. It uses **Create Post** to publish the post as a draft.
+4. It uses **Set Featured Image** to attach the cover image, and returns the edit link.
+
+```javascript
+const post = await client.callTool("Create Post", {
+  title:   "5 ways voice AI cuts response time",
+  content: "<p>Customers expect instant answers…</p>",
+  status:  "draft"
+});
+
+// post.id → attach the cover image
+await client.callTool("Set Featured Image", {
+  post: post.id,
+  image_url: "https://files.example.com/cover.png"
+});
+```
+
+Behind the scenes: **WordPress MCP** → [`/mcp/wordpress`](/mcp/wordpress).
+
+### Example 3 — WhatsApp chatbot
+
+**Scenario:** A customer messages your WhatsApp Business number. The agent answers, looks up their order in a spreadsheet, and replies — composing **two** MCP servers in one flow.
+
+**Flow:**
+
+1. An inbound WhatsApp message arrives ("Where's my order #1234?").
+2. The agent uses **Find Row** on your Orders sheet to look up order #1234.
+3. It replies with **Send Message** (free-form, allowed within the 24-hour customer-service window).
+4. If the window has closed, it falls back to **Send Template** with an approved template from **List Templates**.
+
+```javascript
+// 1. Look up the order in Google Sheets
+const order = await client.callTool("Find Row", {
+  spreadsheet: "Orders",
+  query: "1234"
+});
+
+// 2. Reply on WhatsApp
+await client.callTool("Send Message", {
+  to: "+15551234567",
+  message: `Your order #1234 is out for delivery — arriving ${order.row.ETA}.`
+});
+```
+
+Behind the scenes: **WhatsApp Business MCP** + **Google Sheets MCP** → [`/mcp/whatsapp-business`](/mcp/whatsapp-business), [`/mcp/google-sheets`](/mcp/google-sheets).
+
+> **Why this matters:** Example 3 is the whole point of MCP — the agent composes a messaging tool and a data tool in a single turn, through one consistent protocol, without you writing any glue code between WhatsApp and Google Sheets.
 
 ---
 

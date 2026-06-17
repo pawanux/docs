@@ -75,7 +75,7 @@ You'll provide three things when connecting: the **shop domain**, the **Admin AP
 
 <Steps>
 <Step title="Open your agent">
-Sign in at `https://tryunleashx.com` and open the agent you want to connect.
+Sign in at `https://www.tryunleashx.com` and open the agent you want to connect.
 </Step>
 <Step title="Find Shopify">
 Go to **Data Connectors** and find **Shopify**.
@@ -92,19 +92,19 @@ Save. The status will switch to a **Connected** badge.
 
 ## 5. Available tools
 
-| Tool (technical) | What it does | Changes data? |
+| Tool | What it does | Changes data? |
 |---|---|---|
-| `fetch_products_by_tag` | Search products by tag or title and return matching products with variants. | No |
-| `add_product_to_cart` | Add a product variant to a cart and return a checkout URL. | ✏️ Yes |
-| `subscribe_to_newsletter` | Create/subscribe a customer to your newsletter by email. | ✏️ Yes |
+| Fetch Products by Tag | Search products by tag or title and return matching products with variants. | No |
+| Add Product to Cart | Add a product variant to a cart and return a checkout URL. | ✏️ Yes |
+| Subscribe to Newsletter | Create/subscribe a customer to your newsletter by email. | ✏️ Yes |
 
 ## 6. Example usage
 
 **"Do you have any blue running shoes, and can you start a checkout for one?"**
-Runs `fetch_products_by_tag` to find matching products, then `add_product_to_cart` with the chosen variant to return a checkout link.
+Runs **Fetch Products by Tag** to find matching products, then **Add Product to Cart** with the chosen variant to return a checkout link.
 
 **"Sign me up for your newsletter — my email is jane@acme.com."**
-Runs `subscribe_to_newsletter` to add the customer to your marketing list.
+Runs **Subscribe to Newsletter** to add the customer to your marketing list.
 
 ## 7. Permissions & data access
 
@@ -126,7 +126,7 @@ Runs `subscribe_to_newsletter` to add the customer to your marketing list.
 |---|---|---|
 | `401 Unauthorized` | The access token is wrong or revoked, or the shop domain is incorrect. | Reconnect with the correct shop domain and tokens. |
 | `403 Forbidden` | The app is missing a required Admin/Storefront scope. | Add the scope in the app's API configuration, reinstall, and reconnect. |
-| Cart tool fails | Storefront API token missing or product variant ID invalid. | Provide a valid Storefront token; use `fetch_products_by_tag` to get a real variant ID. |
+| Cart tool fails | Storefront API token missing or product variant ID invalid. | Provide a valid Storefront token; use **Fetch Products by Tag** to get a real variant ID. |
 | No products returned | The search term doesn't match any tag or title. | Try a broader keyword or the exact product tag. |
 | `429 Too Many Requests` | You hit Shopify's API rate limit. | Wait a moment and retry. |
 

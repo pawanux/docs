@@ -55,7 +55,7 @@ Search is automatically scoped to the calling agent: the agent's ID comes from y
 
 <Steps>
 <Step title="Open your agent">
-Go to [https://tryunleashx.com](https://tryunleashx.com) and open the agent that should search the knowledge base.
+Go to [https://www.tryunleashx.com](https://www.tryunleashx.com) and open the agent that should search the knowledge base.
 </Step>
 <Step title="Open Data Connectors">
 In the agent, click **Data Connectors**.
@@ -74,8 +74,8 @@ The RAG tool should now show a **Connected** badge. The agent will search the kn
 
 | Tool | What it does | Changes data? |
 |---|---|---|
-| `similarity_search` | Embed a natural-language query and return the top matching knowledge-base entries for this agent | No |
-| `fetch_form_details` | Fetch structured form records from the UnleashX datasource by object/field/value | No |
+| Similarity Search | Embed a natural-language query and return the top matching knowledge-base entries for this agent | No |
+| Fetch Form Details | Fetch structured form records from the UnleashX datasource by object/field/value | No |
 
 <Note>
 Both tools are read-only — they look up and return existing knowledge and form records. They never create, edit, or delete data.
@@ -84,10 +84,10 @@ Both tools are read-only — they look up and return existing knowledge and form
 ## 6. Example usage
 
 **"What's our refund policy for annual plans?"**
-→ Runs `similarity_search` over the agent's knowledge base and answers from the closest matching passages.
+→ Runs **Similarity Search** over the agent's knowledge base and answers from the closest matching passages.
 
 **"Pull the record where email = jordan@acme.com from the leads form."**
-→ Runs `fetch_form_details` against the datasource with that field and value.
+→ Runs **Fetch Form Details** against the datasource with that field and value.
 
 ## 7. Permissions & data access
 

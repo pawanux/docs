@@ -78,7 +78,7 @@ Zoho OAuth scopes are granular. UnleashX requests only what these tools need, an
 
 <Steps>
 <Step title="Open your agent">
-Go to `https://tryunleashx.com` and open the agent you want to connect.
+Go to `https://www.tryunleashx.com` and open the agent you want to connect.
 </Step>
 <Step title="Open Data Connectors">
 Inside the agent, go to **Data Connectors**.
@@ -98,25 +98,25 @@ You return to UnleashX and the Zoho Mail connector shows a **Connected** badge.
 
 ## 5. Available tools
 
-| Tool (technical name) | What it does | Changes data? |
+| Tool | What it does | Changes data? |
 |---|---|---|
-| `zoho_mail_create_draft` | Creates a draft email in your mailbox. | ✏️ Yes |
-| `zoho_mail_send_email` | Sends an email on your behalf. | ✏️ Yes |
-| `zoho_mail_create_tag` | Creates a new tag (label). | ✏️ Yes |
-| `zoho_mail_create_folder` | Creates a new mail folder. | ✏️ Yes |
-| `zoho_mail_create_task` | Creates a task (e.g. from a message). | ✏️ Yes |
-| `zoho_mail_search_messages` | Searches your mailbox for matching messages. | No |
-| `zoho_mail_list_emails` | Lists emails from your inbox or a folder. | No |
-| `zoho_mail_get_accounts` | Retrieves your Zoho Mail account details, including the account ID. | No |
-| `zoho_mail_trigger_new_message` | Checks for new messages matching a search (e.g. `in:inbox`) for automation triggers. | No |
+| Create Draft | Creates a draft email in your mailbox. | ✏️ Yes |
+| Send Email | Sends an email on your behalf. | ✏️ Yes |
+| Create Tag | Creates a new tag (label). | ✏️ Yes |
+| Create Folder | Creates a new mail folder. | ✏️ Yes |
+| Create Task | Creates a task (e.g. from a message). | ✏️ Yes |
+| Search Messages | Searches your mailbox for matching messages. | No |
+| List Emails | Lists emails from your inbox or a folder. | No |
+| Get Accounts | Retrieves your Zoho Mail account details, including the account ID. | No |
+| Trigger New Message | Checks for new messages matching a search (e.g. `in:inbox`) for automation triggers. | No |
 
 ## 6. Example usage
 
 **"Find the latest email from our supplier and draft a reply confirming the order."**
-→ Runs `zoho_mail_search_messages` to locate the thread, then `zoho_mail_create_draft` so you can review the reply before sending.
+→ Runs Search Messages to locate the thread, then Create Draft so you can review the reply before sending.
 
 **"Create a 'Receipts' folder and send the accountant this month's summary."**
-→ Runs `zoho_mail_create_folder` to add the folder, then `zoho_mail_send_email` to send the summary.
+→ Runs Create Folder to add the folder, then Send Email to send the summary.
 
 ## 7. Permissions & data access
 
@@ -139,7 +139,7 @@ You return to UnleashX and the Zoho Mail connector shows a **Connected** badge.
 |---|---|---|
 | **401 Unauthorized** | The Zoho token expired or is invalid. | Reconnect Zoho Mail in **Data Connectors** and sign in again. |
 | **403 Forbidden** | A required mail scope wasn't granted. | Reconnect and accept all the requested scopes, then retry. |
-| **Account ID missing** | The agent couldn't resolve which mailbox to use. | Ask the agent to run `zoho_mail_get_accounts` first, or reconnect. |
+| **Account ID missing** | The agent couldn't resolve which mailbox to use. | Ask the agent to run Get Accounts first, or reconnect. |
 | **Wrong data center** | You signed in at the wrong Zoho domain (e.g. `.com` vs `.eu`). | Reconnect using your account's data center. |
 | **Send failed** | An invalid recipient address or a Zoho sending limit was hit. | Verify the recipient and check your Zoho Mail sending limits. |
 

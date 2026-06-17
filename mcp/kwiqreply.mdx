@@ -63,14 +63,14 @@ Treat your Kwiqreply token like a password. If it is shown only once on generati
 | UnleashX object `object_id`(s) | Identifies which UnleashX datasource object to read or write (provided per request, not at connect time) |
 
 <Note>
-The datasource tools (`get_list_data`, `insert_datasource`, `get_datasource`, `update_datasource`) read and write your UnleashX objects. These calls use UnleashX's own platform token — you don't supply a separate key for them.
+The datasource tools (Get List Data, Insert Datasource, Get Datasource, Update Datasource) read and write your UnleashX objects. These calls use UnleashX's own platform token — you don't supply a separate key for them.
 </Note>
 
 ## 4. Connect on UnleashX
 
 <Steps>
 <Step title="Open your agent">
-Sign in at [tryunleashx.com](https://tryunleashx.com) and open the agent you want to connect.
+Sign in at [tryunleashx.com](https://www.tryunleashx.com) and open the agent you want to connect.
 </Step>
 <Step title="Go to Data Connectors">
 Open **Data Connectors** inside the agent.
@@ -90,24 +90,24 @@ The connector shows a **Connected** badge once your token is accepted. You're re
 
 ## 5. Available tools
 
-| Tool (technical name) | What it does | Changes data? |
+| Tool | What it does | Changes data? |
 |---|---|---|
-| `get_list_data` | Fetch object data counts by conditions from UnleashX | No |
-| `insert_datasource` | Insert a new datasource record into UnleashX | ✏️ Yes |
-| `get_datasource` | Fetch datasource records from UnleashX by where-conditions | No |
-| `update_datasource` | Update an existing UnleashX datasource record | ✏️ Yes |
-| `send_text_message` | Send a plain WhatsApp text message via Kwiqreply | ✏️ Yes |
-| `send_text_message_with_url` | Send a WhatsApp text message with link preview enabled | ✏️ Yes |
-| `send_button_message` | Send a WhatsApp interactive reply-button message (max 3 buttons) | ✏️ Yes |
-| `send_list_message` | Send a WhatsApp interactive list message with selectable rows | ✏️ Yes |
+| Get List Data | Fetch object data counts by conditions from UnleashX | No |
+| Insert Datasource | Insert a new datasource record into UnleashX | ✏️ Yes |
+| Get Datasource | Fetch datasource records from UnleashX by where-conditions | No |
+| Update Datasource | Update an existing UnleashX datasource record | ✏️ Yes |
+| Send Text Message | Send a plain WhatsApp text message via Kwiqreply | ✏️ Yes |
+| Send Text Message with URL | Send a WhatsApp text message with link preview enabled | ✏️ Yes |
+| Send Button Message | Send a WhatsApp interactive reply-button message (max 3 buttons) | ✏️ Yes |
+| Send List Message | Send a WhatsApp interactive list message with selectable rows | ✏️ Yes |
 
 ## 6. Example usage
 
 **"Ask 9876543210 over WhatsApp whether they want Plan A, Plan B, or Plan C, with tappable buttons."**
-Behind the scenes: `send_button_message` (three reply buttons).
+Behind the scenes: Send Button Message (three reply buttons).
 
 **"Save this lead — name Priya, phone 98765 43210 — to our Leads object, then text her a welcome message."**
-Behind the scenes: `insert_datasource` (write the record) → `send_text_message` (welcome message).
+Behind the scenes: Insert Datasource (write the record) → Send Text Message (welcome message).
 
 ## 7. Permissions & data access
 
@@ -129,7 +129,7 @@ Behind the scenes: `insert_datasource` (write the record) → `send_text_message
 |---|---|---|
 | 401 — Missing Authorization | No Kwiqreply token was sent or it's blank | Reconnect and re-enter your Kwiqreply API token |
 | 401 / 403 from gateway | The token is invalid, expired, or revoked | Generate a fresh token in Kwiqreply and reconnect |
-| "At most 3 reply buttons" error | A button message included more than 3 buttons | Reduce to 3 or fewer buttons, or use `send_list_message` instead |
+| "At most 3 reply buttons" error | A button message included more than 3 buttons | Reduce to 3 or fewer buttons, or use Send List Message instead |
 | "At least one section/row is required" | A list message had no rows | Provide at least one section with at least one row |
 | Datasource call fails / UNLEASHX_URL error | The UnleashX datasource endpoint isn't reachable or the object_id is wrong | Verify the `object_id` exists; contact support if the platform endpoint is unavailable |
 
@@ -138,7 +138,7 @@ For general connector issues, see [/mcp/integrations](/mcp/integrations).
 ## 9. Frequently asked questions
 
 **Can this connector delete records?**
-No. It can read (`get_list_data`, `get_datasource`), insert (`insert_datasource`), and update (`update_datasource`) UnleashX records, but it exposes no delete operation.
+No. It can read (Get List Data, Get Datasource), insert (Insert Datasource), and update (Update Datasource) UnleashX records, but it exposes no delete operation.
 
 **What's the difference between text and list/button messages?**
 Text messages are plain (optionally with a link preview). Button messages show up to 3 tappable reply buttons; list messages show a menu of selectable rows grouped into sections — useful for letting customers pick an option.
@@ -153,4 +153,4 @@ Yes — they're sent through your Kwiqreply account, which is tied to your confi
 
 - Kwiqreply: https://app.kwiqreply.io
 - Kwiqreply website / docs: https://kwiqreply.io
-- UnleashX dashboard: https://tryunleashx.com
+- UnleashX dashboard: https://www.tryunleashx.com

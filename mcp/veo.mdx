@@ -54,7 +54,7 @@ If you are a workspace admin, the only optional platform-side configuration is t
 
 <Steps>
 <Step title="Open your agent">
-Go to [https://tryunleashx.com](https://tryunleashx.com) and open the agent that should generate video.
+Go to [https://www.tryunleashx.com](https://www.tryunleashx.com) and open the agent that should generate video.
 </Step>
 <Step title="Open Data Connectors">
 In the agent, click **Data Connectors**.
@@ -73,9 +73,9 @@ The Veo tool should now show a **Connected** badge.
 
 | Tool | What it does | Changes data? |
 |---|---|---|
-| `veo_generate_video` | Generate a video from a text prompt (and optionally a starting image) | ✏️ Yes |
-| `veo_image_to_video` | Animate a provided image into a video using a text prompt | ✏️ Yes |
-| `veo_get_info` | Report Veo configuration and readiness | No |
+| Generate Video | Generate a video from a text prompt (and optionally a starting image) | ✏️ Yes |
+| Image to Video | Animate a provided image into a video using a text prompt | ✏️ Yes |
+| Get Info | Report Veo configuration and readiness | No |
 
 <Note>
 The generate tools are marked ✏️ Yes because they create a new video file and save it to UnleashX media storage. They do not modify or delete any existing data.
@@ -84,10 +84,10 @@ The generate tools are marked ✏️ Yes because they create a new video file an
 ## 6. Example usage
 
 **"Make a 9:16 video of a coffee cup steaming on a rainy windowsill."**
-→ Runs `veo_generate_video` with that prompt and a vertical aspect ratio, returning a video URL.
+→ Runs **Generate Video** with that prompt and a vertical aspect ratio, returning a video URL.
 
 **"Take this product photo and turn it into a slow zoom-in clip."**
-→ Runs `veo_image_to_video` with the image and a motion prompt.
+→ Runs **Image to Video** with the image and a motion prompt.
 
 ## 7. Permissions & data access
 
@@ -131,5 +131,5 @@ Usually under a few minutes, depending on length and complexity. The tool can ru
 ## 10. References
 
 - Google Veo / Gemini video generation docs: https://ai.google.dev/gemini-api/docs/video
-- UnleashX dashboard: https://tryunleashx.com
+- UnleashX dashboard: https://www.tryunleashx.com
 - UnleashX integrations help: [/mcp/integrations](/mcp/integrations)

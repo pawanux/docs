@@ -81,7 +81,7 @@ There is no key to copy. Access is granted by your Google sign-in, and you can r
 
 <Steps>
 <Step title="Open your agent">
-Sign in at [https://tryunleashx.com](https://tryunleashx.com) and open the agent you want to give email access to.
+Sign in at [https://www.tryunleashx.com](https://www.tryunleashx.com) and open the agent you want to give email access to.
 </Step>
 <Step title="Go to Data Connectors">
 In the agent, open **Data Connectors**.
@@ -101,42 +101,42 @@ You'll return to UnleashX and the connector status will show a **Connected** bad
 
 ## 5. Available tools
 
-| Tool (technical) | What it does | Changes data? |
+| Tool | What it does | Changes data? |
 |---|---|---|
-| `gmail_send_email` | Send an email, with optional CC/BCC. | ✏️ Yes |
-| `gmail_fetch_recent_emails` | Fetch recent emails from a folder (e.g. INBOX). | No |
-| `gmail_download_attachment` | Download an attachment from a URL. | No |
-| `gmail_list_attachments` | List attachments on a message (name, size, id). | No |
-| `gmail_send_email_with_url_attachment` | Send an email with an attachment pulled from a URL. | ✏️ Yes |
-| `gmail_get_prestaged_attachment` | Get the path of a pre-staged attachment. | No |
-| `gmail_send_email_with_prestaged_attachment` | Send an email with a pre-staged attachment. | ✏️ Yes |
-| `gmail_get_profile` | Get the connected Gmail account's profile info. | No |
-| `gmail_search_emails` | Search emails using Gmail search syntax. | No |
-| `gmail_get_email` | Get a specific email by message ID. | No |
-| `gmail_create_draft` | Create a draft email. | ✏️ Yes |
-| `gmail_send_draft` | Send an existing draft. | ✏️ Yes |
-| `gmail_add_label` | Add a label to a message. | ✏️ Yes |
-| `gmail_remove_label` | Remove a label from a message. | ✏️ Yes |
-| `gmail_fetch_labels` | List all available Gmail labels. | No |
-| `gmail_create_label` | Create a new Gmail label. | ✏️ Yes |
-| `gmail_trash_email` | Move an email to Trash. | ⚠️ Yes |
-| `gmail_untrash_email` | Restore an email from Trash. | ✏️ Yes |
-| `gmail_mark_as_read` | Mark a message as read. | ✏️ Yes |
-| `gmail_mark_as_unread` | Mark a message as unread. | ✏️ Yes |
-| `gmail_mark_as_important` | Mark a message as important. | ✏️ Yes |
-| `gmail_mark_as_unimportant` | Remove the important marker. | ✏️ Yes |
-| `gmail_archive_email` | Archive a message (remove from inbox). | ✏️ Yes |
-| `gmail_unarchive_email` | Unarchive a message (return to inbox). | ✏️ Yes |
+| Send Email | Send an email, with optional CC/BCC. | ✏️ Yes |
+| Fetch Recent Emails | Fetch recent emails from a folder (e.g. INBOX). | No |
+| Download Attachment | Download an attachment from a URL. | No |
+| List Attachments | List attachments on a message (name, size, id). | No |
+| Send Email with URL Attachment | Send an email with an attachment pulled from a URL. | ✏️ Yes |
+| Get Prestaged Attachment | Get the path of a pre-staged attachment. | No |
+| Send Email with Prestaged Attachment | Send an email with a pre-staged attachment. | ✏️ Yes |
+| Get Profile | Get the connected Gmail account's profile info. | No |
+| Search Emails | Search emails using Gmail search syntax. | No |
+| Get Email | Get a specific email by message ID. | No |
+| Create Draft | Create a draft email. | ✏️ Yes |
+| Send Draft | Send an existing draft. | ✏️ Yes |
+| Add Label | Add a label to a message. | ✏️ Yes |
+| Remove Label | Remove a label from a message. | ✏️ Yes |
+| Fetch Labels | List all available Gmail labels. | No |
+| Create Label | Create a new Gmail label. | ✏️ Yes |
+| Trash Email | Move an email to Trash. | ⚠️ Yes |
+| Untrash Email | Restore an email from Trash. | ✏️ Yes |
+| Mark as Read | Mark a message as read. | ✏️ Yes |
+| Mark as Unread | Mark a message as unread. | ✏️ Yes |
+| Mark as Important | Mark a message as important. | ✏️ Yes |
+| Mark as Unimportant | Remove the important marker. | ✏️ Yes |
+| Archive Email | Archive a message (remove from inbox). | ✏️ Yes |
+| Unarchive Email | Unarchive a message (return to inbox). | ✏️ Yes |
 
 ## 6. Example usage
 
 > **"Send an email to maria@acme.com with the subject 'Q3 report' and attach the file at this link."**
 >
-> Runs `gmail_send_email_with_url_attachment` (or `gmail_send_email` if there's no attachment).
+> Runs **Send Email with URL Attachment** (or **Send Email** if there's no attachment).
 
 > **"Find the unread emails from billing and mark them as read."**
 >
-> Runs `gmail_search_emails` to find them, then `gmail_mark_as_read` on each.
+> Runs **Search Emails** to find them, then **Mark as Read** on each.
 
 ## 7. Permissions & data access
 

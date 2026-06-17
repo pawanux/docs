@@ -79,7 +79,7 @@ Zoho OAuth scopes are granular. UnleashX requests only what these tools need, an
 
 <Steps>
 <Step title="Open your agent">
-Go to `https://tryunleashx.com` and open the agent you want to connect.
+Go to `https://www.tryunleashx.com` and open the agent you want to connect.
 </Step>
 <Step title="Open Data Connectors">
 Inside the agent, go to **Data Connectors**.
@@ -99,29 +99,29 @@ You return to UnleashX and the Zoho Desk connector shows a **Connected** badge.
 
 ## 5. Available tools
 
-| Tool (technical name) | What it does | Changes data? |
+| Tool | What it does | Changes data? |
 |---|---|---|
-| `zoho_desk_create_ticket` | Creates a new support ticket. | ✏️ Yes |
-| `zoho_desk_get_ticket` | Retrieves a single ticket by ID. | No |
-| `zoho_desk_update_ticket` | Updates an existing ticket (status, priority, assignee, etc.). | ✏️ Yes |
-| `zoho_desk_list_tickets` | Lists tickets, optionally filtered. | No |
-| `zoho_desk_add_comment` | Adds a comment to a ticket's thread. | ✏️ Yes |
-| `zoho_desk_list_agents` | Lists support agents. | No |
-| `zoho_desk_list_contacts` | Lists contacts (customers). | No |
-| `zoho_desk_list_owners` | Lists possible ticket owners. | No |
-| `zoho_desk_list_departments` | Lists help-desk departments. | No |
-| `zoho_desk_list_accounts` | Lists customer accounts. | No |
-| `zoho_desk_list_attachments` | Lists attachments on a ticket. | No |
-| `zoho_desk_list_roles` | Lists user roles. | No |
-| `zoho_desk_list_organizations` | Lists Zoho Desk organizations. | No |
+| Create Ticket | Creates a new support ticket. | ✏️ Yes |
+| Get Ticket | Retrieves a single ticket by ID. | No |
+| Update Ticket | Updates an existing ticket (status, priority, assignee, etc.). | ✏️ Yes |
+| List Tickets | Lists tickets, optionally filtered. | No |
+| Add Comment | Adds a comment to a ticket's thread. | ✏️ Yes |
+| List Agents | Lists support agents. | No |
+| List Contacts | Lists contacts (customers). | No |
+| List Owners | Lists possible ticket owners. | No |
+| List Departments | Lists help-desk departments. | No |
+| List Accounts | Lists customer accounts. | No |
+| List Attachments | Lists attachments on a ticket. | No |
+| List Roles | Lists user roles. | No |
+| List Organizations | Lists Zoho Desk organizations. | No |
 
 ## 6. Example usage
 
 **"Open a high-priority ticket for the login outage and assign it to the support team."**
-→ Runs `zoho_desk_list_departments` / `zoho_desk_list_agents` to resolve the right owner, then `zoho_desk_create_ticket` to open the ticket with high priority.
+→ Runs List Departments / List Agents to resolve the right owner, then Create Ticket to open the ticket with high priority.
 
 **"Find the open ticket from Acme about billing and post an update that we issued a refund."**
-→ Runs `zoho_desk_list_tickets` to locate the ticket, then `zoho_desk_add_comment` to post the refund update (and `zoho_desk_update_ticket` if the status should change).
+→ Runs List Tickets to locate the ticket, then Add Comment to post the refund update (and Update Ticket if the status should change).
 
 ## 7. Permissions & data access
 

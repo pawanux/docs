@@ -69,7 +69,7 @@ Go to **Settings → Sender Authentication** and verify the email address or dom
 
 <Steps>
 <Step title="Open your agent">
-Sign in at `https://tryunleashx.com` and open the agent you want to connect.
+Sign in at `https://www.tryunleashx.com` and open the agent you want to connect.
 </Step>
 <Step title="Find SendGrid">
 Go to **Data Connectors** and find **SendGrid**.
@@ -86,29 +86,29 @@ Save. The status will switch to a **Connected** badge.
 
 ## 5. Available tools
 
-| Tool (technical) | What it does | Changes data? |
+| Tool | What it does | Changes data? |
 |---|---|---|
-| `sg_send_email` | Send an email to a recipient. | ✏️ Yes |
-| `sg_create_list` | Create a new contact list. | ✏️ Yes |
-| `sg_add_update_contact` | Add or update a contact (optionally add to lists). | ✏️ Yes |
-| `sg_get_all_lists` | List all contact lists. | No |
-| `sg_get_all_contacts` | List all contacts. | No |
-| `sg_get_contact_fields` | List available custom contact fields. | No |
-| `sg_delete_list` | Delete a list (optionally its contacts). | ⚠️ Yes |
-| `sg_list_blocks` | List blocked email addresses (suppressions). | No |
-| `sg_get_block` | Look up a single blocked address. | No |
-| `sg_delete_block` | Remove an address from the block list. | ⚠️ Yes |
-| `sg_validate_email` | Validate an email address. | No |
-| `sg_remove_contact_from_list` | Remove contacts from a list. | ⚠️ Yes |
-| `sg_delete_contacts` | Permanently delete contacts by ID or email. | ⚠️ Yes |
+| Send Email | Send an email to a recipient. | ✏️ Yes |
+| Create List | Create a new contact list. | ✏️ Yes |
+| Add or Update Contact | Add or update a contact (optionally add to lists). | ✏️ Yes |
+| Get All Lists | List all contact lists. | No |
+| Get All Contacts | List all contacts. | No |
+| Get Contact Fields | List available custom contact fields. | No |
+| Delete List | Delete a list (optionally its contacts). | ⚠️ Yes |
+| List Blocks | List blocked email addresses (suppressions). | No |
+| Get Block | Look up a single blocked address. | No |
+| Delete Block | Remove an address from the block list. | ⚠️ Yes |
+| Validate Email | Validate an email address. | No |
+| Remove Contact from List | Remove contacts from a list. | ⚠️ Yes |
+| Delete Contacts | Permanently delete contacts by ID or email. | ⚠️ Yes |
 
 ## 6. Example usage
 
 **"Email jane@acme.com a subject 'Your demo is confirmed' with the details below."**
-Runs `sg_send_email` from your verified sender address.
+Runs **Send Email** from your verified sender address.
 
 **"Add jane@acme.com to my 'Newsletter' list and remove her old blocked entry."**
-Runs `sg_get_all_lists` (to find the list), `sg_add_update_contact`, and `sg_delete_block` if she was previously blocked.
+Runs **Get All Lists** (to find the list), **Add or Update Contact**, and **Delete Block** if she was previously blocked.
 
 ## 7. Permissions & data access
 
@@ -130,7 +130,7 @@ Runs `sg_get_all_lists` (to find the list), `sg_add_update_contact`, and `sg_del
 |---|---|---|
 | `401 Unauthorized` | The API key is missing, wrong or deleted. | Reconnect in UnleashX with a valid key. |
 | `403 Forbidden` | The key lacks the needed permission (e.g. Mail Send or Contacts). | Edit the key's permissions in SendGrid, or create a Full Access key, and reconnect. |
-| Email accepted but not delivered | Sender not verified or recipient is suppressed/blocked. | Verify your sender; use `sg_list_blocks` and `sg_delete_block` to clear the recipient. |
+| Email accepted but not delivered | Sender not verified or recipient is suppressed/blocked. | Verify your sender; use **List Blocks** and **Delete Block** to clear the recipient. |
 | `400 Bad Request` on send | Missing/invalid "from" email or malformed recipient. | Provide a valid verified sender and recipient and retry. |
 | `429 Too Many Requests` | You hit SendGrid's rate limit. | Wait and retry. |
 

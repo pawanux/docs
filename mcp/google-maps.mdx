@@ -75,7 +75,7 @@ Back in **Credentials**, edit the key and under **API restrictions** limit it to
 
 <Steps>
 <Step title="Open your agent">
-Sign in at [tryunleashx.com](https://tryunleashx.com) and open the agent you want to give Google Maps access to.
+Sign in at [tryunleashx.com](https://www.tryunleashx.com) and open the agent you want to give Google Maps access to.
 </Step>
 <Step title="Go to Data Connectors">
 Open **Data Connectors** and find **Google Maps** in the list.
@@ -94,34 +94,34 @@ When the key works, the status changes to a **Connected** badge. Your agent can 
 
 This server exposes **14 tools**. All Google Maps tools are **read-only** (they look up data and never change anything in your account).
 
-| Tool name (technical) | What it does | Changes data? |
+| Tool name | What it does | Changes data? |
 |---|---|---|
-| `maps_search_nearby` | Find places near a location, with radius/rating/open-now filters. | No |
-| `maps_get_place_details` | Get full details for a place by place ID. | No |
-| `maps_geocode` | Convert an address into coordinates. | No |
-| `maps_reverse_geocode` | Convert coordinates back into an address. | No |
-| `maps_distance_matrix` | Calculate travel time/distance between many origins and destinations. | No |
-| `maps_directions` | Get a route between an origin and destination. | No |
-| `maps_elevation` | Get ground elevation for a list of coordinates. | No |
-| `googlemaps_search_places` | Search places by text query (with optional location bias). | No |
-| `googlemaps_search_place_details` | Search places and enrich each with detailed info (phone, hours, website, rating). | No |
-| `googlemaps_get_place_details` | Get details for a single place by place ID. | No |
-| `googlemaps_get_directions` | Get directions with optional waypoints and travel mode. | No |
-| `googlemaps_get_timezone` | Look up the timezone for a location and timestamp. | No |
-| `googlemaps_get_roads` | Snap a path of points to the nearest roads. | No |
-| `googlemaps_get_elevation` | Get elevation for places/coordinates, optionally sampled along a path. | No |
+| **Search Nearby** | Find places near a location, with radius/rating/open-now filters. | No |
+| **Get Place Details** | Get full details for a place by place ID. | No |
+| **Geocode** | Convert an address into coordinates. | No |
+| **Reverse Geocode** | Convert coordinates back into an address. | No |
+| **Distance Matrix** | Calculate travel time/distance between many origins and destinations. | No |
+| **Directions** | Get a route between an origin and destination. | No |
+| **Elevation** | Get ground elevation for a list of coordinates. | No |
+| **Search Places** | Search places by text query (with optional location bias). | No |
+| **Search Place Details** | Search places and enrich each with detailed info (phone, hours, website, rating). | No |
+| **Get Place Details (Single)** | Get details for a single place by place ID. | No |
+| **Get Directions** | Get directions with optional waypoints and travel mode. | No |
+| **Get Timezone** | Look up the timezone for a location and timestamp. | No |
+| **Get Roads** | Snap a path of points to the nearest roads. | No |
+| **Get Elevation** | Get elevation for places/coordinates, optionally sampled along a path. | No |
 
 <Info>
-There are two families of tools (`maps_*` and `googlemaps_*`) with overlapping capabilities. Your agent picks whichever best fits the request — both run read-only lookups against Google Maps Platform.
+There are two families of tools with overlapping capabilities. Your agent picks whichever best fits the request — both run read-only lookups against Google Maps Platform.
 </Info>
 
 ## 6. Example usage
 
 **"Find coffee shops within 1 km of MG Road, Bengaluru that are open now and rated 4+."**
-→ Runs `maps_search_nearby` (geocodes the location, then filters by radius, open-now, and minimum rating).
+→ Runs **Search Nearby** (geocodes the location, then filters by radius, open-now, and minimum rating).
 
 **"How long does it take to drive from Indiranagar to Bangalore Airport right now?"**
-→ Runs `maps_directions` (or `maps_distance_matrix`) to estimate the route and travel time.
+→ Runs **Directions** (or **Distance Matrix**) to estimate the route and travel time.
 
 ## 7. Permissions & data access
 

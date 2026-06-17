@@ -78,7 +78,7 @@ An Atlassian API token grants the same access your account has — Jira does not
 
 <Steps>
 <Step title="Open your agent">
-Go to [https://tryunleashx.com](https://tryunleashx.com) and open the agent you want to connect.
+Go to [https://www.tryunleashx.com](https://www.tryunleashx.com) and open the agent you want to connect.
 </Step>
 <Step title="Open Data Connectors">
 In the agent, go to **Data Connectors**.
@@ -98,39 +98,39 @@ Save. When the status shows a **Connected** badge, your agent can start working 
 
 ## 5. Available tools
 
-| Tool (technical) | What it does | Changes data? |
+| Tool | What it does | Changes data? |
 |---|---|---|
-| `jira_create_issue` | Creates a new issue (bug, task, story, etc.) | ✏️ Yes |
-| `jira_get_issue` | Gets a single issue by key | No |
-| `jira_update_issue` | Updates fields on an issue | ✏️ Yes |
-| `jira_add_comment` | Adds a comment to an issue | ✏️ Yes |
-| `jira_list_transitions` | Lists the workflow transitions available for an issue | No |
-| `jira_transition_issue` | Moves an issue to a new status | ✏️ Yes |
-| `jira_get_issue_history` | Gets the change history of an issue | No |
-| `jira_assign_issue` | Assigns an issue to a user | ✏️ Yes |
-| `jira_search_users` | Searches for Jira users | No |
-| `jira_list_users` | Lists Jira users | No |
-| `jira_search_issues` | Searches issues with JQL or filters | No |
-| `jira_get_backlog_issues` | Gets issues in a board's backlog | No |
-| `jira_get_assigned_issues` | Gets issues assigned to a user | No |
-| `jira_list_projects` | Lists Jira projects | No |
-| `jira_list_boards` | Lists boards | No |
-| `jira_list_sprints` | Lists sprints for a board | No |
-| `jira_get_active_sprint` | Gets the currently active sprint for a board | No |
-| `jira_get_user_issues_by_email` | Finds issues for a user by their email | No |
-| `jira_get_board_user_issues` | Gets a user's issues on a specific board | No |
-| `jira_get_sprint_issues` | Lists issues in a sprint | No |
-| `jira_get_sprint_status` | Summarizes a sprint's status and progress | No |
-| `jira_get_team_workload` | Reports how work is distributed across the team | No |
-| `jira_generate_standup_report` | Builds a daily standup report for a board | No |
+| Create Issue | Creates a new issue (bug, task, story, etc.) | ✏️ Yes |
+| Get Issue | Gets a single issue by key | No |
+| Update Issue | Updates fields on an issue | ✏️ Yes |
+| Add Comment | Adds a comment to an issue | ✏️ Yes |
+| List Transitions | Lists the workflow transitions available for an issue | No |
+| Transition Issue | Moves an issue to a new status | ✏️ Yes |
+| Get Issue History | Gets the change history of an issue | No |
+| Assign Issue | Assigns an issue to a user | ✏️ Yes |
+| Search Users | Searches for Jira users | No |
+| List Users | Lists Jira users | No |
+| Search Issues | Searches issues with JQL or filters | No |
+| Get Backlog Issues | Gets issues in a board's backlog | No |
+| Get Assigned Issues | Gets issues assigned to a user | No |
+| List Projects | Lists Jira projects | No |
+| List Boards | Lists boards | No |
+| List Sprints | Lists sprints for a board | No |
+| Get Active Sprint | Gets the currently active sprint for a board | No |
+| Get User Issues by Email | Finds issues for a user by their email | No |
+| Get Board User Issues | Gets a user's issues on a specific board | No |
+| Get Sprint Issues | Lists issues in a sprint | No |
+| Get Sprint Status | Summarizes a sprint's status and progress | No |
+| Get Team Workload | Reports how work is distributed across the team | No |
+| Generate Standup Report | Builds a daily standup report for a board | No |
 
 ## 6. Example usage
 
 **"Create a bug in the WEB project titled 'Login button broken on mobile' and assign it to Priya."**
-Behind the scenes: `jira_search_users` (to find Priya) → `jira_create_issue` → `jira_assign_issue`.
+Behind the scenes: Search Users (to find Priya) → Create Issue → Assign Issue.
 
 **"Give me today's standup for the Sprint board and move JIRA-204 to In Progress."**
-Behind the scenes: `jira_get_active_sprint` → `jira_generate_standup_report` → `jira_list_transitions` → `jira_transition_issue`.
+Behind the scenes: Get Active Sprint → Generate Standup Report → List Transitions → Transition Issue.
 
 ## 7. Permissions & data access
 
@@ -154,7 +154,7 @@ Behind the scenes: `jira_get_active_sprint` → `jira_generate_standup_report` �
 | `401 Unauthorized` | Wrong email/token pair, or the token was revoked | Recreate the API token and re-enter email + token in UnleashX |
 | `403 Forbidden` | Your account lacks permission in that project | Ask a Jira admin to grant project access, then retry |
 | `404 Not Found` | The issue key, board, or sprint doesn't exist | Verify the key/ID; it may have moved or been deleted |
-| Transition fails | The target status isn't valid from the current one | Run `jira_list_transitions` first to see allowed transitions |
+| Transition fails | The target status isn't valid from the current one | Run List Transitions first to see allowed transitions |
 | Wrong site | The site URL is incorrect | Confirm the URL is `https://your-company.atlassian.net` |
 
 For general connection issues, see [/mcp/integrations](/mcp/integrations).

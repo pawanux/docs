@@ -75,7 +75,7 @@ A Personal Access Token reflects your Calendly account's access. UnleashX only c
 
 <Steps>
 <Step title="Open your agent">
-Go to [https://tryunleashx.com](https://tryunleashx.com) and open the agent you want to connect.
+Go to [https://www.tryunleashx.com](https://www.tryunleashx.com) and open the agent you want to connect.
 </Step>
 <Step title="Open Data Connectors">
 In the agent, go to **Data Connectors**.
@@ -95,25 +95,25 @@ Save. When the status shows a **Connected** badge, your agent can start working 
 
 ## 5. Available tools
 
-| Tool (technical) | What it does | Changes data? |
+| Tool | What it does | Changes data? |
 |---|---|---|
-| `calendly_list_upcoming_events` | Lists your upcoming scheduled events | No |
-| `calendly_get_event_details` | Gets details of a single event | No |
-| `calendly_search_events` | Searches your scheduled events | No |
-| `calendly_check_availability` | Checks your available time slots | No |
-| `calendly_get_busy_times` | Gets the times you're already booked | No |
-| `calendly_list_event_types` | Lists your event types | No |
-| `calendly_get_event_type_details` | Gets details of a single event type | No |
-| `calendly_create_scheduling_link` | Creates a single-use scheduling link | ✏️ Yes |
-| `calendly_create_booking` | Creates a booking (schedules an event) | ✏️ Yes |
+| List Upcoming Events | Lists your upcoming scheduled events | No |
+| Get Event Details | Gets details of a single event | No |
+| Search Events | Searches your scheduled events | No |
+| Check Availability | Checks your available time slots | No |
+| Get Busy Times | Gets the times you're already booked | No |
+| List Event Types | Lists your event types | No |
+| Get Event Type Details | Gets details of a single event type | No |
+| Create Scheduling Link | Creates a single-use scheduling link | ✏️ Yes |
+| Create Booking | Creates a booking (schedules an event) | ✏️ Yes |
 
 ## 6. Example usage
 
 **"What meetings do I have coming up this week?"**
-Behind the scenes: `calendly_list_upcoming_events` (and `calendly_get_event_details` for specifics).
+Behind the scenes: List Upcoming Events (and Get Event Details for specifics).
 
 **"Send this prospect a link to book a 30-minute demo."**
-Behind the scenes: `calendly_list_event_types` → `calendly_create_scheduling_link`.
+Behind the scenes: List Event Types → Create Scheduling Link.
 
 ## 7. Permissions & data access
 

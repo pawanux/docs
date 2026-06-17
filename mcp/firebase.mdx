@@ -81,7 +81,7 @@ Google OAuth access tokens are **short-lived** — they typically expire after a
 
 <Steps>
 <Step title="Open your agent">
-Sign in at [tryunleashx.com](https://tryunleashx.com) and open the agent you want to give Firebase access to.
+Sign in at [tryunleashx.com](https://www.tryunleashx.com) and open the agent you want to give Firebase access to.
 </Step>
 <Step title="Go to Data Connectors">
 In the agent, open **Data Connectors** and find **Firebase** in the list.
@@ -100,41 +100,41 @@ When the connection is valid, the status changes to a **Connected** badge. Your 
 
 This server exposes **21 tools** covering project discovery, Firestore, and the Realtime Database.
 
-| Tool name (technical) | What it does | Changes data? |
+| Tool name | What it does | Changes data? |
 |---|---|---|
-| `list_firebase_projects` | List all Google Cloud / Firebase projects you can access. | No |
-| `get_firebase_project` | Get details of a specific Firebase project. | No |
-| `list_firestore_databases` | List the Firestore databases in a project. | No |
-| `get_firestore_database` | Get details of a specific Firestore database. | No |
-| `firestore_list_collections` | List all collections in a Firestore database. | No |
-| `firestore_list_subcollections` | List the subcollections under a specific document. | No |
-| `firestore_list_documents` | List documents in a Firestore collection. | No |
-| `firestore_get_document` | Fetch a single Firestore document by its path. | No |
-| `firestore_batch_get_documents` | Fetch multiple Firestore documents in one request. | No |
-| `firestore_query_documents` | Query a collection with filters, ordering, and limits. | No |
-| `firestore_create_document` | Create a new document in a collection. | ✏️ Yes |
-| `firestore_update_document` | Update specific fields in an existing document. | ✏️ Yes |
-| `firestore_delete_document` | Delete a Firestore document by its path. | ⚠️ Yes |
-| `rtdb_list_instances` | List all Realtime Database instances in a project. | No |
-| `rtdb_get_instance` | Get details of a specific Realtime Database instance. | No |
-| `rtdb_get` | Read data at a Realtime Database path. | No |
-| `rtdb_query` | Query a Realtime Database path with filters and limits. | No |
-| `rtdb_set` | Write (overwrite) data at a Realtime Database path. | ✏️ Yes |
-| `rtdb_update` | Update fields at a Realtime Database path. | ✏️ Yes |
-| `rtdb_push` | Push a new child under a path with an auto-generated ID. | ✏️ Yes |
-| `rtdb_delete` | Remove data at a Realtime Database path. | ⚠️ Yes |
+| **List Firebase Projects** | List all Google Cloud / Firebase projects you can access. | No |
+| **Get Firebase Project** | Get details of a specific Firebase project. | No |
+| **List Firestore Databases** | List the Firestore databases in a project. | No |
+| **Get Firestore Database** | Get details of a specific Firestore database. | No |
+| **Firestore: List Collections** | List all collections in a Firestore database. | No |
+| **Firestore: List Subcollections** | List the subcollections under a specific document. | No |
+| **Firestore: List Documents** | List documents in a Firestore collection. | No |
+| **Firestore: Get Document** | Fetch a single Firestore document by its path. | No |
+| **Firestore: Batch Get Documents** | Fetch multiple Firestore documents in one request. | No |
+| **Firestore: Query Documents** | Query a collection with filters, ordering, and limits. | No |
+| **Firestore: Create Document** | Create a new document in a collection. | ✏️ Yes |
+| **Firestore: Update Document** | Update specific fields in an existing document. | ✏️ Yes |
+| **Firestore: Delete Document** | Delete a Firestore document by its path. | ⚠️ Yes |
+| **Realtime DB: List Instances** | List all Realtime Database instances in a project. | No |
+| **Realtime DB: Get Instance** | Get details of a specific Realtime Database instance. | No |
+| **Realtime DB: Get** | Read data at a Realtime Database path. | No |
+| **Realtime DB: Query** | Query a Realtime Database path with filters and limits. | No |
+| **Realtime DB: Set** | Write (overwrite) data at a Realtime Database path. | ✏️ Yes |
+| **Realtime DB: Update** | Update fields at a Realtime Database path. | ✏️ Yes |
+| **Realtime DB: Push** | Push a new child under a path with an auto-generated ID. | ✏️ Yes |
+| **Realtime DB: Delete** | Remove data at a Realtime Database path. | ⚠️ Yes |
 
 <Warning>
-`firestore_delete_document` and `rtdb_delete` permanently remove data and cannot be undone. `rtdb_set` overwrites everything at the target path. Be specific about the path or document before asking your agent to run these.
+**Firestore: Delete Document** and **Realtime DB: Delete** permanently remove data and cannot be undone. **Realtime DB: Set** overwrites everything at the target path. Be specific about the path or document before asking your agent to run these.
 </Warning>
 
 ## 6. Example usage
 
 **"Look up the order with ID `ord_8841` in my `orders` collection and tell me its status."**
-→ Runs `firestore_get_document` (or `firestore_query_documents`) against the `orders` collection.
+→ Runs **Firestore: Get Document** (or **Firestore: Query Documents**) against the `orders` collection.
 
 **"Log a new support ticket in the `tickets` collection: subject 'Login issue', priority high, status open."**
-→ Runs `firestore_create_document` to add a new document with those fields.
+→ Runs **Firestore: Create Document** to add a new document with those fields.
 
 ## 7. Permissions & data access
 
@@ -157,7 +157,7 @@ This server exposes **21 tools** covering project discovery, Firestore, and the 
 | `401 Unauthorized` / "Access token missing" | The token is missing, malformed, or expired. | Reconnect Firebase with a fresh OAuth access token. Tokens expire quickly — use the UnleashX OAuth flow so it refreshes automatically. |
 | `403 Forbidden` / `PERMISSION_DENIED` | The token is valid but lacks permission for that project, database, or operation. | Make sure the account has Editor/Owner (or Datastore / Firebase Database) access, and that the Firestore / RTDB APIs are enabled. |
 | `404 Not Found` | The project ID, database ID, collection, or document path doesn't exist. | Double-check the project ID and the exact path. The Firestore database defaults to `(default)`. |
-| Empty result on a Realtime Database read | The path is empty or the wrong RTDB instance/URL was used. | Use `rtdb_list_instances` to confirm the database URL, then retry with the correct path. |
+| Empty result on a Realtime Database read | The path is empty or the wrong RTDB instance/URL was used. | Use **Realtime DB: List Instances** to confirm the database URL, then retry with the correct path. |
 | Writes rejected | Security rules block server-side writes, or you're in a read-only context. | Review your Firestore / RTDB security rules and confirm the token's role allows writes. |
 
 For general connector issues, see [/mcp/integrations](/mcp/integrations).
@@ -174,7 +174,7 @@ Yes. Each agent connects with its own token. Anyone with a valid token for the p
 Google OAuth access tokens are short-lived by design. Connect through UnleashX's OAuth flow so the token is refreshed automatically, instead of pasting a one-time token that expires within the hour.
 
 **Does this work with both Firestore and the Realtime Database?**
-Yes. The `firestore_*` tools target Cloud Firestore and the `rtdb_*` tools target the Realtime Database. You can use either or both in the same agent.
+Yes. The **Firestore** tools target Cloud Firestore and the **Realtime DB** tools target the Realtime Database. You can use either or both in the same agent.
 
 ## 10. References
 

@@ -79,7 +79,7 @@ These are standard Microsoft Graph delegated scopes. Microsoft, not UnleashX, en
 
 <Steps>
 <Step title="Open your agent">
-Go to `https://tryunleashx.com` and open the agent you want to give Outlook access to.
+Go to `https://www.tryunleashx.com` and open the agent you want to give Outlook access to.
 </Step>
 <Step title="Open Data Connectors">
 In the agent, go to **Data Connectors**.
@@ -99,33 +99,33 @@ You're returned to UnleashX and the Outlook connector shows a **Connected** badg
 
 ## 5. Available tools
 
-| Tool (technical name) | What it does | Changes data? |
+| Tool | What it does | Changes data? |
 |---|---|---|
-| `outlook_send_email` | Sends a new email to one or more recipients. | ✏️ Yes |
-| `outlook_send_reply` | Replies to an existing email thread. | ✏️ Yes |
-| `outlook_draft_email` | Creates a draft email saved in your Drafts folder. | ✏️ Yes |
-| `outlook_create_draft_email` | Creates a draft email (with full recipient/subject/body fields) for later review or send. | ✏️ Yes |
-| `outlook_find_email` | Searches your mailbox for a specific email. | No |
-| `outlook_move_message` | Moves a message to another folder. | ✏️ Yes |
-| `outlook_move_email_to_folder` | Moves an email into a named folder (e.g. Archive). | ✏️ Yes |
-| `outlook_mark_email_read` | Marks an email as read (or unread). | ✏️ Yes |
-| `outlook_add_label_to_email` | Adds an Outlook category (label) to an email. | ✏️ Yes |
-| `outlook_remove_label_from_email` | Removes an Outlook category (label) from an email. | ⚠️ Yes |
-| `outlook_list_labels` | Lists all your Outlook categories (labels). | No |
-| `outlook_list_folders` | Lists your mailbox folders. | No |
-| `outlook_list_emails` | Lists emails from your inbox or a chosen folder. | No |
-| `outlook_list_contacts` | Lists contacts from your address book. | No |
-| `outlook_find_contacts` | Searches your contacts by name or email. | No |
-| `outlook_create_contact` | Creates a new contact. | ✏️ Yes |
-| `outlook_update_contact` | Updates an existing contact's details. | ✏️ Yes |
+| Send Email | Sends a new email to one or more recipients. | ✏️ Yes |
+| Send Reply | Replies to an existing email thread. | ✏️ Yes |
+| Draft Email | Creates a draft email saved in your Drafts folder. | ✏️ Yes |
+| Create Draft Email | Creates a draft email (with full recipient/subject/body fields) for later review or send. | ✏️ Yes |
+| Find Email | Searches your mailbox for a specific email. | No |
+| Move Message | Moves a message to another folder. | ✏️ Yes |
+| Move Email to Folder | Moves an email into a named folder (e.g. Archive). | ✏️ Yes |
+| Mark Email Read | Marks an email as read (or unread). | ✏️ Yes |
+| Add Label to Email | Adds an Outlook category (label) to an email. | ✏️ Yes |
+| Remove Label from Email | Removes an Outlook category (label) from an email. | ⚠️ Yes |
+| List Labels | Lists all your Outlook categories (labels). | No |
+| List Folders | Lists your mailbox folders. | No |
+| List Emails | Lists emails from your inbox or a chosen folder. | No |
+| List Contacts | Lists contacts from your address book. | No |
+| Find Contacts | Searches your contacts by name or email. | No |
+| Create Contact | Creates a new contact. | ✏️ Yes |
+| Update Contact | Updates an existing contact's details. | ✏️ Yes |
 
 ## 6. Example usage
 
 **"Reply to the latest email from the finance team and let them know the invoice is approved."**
-→ Runs `outlook_find_email` (or `outlook_list_emails`) to locate the thread, then `outlook_send_reply` to send your response.
+→ Runs Find Email (or List Emails) to locate the thread, then Send Reply to send your response.
 
 **"Draft a welcome email to our new vendor contact, and add them to my contacts."**
-→ Runs `outlook_create_contact` to save the vendor, then `outlook_create_draft_email` so you can review the message before it goes out.
+→ Runs Create Contact to save the vendor, then Create Draft Email so you can review the message before it goes out.
 
 ## 7. Permissions & data access
 

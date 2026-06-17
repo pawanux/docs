@@ -65,14 +65,14 @@ Airtable shows the token only once. Copy it now and store it safely — you can'
 | `data.records:read` | Read, list and search records. |
 | `data.records:write` | Create, update and delete records. |
 | `schema.bases:read` | List your bases, tables and fields so you can pick them. |
-| `schema.bases:write` | Create new tables (only needed for `airtable_create_table`). |
+| `schema.bases:write` | Create new tables (only needed for **Create Table**). |
 | `user.email:read` | Identify which Airtable account is connected. |
 
 ## 4. Connect on UnleashX
 
 <Steps>
 <Step title="Open your agent">
-Sign in at `https://tryunleashx.com` and open the agent you want to connect.
+Sign in at `https://www.tryunleashx.com` and open the agent you want to connect.
 </Step>
 <Step title="Find Airtable">
 Go to **Data Connectors** and find **Airtable**.
@@ -89,29 +89,29 @@ Save. The status will switch to a **Connected** badge.
 
 ## 5. Available tools
 
-| Tool (technical) | What it does | Changes data? |
+| Tool | What it does | Changes data? |
 |---|---|---|
-| `airtable_create_record` | Create a new record in a table. | ✏️ Yes |
-| `airtable_get_record` | Read a single record by ID. | No |
-| `airtable_update_record` | Update fields on an existing record. | ✏️ Yes |
-| `airtable_delete_record` | Permanently delete a record. | ⚠️ Yes |
-| `airtable_search_records` | Search records by field, value, formula or date range. | No |
-| `airtable_list_bases` | List the bases the token can access. | No |
-| `airtable_list_tables` | List tables in a base. | No |
-| `airtable_create_table` | Create a new table in a base. | ✏️ Yes |
-| `airtable_list_columns` | List the fields/columns of a table. | No |
-| `airtable_list_records` | List records in a table. | No |
-| `airtable_get_record_ids` | List record IDs in a table. | No |
-| `airtable_on_new_record_added` | Detect newly added records since last check (trigger). | No |
-| `airtable_clear_snapshots` | Clear stored trigger snapshots so the next check starts fresh. | ⚠️ Yes |
+| Create Record | Create a new record in a table. | ✏️ Yes |
+| Get Record | Read a single record by ID. | No |
+| Update Record | Update fields on an existing record. | ✏️ Yes |
+| Delete Record | Permanently delete a record. | ⚠️ Yes |
+| Search Records | Search records by field, value, formula or date range. | No |
+| List Bases | List the bases the token can access. | No |
+| List Tables | List tables in a base. | No |
+| Create Table | Create a new table in a base. | ✏️ Yes |
+| List Columns | List the fields/columns of a table. | No |
+| List Records | List records in a table. | No |
+| Get Record IDs | List record IDs in a table. | No |
+| On New Record Added | Detect newly added records since last check (trigger). | No |
+| Clear Snapshots | Clear stored trigger snapshots so the next check starts fresh. | ⚠️ Yes |
 
 ## 6. Example usage
 
 **"Add a row to my 'Leads' table with name Jane Doe, email jane@acme.com, status New."**
-Runs `airtable_list_bases` / `airtable_list_tables` to resolve the table, then `airtable_create_record`.
+Runs **List Bases** / **List Tables** to resolve the table, then **Create Record**.
 
 **"Find the lead with email jane@acme.com and mark their status as Contacted."**
-Runs `airtable_search_records` to find the record, then `airtable_update_record`.
+Runs **Search Records** to find the record, then **Update Record**.
 
 ## 7. Permissions & data access
 
@@ -133,8 +133,8 @@ Runs `airtable_search_records` to find the record, then `airtable_update_record`
 |---|---|---|
 | `401 Unauthorized` | The token is missing, wrong or revoked. | Reconnect in UnleashX with a valid Personal Access Token. |
 | `403 Forbidden` | The token lacks a scope or wasn't granted this base. | Edit the token to add the scope and add the base under Access, then reconnect. |
-| `404 Not Found` | The base, table or record ID is wrong. | Use `airtable_list_bases` / `airtable_list_tables` to get correct IDs and retry. |
-| `422 Unprocessable Entity` | A field name or value doesn't match the table schema. | Check field names with `airtable_list_columns` and retry. |
+| `404 Not Found` | The base, table or record ID is wrong. | Use **List Bases** / **List Tables** to get correct IDs and retry. |
+| `422 Unprocessable Entity` | A field name or value doesn't match the table schema. | Check field names with **List Columns** and retry. |
 | `429 Too Many Requests` | You hit Airtable's rate limit (5 req/sec/base). | Wait a moment and retry. |
 
 For general connector issues, see [/mcp/integrations](/mcp/integrations).
@@ -142,7 +142,7 @@ For general connector issues, see [/mcp/integrations](/mcp/integrations).
 ## 9. Frequently asked questions
 
 **Is my Airtable data stored by UnleashX?**
-No. Tools call the Airtable API live and return the result. Small snapshots of record IDs are kept only to power the "new record" trigger, and you can clear them with `airtable_clear_snapshots`.
+No. Tools call the Airtable API live and return the result. Small snapshots of record IDs are kept only to power the "new record" trigger, and you can clear them with **Clear Snapshots**.
 
 **Can multiple team members connect Airtable?**
 Yes. Each agent stores its own token. Grant each token only the bases it needs.

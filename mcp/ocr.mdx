@@ -52,7 +52,7 @@ If you are a workspace admin, the only optional platform-side configuration is t
 
 <Steps>
 <Step title="Open your agent">
-Go to [https://tryunleashx.com](https://tryunleashx.com) and open the agent you want to give OCR to.
+Go to [https://www.tryunleashx.com](https://www.tryunleashx.com) and open the agent you want to give OCR to.
 </Step>
 <Step title="Open Data Connectors">
 In the agent, click **Data Connectors**.
@@ -71,26 +71,26 @@ The OCR tool should now show a **Connected** badge. Your agent can start reading
 
 | Tool | What it does | Changes data? |
 |---|---|---|
-| `ocr_extract_text` | Extract plain text from an image given by path, URL, or base64 | No |
-| `ocr_from_url` | Download an image from a URL and extract its text | No |
-| `ocr_from_file` | Extract text from a local image file | No |
-| `ocr_extract_with_boxes` | Extract text plus bounding boxes and confidence details | No |
-| `ocr_batch_extract` | Extract text from every image in a directory | No |
-| `ocr_supported_languages` | List the languages OCR can read | No |
-| `ocr_get_info` | Report OCR server status and configuration | No |
-| `ocr_preprocess_image` | Clean up an image (resize, grayscale, threshold, blur) before extraction | No |
+| Extract Text | Extract plain text from an image given by path, URL, or base64 | No |
+| From URL | Download an image from a URL and extract its text | No |
+| From File | Extract text from a local image file | No |
+| Extract With Boxes | Extract text plus bounding boxes and confidence details | No |
+| Batch Extract | Extract text from every image in a directory | No |
+| Supported Languages | List the languages OCR can read | No |
+| Get Info | Report OCR server status and configuration | No |
+| Preprocess Image | Clean up an image (resize, grayscale, threshold, blur) before extraction | No |
 
 <Note>
-Every OCR tool is read-only — it reads pixels and returns text. `ocr_preprocess_image` writes a temporary working file but does not modify your original image or any stored data.
+Every OCR tool is read-only — it reads pixels and returns text. **Preprocess Image** writes a temporary working file but does not modify your original image or any stored data.
 </Note>
 
 ## 6. Example usage
 
 **"Read this business card and pull out the name, company, and phone number."**
-→ Runs `ocr_from_url` (or `ocr_extract_text`) to extract the text, then the agent parses the fields.
+→ Runs **From URL** (or **Extract Text**) to extract the text, then the agent parses the fields.
 
 **"Go through every receipt image in this folder and give me the totals."**
-→ Runs `ocr_batch_extract` across the directory and the agent reads each total from the returned text.
+→ Runs **Batch Extract** across the directory and the agent reads each total from the returned text.
 
 ## 7. Permissions & data access
 
@@ -113,7 +113,7 @@ Every OCR tool is read-only — it reads pixels and returns text. `ocr_preproces
 | "Could not load image from URL" | The URL isn't a direct image link or isn't public | Use a direct `.jpg`/`.png` URL that's publicly reachable |
 | 401 / credential error | The platform-managed vision key is unavailable | This is on UnleashX's side — contact **cs@unleashx.ai** |
 | 403 / feature not enabled | OCR isn't enabled on your plan | Ask a workspace admin or contact support to enable it |
-| Empty or partial text | Image is low-resolution, blurry, or rotated | Run `ocr_preprocess_image` first, or supply a clearer image |
+| Empty or partial text | Image is low-resolution, blurry, or rotated | Run **Preprocess Image** first, or supply a clearer image |
 | "Pillow is required" | An image library is missing on the server | Platform-side issue — contact support |
 
 For general connector issues, see [/mcp/integrations](/mcp/integrations).
@@ -127,7 +127,7 @@ No. Images are processed to extract text and are not retained as part of the int
 No. OCR is platform-managed — UnleashX provides and rotates the underlying vision keys.
 
 **Which languages are supported?**
-Many, automatically. Call `ocr_supported_languages` for the current list (English, Spanish, French, German, Chinese, Japanese, Arabic, Hindi, and more).
+Many, automatically. Call **Supported Languages** for the current list (English, Spanish, French, German, Chinese, Japanese, Arabic, Hindi, and more).
 
 **Can multiple team members use it?**
 Yes. Once enabled on the workspace, anyone with access to the agent can use OCR.
@@ -135,5 +135,5 @@ Yes. Once enabled on the workspace, anyone with access to the agent can use OCR.
 ## 10. References
 
 - OpenAI Vision (text from images) overview: https://platform.openai.com/docs/guides/vision
-- UnleashX dashboard: https://tryunleashx.com
+- UnleashX dashboard: https://www.tryunleashx.com
 - UnleashX integrations help: [/mcp/integrations](/mcp/integrations)

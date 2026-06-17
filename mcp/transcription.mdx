@@ -54,7 +54,7 @@ If you are a workspace admin, the only optional platform-side choices are which 
 
 <Steps>
 <Step title="Open your agent">
-Go to [https://tryunleashx.com](https://tryunleashx.com) and open the agent that should transcribe audio.
+Go to [https://www.tryunleashx.com](https://www.tryunleashx.com) and open the agent that should transcribe audio.
 </Step>
 <Step title="Open Data Connectors">
 In the agent, click **Data Connectors**.
@@ -73,7 +73,7 @@ The Transcription tool should now show a **Connected** badge.
 
 | Tool | What it does | Changes data? |
 |---|---|---|
-| `transcribe_audio` | Transcribe audio from a URL using the Deepgram or Azure provider | No |
+| Transcribe Audio | Transcribe audio from a URL using the Deepgram or Azure provider | No |
 
 <Note>
 Transcription is read-only — it reads an audio file and returns text. It does not alter or store the source recording.
@@ -82,10 +82,10 @@ Transcription is read-only — it reads an audio file and returns text. It does 
 ## 6. Example usage
 
 **"Transcribe this call recording and give me a summary."**
-→ Runs `transcribe_audio` on the recording URL, then the agent summarizes the returned transcript.
+→ Runs **Transcribe Audio** on the recording URL, then the agent summarizes the returned transcript.
 
 **"Get the text of this Hindi voicemail."**
-→ Runs `transcribe_audio` with the language set to Hindi (`hi-IN`) so the transcript comes back accurately.
+→ Runs **Transcribe Audio** with the language set to Hindi (`hi-IN`) so the transcript comes back accurately.
 
 ## 7. Permissions & data access
 

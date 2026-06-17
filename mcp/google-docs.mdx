@@ -77,7 +77,7 @@ There is no key to copy. Access is granted by your Google sign-in and can be rev
 
 <Steps>
 <Step title="Open your agent">
-Sign in at [https://tryunleashx.com](https://tryunleashx.com) and open your agent.
+Sign in at [https://www.tryunleashx.com](https://www.tryunleashx.com) and open your agent.
 </Step>
 <Step title="Go to Data Connectors">
 In the agent, open **Data Connectors**.
@@ -97,28 +97,28 @@ You'll return to UnleashX and the connector status will show a **Connected** bad
 
 ## 5. Available tools
 
-| Tool (technical) | What it does | Changes data? |
+| Tool | What it does | Changes data? |
 |---|---|---|
-| `gd_list_drives` | List available Google Drives. | No |
-| `gd_folder_list` | List folders in a specific drive. | No |
-| `gd_list_document` | List documents in a specific folder. | No |
-| `gd_create_document` | Create a new Google Document in a folder. | ✏️ Yes |
-| `gd_delete_document` | Delete a Google Document. | ⚠️ Yes |
-| `gd_get_content_document` | Read a document's content. | No |
-| `gd_replace_text` | Replace all occurrences of text in a document. | ✏️ Yes |
-| `gd_append_text` | Append text to the end of a document. | ✏️ Yes |
-| `gd_on_new_document_created` | Trigger: return documents added since last run. | No |
-| `gd_generate_ai_image` | Generate an AI image (for use in a document). | ✏️ Yes |
+| List Drives | List available Google Drives. | No |
+| Folder List | List folders in a specific drive. | No |
+| List Document | List documents in a specific folder. | No |
+| Create Document | Create a new Google Document in a folder. | ✏️ Yes |
+| Delete Document | Delete a Google Document. | ⚠️ Yes |
+| Get Content Document | Read a document's content. | No |
+| Replace Text | Replace all occurrences of text in a document. | ✏️ Yes |
+| Append Text | Append text to the end of a document. | ✏️ Yes |
+| On New Document Created | Trigger: return documents added since last run. | No |
+| Generate AI Image | Generate an AI image (for use in a document). | ✏️ Yes |
 
 ## 6. Example usage
 
 > **"Create a doc called 'Kickoff Notes' in the Projects folder and add today's agenda."**
 >
-> Runs `gd_create_document`, then `gd_append_text`.
+> Runs **Create Document**, then **Append Text**.
 
 > **"In the contract doc, replace 'Acme Inc.' with 'Acme Corporation'."**
 >
-> Runs `gd_replace_text` on the target document.
+> Runs **Replace Text** on the target document.
 
 ## 7. Permissions & data access
 

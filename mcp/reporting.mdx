@@ -52,7 +52,7 @@ There is nothing for an admin to configure for normal use. The integration reuse
 
 <Steps>
 <Step title="Open your agent">
-Go to [https://tryunleashx.com](https://tryunleashx.com) and open your assistant.
+Go to [https://www.tryunleashx.com](https://www.tryunleashx.com) and open your assistant.
 </Step>
 <Step title="No connection needed">
 Reporting is platform-native and **always on** — you won't find a Connect button because there's nothing to authorize beyond your session.
@@ -71,17 +71,17 @@ If numbers come back scoped to your workspace, it's working. If you see a sessio
 
 | Tool | What it does | Changes data? |
 |---|---|---|
-| `reporting_conversations_summary` | Grouped or flat summary of calling executions (Conversations screen) | No |
-| `reporting_agents_list` | List your agents as `[{id, name}]`, filtered by type (default voice) | No |
-| `reporting_agent_executions_list` | Detailed per-call execution records (recent-calls table) | No |
-| `reporting_dashboard_data` | Main calling dashboard KPIs (totals, answered/failed, in/outbound, cost) | No |
-| `reporting_dashboard_meta` | Dashboard meta widgets (active agents, call-duration histogram) | No |
-| `reporting_campaign_list` | Paginated campaign list with audience progress counts | No |
-| `reporting_campaign_audience_list` | Per-contact audience list for one campaign | No |
-| `reporting_campaign_audience_stats` | Aggregate audience KPIs for one campaign | No |
-| `reporting_campaign_conversation_list` | Per-call records for one campaign | No |
-| `reporting_workflow_execution_history` | Paginated workflow run history (parent runs) | No |
-| `reporting_workflow_data_list` | Workflow definitions with per-workflow execution stats | No |
+| Conversations Summary | Grouped or flat summary of calling executions (Conversations screen) | No |
+| Agents List | List your agents as `[{id, name}]`, filtered by type (default voice) | No |
+| Agent Executions List | Detailed per-call execution records (recent-calls table) | No |
+| Dashboard Data | Main calling dashboard KPIs (totals, answered/failed, in/outbound, cost) | No |
+| Dashboard Meta | Dashboard meta widgets (active agents, call-duration histogram) | No |
+| Campaign List | Paginated campaign list with audience progress counts | No |
+| Campaign Audience List | Per-contact audience list for one campaign | No |
+| Campaign Audience Stats | Aggregate audience KPIs for one campaign | No |
+| Campaign Conversation List | Per-call records for one campaign | No |
+| Workflow Execution History | Paginated workflow run history (parent runs) | No |
+| Workflow Data List | Workflow definitions with per-workflow execution stats | No |
 
 <Note>
 Every reporting tool is read-only. Creation and mutation (agents, campaigns) live in the separate **Agents** integration.
@@ -90,10 +90,10 @@ Every reporting tool is read-only. Creation and mutation (agents, campaigns) liv
 ## 6. Example usage
 
 **"Show me today's call KPIs for our main voice agent."**
-→ Runs `reporting_agents_list` to resolve the agent, then `reporting_dashboard_data` (and `reporting_dashboard_meta`) scoped to that agent.
+→ Runs **Agents List** to resolve the agent, then **Dashboard Data** (and **Dashboard Meta**) scoped to that agent.
 
 **"How is the Winter Sale campaign doing — pickup rate and remaining contacts?"**
-→ Runs `reporting_campaign_list` to find the campaign, then `reporting_campaign_audience_stats` for the aggregate numbers.
+→ Runs **Campaign List** to find the campaign, then **Campaign Audience Stats** for the aggregate numbers.
 
 ## 7. Permissions & data access
 
@@ -137,6 +137,6 @@ Yes. Each member sees the metrics their own session and role allow.
 
 ## 10. References
 
-- UnleashX dashboard: https://tryunleashx.com
+- UnleashX dashboard: https://www.tryunleashx.com
 - UnleashX integrations help: [/mcp/integrations](/mcp/integrations)
 - Support: cs@unleashx.ai

@@ -80,7 +80,7 @@ There is no key to copy. Access is granted by your Google sign-in and can be rev
 
 <Steps>
 <Step title="Open your agent">
-Sign in at [https://tryunleashx.com](https://tryunleashx.com) and open your agent.
+Sign in at [https://www.tryunleashx.com](https://www.tryunleashx.com) and open your agent.
 </Step>
 <Step title="Go to Data Connectors">
 In the agent, open **Data Connectors**.
@@ -100,39 +100,39 @@ You'll return to UnleashX and the connector status will show a **Connected** bad
 
 ## 5. Available tools
 
-| Tool (technical) | What it does | Changes data? |
+| Tool | What it does | Changes data? |
 |---|---|---|
-| `calendar_get_availability` | Get free/busy windows for a calendar in a time range. | No |
-| `calendar_create_event` | Create an event (flexible date/time parsing). | ✏️ Yes |
-| `calendar_create_meeting` | Create a meeting event with details. | ✏️ Yes |
-| `calendar_delete_event` | Delete an event. | ⚠️ Yes |
-| `calendar_get_event` | Get a single event by ID. | No |
-| `calendar_get_events` | Get events between a start and end time. | No |
-| `calendar_update_event` | Update an existing event. | ✏️ Yes |
-| `calendar_get_current_datetime` | Get the current date/time (optional timezone). | No |
-| `calendar_list_calendars` | List calendars on the account. | No |
-| `calendar_list_events` | List a calendar's events (from now if no range given). | No |
-| `calendar_find_available_times` | Find open time slots in a range. | No |
-| `calendar_check_availability` | Check whether a time range is free or busy. | No |
-| `calendar_retrieve_calendar_details` | Get details of a specific calendar. | No |
-| `calendar_view_calendars` | View calendars (alternate of list). | No |
-| `calendar_view_events` | View events in a required time range. | No |
-| `calendar_retrieve_event_details` | Retrieve full details of an event. | No |
-| `calendar_get_event_details` | Get details of an event by ID. | No |
-| `calendar_create_event_based_on_past_event` | Create a new event modeled on a past one. | ✏️ Yes |
-| `calendar_add_attendees_to_event` | Add attendees to an existing event. | ✏️ Yes |
-| `calendar_add_quick_event` | Add an event from plain-text ("Quick Add"). | ✏️ Yes |
-| `calendar_quick_add_event` | Add an event from plain-text ("Quick Add"). | ✏️ Yes |
+| Get Availability | Get free/busy windows for a calendar in a time range. | No |
+| Create Event | Create an event (flexible date/time parsing). | ✏️ Yes |
+| Create Meeting | Create a meeting event with details. | ✏️ Yes |
+| Delete Event | Delete an event. | ⚠️ Yes |
+| Get Event | Get a single event by ID. | No |
+| Get Events | Get events between a start and end time. | No |
+| Update Event | Update an existing event. | ✏️ Yes |
+| Get Current Datetime | Get the current date/time (optional timezone). | No |
+| List Calendars | List calendars on the account. | No |
+| List Events | List a calendar's events (from now if no range given). | No |
+| Find Available Times | Find open time slots in a range. | No |
+| Check Availability | Check whether a time range is free or busy. | No |
+| Retrieve Calendar Details | Get details of a specific calendar. | No |
+| View Calendars | View calendars (alternate of list). | No |
+| View Events | View events in a required time range. | No |
+| Retrieve Event Details | Retrieve full details of an event. | No |
+| Get Event Details | Get details of an event by ID. | No |
+| Create Event Based on Past Event | Create a new event modeled on a past one. | ✏️ Yes |
+| Add Attendees to Event | Add attendees to an existing event. | ✏️ Yes |
+| Add Quick Event | Add an event from plain-text ("Quick Add"). | ✏️ Yes |
+| Quick Add Event | Add an event from plain-text ("Quick Add"). | ✏️ Yes |
 
 ## 6. Example usage
 
 > **"Am I free Thursday between 2pm and 5pm? If so, book a 45-minute review with priya@acme.com."**
 >
-> Runs `calendar_find_available_times` / `calendar_check_availability`, then `calendar_create_meeting` (with `calendar_add_attendees_to_event`).
+> Runs **Find Available Times** / **Check Availability**, then **Create Meeting** (with **Add Attendees to Event**).
 
 > **"Move tomorrow's 10am standup to 11am."**
 >
-> Runs `calendar_list_events` / `calendar_get_events` to locate it, then `calendar_update_event`.
+> Runs **List Events** / **Get Events** to locate it, then **Update Event**.
 
 ## 7. Permissions & data access
 

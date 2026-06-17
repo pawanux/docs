@@ -76,7 +76,7 @@ The access token is stored securely by UnleashX. You do not manage it manually. 
 
 <Steps>
 <Step title="Open your agent">
-Sign in at [tryunleashx.com](https://tryunleashx.com) and open the agent you want to give Slack access to.
+Sign in at [tryunleashx.com](https://www.tryunleashx.com) and open the agent you want to give Slack access to.
 </Step>
 <Step title="Go to Data Connectors">
 In the agent, open **Data Connectors**.
@@ -96,30 +96,30 @@ You'll be returned to UnleashX and the Slack connector will show a **Connected**
 
 ## 5. Available tools
 
-| Tool (technical name) | What it does | Changes data? |
+| Tool | What it does | Changes data? |
 |---|---|---|
-| `slack_get_users` | List members of the workspace | No |
-| `slack_get_channels` | List channels (public and private) | No |
-| `slack_send_message` | Send a message to a channel or DM | ✏️ Yes |
-| `slack_get_workspace_info` | Get workspace name, domain, and icon | No |
-| `slack_list_channel_types` | List channel types (public, private, DM, group DM) with counts | No |
-| `slack_upload_file` | Upload a file to one or more channels | ✏️ Yes |
-| `slack_list_replies` | List replies in a message thread | No |
-| `slack_get_file` | Get details about a specific file | No |
-| `slack_find_message` | Search messages across the workspace | No |
-| `slack_delete_file` | Delete a file | ⚠️ Yes |
-| `slack_create_reminder` | Create a reminder for you or a teammate | ✏️ Yes |
-| `slack_get_messages` | Read recent messages from a channel | No |
-| `slack_list_channels_by_type` | List channels filtered by a specific type | No |
-| `slack_create_message` | Create a new message (supports threads, rich blocks, attachments) | ✏️ Yes |
+| Get Users | List members of the workspace | No |
+| Get Channels | List channels (public and private) | No |
+| Send Message | Send a message to a channel or DM | ✏️ Yes |
+| Get Workspace Info | Get workspace name, domain, and icon | No |
+| List Channel Types | List channel types (public, private, DM, group DM) with counts | No |
+| Upload File | Upload a file to one or more channels | ✏️ Yes |
+| List Replies | List replies in a message thread | No |
+| Get File | Get details about a specific file | No |
+| Find Message | Search messages across the workspace | No |
+| Delete File | Delete a file | ⚠️ Yes |
+| Create Reminder | Create a reminder for you or a teammate | ✏️ Yes |
+| Get Messages | Read recent messages from a channel | No |
+| List Channels by Type | List channels filtered by a specific type | No |
+| Create Message | Create a new message (supports threads, rich blocks, attachments) | ✏️ Yes |
 
 ## 6. Example usage
 
 **"Post 'Deploy finished, all green ✅' to the #engineering channel."**
-Behind the scenes: `slack_get_channels` (find the channel ID) → `slack_send_message`.
+Behind the scenes: Get Channels (find the channel ID) → Send Message.
 
 **"Find the message where someone shared the Q3 budget and send it to me."**
-Behind the scenes: `slack_find_message` (search) → `slack_send_message` (DM you the link).
+Behind the scenes: Find Message (search) → Send Message (DM you the link).
 
 ## 7. Permissions & data access
 
@@ -144,7 +144,7 @@ Behind the scenes: `slack_find_message` (search) → `slack_send_message` (DM yo
 | `invalid_auth` / 401 | The access token is missing, expired, or revoked | Reconnect Slack in **Data Connectors** to re-authorize |
 | `missing_scope` / 403 | The app lacks a required scope (e.g. `team:read`) | Disconnect and reconnect to grant the updated scopes |
 | `not_in_channel` | The app isn't a member of that channel | For public channels it auto-joins; for private channels invite the UnleashX app to the channel, then retry |
-| `channel_not_found` | The channel ID is wrong or inaccessible | Use `slack_get_channels` to get a valid channel ID |
+| `channel_not_found` | The channel ID is wrong or inaccessible | Use Get Channels to get a valid channel ID |
 | Approval required screen | Your workspace requires admin approval for new apps | Ask a workspace Owner/Admin to approve UnleashX, then reconnect |
 
 For general connector issues, see [/mcp/integrations](/mcp/integrations).

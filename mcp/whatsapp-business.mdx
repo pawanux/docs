@@ -73,7 +73,7 @@ A **temporary** access token expires in about 24 hours. For anything beyond test
 
 <Steps>
 <Step title="Open your agent">
-Sign in at [tryunleashx.com](https://tryunleashx.com) and open the agent you want to connect.
+Sign in at [tryunleashx.com](https://www.tryunleashx.com) and open the agent you want to connect.
 </Step>
 <Step title="Go to Data Connectors">
 Open **Data Connectors** inside the agent.
@@ -93,32 +93,32 @@ The connector shows a **Connected** badge once your credentials validate. You're
 
 ## 5. Available tools
 
-| Tool (technical name) | What it does | Changes data? |
+| Tool | What it does | Changes data? |
 |---|---|---|
-| `wa_send_message` | Send a plain WhatsApp text message | ✏️ Yes |
-| `wa_list_templates` | List your approved message templates | No |
-| `wa_send_template` | Send an approved template message with optional variables | ✏️ Yes |
-| `wa_send_image_url` | Send an image by public URL (optional caption) | ✏️ Yes |
-| `wa_send_document` | Send a document by uploaded media ID | ✏️ Yes |
-| `wa_send_document_url` | Send a document by public URL | ✏️ Yes |
-| `wa_send_audio` | Send an audio/voice message by media ID | ✏️ Yes |
-| `wa_send_voice_message` | Download audio from a URL, upload it, and send as a voice note | ✏️ Yes |
-| `wa_send_video` | Send a video by media ID (optional caption) | ✏️ Yes |
-| `wa_mark_read` | Mark an inbound message as read | ✏️ Yes |
-| `get_insurance_detail` | Get car insurance quotes for a vehicle registration number | No |
-| `zimyo_employee_detail` | Look up Zimyo employee details by phone number | No |
+| Send Message | Send a plain WhatsApp text message | ✏️ Yes |
+| List Templates | List your approved message templates | No |
+| Send Template | Send an approved template message with optional variables | ✏️ Yes |
+| Send Image URL | Send an image by public URL (optional caption) | ✏️ Yes |
+| Send Document | Send a document by uploaded media ID | ✏️ Yes |
+| Send Document URL | Send a document by public URL | ✏️ Yes |
+| Send Audio | Send an audio/voice message by media ID | ✏️ Yes |
+| Send Voice Message | Download audio from a URL, upload it, and send as a voice note | ✏️ Yes |
+| Send Video | Send a video by media ID (optional caption) | ✏️ Yes |
+| Mark Read | Mark an inbound message as read | ✏️ Yes |
+| Get Insurance Detail | Get car insurance quotes for a vehicle registration number | No |
+| Zimyo Employee Detail | Look up Zimyo employee details by phone number | No |
 
 <Note>
-`get_insurance_detail` and `zimyo_employee_detail` are helper lookups bundled into this server for specific business workflows (insurance quoting and HR employee lookup). They don't send WhatsApp messages themselves.
+Get Insurance Detail and Zimyo Employee Detail are helper lookups bundled into this server for specific business workflows (insurance quoting and HR employee lookup). They don't send WhatsApp messages themselves.
 </Note>
 
 ## 6. Example usage
 
 **"Text +91 98765 43210 their order #4521 has shipped."**
-Behind the scenes: `wa_send_message` (UnleashX normalizes the number and posts to the Cloud API).
+Behind the scenes: Send Message (UnleashX normalizes the number and posts to the Cloud API).
 
 **"Send the 'appointment_reminder' template to this customer for 3 PM tomorrow."**
-Behind the scenes: `wa_list_templates` (confirm the template) → `wa_send_template` (with the time as a variable).
+Behind the scenes: List Templates (confirm the template) → Send Template (with the time as a variable).
 
 ## 7. Permissions & data access
 
@@ -143,7 +143,7 @@ Behind the scenes: `wa_list_templates` (confirm the template) → `wa_send_templ
 | 401 — No Phone Number ID | The `phone-number-id` is missing | Add your Phone Number ID from the Meta API Setup page |
 | Token expired (Graph API error) | A temporary token expired (~24h) | Generate a permanent System User token and reconnect |
 | 403 / permission error | The token lacks `whatsapp_business_messaging` or `_management` | Add the missing permission to the System User and regenerate the token |
-| Template not found / not approved | The template name/language is wrong or not yet approved | Use `wa_list_templates` to confirm the exact name and language; approve it in Meta if pending |
+| Template not found / not approved | The template name/language is wrong or not yet approved | Use List Templates to confirm the exact name and language; approve it in Meta if pending |
 
 For general connector issues, see [/mcp/integrations](/mcp/integrations).
 
