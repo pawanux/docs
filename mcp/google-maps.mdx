@@ -38,26 +38,102 @@ If you can't enable APIs or create keys, ask a Google Cloud project admin to cre
 
 ## 3. Get your credentials
 
-Google Maps MCP authenticates with a **Maps Platform API key**.
+Google Maps MCP authenticates with a single **Maps Platform API key** — a string that looks like `AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXX`. Getting one takes five steps in the Google Cloud Console: create a project, turn on billing, enable the APIs you need, create the key, and restrict it.
 
-<Steps>
-<Step title="Open Credentials">
-Go to the [Google Cloud Console](https://console.cloud.google.com) and select your project, then open **APIs & Services → Credentials**.
-</Step>
-<Step title="Create the API key">
-Click **Create credentials → API key**. Google generates a key string immediately.
+### Step 1 — Create or select a Google Cloud project
+
+Sign in at the [Google Cloud Console](https://console.cloud.google.com) with your Google account. Click the **project dropdown** at the top of the page, then choose **New Project**.
+
+![Open the project picker and choose New Project](/images/mcp/google-maps/setup/03-select-project.png)
+
+Give the project a name (for example `myHelloWorld` or `my-maps-agent`). Google generates a **Project ID** automatically — note that it **cannot be changed later**. Click **Create**.
+
+![Name the new project and click Create](/images/mcp/google-maps/setup/01-new-project.png)
+
+If your account belongs to an organization, you can also pick the **billing account** and **organization** while creating the project.
+
+![Create a project with a billing account and organization selected](/images/mcp/google-maps/setup/02-create-project-details.png)
+
+### Step 2 — Enable billing
+
+Google Maps Platform **requires a billing account**, even though it includes a generous monthly free credit. Open the menu (☰) and go to **Billing**, or just type "billing" into the search bar at the top.
+
+![Billing in the left navigation menu](/images/mcp/google-maps/setup/04-billing-menu.png)
+
+![Find Billing accounts using the search bar](/images/mcp/google-maps/setup/05-billing-search.png)
+
+If the project isn't linked to a billing account yet, click **Link a billing account** → **Create billing account**, and add a credit/debit card.
+
+![Link a billing account to the project](/images/mcp/google-maps/setup/06-link-billing.png)
+
+Once billing is active, the **Billing account overview** shows your current spend, forecast, and any remaining free credits.
+
+![Billing account overview with cost trend and credits](/images/mcp/google-maps/setup/07-billing-overview.png)
+
+<Note>
+Google usually provides a monthly free usage credit, but a billing account must still be attached or every Maps API call returns `REQUEST_DENIED`.
+</Note>
+
+### Step 3 — Enable the required APIs
+
+Go to **APIs & Services → Library** and enable each API your agent will use. Search for the API, open it, and click **Enable**.
+
+![Enable the Places API](/images/mcp/google-maps/setup/08-enable-places-api.png)
+
+![Enable the Geocoding API](/images/mcp/google-maps/setup/09-enable-geocoding-api.png)
+
+For full UnleashX functionality, enable all of these: **Places API**, **Geocoding API**, **Directions API**, **Distance Matrix API**, **Time Zone API**, **Roads API**, and **Elevation API**. At minimum, the three below cover most agent use cases:
+
+| You want to… | Enable this API |
+|---|---|
+| Find nearby businesses / autocomplete addresses | **Places API** |
+| Convert addresses ↔ latitude/longitude | **Geocoding API** |
+| Display a map on a website | **Maps JavaScript API** |
+| Get routes & directions | **Directions API** (or the newer **Routes API**) |
 
 <Warning>
-Treat the API key like a password. Copy it now and store it securely. For safety, restrict the key (see below) so it can't be misused if leaked.
+If an API isn't enabled, the matching tool will fail with `REQUEST_DENIED`. Enable it in the Library and retry.
 </Warning>
-</Step>
-<Step title="Enable the required APIs">
-In **APIs & Services → Library**, enable: **Places API**, **Geocoding API**, **Directions API**, **Distance Matrix API**, **Time Zone API**, **Roads API**, and **Elevation API**. Without these, the matching tools will return errors.
-</Step>
-<Step title="Restrict the key (recommended)">
-Back in **Credentials**, edit the key and under **API restrictions** limit it to just the APIs above. This keeps the key safe without breaking any tool.
-</Step>
-</Steps>
+
+### Step 4 — Create the API key
+
+Open **APIs & Services → Credentials** (from the Maps Platform docs you can also click **Go to the Credentials page**).
+
+![Go to the Credentials page from the Maps Platform docs](/images/mcp/google-maps/setup/10-go-to-credentials.png)
+
+Click **Create credentials → API key**. Google generates the key string immediately.
+
+![Create credentials and choose API key](/images/mcp/google-maps/setup/11-create-credentials-api-key.png)
+
+![Create an API key from the Maps Platform Keys & Credentials page](/images/mcp/google-maps/setup/12-maps-platform-create-key.png)
+
+The **Credentials** page lists API keys, OAuth 2.0 Client IDs, and service accounts. For Maps MCP you only need a plain **API key** — not an OAuth client ID or service account.
+
+![The Credentials page with the Create credentials dropdown](/images/mcp/google-maps/setup/13-credentials-menu.png)
+
+<Warning>
+Treat the API key like a password. Copy it now and store it securely. For safety, restrict the key (next step) so it can't be misused if it ever leaks.
+</Warning>
+
+### Step 5 — Restrict the key (recommended)
+
+Click the newly created key to open its settings. Restrictions prevent quota theft and unauthorized use.
+
+**Application restrictions** — limit *who* can use the key:
+- For **websites** (frontend Maps JavaScript): choose **HTTP referrers** and add your domains, e.g. `https://yourdomain.com/*` and `https://www.yourdomain.com/*`.
+- For **backend servers** (the typical UnleashX/MCP case): choose **IP addresses** and add your server IP. If your server IP isn't fixed, leave it as **None** and rely on the API restrictions below.
+
+![Restrict the key to HTTP referrers and add your website](/images/mcp/google-maps/setup/14-restrict-http-referrers.png)
+
+**API restrictions** — limit *which* APIs the key can call. Select **Restrict key**, then tick only the APIs you enabled in Step 3.
+
+![Restrict and rename the API key, selecting only the APIs you use](/images/mcp/google-maps/setup/15-restrict-and-rename-key.png)
+
+![Application and API restrictions with the selected APIs listed](/images/mcp/google-maps/setup/16-application-api-restrictions.png)
+
+![Website and API restrictions, then Save](/images/mcp/google-maps/setup/17-website-api-restrictions-save.png)
+
+Click **Save**. Changes can take up to **5 minutes** to take effect. Your restricted key is now ready to paste into UnleashX (Section 4).
 
 ### Permissions / APIs this key uses
 
