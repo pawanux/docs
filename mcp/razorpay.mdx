@@ -1,0 +1,226 @@
+---
+title: "Razorpay MCP"
+icon: "https://razorpay.com/favicon.png"
+description: "Manage payments, orders, refunds, payment links, subscriptions, and settlements from your UnleashX agent."
+tags: [mcp, razorpay, integration]
+---
+
+# Razorpay MCP
+
+> **In one line:** Let your UnleashX agent look up payments and orders, create payment links and orders, issue refunds, and manage subscriptions in your Razorpay account.
+
+| | |
+|---|---|
+| **Category** | Payments |
+| **Authentication** | API Key (`key_id` + `key_secret`, used as Basic auth) |
+| **Setup time** | ~5 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Businesses collecting payments in India (and supported currencies) that want their agent to check payment status, send payment links, refund customers, or manage recurring billing. |
+
+## 1. Overview
+
+Razorpay is a payments platform widely used across India to accept card, UPI, netbanking, and wallet payments. It also handles orders, refunds, shareable payment links, recurring subscriptions and plans, and settlements (the money paid out to your bank account).
+
+Once you connect Razorpay to UnleashX, your agent can act on your live payment data. It can tell a caller whether their payment went through, generate and send a payment link mid-conversation, refund a charge, create or cancel a subscription, or pull up settlement reports — without you logging into the Razorpay Dashboard.
+
+Connecting Razorpay to UnleashX is ideal for support and sales workflows: the agent answers "did my payment succeed?", collects money on the spot via a link, and handles billing changes, all using your real Razorpay account. Sensitive details such as full card numbers, emails, and phone numbers are automatically redacted in responses.
+
+## 2. What you'll need
+
+- A **Razorpay account** with Dashboard access ([dashboard.razorpay.com](https://dashboard.razorpay.com)).
+- Permission to view **Settings → API Keys** (typically an **Admin** / Owner role).
+- Your **API Key ID** (`key_id`) and **API Key Secret** (`key_secret`).
+- A decision on **Test mode** vs **Live mode** — each has its own separate key pair.
+
+<Note>
+If you don't have admin access, ask a Razorpay account admin to generate an API key pair for you. Connecting only needs the `key_id` and `key_secret`.
+</Note>
+
+## 3. Get your credentials
+
+Razorpay MCP authenticates with your **API Key ID** and **API Key Secret**. These are combined into an HTTP **Basic auth** credential (`key_id:key_secret`) and sent with every request.
+
+<Steps>
+<Step title="Open API Keys in the Dashboard">
+Log in to the [Razorpay Dashboard](https://dashboard.razorpay.com) and go to **Settings → API Keys**. Choose **Test mode** or **Live mode** at the top first — keys differ per mode.
+</Step>
+<Step title="Generate a key pair">
+Click **Generate Key** (or **Generate Test Key**). Razorpay creates a **Key ID** (starts with `rzp_test_` or `rzp_live_`) and a **Key Secret**.
+</Step>
+<Step title="Copy the Key Secret immediately">
+<Warning>
+The **Key Secret is shown only once**, right after generation. Copy and store it securely now. If you lose it, you'll have to regenerate the key pair (which invalidates the old one).
+</Warning>
+</Step>
+</Steps>
+
+### Permissions this key grants UnleashX
+
+| Capability | Why UnleashX needs it |
+|---|---|
+| Read payments / orders / refunds | Check status and details to answer customer questions. |
+| Create orders & payment links | Collect money during a conversation. |
+| Create refunds | Refund customers (full or partial) on request. |
+| Manage customers | Create customers and attach billing/shipping addresses. |
+| Manage subscriptions & plans | Create, update, pause, resume, or cancel recurring billing. |
+| Read settlements & reports | Reconcile payouts to your bank account. |
+
+<Info>
+Razorpay API keys are account-wide and are not scoped to specific permissions. Use a **Test mode** key while building, and switch to **Live mode** only when you're ready to move real money.
+</Info>
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Sign in at [tryunleashx.com](https://www.tryunleashx.com) and open the agent you want to give Razorpay access to.
+</Step>
+<Step title="Go to Data Connectors">
+Open **Data Connectors** and find **Razorpay** in the list.
+</Step>
+<Step title="Connect">
+Click **Connect** / **Add** / **Configure**, then paste your **Key ID** and **Key Secret** (sent as the `key-id` and `key-secret` credentials). Authenticate once.
+</Step>
+<Step title="Confirm success">
+When the keys are valid, the status changes to a **Connected** badge. Your agent can now use the Razorpay tools below.
+</Step>
+</Steps>
+
+![01 razorpay connect](/images/mcp/razorpay/01-connect.png)
+
+## 5. Available tools
+
+This server exposes **32 tools**. Tools marked **⚠️** are guarded — destructive actions (refunds, cancellations, on-demand settlements) require you to **confirm** before they run.
+
+### Payments
+
+| Tool name | What it does | Changes data? |
+|---|---|---|
+| **Fetch Payment** | Fetch a single payment by `payment_id`. | No |
+| **List Payments** | List recent payments (default 100). | No |
+| **Capture Payment** | Capture an authorized payment. | ✏️ Yes |
+| **Order Payments** | List all payments made against an order. | No |
+
+### Refunds
+
+| Tool name | What it does | Changes data? |
+|---|---|---|
+| **Create Refund** | Create a refund (full or partial). **Requires `confirm=True`.** | ⚠️ Yes |
+| **Fetch Refund** | Fetch a refund by `refund_id`. | No |
+| **List Refunds** | List all refunds across the account. | No |
+| **Payment Refunds** | List all refunds for a specific payment. | No |
+
+### Orders
+
+| Tool name | What it does | Changes data? |
+|---|---|---|
+| **Create Order** | Create a new order. | ✏️ Yes |
+| **Fetch Order** | Fetch an order by `order_id`. | No |
+| **List Orders** | List recent orders (default 100). | No |
+
+### Customers
+
+| Tool name | What it does | Changes data? |
+|---|---|---|
+| **Create Customer** | Create a customer (optionally with an address). | ✏️ Yes |
+| **Add Customer Address** | Attach an address to an existing customer. | ✏️ Yes |
+| **Fetch Customer** | Fetch a customer by `customer_id`. | No |
+
+### Payment links
+
+| Tool name | What it does | Changes data? |
+|---|---|---|
+| **Create Payment Link** | Create a shareable payment link. | ✏️ Yes |
+| **Fetch Payment Link** | Fetch a payment link by ID. | No |
+| **Cancel Payment Link** | Cancel a payment link. **Requires `confirm=True`.** | ⚠️ Yes |
+
+### Settlements
+
+| Tool name | What it does | Changes data? |
+|---|---|---|
+| **Fetch Settlement** | Fetch a settlement by ID. | No |
+| **List Settlements** | List settlements (default 100). | No |
+| **Create On-demand Settlement** | Create an on-demand settlement (early payout). **Requires `confirm=True`.** | ✏️ Yes |
+| **Settlement Report** | Get the combined settlement reconciliation report. | No |
+
+### Subscriptions
+
+| Tool name | What it does | Changes data? |
+|---|---|---|
+| **Fetch Subscription** | Fetch a subscription by ID. | No |
+| **List Subscriptions** | List subscriptions (default 100). | No |
+| **Create Subscription** | Create a new subscription. | ✏️ Yes |
+| **Update Subscription** | Update an existing subscription. | ✏️ Yes |
+| **Cancel Subscription** | Cancel a subscription. **Requires `confirm=True`.** | ⚠️ Yes |
+| **Pause Subscription** | Pause a subscription. | ⚠️ Yes |
+| **Resume Subscription** | Resume a paused subscription. | ✏️ Yes |
+
+### Plans
+
+| Tool name | What it does | Changes data? |
+|---|---|---|
+| **Fetch Plan** | Fetch a plan by ID. | No |
+| **List Plans** | List plans (default 100). | No |
+| **Create Plan** | Create a billing plan. | ✏️ Yes |
+
+<Warning>
+**Create Refund**, **Cancel Payment Link**, **Cancel Subscription**, and **Create On-demand Settlement** are protected. They return a preview and **do not execute** until they are re-invoked with `confirm=True`. This prevents accidental refunds, cancellations, or payouts.
+</Warning>
+
+## 6. Example usage
+
+**"Did payment `pay_ NfX29kLm` go through? If it did, refund it in full."**
+→ Runs **Fetch Payment** to check status, then **Create Refund** (asks you to confirm before issuing the refund).
+
+**"Create a ₹1,499 payment link for this customer and text it to them."**
+→ Runs **Create Payment Link** (amount in paise, i.e. `149900`) and returns the shareable link with SMS/email notification enabled.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- Read payments, orders, refunds, settlements, customers, subscriptions, and plans.
+- Create orders, payment links, customers, subscriptions, and plans.
+- Capture payments, issue refunds, and create on-demand settlements (with confirmation).
+- Update, pause, resume, and cancel subscriptions, and cancel payment links (cancellations require confirmation).
+
+**UnleashX cannot:**
+- See full card numbers, full email addresses, or full phone numbers — these are automatically masked/redacted in responses.
+- Change your Razorpay account settings, bank details, webhooks, or KYC.
+- Move money outside the actions above (e.g. it cannot transfer funds to arbitrary accounts).
+
+**How to disconnect:** In your agent's **Data Connectors**, open Razorpay and choose **Disconnect** to stop UnleashX from using the keys immediately. To fully revoke access, **regenerate** (or delete) the API key pair in **Settings → API Keys** so the old `key_id`/`key_secret` no longer work anywhere.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| `401 Unauthorized` | The `key_id`/`key_secret` is missing, wrong, or was regenerated. | Reconnect with a valid key pair. Make sure you used the right mode's keys (Test vs Live). |
+| `403 Forbidden` | The key is valid but the account/role isn't allowed to perform that action. | Confirm the account has the feature enabled (e.g. Subscriptions, on-demand settlements) and the right role. |
+| "Re-invoke with confirm=True" | A protected action (refund / cancel / on-demand settlement) ran without confirmation. | Re-run the request and confirm — e.g. tell the agent to proceed. |
+| `400 Bad Request` on amounts | Amount was below the minimum or in the wrong unit. | Amounts are in the **smallest currency unit** (paise for INR). ₹100 = `10000`; minimum is `100`. |
+| Test vs Live mismatch | An ID from Test mode is queried with Live keys (or vice versa). | Use keys from the same mode the data was created in. |
+
+For general connector issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Is my payment data stored by UnleashX?**
+No. UnleashX calls the Razorpay API on demand for each request. Card numbers, emails, and phone numbers are also redacted in the data the agent sees.
+
+**Will the agent accidentally refund or cancel something?**
+No. Refunds, cancellations, and on-demand settlements are guarded — they only run after you explicitly confirm, so they can't fire by accident.
+
+**Can I test before going live?**
+Yes. Generate a **Test mode** key pair, connect that, and exercise the workflows with test data. Switch to a **Live mode** key only when you're ready to handle real money.
+
+**How do I rotate my keys?**
+In **Settings → API Keys**, regenerate the key pair, then reconnect Razorpay in UnleashX with the new `key_id`/`key_secret`. The old secret stops working immediately.
+
+## 10. References
+
+- [Razorpay Dashboard](https://dashboard.razorpay.com)
+- [Generate API Keys (docs)](https://razorpay.com/docs/api/authentication/)
+- [Razorpay API reference](https://razorpay.com/docs/api/)
+- [Payment Links](https://razorpay.com/docs/payments/payment-links/)
+- [Subscriptions & Plans](https://razorpay.com/docs/payments/subscriptions/)
+- [Settlements](https://razorpay.com/docs/settlements/)

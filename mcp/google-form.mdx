@@ -1,0 +1,172 @@
+---
+title: "Google Forms MCP"
+icon: "https://www.gstatic.com/images/branding/product/2x/forms_2020q4_48dp.png"
+description: "Let your UnleashX agent create Google Forms, add questions, and read or manage responses."
+tags: [mcp, google-form, integration]
+---
+
+# Google Forms MCP
+
+> **In one line:** Connect Google Forms so your UnleashX agent can build forms, add questions, and read and manage submitted responses.
+
+| | |
+|---|---|
+| **Category** | Productivity |
+| **Authentication** | OAuth (Google sign-in) |
+| **Setup time** | ~2 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Building intake/survey forms and processing response data in automated workflows |
+
+## 1. Overview
+
+Google Forms is Google's survey and intake-form service. Forms collect responses, which can also be linked to a Google Sheet.
+
+Once connected, your UnleashX agent can create forms, add text and multiple-choice questions, read form properties, list and read responses, and (via the linked response spreadsheet) update or delete response rows. It can also list your forms, spreadsheets, and sheets.
+
+Connecting Google Forms to UnleashX makes data collection actionable: spin up an intake form, pull the latest submissions into a workflow, or clean up response data — all from natural language.
+
+## 2. What you'll need
+
+<Steps>
+<Step title="A Google account with Forms">
+Any personal Google account or a Google Workspace account with Forms enabled.
+</Step>
+<Step title="Permission to grant access">
+You must be able to complete the Google sign-in and approve the requested permissions.
+</Step>
+<Step title="An UnleashX agent">
+An agent in your UnleashX workspace where you'll add the Forms connector.
+</Step>
+</Steps>
+
+<Note>
+No admin access? On a managed Google Workspace account, your admin may need to allow UnleashX before authorization succeeds.
+</Note>
+
+## 3. Get your credentials
+
+Google Forms uses **Google OAuth 2.0**. You do **not** create or paste an API key. UnleashX redirects you to Google, you sign in once, and Google issues an access token to UnleashX automatically.
+
+<Steps>
+<Step title="Start the connection in UnleashX">
+In your agent's **Data Connectors**, find **Google Forms** and click **Connect** (see Section 4).
+</Step>
+<Step title="Sign in with Google">
+Choose the Google account whose forms you want to connect.
+</Step>
+<Step title="Review and approve the requested scopes">
+Click **Allow** to grant access and return to UnleashX.
+</Step>
+</Steps>
+
+<Info>
+There is no key to copy. Access is granted by your Google sign-in and can be revoked anytime at your [Google Account permissions page](https://myaccount.google.com/permissions).
+</Info>
+
+**Scopes UnleashX requests for Google Forms:**
+
+| Scope | Why UnleashX needs it |
+|---|---|
+| `https://www.googleapis.com/auth/forms.body` | Create forms and add/edit questions and form structure. |
+| `https://www.googleapis.com/auth/forms.responses.readonly` | Read submitted form responses. |
+| `https://www.googleapis.com/auth/spreadsheets` | Read/update/delete response rows in the linked response spreadsheet. |
+| `https://www.googleapis.com/auth/drive` | List forms and spreadsheets, and delete forms in Drive. |
+| `https://www.googleapis.com/auth/userinfo.email` | Identify which account is connected. |
+
+
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Sign in at [https://www.tryunleashx.com](https://www.tryunleashx.com) and open your agent.
+</Step>
+<Step title="Go to Data Connectors">
+In the agent, open **Data Connectors**.
+</Step>
+<Step title="Find Google Forms and connect">
+Locate **Google Forms** and click **Connect** / **Add** / **Configure**.
+</Step>
+<Step title="Authorize with Google">
+Click **Authorize**, sign in with Google, and approve the requested permissions.
+</Step>
+<Step title="Confirm success">
+You'll return to UnleashX and the connector status will show a **Connected** badge.
+</Step>
+</Steps>
+
+![01 forms connector](/images/mcp/google-form/01-connector.png)
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| Create Form | Create a new form. | ✏️ Yes |
+| Get Response | Get a single response by ID. | No |
+| List Responses | List submitted responses for a form. | No |
+| Get Form Properties | Get a form's properties/settings. | No |
+| Delete Response | Delete response row(s) from the linked sheet. | ⚠️ Yes |
+| Update Response | Update a response row in the linked sheet. | ✏️ Yes |
+| Delete Form | Delete a form. | ⚠️ Yes |
+| List Columns | List a form's columns. | No |
+| List Forms | List available forms. | No |
+| List Sheets | List sheets (tabs) in a linked spreadsheet. | No |
+| List Spreadsheets | List available spreadsheets. | No |
+| Add Text Question | Add a text question to a form. | ✏️ Yes |
+| Add Multiple Choice Question | Add a multiple-choice question to a form. | ✏️ Yes |
+
+## 6. Example usage
+
+> **"Create a feedback form titled 'Event Survey' with a text question 'What went well?' and a multiple-choice rating question."**
+>
+> Runs **Create Form**, then **Add Text Question** and **Add Multiple Choice Question**.
+
+> **"Show me the latest responses to the Event Survey."**
+>
+> Runs **List Forms** to find the form, then **List Responses**.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- Create forms and add text and multiple-choice questions.
+- Read form properties, columns, and submitted responses.
+- Update or delete response rows in the linked response spreadsheet.
+- Delete forms, and list forms, spreadsheets, and sheets.
+
+**UnleashX cannot:**
+- Access Gmail, Calendar, or other Google services unless connected separately.
+- Change your Google account settings or password.
+- Act on forms you don't have access to.
+
+**To disconnect:** In UnleashX, open **Data Connectors → Google Forms → Disconnect**, or revoke at [https://myaccount.google.com/permissions](https://myaccount.google.com/permissions). Revoking takes effect immediately.
+
+The connection authenticates each request with your Google OAuth access token (resolved from an `access-token` header, a `google_form_access_token` header, or an `Authorization: Bearer` header, falling back to your UnleashX session), refreshed automatically when it expires.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| `401 Unauthorized` | The access token is missing or expired. | Reconnect Google Forms in **Data Connectors**. |
+| `403 Forbidden` | Missing scope, or you lack rights on the form/spreadsheet. | Re-authorize all scopes; confirm you own or can edit the form. |
+| `404 Not Found` | The form or response ID is wrong or not shared with you. | Verify the `form_id`/`response_id` and your access. |
+| Can't update/delete a response | Responses are edited via the linked spreadsheet. | Ensure the form is linked to a response sheet and pass the correct `spreadsheet_id`/`sheet_id`. |
+
+For general connector issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Does UnleashX store my form responses?**
+No. It reads and acts on responses through Google's API in real time to fulfill your requests.
+
+**Can multiple team members connect Forms?**
+Yes. Each person authorizes their own Google account.
+
+**Why do some tools mention a spreadsheet?**
+Form responses can be linked to a Google Sheet. Updating or deleting individual responses is done through that linked spreadsheet's rows.
+
+## 10. References
+
+- [Google Forms API documentation](https://developers.google.com/forms/api)
+- [Google Forms API OAuth scopes](https://developers.google.com/forms/api/reference/rest/v1/forms/authorization)
+- [Google Cloud Console](https://console.cloud.google.com/)
+- [Manage third-party access to your Google Account](https://myaccount.google.com/permissions)

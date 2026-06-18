@@ -1,0 +1,139 @@
+---
+title: "OCR MCP"
+icon: "eye"
+description: "Pull text out of images, scans, and photos straight into your agent."
+tags: [mcp, ocr, integration]
+---
+
+# OCR MCP
+
+> **In one line:** Let your UnleashX agent read text from images, screenshots, business cards, and scanned documents.
+
+| | |
+|---|---|
+| **Category** | AI & Media |
+| **Authentication** | Platform-managed |
+| **Setup time** | ~1 minute |
+| **Difficulty** | Easy |
+| **Best for** | Reading documents, business cards, receipts, and screenshots inside an agent flow |
+
+## 1. Overview
+
+OCR (Optical Character Recognition) turns pictures of text into actual, usable text. Point it at a photo of a receipt, a scanned contract, or a screenshot and it returns the words it finds — preserving structure, line breaks, and tables as much as possible.
+
+Once connected, your agent can read text from a URL, a local file, or a base64 image, batch-process a whole folder of images, and even return word-level positions and confidence scores when you need structured output. It runs OpenAI Vision under the hood, so it is multilingual by default.
+
+Connecting OCR to UnleashX means your voice and automation agents can act on what they "see" — extracting a phone number from a business card, reading an invoice total, or capturing a form field — without any manual data entry.
+
+## 2. What you'll need
+
+<Note>
+OCR is **built into UnleashX**. There is no third-party account to create and no API key for you to manage.
+</Note>
+
+- An active UnleashX account.
+- The OCR feature enabled on your workspace/plan.
+- Permission to edit the agent you want to add OCR to (admin or editor role). If you don't have that access, ask a workspace admin to enable it for you.
+
+## 3. Get your credentials
+
+<Info>
+There are **no credentials to create**. OCR is a platform-managed integration — UnleashX provisions and rotates the underlying OpenAI Vision keys for you. You never see or handle an API key.
+</Info>
+
+If you are a workspace admin, the only optional platform-side configuration is the vision model used for extraction (UnleashX sets a sensible default, e.g. a GPT-4o-class vision model). Most teams never need to change this.
+
+| Platform-managed setting | Plain-English reason it exists |
+|---|---|
+| Vision model | Controls quality/speed of text extraction. UnleashX picks a good default. |
+| API key | Provisioned and rotated by UnleashX so every agent can read images securely. |
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to [https://www.tryunleashx.com](https://www.tryunleashx.com) and open the agent you want to give OCR to.
+</Step>
+<Step title="Open Data Connectors">
+In the agent, click **Data Connectors**.
+</Step>
+<Step title="Find OCR and add it">
+Locate **OCR** in the list and click **Connect** / **Add**. Because it's platform-managed, there is no key to paste — it activates immediately.
+</Step>
+<Step title="Confirm it's connected">
+The OCR tool should now show a **Connected** badge. Your agent can start reading images right away.
+</Step>
+</Steps>
+
+## 5. Available tools
+
+![01 ocr tools](/images/mcp/ocr/01-tools.png)
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| Extract Text | Extract plain text from an image given by path, URL, or base64 | No |
+| From URL | Download an image from a URL and extract its text | No |
+| From File | Extract text from a local image file | No |
+| Extract With Boxes | Extract text plus bounding boxes and confidence details | No |
+| Batch Extract | Extract text from every image in a directory | No |
+| Supported Languages | List the languages OCR can read | No |
+| Get Info | Report OCR server status and configuration | No |
+| Preprocess Image | Clean up an image (resize, grayscale, threshold, blur) before extraction | No |
+
+<Note>
+Every OCR tool is read-only — it reads pixels and returns text. **Preprocess Image** writes a temporary working file but does not modify your original image or any stored data.
+</Note>
+
+## 6. Example usage
+
+**"Read this business card and pull out the name, company, and phone number."**
+→ Runs **From URL** (or **Extract Text**) to extract the text, then the agent parses the fields.
+
+**"Go through every receipt image in this folder and give me the totals."**
+→ Runs **Batch Extract** across the directory and the agent reads each total from the returned text.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- Read images you provide (by URL, file path, or base64) and return the extracted text.
+- Optionally return word positions and confidence scores.
+- Temporarily process images in memory or in a short-lived temp file.
+
+**UnleashX cannot:**
+- Edit, delete, or store your original images permanently.
+- Access images you don't explicitly pass to a tool.
+- Browse your device or cloud storage on its own.
+
+**To disconnect:** Open the agent → **Data Connectors** → **OCR** → **Disconnect**. Access is revoked immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| "Could not load image from URL" | The URL isn't a direct image link or isn't public | Use a direct `.jpg`/`.png` URL that's publicly reachable |
+| 401 / credential error | The platform-managed vision key is unavailable | This is on UnleashX's side — contact **cs@unleashx.ai** |
+| 403 / feature not enabled | OCR isn't enabled on your plan | Ask a workspace admin or contact support to enable it |
+| Empty or partial text | Image is low-resolution, blurry, or rotated | Run **Preprocess Image** first, or supply a clearer image |
+| "Pillow is required" | An image library is missing on the server | Platform-side issue — contact support |
+
+For general connector issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Is my image data stored?**
+No. Images are processed to extract text and are not retained as part of the integration. Any temp files created during preprocessing are cleaned up automatically.
+
+**Do I need an OpenAI account or key?**
+No. OCR is platform-managed — UnleashX provides and rotates the underlying vision keys.
+
+**Which languages are supported?**
+Many, automatically. Call **Supported Languages** for the current list (English, Spanish, French, German, Chinese, Japanese, Arabic, Hindi, and more).
+
+**Can multiple team members use it?**
+Yes. Once enabled on the workspace, anyone with access to the agent can use OCR.
+
+## 10. References
+
+- OpenAI Vision (text from images) overview: https://platform.openai.com/docs/guides/vision
+- UnleashX dashboard: https://www.tryunleashx.com
+- UnleashX integrations help: [/mcp/integrations](/mcp/integrations)

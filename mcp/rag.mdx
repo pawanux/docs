@@ -1,0 +1,136 @@
+---
+title: "RAG / Knowledge Base MCP"
+icon: "database"
+description: "Let your agent search its own knowledge base and form data to answer questions."
+tags: [mcp, rag, integration]
+---
+
+# RAG / Knowledge Base MCP
+
+> **In one line:** Let your UnleashX agent find the most relevant snippets from its knowledge base (and pull form records) so its answers are grounded in your own data.
+
+| | |
+|---|---|
+| **Category** | AI & Media |
+| **Authentication** | Platform-managed |
+| **Setup time** | ~1 minute |
+| **Difficulty** | Easy |
+| **Best for** | Grounded answers, FAQ deflection, and looking up your own form/data records |
+
+## 1. Overview
+
+RAG (Retrieval-Augmented Generation) lets an agent search a knowledge base by meaning, not just keywords. You ask a question in plain language and it returns the closest-matching pieces of your indexed content, scoped to that agent.
+
+Once connected, your agent can run a similarity search over its knowledge base (powered by Qdrant vectors under the hood) and fetch structured form details from your UnleashX datasource. Together these let the agent answer using your real content instead of guessing.
+
+Connecting RAG to UnleashX means your agents give accurate, on-brand answers drawn from the documents and data you've already loaded — ideal for support, internal lookups, and consistent responses across a team.
+
+## 2. What you'll need
+
+<Note>
+RAG is **native to UnleashX**. It searches knowledge and data that already live in your workspace — there's no third-party account or API key for you to manage.
+</Note>
+
+- An active UnleashX account.
+- The RAG / knowledge-base feature enabled on your workspace/plan.
+- Content indexed for the agent (the knowledge base it should search).
+- Permission to edit the agent (admin or editor role). Without it, ask a workspace admin to enable the feature.
+
+## 3. Get your credentials
+
+<Info>
+There are **no credentials to create**. RAG is platform-managed — UnleashX runs the vector store (Qdrant), the embedding model, and the datasource API for you. You never see or handle a key.
+</Info>
+
+Search is automatically scoped to the calling agent: the agent's ID comes from your signed-in session, so you never pass workspace or company identifiers by hand. If you are a workspace admin, the only platform-side configuration is the vector collection, embedding model, and datasource URL — all preset by UnleashX.
+
+| Platform-managed setting | Plain-English reason it exists |
+|---|---|
+| Vector store (Qdrant) | Stores the embeddings your agent searches against. |
+| Embedding model | Converts your query into a vector so it can be matched by meaning. |
+| Datasource (forms) URL | Lets the agent fetch structured form records from your workspace. |
+| Agent scoping | Results are limited to the current agent automatically. |
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to [https://www.tryunleashx.com](https://www.tryunleashx.com) and open the agent that should search the knowledge base.
+</Step>
+<Step title="Open Data Connectors">
+In the agent, click **Data Connectors**.
+</Step>
+<Step title="Find RAG / Knowledge Base and add it">
+Locate **RAG / Knowledge Base** and click **Connect** / **Add**. It's platform-managed — no key to paste, it activates immediately.
+</Step>
+<Step title="Confirm it's connected">
+The RAG tool should now show a **Connected** badge. The agent will search the knowledge base scoped to itself.
+</Step>
+</Steps>
+
+## 5. Available tools
+
+![01 rag tools](/images/mcp/rag/01-tools.png)
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| Similarity Search | Embed a natural-language query and return the top matching knowledge-base entries for this agent | No |
+| Fetch Form Details | Fetch structured form records from the UnleashX datasource by object/field/value | No |
+
+<Note>
+Both tools are read-only — they look up and return existing knowledge and form records. They never create, edit, or delete data.
+</Note>
+
+## 6. Example usage
+
+**"What's our refund policy for annual plans?"**
+→ Runs **Similarity Search** over the agent's knowledge base and answers from the closest matching passages.
+
+**"Pull the record where email = jordan@acme.com from the leads form."**
+→ Runs **Fetch Form Details** against the datasource with that field and value.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- Embed your question and search the agent's knowledge base for similar content.
+- Return matching entries with relevance scores.
+- Fetch specific form records you request from your datasource.
+
+**UnleashX cannot:**
+- Search another agent's knowledge base (results are scoped to the current agent).
+- Modify, add, or delete knowledge-base entries or form data.
+- Access data outside your workspace.
+
+**To disconnect:** Open the agent → **Data Connectors** → **RAG / Knowledge Base** → **Disconnect**. Access is revoked immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| "Agent ID is required ... not found in the session context" | The agent isn't resolvable from the session | Run from within a properly authenticated agent session |
+| Empty matches | Nothing in the knowledge base is similar, or it isn't indexed yet | Add/index content for this agent, then retry |
+| 401 / session error | The session JWT is missing or expired | Sign in again on UnleashX |
+| 403 / feature not enabled | RAG isn't enabled on your plan | Ask a workspace admin or contact support |
+| "forms_url is not configured" | The datasource endpoint isn't set | Platform-side — contact **cs@unleashx.ai** |
+
+For general connector issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Where does the knowledge come from?**
+From content indexed for that specific agent in your UnleashX workspace. Search results are always scoped to the calling agent.
+
+**Is my data sent to a third party?**
+No external account is involved. The vector store and embedding model are run by UnleashX as part of the platform.
+
+**Can it change my data?**
+No. RAG is read-only — it retrieves and returns; it never writes.
+
+**How many results do I get?**
+You control it with `k_top` (default 3). There's a platform cap on the maximum.
+
+## 10. References
+
+- Qdrant vector search docs: https://qdrant.tech/documentation/
+- Retrieval-Augmented Generation overview: https://ai.google.dev/gemini-api/docs
+- UnleashX integrations help: [/mcp/integrations](/mcp/integrations)

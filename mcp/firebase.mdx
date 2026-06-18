@@ -1,0 +1,186 @@
+---
+title: "Firebase MCP"
+icon: "https://firebase.google.com/favicon.ico"
+description: "Read and write your Firestore and Realtime Database data from inside UnleashX agents."
+tags: [mcp, firebase, integration]
+---
+
+# Firebase MCP
+
+> **In one line:** Let your UnleashX agent read, create, update, and delete records in your Firebase Firestore and Realtime Database projects.
+
+| | |
+|---|---|
+| **Category** | Storage |
+| **Authentication** | OAuth (Google / Firebase access token) |
+| **Setup time** | ~5 minutes |
+| **Difficulty** | Medium |
+| **Best for** | Teams whose app or backend data lives in Firebase and who want their agent to look up, log, or update that data in real time. |
+
+## 1. Overview
+
+Firebase is Google's app-development platform. Two of its most-used pieces are **Cloud Firestore** (a flexible, document-based database) and the **Realtime Database** (a fast JSON tree that syncs live across clients). Together they store the day-to-day data behind millions of web and mobile apps — users, orders, bookings, chat messages, sensor readings, and more.
+
+Once you connect Firebase to UnleashX, your agent can work directly with that data. It can look up a customer record, list everything in a collection, file a new support ticket as a Firestore document, push a live event into the Realtime Database, or clean up stale entries — all from a normal conversation, with no code.
+
+Connecting Firebase to UnleashX turns your existing app database into something your voice or automation agent can act on. Instead of manually checking the Firebase Console, your agent reads and writes the same records your app uses, so answers and updates stay accurate and current.
+
+## 2. What you'll need
+
+- A Google account with access to the **Firebase / Google Cloud project** you want to connect.
+- The **project ID** of that Firebase project (visible in the Firebase Console or Google Cloud Console).
+- Permission to view and edit the relevant Firestore database and/or Realtime Database (typically **Editor** or **Owner**, or a custom role with Datastore / Firebase Database access).
+- A way to obtain a Google OAuth **access token** for the project (see Section 3).
+
+<Note>
+If you don't have admin access to the Firebase project, ask whoever owns it (often an engineer or the project Owner) to either grant you access or generate the access token for you. Connecting only needs a valid token — you do not need to be the project Owner yourself.
+</Note>
+
+## 3. Get your credentials
+
+Firebase MCP authenticates with a **Google OAuth 2.0 access token** that has access to your Firebase project. The token is sent to Google's APIs as a Bearer token (and, for the Realtime Database, as an `access_token` query parameter behind the scenes).
+
+<Steps>
+<Step title="Open your Firebase project">
+Go to the [Firebase Console](https://console.firebase.google.com/) and select the project whose data you want to connect. Note its **Project ID** — you'll provide this to your agent.
+</Step>
+<Step title="Confirm the APIs are enabled">
+In the [Google Cloud Console](https://console.cloud.google.com/) for the same project, make sure the **Cloud Firestore API** and **Firebase Realtime Database** are enabled under **APIs & Services → Library**.
+</Step>
+<Step title="Generate an OAuth access token">
+Obtain a Google OAuth 2.0 access token for the project with the scopes below (for example via the Google OAuth flow, the gcloud CLI `gcloud auth print-access-token`, or your service's OAuth integration). UnleashX uses this token as a Bearer credential.
+
+**Scopes UnleashX requests for Firebase:**
+
+| Scope | Why UnleashX needs it |
+|---|---|
+| `https://www.googleapis.com/auth/cloud-platform` | Access Firebase / Google Cloud project resources. |
+| `https://www.googleapis.com/auth/firebase` | Read your Firebase projects and their configuration. |
+| `https://www.googleapis.com/auth/datastore` | Read and write Firestore documents and collections. |
+| `https://www.googleapis.com/auth/userinfo.email` | Identify which account is connected. |
+| `https://www.googleapis.com/auth/userinfo.profile` | Read your basic profile (name, picture). |
+| `openid` | Sign-in / identity verification. |
+
+<Warning>
+Google OAuth access tokens are **short-lived** — they typically expire after about an hour. Copy it as soon as it's generated. For ongoing use, connect through UnleashX's OAuth flow so the token can be refreshed automatically rather than pasting a one-time token.
+</Warning>
+</Step>
+</Steps>
+
+### Permissions this token grants UnleashX
+
+| Scope / access | Why UnleashX needs it |
+|---|---|
+| View Firebase / Cloud projects | List your projects so you can pick the right one in your agent. |
+| Read Firestore data | Fetch, list, and query documents and collections. |
+| Write Firestore data | Create, update, and delete documents. |
+| Read Realtime Database | Read values and query paths in the RTDB tree. |
+| Write Realtime Database | Set, update, push, and delete values in the RTDB tree. |
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Sign in at [tryunleashx.com](https://www.tryunleashx.com) and open the agent you want to give Firebase access to.
+</Step>
+<Step title="Go to Data Connectors">
+In the agent, open **Data Connectors** and find **Firebase** in the list.
+</Step>
+<Step title="Connect">
+Click **Connect** / **Add** / **Configure** next to Firebase and authenticate once with your Google / Firebase OAuth access token (header `access-token` or `Authorization: Bearer …`).
+</Step>
+<Step title="Confirm success">
+When the connection is valid, the status changes to a **Connected** badge. Your agent can now use the Firebase tools below.
+</Step>
+</Steps>
+
+![01 firebase connect](/images/mcp/firebase/01-connect.png)
+
+## 5. Available tools
+
+This server exposes **21 tools** covering project discovery, Firestore, and the Realtime Database.
+
+| Tool name | What it does | Changes data? |
+|---|---|---|
+| **List Firebase Projects** | List all Google Cloud / Firebase projects you can access. | No |
+| **Get Firebase Project** | Get details of a specific Firebase project. | No |
+| **List Firestore Databases** | List the Firestore databases in a project. | No |
+| **Get Firestore Database** | Get details of a specific Firestore database. | No |
+| **Firestore: List Collections** | List all collections in a Firestore database. | No |
+| **Firestore: List Subcollections** | List the subcollections under a specific document. | No |
+| **Firestore: List Documents** | List documents in a Firestore collection. | No |
+| **Firestore: Get Document** | Fetch a single Firestore document by its path. | No |
+| **Firestore: Batch Get Documents** | Fetch multiple Firestore documents in one request. | No |
+| **Firestore: Query Documents** | Query a collection with filters, ordering, and limits. | No |
+| **Firestore: Create Document** | Create a new document in a collection. | ✏️ Yes |
+| **Firestore: Update Document** | Update specific fields in an existing document. | ✏️ Yes |
+| **Firestore: Delete Document** | Delete a Firestore document by its path. | ⚠️ Yes |
+| **Realtime DB: List Instances** | List all Realtime Database instances in a project. | No |
+| **Realtime DB: Get Instance** | Get details of a specific Realtime Database instance. | No |
+| **Realtime DB: Get** | Read data at a Realtime Database path. | No |
+| **Realtime DB: Query** | Query a Realtime Database path with filters and limits. | No |
+| **Realtime DB: Set** | Write (overwrite) data at a Realtime Database path. | ✏️ Yes |
+| **Realtime DB: Update** | Update fields at a Realtime Database path. | ✏️ Yes |
+| **Realtime DB: Push** | Push a new child under a path with an auto-generated ID. | ✏️ Yes |
+| **Realtime DB: Delete** | Remove data at a Realtime Database path. | ⚠️ Yes |
+
+<Warning>
+**Firestore: Delete Document** and **Realtime DB: Delete** permanently remove data and cannot be undone. **Realtime DB: Set** overwrites everything at the target path. Be specific about the path or document before asking your agent to run these.
+</Warning>
+
+## 6. Example usage
+
+**"Look up the order with ID `ord_8841` in my `orders` collection and tell me its status."**
+→ Runs **Firestore: Get Document** (or **Firestore: Query Documents**) against the `orders` collection.
+
+**"Log a new support ticket in the `tickets` collection: subject 'Login issue', priority high, status open."**
+→ Runs **Firestore: Create Document** to add a new document with those fields.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- List your accessible Firebase projects and their Firestore / Realtime databases.
+- Read, query, create, update, and delete Firestore documents in the connected project.
+- Read, query, set, update, push, and delete data in the Realtime Database.
+
+**UnleashX cannot:**
+- Access Firebase projects the connected token doesn't have permission for.
+- Change Firebase security rules, billing, or project configuration.
+- Touch Firebase Authentication users, Cloud Functions, or Storage buckets (only Firestore and Realtime Database are exposed).
+
+**How to disconnect:** In your agent's **Data Connectors**, open Firebase and choose **Disconnect**. This stops UnleashX from using the token immediately. To fully revoke access, also remove UnleashX's authorization in your Google account's third-party app/access settings or rotate the underlying token.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| `401 Unauthorized` / "Access token missing" | The token is missing, malformed, or expired. | Reconnect Firebase with a fresh OAuth access token. Tokens expire quickly — use the UnleashX OAuth flow so it refreshes automatically. |
+| `403 Forbidden` / `PERMISSION_DENIED` | The token is valid but lacks permission for that project, database, or operation. | Make sure the account has Editor/Owner (or Datastore / Firebase Database) access, and that the Firestore / RTDB APIs are enabled. |
+| `404 Not Found` | The project ID, database ID, collection, or document path doesn't exist. | Double-check the project ID and the exact path. The Firestore database defaults to `(default)`. |
+| Empty result on a Realtime Database read | The path is empty or the wrong RTDB instance/URL was used. | Use **Realtime DB: List Instances** to confirm the database URL, then retry with the correct path. |
+| Writes rejected | Security rules block server-side writes, or you're in a read-only context. | Review your Firestore / RTDB security rules and confirm the token's role allows writes. |
+
+For general connector issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Is my Firebase data stored by UnleashX?**
+No. UnleashX reads and writes your data on demand through Google's APIs to fulfill each request. It does not maintain a separate copy of your Firestore or Realtime Database.
+
+**Can multiple team members connect the same project?**
+Yes. Each agent connects with its own token. Anyone with a valid token for the project (and the right role) can connect it to their agent.
+
+**My token keeps expiring — what do I do?**
+Google OAuth access tokens are short-lived by design. Connect through UnleashX's OAuth flow so the token is refreshed automatically, instead of pasting a one-time token that expires within the hour.
+
+**Does this work with both Firestore and the Realtime Database?**
+Yes. The **Firestore** tools target Cloud Firestore and the **Realtime DB** tools target the Realtime Database. You can use either or both in the same agent.
+
+## 10. References
+
+- [Firebase Console](https://console.firebase.google.com/)
+- [Cloud Firestore documentation](https://firebase.google.com/docs/firestore)
+- [Realtime Database documentation](https://firebase.google.com/docs/database)
+- [Firestore REST API reference](https://firebase.google.com/docs/firestore/reference/rest)
+- [Firebase / Google Cloud IAM & permissions](https://firebase.google.com/docs/projects/iam/overview)
+- [Google OAuth 2.0 overview](https://developers.google.com/identity/protocols/oauth2)

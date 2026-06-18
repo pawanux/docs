@@ -1,0 +1,204 @@
+---
+title: "Zoho CRM MCP"
+icon: "https://www.zoho.com/favicon.ico"
+description: "Let your UnleashX agent read and manage leads, contacts, accounts, deals, tasks, and notes in Zoho CRM."
+tags: [mcp, zoho-crm, integration]
+---
+
+# Zoho CRM MCP
+
+> **In one line:** Connect your Zoho CRM so your UnleashX agent can look up and update leads, contacts, accounts, and deals, log activity, and keep your pipeline moving — all in plain language.
+
+| | |
+|---|---|
+| **Category** | CRM |
+| **Authentication** | OAuth (Zoho) |
+| **Setup time** | ~3 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Sales and revenue teams that want an AI agent to manage records, log calls, and update deals in Zoho CRM |
+
+## 1. Overview
+
+Zoho CRM is Zoho's customer relationship management platform. It's the system of record for your sales pipeline — leads, contacts, accounts, deals, tasks, notes, and the activity history that ties them together.
+
+Once connected to UnleashX, your agent can find and update records, create new leads and contacts, convert leads into deals, log calls and notes, attach files, and manage custom modules. It works against your live Zoho CRM data using your own Zoho sign-in, so it respects your role and permissions.
+
+Connecting Zoho CRM to UnleashX means your CRM updates itself as you talk. Instead of opening Zoho to log a call or move a deal forward, you tell your agent and it makes the change — keeping records current without the manual data entry.
+
+## 2. What you'll need
+
+- A Zoho CRM account (any paid edition; some API features require Standard or above).
+- A user role with permission to view and edit the records and modules you want the agent to manage.
+- An UnleashX account with access to **Data Connectors**.
+
+<Note>
+No API key to paste. Zoho CRM uses OAuth — you click **Authorize** and sign in with Zoho.
+</Note>
+
+<Warning>
+Zoho enforces your **role and profile permissions**. If your Zoho user can't edit a module (for example custom objects), the agent can't either. Ask your Zoho CRM administrator to adjust your profile if needed.
+</Warning>
+
+## 3. Get your credentials
+
+There's no key to copy. Authentication runs through Zoho's secure OAuth sign-in.
+
+<Steps>
+<Step title="Start the connection in UnleashX">
+Connecting Zoho CRM (Section 4) opens a Zoho **Authorize** window.
+</Step>
+<Step title="Sign in with Zoho">
+Sign in with your Zoho account at `https://accounts.zoho.com` (use the matching data center — e.g. `.eu`, `.in`, `.com.au` — if your org is hosted there). Complete two-factor authentication if prompted.
+</Step>
+<Step title="Review and accept the scopes">
+Zoho shows the access UnleashX is requesting (see the scopes table). Click **Accept**.
+</Step>
+<Step title="Return to UnleashX">
+Zoho redirects you back automatically and the connector links to your CRM. Behind the scenes UnleashX calls Zoho with a `Zoho-oauthtoken` authorization header — you never handle the token yourself.
+</Step>
+</Steps>
+
+![01 zoho authorize](/images/mcp/zoho-crm/01-zoho-authorize.png)
+
+**Permissions (Zoho OAuth scopes) UnleashX requests:**
+
+| Scope | Why UnleashX needs it |
+|---|---|
+| `ZohoCRM.modules.ALL` | Read and write records across modules (leads, contacts, accounts, deals, tasks, custom objects). |
+| `ZohoCRM.settings.ALL` | Read module and field metadata so the agent knows your CRM's structure. |
+| `ZohoCRM.users.ALL` | List and manage users for assignment and ownership lookups. |
+| `ZohoCRM.notifications.ALL` | Support related actions such as notes and activity tied to records. |
+| `ZohoCRM.attachments.ALL` | Upload and read file attachments on records. |
+| `offline_access` | Refresh access automatically so you don't re-authorize every session. |
+
+<Note>
+Zoho OAuth scopes are granular. UnleashX requests only what these tools need, and Zoho — not UnleashX — enforces the limits.
+</Note>
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to `https://www.tryunleashx.com` and open the agent you want to connect.
+</Step>
+<Step title="Open Data Connectors">
+Inside the agent, go to **Data Connectors**.
+</Step>
+<Step title="Find Zoho CRM">
+Locate **Zoho CRM** and click **Connect** (or **Add** / **Configure**).
+</Step>
+<Step title="Authorize with Zoho">
+Click **Authorize**, sign in with Zoho, and accept the scopes.
+</Step>
+<Step title="Confirm success">
+You return to UnleashX and the Zoho CRM connector shows a **Connected** badge.
+</Step>
+</Steps>
+
+![02 connected badge](/images/mcp/zoho-crm/02-connected-badge.png)
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| Get Lead | Retrieves a single lead by ID. | No |
+| Get Leads | Retrieves multiple leads. | No |
+| Create Lead | Creates a new lead. | ✏️ Yes |
+| Update Lead | Updates an existing lead. | ✏️ Yes |
+| Convert Lead | Converts a lead into a contact/account/deal. | ✏️ Yes |
+| Get Contact | Retrieves a single contact by ID. | No |
+| Get Contacts | Retrieves multiple contacts. | No |
+| Create Contact | Creates a new contact. | ✏️ Yes |
+| Update Contact | Updates an existing contact. | ✏️ Yes |
+| Get Account | Retrieves a single account by ID. | No |
+| Get Accounts | Retrieves multiple accounts. | No |
+| Create Account | Creates a new account. | ✏️ Yes |
+| Update Account | Updates an existing account. | ✏️ Yes |
+| Get Deal | Retrieves a single deal by ID. | No |
+| Get Deals | Retrieves multiple deals. | No |
+| Create Deal | Creates a new deal. | ✏️ Yes |
+| Update Deal | Updates an existing deal. | ✏️ Yes |
+| Search Records | Searches records within a module by criteria. | No |
+| Search Global | Performs a global search across all or specific modules. | No |
+| Add Note | Adds a note to a record. | ✏️ Yes |
+| Get Notes | Retrieves notes on a record. | No |
+| Upload Attachment | Uploads a file attachment to a record. | ✏️ Yes |
+| Update Note | Updates an existing note. | ✏️ Yes |
+| Log Call | Logs a call activity against a record. | ✏️ Yes |
+| Create Task | Creates a task. | ✏️ Yes |
+| Get Tasks | Retrieves tasks. | No |
+| Search Users | Searches CRM users. | No |
+| Create User | Creates a new CRM user. | ✏️ Yes |
+| Delete User Manual | Deletes a specified CRM user. | ⚠️ Yes |
+| Delete User from List | Deletes users from a provided list. | ⚠️ Yes |
+| Create Object | Creates a record in any (including custom) module. | ✏️ Yes |
+| Update Object | Updates a record in any module. | ✏️ Yes |
+| List Objects | Lists records from any module. | No |
+| Delete Object Manual | Deletes a specified record. | ⚠️ Yes |
+| Delete Objects from List | Deletes records from a provided list. | ⚠️ Yes |
+| List Related Records | Lists records related to a given record. | No |
+| Get Modules | Lists the CRM modules. | No |
+| Get Fields | Lists fields for a module. | No |
+| Get Field | Retrieves a single field's metadata. | No |
+| Get Users | Lists CRM users. | No |
+| List Leads | Lists leads. | No |
+| List Contacts | Lists contacts. | No |
+| List Accounts | Lists accounts. | No |
+| List Deals | Lists deals. | No |
+| List Tasks | Lists tasks. | No |
+
+## 6. Example usage
+
+**"Create a lead for Jordan Lee at Acme Corp, then log that I just had an intro call with them."**
+→ Runs Create Lead to add the lead, then Log Call to record the call activity.
+
+**"Find the deal with Globex and move it to the Negotiation stage with a note about the new pricing."**
+→ Runs Search Records (or Search Global) to find the deal, Update Deal to change the stage, and Add Note to attach the pricing note.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- Read, search, and list leads, contacts, accounts, deals, tasks, notes, and custom records.
+- Create and update records, convert leads, log calls, and upload attachments.
+- Read module and field metadata and list users.
+- Delete records and users where your role allows (these tools are clearly marked ⚠️).
+
+**UnleashX cannot:**
+- Do anything your Zoho role and profile don't permit.
+- Access other Zoho products (Zoho Desk, Zoho Mail, Books) — those are separate connectors.
+- Change your Zoho account password or org-wide security settings.
+
+**To disconnect:** In UnleashX, open **Data Connectors → Zoho CRM → Disconnect**. You can also revoke access at `https://accounts.zoho.com/home#sessions/usersession` (Connected Apps). Disconnecting revokes access immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| **401 Unauthorized** | The Zoho token expired or is invalid. | Reconnect Zoho CRM in **Data Connectors** and sign in again. |
+| **403 Forbidden** | Your Zoho role/profile lacks permission for that module or action. | Ask your Zoho CRM admin to grant the needed module/profile permission, then retry. |
+| **Wrong data center** | You signed in at the wrong Zoho domain (e.g. `.com` vs `.eu`). | Reconnect using the data center where your org is hosted. |
+| **Record not found** | The record ID is wrong or was deleted. | Ask the agent to search or list records to find the correct one. |
+| **Rate limit / API credits exceeded** | Your Zoho edition's daily API limit was reached. | Wait for the limit to reset or upgrade your Zoho edition. |
+
+For general MCP issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Is my CRM data stored by UnleashX?**
+No. UnleashX reads and writes your records live through the Zoho CRM API per request; it doesn't keep a copy of your CRM.
+
+**Can multiple team members connect Zoho CRM?**
+Yes. Each user authorizes their own Zoho account, so the agent acts with that user's own role and permissions.
+
+**Can the agent really delete records?**
+Yes — tools marked ⚠️ (delete record/user) make permanent changes in Zoho. They only work if your role allows deletion. Use them deliberately.
+
+**Which data center should I use?**
+Use the one your Zoho org lives in (US `.com`, EU `.eu`, India `.in`, Australia `.com.au`, etc.). Signing in at the wrong one causes auth errors.
+
+## 10. References
+
+- Zoho CRM API documentation: https://www.zoho.com/crm/developer/docs/api/v6/
+- Zoho OAuth overview & scopes: https://www.zoho.com/crm/developer/docs/api/v6/scopes.html
+- Zoho Connected Apps / revoke access: https://accounts.zoho.com/home#sessions/usersession
+- Zoho sign-in: https://accounts.zoho.com

@@ -1,0 +1,143 @@
+---
+title: "WhatsApp Web MCP"
+icon: "https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
+description: "Send WhatsApp messages from your own number by linking your phone with a QR code — no API key required."
+tags: [mcp, whatsapp-web, integration]
+---
+
+# WhatsApp Web MCP
+
+> **In one line:** Link your personal WhatsApp by scanning a QR code, then let your UnleashX agent send WhatsApp messages straight from your own number — no developer account or API key needed.
+
+| | |
+|---|---|
+| **Category** | Communication |
+| **Authentication** | QR code pairing (link your phone — no API key) |
+| **Setup time** | ~3 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Individuals and small teams who want to send WhatsApp messages from their existing number without the Meta Cloud API |
+
+## 1. Overview
+
+WhatsApp Web lets you use your normal WhatsApp account from another device by linking it — the same way the official WhatsApp Web and Desktop apps work. UnleashX uses a WhatsApp Web gateway so your agent can send messages from the number already on your phone.
+
+Once linked, your agent can send WhatsApp text messages to any contact directly from your account — no business verification, no template approvals, and no API credentials to manage.
+
+Connecting WhatsApp Web to UnleashX is the fastest way to let an agent message people on WhatsApp using your existing number. You link your phone once by scanning a QR code, and the session stays connected until you unlink it.
+
+<Warning>
+This uses your personal WhatsApp account through a linked-device session. Sending bulk or unsolicited messages can get your number blocked by WhatsApp. For high-volume, compliant business messaging, use the **WhatsApp Business** (Meta Cloud API) connector instead.
+</Warning>
+
+## 2. What you'll need
+
+- A phone with **WhatsApp installed and active** on the number you want to send from.
+- Your phone online and able to scan a QR code.
+- That's it — there's **no account to create, no API key, and no admin approval** needed.
+
+<Note>
+Because linking is done from your own phone, you don't need admin rights anywhere. Anyone with the phone can complete the pairing.
+</Note>
+
+## 3. Link your WhatsApp (QR code pairing)
+
+There is **no API key and no OAuth** for this connector. You authenticate by scanning a QR code with your phone — exactly like signing in to WhatsApp Web in a browser.
+
+<Steps>
+<Step title="Start the connection in UnleashX">
+In your agent, open **Data Connectors → WhatsApp Web → Connect**. UnleashX displays a **QR code**.
+</Step>
+<Step title="Open the linked devices screen on your phone">
+On your phone, open **WhatsApp → Settings → Linked Devices → Link a Device**. (On Android: **⋮ menu → Linked devices**.)
+</Step>
+<Step title="Scan the QR code">
+Point your phone's camera at the QR code shown in UnleashX. WhatsApp links the session within a few seconds.
+</Step>
+<Step title="Keep your phone connected">
+Your phone needs to come online periodically to keep the linked session alive, just like WhatsApp Web.
+</Step>
+</Steps>
+
+<Info>
+**No scopes or permissions to choose.** WhatsApp Web pairing does not use OAuth scopes — linking a device grants the session the ability to send and receive messages on your account, and there is no granular permission list to review. This is an honest limitation of the QR-pairing model.
+</Info>
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Sign in at [tryunleashx.com](https://www.tryunleashx.com) and open the agent you want to connect.
+</Step>
+<Step title="Go to Data Connectors">
+Open **Data Connectors** inside the agent.
+</Step>
+<Step title="Find WhatsApp Web and Connect">
+Locate **WhatsApp Web** and click **Connect** / **Add** / **Configure** to show the QR code.
+</Step>
+<Step title="Scan with your phone">
+Follow the QR pairing steps in Section 3 to link your phone.
+</Step>
+<Step title="Confirm it's connected">
+Once linked, the connector shows a **Connected** badge. Your agent can now send WhatsApp messages from your number.
+</Step>
+</Steps>
+
+![01 connect whatsapp web](/images/mcp/whatsapp-web/01-connect-whatsapp-web.png)
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| Send Message | Send a WhatsApp text message to a phone number from your linked account | ✏️ Yes |
+
+## 6. Example usage
+
+**"Message 9876543210 saying 'Running 10 minutes late, see you soon!'"**
+Behind the scenes: Send Message (UnleashX sends the text via your linked WhatsApp Web session).
+
+**"Send my colleague on +91 90000 11111 the meeting link."**
+Behind the scenes: Send Message (delivered from your own WhatsApp number).
+
+## 7. Permissions & data access
+
+**UnleashX CAN:**
+- Send WhatsApp text messages from your linked number through the gateway session.
+
+**UnleashX CANNOT:**
+- Send messages once you unlink the device or your session expires.
+- Access your full chat archive, contacts list, or media library through this connector (it is send-only).
+- Verify a business identity or send approved templates (that's the WhatsApp Business connector).
+
+**How to disconnect:** Unlink from **your phone → WhatsApp → Settings → Linked Devices → (tap the UnleashX/WhatsApp Web session) → Log out**, and/or click **Disconnect** in UnleashX. Unlinking ends the session immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| QR code won't scan or expired | The displayed QR code timed out | Refresh the connector to generate a fresh QR code, then scan again |
+| Messages stopped sending | The linked session expired or your phone has been offline too long | Open WhatsApp on your phone to bring it online, or re-scan the QR to relink |
+| 401 / authorization error | The gateway session token is missing or invalid | Reconnect and re-scan the QR code to establish a new session |
+| 400 — Invalid phone number | The recipient number was empty or non-numeric | Provide a valid phone number (digits only is fine) |
+| Number got restricted by WhatsApp | Too many messages or spam reports | Stop bulk sending; for high-volume use, switch to the WhatsApp Business connector |
+
+For general connector issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Do I need a WhatsApp Business account or API key?**
+No. This connector links your existing personal WhatsApp via QR code — there's nothing to register and no key to manage.
+
+**How is this different from WhatsApp Business?**
+WhatsApp Business uses Meta's official Cloud API (with templates, verification, and higher limits). WhatsApp Web links your normal number for simple, low-volume sending. Use Business for compliant, large-scale messaging.
+
+**Can multiple people connect?**
+Each connection links one phone/number. Different users can each link their own WhatsApp account to their own agent.
+
+**Is my message data stored?**
+UnleashX sends messages on demand through the gateway. This connector is send-only and does not pull your chat history into UnleashX.
+
+## 10. References
+
+- WhatsApp Web / linked devices help: https://faq.whatsapp.com/general/download-and-installation/about-linked-devices
+- How to link a device: https://faq.whatsapp.com/378279804439436
+- WhatsApp Business (official API) alternative: https://business.whatsapp.com/products/business-platform

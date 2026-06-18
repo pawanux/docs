@@ -1,0 +1,134 @@
+---
+title: "Transcription MCP"
+icon: "microphone"
+description: "Turn recorded calls and audio files into accurate text transcripts."
+tags: [mcp, transcription, integration]
+---
+
+# Transcription MCP
+
+> **In one line:** Convert any recorded audio (a call, a voice note, an uploaded file) into a clean text transcript your agent can use.
+
+| | |
+|---|---|
+| **Category** | AI & Media |
+| **Authentication** | Platform-managed |
+| **Setup time** | ~1 minute |
+| **Difficulty** | Easy |
+| **Best for** | Transcribing calls and audio for summaries, search, QA, and follow-ups |
+
+## 1. Overview
+
+Transcription (speech-to-text) converts spoken audio into written text. Give it the URL of an audio file and it returns the words that were said, smart-formatted and ready to use.
+
+Once connected, your agent can transcribe recorded calls, voicemails, and uploaded audio, choose between speech providers (Deepgram or Azure), and target a specific language when you know it. The result is plain text you can summarize, search, score, or store.
+
+Connecting Transcription to UnleashX lets your voice and automation agents turn raw audio into structured insight — call summaries, sentiment, action items — without anyone listening back manually.
+
+## 2. What you'll need
+
+<Note>
+Transcription is **built into UnleashX**. There are no third-party accounts (Deepgram/Azure) for you to create and no API keys for you to manage.
+</Note>
+
+- An active UnleashX account.
+- The Transcription feature enabled on your workspace/plan.
+- A publicly reachable URL to the audio file you want transcribed.
+- Permission to edit the agent (admin or editor role). Without it, ask a workspace admin to enable the feature.
+
+## 3. Get your credentials
+
+<Info>
+There are **no credentials to create**. Transcription is platform-managed — UnleashX provisions and rotates the underlying Deepgram and Azure Speech keys. You never handle a provider key.
+</Info>
+
+If you are a workspace admin, the only optional platform-side choices are which provider and default model/language to use. UnleashX ships sensible defaults; most teams never change them.
+
+| Platform-managed setting | Plain-English reason it exists |
+|---|---|
+| Provider (Deepgram / Azure) | Lets UnleashX route audio to the speech engine that fits your needs. |
+| Default model & language | Sets transcription quality and the expected spoken language. |
+| Provider API keys | Provisioned and rotated by UnleashX so transcription "just works." |
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to [https://www.tryunleashx.com](https://www.tryunleashx.com) and open the agent that should transcribe audio.
+</Step>
+<Step title="Open Data Connectors">
+In the agent, click **Data Connectors**.
+</Step>
+<Step title="Find Transcription and add it">
+Locate **Transcription** and click **Connect** / **Add**. It's platform-managed, so there's no key to paste — it activates immediately.
+</Step>
+<Step title="Confirm it's connected">
+The Transcription tool should now show a **Connected** badge.
+</Step>
+</Steps>
+
+## 5. Available tools
+
+![01 transcription tools](/images/mcp/transcription/01-tools.png)
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| Transcribe Audio | Transcribe audio from a URL using the Deepgram or Azure provider | No |
+
+<Note>
+Transcription is read-only — it reads an audio file and returns text. It does not alter or store the source recording.
+</Note>
+
+## 6. Example usage
+
+**"Transcribe this call recording and give me a summary."**
+→ Runs **Transcribe Audio** on the recording URL, then the agent summarizes the returned transcript.
+
+**"Get the text of this Hindi voicemail."**
+→ Runs **Transcribe Audio** with the language set to Hindi (`hi-IN`) so the transcript comes back accurately.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- Download the audio file at the URL you provide.
+- Send it to the configured speech provider and return the transcript.
+- Temporarily process and convert the audio (e.g. to a compatible format).
+
+**UnleashX cannot:**
+- Access audio you don't explicitly pass to the tool.
+- Permanently store your recordings as part of the integration.
+- Record new audio on its own.
+
+**To disconnect:** Open the agent → **Data Connectors** → **Transcription** → **Disconnect**. Access is revoked immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| "url must be a valid http or https URL" | The audio link is missing or malformed | Pass a full, public `http(s)` URL to the audio file |
+| "Audio file too large" | The file exceeds the 50 MB limit | Trim or compress the recording, or split it |
+| 401 / credential error | The platform-managed provider key is unavailable | Platform-side — contact **cs@unleashx.ai** |
+| 403 / feature not enabled | Transcription isn't enabled on your plan | Ask a workspace admin or contact support |
+| Empty transcript | Silent audio, wrong language, or unsupported format | Confirm the file has speech and set the right language |
+
+For general connector issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Is my audio stored?**
+No. The file is downloaded only to produce the transcript and is not retained as part of the integration. Temporary working files are cleaned up.
+
+**Do I need a Deepgram or Azure account?**
+No. Transcription is platform-managed — UnleashX provides and rotates the provider keys.
+
+**Which provider is used?**
+Deepgram or Azure, depending on your workspace configuration. You can pass `stt_provider_name` to choose per request.
+
+**Can multiple team members use it?**
+Yes. Once enabled on the workspace, anyone with access to the agent can transcribe audio.
+
+## 10. References
+
+- Deepgram speech-to-text docs: https://developers.deepgram.com/docs
+- Azure Speech service docs: https://learn.microsoft.com/azure/ai-services/speech-service/
+- UnleashX integrations help: [/mcp/integrations](/mcp/integrations)

@@ -1,0 +1,171 @@
+---
+title: "Slack MCP"
+icon: "https://a.slack-edge.com/80588/marketing/img/meta/favicon-32.png"
+description: "Let your UnleashX agent read, send, search, and manage Slack messages, channels, files, and reminders."
+tags: [mcp, slack, integration]
+---
+
+# Slack MCP
+
+> **In one line:** Connect Slack so your UnleashX agent can send and read messages, browse channels and users, share and find files, and set reminders — all in your workspace.
+
+| | |
+|---|---|
+| **Category** | Communication |
+| **Authentication** | OAuth (Slack access token) |
+| **Setup time** | ~5 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Teams that want their AI agent to post updates, answer from Slack history, and automate workspace messaging |
+
+## 1. Overview
+
+Slack is the messaging platform where your team chats, shares files, and coordinates work across channels and direct messages. It is the day-to-day communication hub for most organizations.
+
+Once you connect Slack to UnleashX, your agent can post messages to channels and DMs, read recent conversation history, search across messages, list channels and users, upload and fetch files, and create reminders — without you switching apps.
+
+Connecting Slack to UnleashX turns your agent into a hands-on teammate: it can announce results, summarize a channel, pull a file someone shared, or nudge a colleague with a reminder — driven entirely by natural language.
+
+## 2. What you'll need
+
+- A Slack account with access to the workspace you want to connect.
+- Permission to authorize apps for that workspace. Some workspaces require an **admin or Owner** to approve new app installations.
+- The channels you care about should exist (the agent can post to public channels it can join; for private channels the app must be invited).
+
+<Note>
+If you are not a workspace admin, you may see an "approval required" screen during authorization. Ask a workspace Owner/Admin to approve the UnleashX app, then retry.
+</Note>
+
+## 3. Get your credentials
+
+Slack uses **OAuth**, so you don't copy a long-lived secret by hand — you click through Slack's authorization screen and Slack hands UnleashX an access token. The steps below happen automatically during **Connect on UnleashX** (Section 4); this section explains what you are approving.
+
+<Steps>
+<Step title="Start the connection from UnleashX">
+When you click **Connect** on the Slack connector (Section 4), UnleashX redirects you to Slack's official authorization page at `https://slack.com/oauth/v2/authorize`.
+</Step>
+<Step title="Pick your workspace">
+At the top right of the Slack screen, confirm the **workspace** you want UnleashX to act in. Switch it if needed.
+</Step>
+<Step title="Review the requested scopes and click Allow">
+Slack shows exactly what the app can do. Click **Allow** to grant access. Slack then returns an **access token** to UnleashX automatically — you never see or paste it.
+</Step>
+</Steps>
+
+<Info>
+The access token is stored securely by UnleashX. You do not manage it manually. To stop access later, disconnect in UnleashX or revoke the app from **Slack → Settings & administration → Manage apps**.
+</Info>
+
+**Permissions (OAuth scopes) UnleashX requests and why:**
+
+| Scope | Why UnleashX needs it |
+|---|---|
+| `chat:write` | Send messages to channels and DMs on your behalf |
+| `chat:write.public` | Post to public channels the app hasn't been invited to |
+| `channels:read` | List public channels so you can target the right one |
+| `groups:read` | List private channels you're a member of |
+| `im:read` / `mpim:read` | List direct and group direct message conversations |
+| `users:read` | List workspace members (names/IDs) for messaging |
+| `users:read.email` | Match users by email when needed |
+| `files:read` | Fetch info about files shared in the workspace |
+| `files:write` | Upload files to channels and delete files the app created |
+| `search:read` | Search messages across the workspace |
+| `reminders:write` | Create reminders for you or teammates |
+| `team:read` | Read basic workspace info (name, domain, icon) |
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Sign in at [tryunleashx.com](https://www.tryunleashx.com) and open the agent you want to give Slack access to.
+</Step>
+<Step title="Go to Data Connectors">
+In the agent, open **Data Connectors**.
+</Step>
+<Step title="Find Slack and Connect">
+Locate **Slack** in the list and click **Connect** / **Add** / **Configure**.
+</Step>
+<Step title="Authorize in Slack">
+You'll be sent to Slack's authorization page. Choose your workspace and click **Allow**.
+</Step>
+<Step title="Confirm it's connected">
+You'll be returned to UnleashX and the Slack connector will show a **Connected** badge. You're done.
+</Step>
+</Steps>
+
+![01 connect slack](/images/mcp/slack/01-connect-slack.png)
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| Get Users | List members of the workspace | No |
+| Get Channels | List channels (public and private) | No |
+| Send Message | Send a message to a channel or DM | ✏️ Yes |
+| Get Workspace Info | Get workspace name, domain, and icon | No |
+| List Channel Types | List channel types (public, private, DM, group DM) with counts | No |
+| Upload File | Upload a file to one or more channels | ✏️ Yes |
+| List Replies | List replies in a message thread | No |
+| Get File | Get details about a specific file | No |
+| Find Message | Search messages across the workspace | No |
+| Delete File | Delete a file | ⚠️ Yes |
+| Create Reminder | Create a reminder for you or a teammate | ✏️ Yes |
+| Get Messages | Read recent messages from a channel | No |
+| List Channels by Type | List channels filtered by a specific type | No |
+| Create Message | Create a new message (supports threads, rich blocks, attachments) | ✏️ Yes |
+
+## 6. Example usage
+
+**"Post 'Deploy finished, all green ✅' to the #engineering channel."**
+Behind the scenes: Get Channels (find the channel ID) → Send Message.
+
+**"Find the message where someone shared the Q3 budget and send it to me."**
+Behind the scenes: Find Message (search) → Send Message (DM you the link).
+
+## 7. Permissions & data access
+
+**UnleashX CAN:**
+- Send messages to channels and direct messages you have access to.
+- Read recent message history and thread replies.
+- Search messages, list channels and users, and read workspace info.
+- Upload, fetch, and delete files; create reminders.
+
+**UnleashX CANNOT:**
+- Access workspaces you didn't authorize.
+- Post to private channels it hasn't been invited to.
+- Change workspace settings, billing, or admin configuration.
+- Do anything outside the scopes you approved (Section 3).
+
+**How to disconnect:** In UnleashX, open **Data Connectors → Slack → Disconnect**. You can also revoke access in **Slack → Settings & administration → Manage apps → UnleashX → Remove**. Either action revokes access immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| `invalid_auth` / 401 | The access token is missing, expired, or revoked | Reconnect Slack in **Data Connectors** to re-authorize |
+| `missing_scope` / 403 | The app lacks a required scope (e.g. `team:read`) | Disconnect and reconnect to grant the updated scopes |
+| `not_in_channel` | The app isn't a member of that channel | For public channels it auto-joins; for private channels invite the UnleashX app to the channel, then retry |
+| `channel_not_found` | The channel ID is wrong or inaccessible | Use Get Channels to get a valid channel ID |
+| Approval required screen | Your workspace requires admin approval for new apps | Ask a workspace Owner/Admin to approve UnleashX, then reconnect |
+
+For general connector issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Is my Slack data stored by UnleashX?**
+UnleashX reads messages and files on demand to fulfill your requests. It keeps lightweight snapshots for "new message / new user / new channel" triggers so it can detect what changed; these are tied to your session and cleared when the session ends.
+
+**Can multiple team members connect Slack?**
+Yes. Each user authorizes their own workspace access, and the agent acts with the permissions granted by whoever connected.
+
+**How do I rotate or revoke access?**
+Disconnect in UnleashX or remove the UnleashX app from **Slack → Manage apps**. Reconnecting issues a fresh token automatically.
+
+**Why can't the agent read a private channel?**
+Slack requires the app to be a member of private channels. Invite the UnleashX app to the channel, then try again.
+
+## 10. References
+
+- Slack API documentation: https://api.slack.com/docs
+- Slack OAuth scopes reference: https://api.slack.com/scopes
+- Manage installed apps: https://slack.com/apps/manage
+- Create/manage Slack apps: https://api.slack.com/apps

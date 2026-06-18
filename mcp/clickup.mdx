@@ -1,0 +1,191 @@
+---
+title: "ClickUp MCP"
+icon: "https://clickup.com/favicon.ico"
+description: "Let your UnleashX agent read and manage ClickUp spaces, lists, tasks, comments, and checklists."
+tags: [mcp, clickup, integration]
+---
+
+# ClickUp MCP
+
+> **In one line:** Connect ClickUp so your UnleashX agent can create and update tasks, organize spaces and lists, post comments, and track work without you opening ClickUp.
+
+| | |
+|---|---|
+| **Category** | Productivity |
+| **Authentication** | Personal API Token |
+| **Setup time** | ~5 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Teams who want to capture, triage, and update project tasks straight from conversations |
+
+## 1. Overview
+
+ClickUp is a project and task management platform where work is organized into Workspaces (Teams), Spaces, Folders, Lists, and Tasks. Teams use it to plan projects, assign work, track progress, and collaborate with comments and checklists.
+
+Once connected, your UnleashX agent can browse your ClickUp hierarchy, create and update tasks, leave comments, build checklists, and pull task details on demand. That means you can turn a phone call, chat, or instruction into a real ClickUp task and keep everything in sync automatically.
+
+Connecting ClickUp to UnleashX is useful when you want your agent to log requests, follow up on action items, or report project status, so nothing falls through the cracks and your team stays focused on the work itself.
+
+## 2. What you'll need
+
+- A ClickUp account with access to the Workspace you want to use.
+- Permission to view and edit the Spaces, Lists, and Tasks you want the agent to manage.
+- A ClickUp **Personal API Token** (created from your own profile settings).
+
+<Note>
+You don't need to be a Workspace admin to create a Personal API Token. The token inherits **your** ClickUp permissions, so the agent can only see and change what you can. If you lack access to certain Spaces, ask an admin to grant it before connecting.
+</Note>
+
+## 3. Get your credentials
+
+ClickUp uses a **Personal API Token** that begins with `pk_`.
+
+<Steps>
+<Step title="Open your ClickUp settings">
+Sign in at [https://app.clickup.com](https://app.clickup.com), click your avatar in the lower-left corner, and choose **Settings**.
+</Step>
+<Step title="Go to Apps">
+In the left sidebar of Settings, select **Apps**. (Direct link: [https://app.clickup.com/settings/apps](https://app.clickup.com/settings/apps))
+</Step>
+<Step title="Generate your token">
+Under **API Token**, click **Generate** (or **Regenerate** if you already have one).
+</Step>
+<Step title="Copy your token">
+Copy the token that begins with `pk_`.
+
+<Warning>
+Treat this token like a password. Anyone with it can act in ClickUp as you. If it leaks, return to this page and click **Regenerate** to invalidate the old one.
+</Warning>
+</Step>
+</Steps>
+
+**What the token can access**
+
+| Scope / Access | Why UnleashX needs it |
+|---|---|
+| Read Workspaces, Spaces, Folders, Lists | To navigate your ClickUp hierarchy and find the right place to work |
+| Read & write Tasks | To create, update, fetch, and delete tasks on your behalf |
+| Read & write Comments | To post and read task comments |
+| Read & write Checklists | To create checklists and add items to tasks |
+| Read Members, Views, Goals, Templates | To resolve assignees, show views, and apply templates |
+
+<Note>
+ClickUp's Personal API Token is not scope-limited — it grants the same access you have in the app. UnleashX only calls the endpoints needed for the tools listed in Section 5.
+</Note>
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to [https://www.tryunleashx.com](https://www.tryunleashx.com) and open the agent you want to connect.
+</Step>
+<Step title="Open Data Connectors">
+In the agent, go to **Data Connectors**.
+</Step>
+<Step title="Find ClickUp">
+Locate **ClickUp** in the list and click **Connect** / **Add** / **Configure**.
+</Step>
+<Step title="Paste your token">
+When prompted, paste your `pk_` **Personal API Token**. UnleashX sends it as the `clickup_api_token` / `access-token` header (Bearer).
+</Step>
+<Step title="Confirm success">
+Save. When the status shows a **Connected** badge, your agent can start working with ClickUp.
+</Step>
+</Steps>
+
+![01 clickup data connector](/images/mcp/clickup/01-data-connector.png)
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| Get Workspaces | Lists all Workspaces you can access | No |
+| Get Team IDs | Gets Team (Workspace) IDs | No |
+| Get Spaces | Lists Spaces in a Team | No |
+| Create Space | Creates a new Space in a Team | ✏️ Yes |
+| Get Folder | Gets a Folder by ID | No |
+| Create Folder | Creates a Folder in a Space | ✏️ Yes |
+| List Folders | Lists Folders in a Space | No |
+| Get Lists | Lists Lists in a Space or Folder | No |
+| Create List | Creates a List in a Folder | ✏️ Yes |
+| List Tasks | Lists tasks in a List with paging/sorting | No |
+| Create Task | Creates a new task | ✏️ Yes |
+| Get Task | Gets a task by ID | No |
+| Get Ticket | Gets a ticket (task) by ID | No |
+| Delete Task | Deletes a task | ⚠️ Yes |
+| Update Task | Updates fields on a task | ✏️ Yes |
+| List Task Comments | Lists comments on a task | No |
+| Create Task Comment | Adds a comment to a task | ✏️ Yes |
+| Create Checklist | Creates a checklist on a task | ✏️ Yes |
+| Add Checklist Item | Adds an item to a checklist | ✏️ Yes |
+| List All Tasks | Lists all tasks in a List | No |
+| List All Spaces | Lists all Spaces in a Team | No |
+| List All Subtasks | Lists all subtasks of a task | No |
+| List All Templates | Lists all templates in a Team | No |
+| List Task Templates | Lists task templates in a Team | No |
+| Folderless List | Lists folderless Lists in a Space | No |
+| List View | Gets views for a List | No |
+| List Members | Lists members of a List | No |
+| Get List | Gets a List by ID | No |
+| Delete List | Deletes a List | ⚠️ Yes |
+| List All Goals | Lists all Goals in a Team | No |
+| List Space View | Gets views for a Space | No |
+| List View Task | Lists tasks within a view | No |
+| List All Channel Members | Lists channel members in a Team | No |
+| Clear Snapshots | Clears cached ClickUp data snapshots | ⚠️ Yes |
+| On Task Created | Trigger that fires when a task is created in a List | No |
+| On Task Updated | Trigger that fires when a task is updated in a List | No |
+
+## 6. Example usage
+
+**"Create a high-priority task in my Marketing list to follow up with the new lead by Friday."**
+Behind the scenes: Get Lists (to find the Marketing list) → Create Task.
+
+**"What's open in our Sprint list, and add a comment to the login bug saying I'm on it."**
+Behind the scenes: List All Tasks → Get Task → Create Task Comment.
+
+## 7. Permissions & data access
+
+**UnleashX CAN:**
+- Read your Workspaces, Spaces, Folders, Lists, and Tasks.
+- Create, update, and delete tasks, Lists, Spaces, and Folders you have access to.
+- Post and read comments, and build checklists.
+- Read members, views, goals, and templates.
+
+**UnleashX CANNOT:**
+- Access Workspaces or Spaces your ClickUp account can't see.
+- Change ClickUp account or billing settings.
+- Act beyond the permissions your own ClickUp user has.
+
+**To disconnect:** In UnleashX, open your agent → **Data Connectors** → **ClickUp** → **Disconnect**. To fully revoke access, go to ClickUp **Settings → Apps** and click **Regenerate** to invalidate the token. Either action stops access immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| `401 Unauthorized` | The API token is wrong, expired, or was regenerated | Generate a fresh token in **Settings → Apps** and reconnect in UnleashX |
+| `403 Forbidden` | Your ClickUp user lacks permission for that Space/List/Task | Ask a Workspace admin to grant you access, then retry |
+| `404 Not Found` | The task, list, or space ID no longer exists | Re-list items to get a current ID; the item may have been deleted |
+| Rate limited | Too many requests in a short window | Wait a minute and try again; ClickUp enforces per-token rate limits |
+| Stale results | A cached snapshot is out of date | Run Clear Snapshots or ask the agent to refresh |
+
+For general connection issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Is my data stored by UnleashX?**
+UnleashX uses your token to call ClickUp live when a tool runs. It may cache short-lived snapshots to speed up navigation; you can clear them with Clear Snapshots.
+
+**Can multiple team members connect?**
+Yes. Each person creates their own Personal API Token and connects it to their agent. Each token reflects that person's ClickUp permissions.
+
+**How do I rotate my token?**
+Go to ClickUp **Settings → Apps**, click **Regenerate**, then paste the new token into UnleashX. The old token stops working immediately.
+
+**Can the agent delete things?**
+Yes — Delete Task and Delete List remove items permanently. These are marked ⚠️ in the tools table.
+
+## 10. References
+
+- ClickUp API documentation: [https://developer.clickup.com/docs](https://developer.clickup.com/docs)
+- Personal API Token page: [https://app.clickup.com/settings/apps](https://app.clickup.com/settings/apps)
+- ClickUp authentication reference: [https://developer.clickup.com/docs/authentication](https://developer.clickup.com/docs/authentication)

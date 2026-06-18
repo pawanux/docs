@@ -1,0 +1,171 @@
+---
+title: "Zoho Desk MCP"
+icon: "https://www.zoho.com/favicon.ico"
+description: "Let your UnleashX agent create, look up, and update support tickets and manage your Zoho Desk help desk."
+tags: [mcp, zoho-desk, integration]
+---
+
+# Zoho Desk MCP
+
+> **In one line:** Connect your Zoho Desk help desk so your UnleashX agent can create and update support tickets, add comments, and look up agents, contacts, and departments — without leaving the conversation.
+
+| | |
+|---|---|
+| **Category** | CRM |
+| **Authentication** | OAuth (Zoho) |
+| **Setup time** | ~3 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Support and customer-success teams that want an AI agent to triage, create, and update Zoho Desk tickets |
+
+## 1. Overview
+
+Zoho Desk is Zoho's customer support and help-desk product. It organizes incoming requests into tickets, routes them to departments and agents, and tracks the full conversation with each customer.
+
+Once connected to UnleashX, your agent can create new tickets, retrieve and update existing ones, add comments to a ticket's thread, and look up the supporting data — agents, contacts, departments, accounts, attachments, roles, and organizations. It works against your live Zoho Desk data using your own Zoho sign-in.
+
+Connecting Zoho Desk to UnleashX means support requests get handled faster. Instead of switching into Zoho Desk to log a ticket or post an update, you tell your agent and it does the work — keeping your queue current while you stay focused on the customer.
+
+## 2. What you'll need
+
+- A Zoho Desk account with at least one department set up.
+- A user role (agent, light agent, or admin) with permission to view and edit tickets.
+- Your Zoho Desk **organization ID** if your account spans multiple help-desk organizations (optional — UnleashX can send it as an org-id header when needed).
+- An UnleashX account with access to **Data Connectors**.
+
+<Note>
+No API key to paste. Zoho Desk uses OAuth — you click **Authorize** and sign in with Zoho.
+</Note>
+
+<Warning>
+Some accounts host multiple Zoho Desk organizations. If the agent returns data from the wrong org, supply your **organization ID** so UnleashX can scope requests with the org-id header. You can find it in Zoho Desk under **Setup → Developer Space → API**.
+</Warning>
+
+## 3. Get your credentials
+
+There's no key to copy. Authentication runs through Zoho's secure OAuth sign-in.
+
+<Steps>
+<Step title="Start the connection in UnleashX">
+Connecting Zoho Desk (Section 4) opens a Zoho **Authorize** window.
+</Step>
+<Step title="Sign in with Zoho">
+Sign in with your Zoho account at `https://accounts.zoho.com` (use your data center domain — `.eu`, `.in`, `.com.au`, etc. — if your org is hosted there). Complete two-factor authentication if prompted.
+</Step>
+<Step title="Review and accept the scopes">
+Zoho shows the access UnleashX is requesting (see the scopes table). Click **Accept**.
+</Step>
+<Step title="Return to UnleashX">
+Zoho redirects you back automatically. Behind the scenes UnleashX calls Zoho Desk with a `Zoho-oauthtoken` authorization header (plus an optional org-id header) — you never handle the token yourself.
+</Step>
+</Steps>
+
+![01 zoho authorize](/images/mcp/zoho-desk/01-zoho-authorize.png)
+
+**Permissions (Zoho OAuth scopes) UnleashX requests:**
+
+| Scope | Why UnleashX needs it |
+|---|---|
+| `Desk.tickets.ALL` | Create, read, update tickets and add comments. |
+| `Desk.contacts.READ` | Look up the contacts (customers) associated with tickets. |
+| `Desk.settings.READ` | Read departments, roles, and other help-desk configuration. |
+| `Desk.basic.READ` | List agents, accounts, attachments, and organizations. |
+| `offline_access` | Refresh access automatically so you don't re-authorize every session. |
+
+<Note>
+Zoho OAuth scopes are granular. UnleashX requests only what these tools need, and Zoho — not UnleashX — enforces the limits.
+</Note>
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to `https://www.tryunleashx.com` and open the agent you want to connect.
+</Step>
+<Step title="Open Data Connectors">
+Inside the agent, go to **Data Connectors**.
+</Step>
+<Step title="Find Zoho Desk">
+Locate **Zoho Desk** and click **Connect** (or **Add** / **Configure**).
+</Step>
+<Step title="Authorize with Zoho">
+Click **Authorize**, sign in with Zoho, and accept the scopes. Add your organization ID if prompted.
+</Step>
+<Step title="Confirm success">
+You return to UnleashX and the Zoho Desk connector shows a **Connected** badge.
+</Step>
+</Steps>
+
+![02 connected badge](/images/mcp/zoho-desk/02-connected-badge.png)
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| Create Ticket | Creates a new support ticket. | ✏️ Yes |
+| Get Ticket | Retrieves a single ticket by ID. | No |
+| Update Ticket | Updates an existing ticket (status, priority, assignee, etc.). | ✏️ Yes |
+| List Tickets | Lists tickets, optionally filtered. | No |
+| Add Comment | Adds a comment to a ticket's thread. | ✏️ Yes |
+| List Agents | Lists support agents. | No |
+| List Contacts | Lists contacts (customers). | No |
+| List Owners | Lists possible ticket owners. | No |
+| List Departments | Lists help-desk departments. | No |
+| List Accounts | Lists customer accounts. | No |
+| List Attachments | Lists attachments on a ticket. | No |
+| List Roles | Lists user roles. | No |
+| List Organizations | Lists Zoho Desk organizations. | No |
+
+## 6. Example usage
+
+**"Open a high-priority ticket for the login outage and assign it to the support team."**
+→ Runs List Departments / List Agents to resolve the right owner, then Create Ticket to open the ticket with high priority.
+
+**"Find the open ticket from Acme about billing and post an update that we issued a refund."**
+→ Runs List Tickets to locate the ticket, then Add Comment to post the refund update (and Update Ticket if the status should change).
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- Create, read, list, and update tickets.
+- Add comments to ticket threads.
+- List agents, contacts, owners, departments, accounts, attachments, roles, and organizations.
+
+**UnleashX cannot:**
+- Delete tickets (no delete tool is exposed in this connector).
+- Access other Zoho products (Zoho CRM, Zoho Mail) — those are separate connectors.
+- Change Zoho account passwords or org-wide security settings.
+
+**To disconnect:** In UnleashX, open **Data Connectors → Zoho Desk → Disconnect**. You can also revoke access at `https://accounts.zoho.com/home#sessions/usersession` (Connected Apps). Disconnecting revokes access immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| **401 Unauthorized** | The Zoho token expired or is invalid. | Reconnect Zoho Desk in **Data Connectors** and sign in again. |
+| **403 Forbidden** | Your Zoho Desk role lacks permission for that action or department. | Ask your Zoho Desk admin to grant the needed permission, then retry. |
+| **Wrong organization data** | Your account has multiple help-desk orgs and the wrong one was used. | Provide your organization ID so requests carry the correct org-id header. |
+| **Ticket not found** | The ticket ID is wrong, closed, or in another department. | Ask the agent to list tickets to find the right one. |
+| **Wrong data center** | You signed in at the wrong Zoho domain (e.g. `.com` vs `.eu`). | Reconnect using your org's data center. |
+
+For general MCP issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Is my support data stored by UnleashX?**
+No. UnleashX reads and writes tickets live through the Zoho Desk API per request; it doesn't keep a copy of your help desk.
+
+**Can multiple team members connect Zoho Desk?**
+Yes. Each agent authorizes their own Zoho account, so actions run with that user's own Zoho Desk permissions.
+
+**Why do I need my organization ID?**
+If your Zoho account contains more than one Desk organization, the org-id header tells Zoho which one to use. Single-org accounts usually don't need it.
+
+**Can the agent delete a ticket?**
+No. This connector can create, update, and comment, but it does not expose ticket deletion.
+
+## 10. References
+
+- Zoho Desk API documentation: https://desk.zoho.com/DeskAPIDocument
+- Zoho OAuth overview & scopes: https://desk.zoho.com/DeskAPIDocument#OauthTokens
+- Zoho Connected Apps / revoke access: https://accounts.zoho.com/home#sessions/usersession
+- Zoho sign-in: https://accounts.zoho.com

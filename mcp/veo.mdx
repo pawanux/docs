@@ -1,0 +1,135 @@
+---
+title: "Veo MCP"
+icon: "film"
+description: "Generate short videos from a text prompt or a starting image with Google Veo."
+tags: [mcp, veo, integration]
+---
+
+# Veo MCP
+
+> **In one line:** Let your UnleashX agent create short AI videos from a written prompt — or animate a still image into video.
+
+| | |
+|---|---|
+| **Category** | AI & Media |
+| **Authentication** | Platform-managed |
+| **Setup time** | ~1 minute |
+| **Difficulty** | Easy |
+| **Best for** | Marketing clips, product teasers, and social-ready video from text or an image |
+
+## 1. Overview
+
+Veo is Google's video-generation model (via the Gemini API). Describe the scene you want in words and it produces a short video; provide a starting image and it can animate that image into motion.
+
+Once connected, your agent can generate text-to-video and image-to-video clips, pick an aspect ratio (vertical, square, or wide), and get back a ready-to-share video URL. Generated videos are stored to UnleashX's media storage and returned as a link.
+
+Connecting Veo to UnleashX means your agents can turn a campaign idea or a product photo into a video asset on demand — no editing software, no render farm, no manual export.
+
+## 2. What you'll need
+
+<Note>
+Veo is **built into UnleashX**. There is no Google Cloud or Gemini account for you to create and no API key for you to manage.
+</Note>
+
+- An active UnleashX account.
+- The Veo / video-generation feature enabled on your workspace/plan.
+- A clear text prompt (and, for image-to-video, a starting image by URL, path, or base64).
+- Permission to edit the agent (admin or editor role). Without it, ask a workspace admin to enable the feature.
+
+## 3. Get your credentials
+
+<Info>
+There are **no credentials to create**. Veo is platform-managed — UnleashX provisions and rotates the underlying Google Gemini key and handles media storage. You never see or handle an API key.
+</Info>
+
+If you are a workspace admin, the only optional platform-side configuration is the Veo model version and the default aspect ratio. UnleashX sets sensible defaults (a recent Veo preview model, vertical 9:16); most teams never change them.
+
+| Platform-managed setting | Plain-English reason it exists |
+|---|---|
+| Veo model version | Controls quality/capabilities of generated video. |
+| Default aspect ratio | Sets the default video shape (e.g. 9:16 vertical). |
+| Gemini API key & media storage | Provisioned and rotated by UnleashX so videos generate and save automatically. |
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to [https://www.tryunleashx.com](https://www.tryunleashx.com) and open the agent that should generate video.
+</Step>
+<Step title="Open Data Connectors">
+In the agent, click **Data Connectors**.
+</Step>
+<Step title="Find Veo and add it">
+Locate **Veo** and click **Connect** / **Add**. It's platform-managed — no key to paste, it activates immediately.
+</Step>
+<Step title="Confirm it's connected">
+The Veo tool should now show a **Connected** badge.
+</Step>
+</Steps>
+
+## 5. Available tools
+
+![01 veo tools](/images/mcp/veo/01-tools.png)
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| Generate Video | Generate a video from a text prompt (and optionally a starting image) | ✏️ Yes |
+| Image to Video | Animate a provided image into a video using a text prompt | ✏️ Yes |
+| Get Info | Report Veo configuration and readiness | No |
+
+<Note>
+The generate tools are marked ✏️ Yes because they create a new video file and save it to UnleashX media storage. They do not modify or delete any existing data.
+</Note>
+
+## 6. Example usage
+
+**"Make a 9:16 video of a coffee cup steaming on a rainy windowsill."**
+→ Runs **Generate Video** with that prompt and a vertical aspect ratio, returning a video URL.
+
+**"Take this product photo and turn it into a slow zoom-in clip."**
+→ Runs **Image to Video** with the image and a motion prompt.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- Send your prompt (and optional image) to Veo and generate a video.
+- Save the generated video to UnleashX media storage and return a link.
+
+**UnleashX cannot:**
+- Generate video from content you don't provide.
+- Edit or delete videos you created elsewhere.
+- Access your device or cloud storage on its own.
+
+**To disconnect:** Open the agent → **Data Connectors** → **Veo** → **Disconnect**. Access is revoked immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| "prompt is required" | No text prompt was supplied | Provide a descriptive prompt |
+| Generation timed out | Video rendering takes longer than the wait window | Retry; longer/complex clips can take several minutes |
+| "did not return any generated videos" | Safety filtering, model rejection, or quota limits | Adjust the prompt; if it persists, contact support |
+| 401 / credential error | The platform-managed Gemini key is unavailable | Platform-side — contact **cs@unleashx.ai** |
+| 403 / feature not enabled | Veo isn't enabled on your plan | Ask a workspace admin or contact support |
+
+For general connector issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Is my prompt or image stored?**
+The generated video is saved to UnleashX media storage so you can access it. Your input image is used to generate the clip and is not retained as part of the integration.
+
+**Do I need a Google or Gemini account?**
+No. Veo is platform-managed — UnleashX provides and rotates the underlying key.
+
+**What aspect ratios are supported?**
+Common shapes including vertical (9:16), square (1:1), and wide. The default is vertical.
+
+**How long does generation take?**
+Usually under a few minutes, depending on length and complexity. The tool can run synchronously and return the final URL.
+
+## 10. References
+
+- Google Veo / Gemini video generation docs: https://ai.google.dev/gemini-api/docs/video
+- UnleashX dashboard: https://www.tryunleashx.com
+- UnleashX integrations help: [/mcp/integrations](/mcp/integrations)

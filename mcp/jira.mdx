@@ -1,0 +1,180 @@
+---
+title: "Jira MCP"
+icon: "https://www.atlassian.com/favicon.ico"
+description: "Let your UnleashX agent create, update, assign, and report on Jira issues, sprints, and boards."
+tags: [mcp, jira, integration]
+---
+
+# Jira MCP
+
+> **In one line:** Connect Jira so your UnleashX agent can create and update issues, move them through workflows, assign work, and pull sprint and standup reports automatically.
+
+| | |
+|---|---|
+| **Category** | Dev Tools |
+| **Authentication** | API token (Atlassian) |
+| **Setup time** | ~7 minutes |
+| **Difficulty** | Medium |
+| **Best for** | Engineering and product teams who want to manage issues and track sprint progress hands-free |
+
+## 1. Overview
+
+Jira is Atlassian's issue and project tracking tool. Teams use it to plan work in projects and boards, organize it into sprints and backlogs, and move issues through a workflow from "To Do" to "Done."
+
+Once connected, your UnleashX agent can create and update issues, comment, transition issues across statuses, assign work to teammates, and generate reports such as active-sprint status, team workload, and a daily standup summary — all from natural language.
+
+Connecting Jira to UnleashX is useful when you want to capture bugs and tasks as they come up, keep boards current, and get instant status updates without digging through Jira screens.
+
+## 2. What you'll need
+
+- An Atlassian / Jira Cloud account with access to the projects you want to use.
+- Your Atlassian **account email** (used together with the API token).
+- A Jira Cloud **site URL** (e.g. `https://your-company.atlassian.net`).
+- Permission to view, create, and transition issues in the relevant projects.
+
+<Note>
+You don't need to be a Jira admin to create an API token — any user can. But your token only has the permissions your account has, so you can only see and edit projects you already have access to.
+</Note>
+
+## 3. Get your credentials
+
+Jira Cloud uses **Basic auth**: your account email plus an Atlassian **API token**.
+
+<Steps>
+<Step title="Open the API tokens page">
+Go to [https://id.atlassian.com/manage-profile/security/api-tokens](https://id.atlassian.com/manage-profile/security/api-tokens) while signed in to Atlassian.
+</Step>
+<Step title="Create a token">
+Click **Create API token**, give it a label like `UnleashX`, and click **Create**.
+</Step>
+<Step title="Copy the token">
+Copy the generated token.
+
+<Warning>
+The API token is shown only once. Copy it now — if you lose it, you'll need to revoke it and create a new one.
+</Warning>
+</Step>
+<Step title="Note your email and site URL">
+Have your Atlassian login **email** and your Jira **site URL** (`https://your-company.atlassian.net`) ready — UnleashX needs all three.
+</Step>
+</Steps>
+
+**What the token can access**
+
+| Scope / Access | Why UnleashX needs it |
+|---|---|
+| Read issues, projects, boards, sprints | To search, list, and report on your Jira work |
+| Create & update issues | To log new issues and edit existing ones |
+| Add comments | To post updates on issues |
+| Transition issues | To move issues between workflow statuses |
+| Assign issues | To set or change the assignee |
+| Read users | To find teammates by name or email for assignment and reports |
+
+<Note>
+An Atlassian API token grants the same access your account has — Jira does not let you scope a personal token to specific projects. UnleashX only calls the endpoints needed for the tools in Section 5.
+</Note>
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to [https://www.tryunleashx.com](https://www.tryunleashx.com) and open the agent you want to connect.
+</Step>
+<Step title="Open Data Connectors">
+In the agent, go to **Data Connectors**.
+</Step>
+<Step title="Find Jira">
+Locate **Jira** in the list and click **Connect** / **Add** / **Configure**.
+</Step>
+<Step title="Enter your details">
+Provide your Jira **site URL**, your Atlassian **email**, and your **API token**. UnleashX combines the email and token as HTTP Basic auth.
+</Step>
+<Step title="Confirm success">
+Save. When the status shows a **Connected** badge, your agent can start working with Jira.
+</Step>
+</Steps>
+
+![01 jira data connector](/images/mcp/jira/01-data-connector.png)
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| Create Issue | Creates a new issue (bug, task, story, etc.) | ✏️ Yes |
+| Get Issue | Gets a single issue by key | No |
+| Update Issue | Updates fields on an issue | ✏️ Yes |
+| Add Comment | Adds a comment to an issue | ✏️ Yes |
+| List Transitions | Lists the workflow transitions available for an issue | No |
+| Transition Issue | Moves an issue to a new status | ✏️ Yes |
+| Get Issue History | Gets the change history of an issue | No |
+| Assign Issue | Assigns an issue to a user | ✏️ Yes |
+| Search Users | Searches for Jira users | No |
+| List Users | Lists Jira users | No |
+| Search Issues | Searches issues with JQL or filters | No |
+| Get Backlog Issues | Gets issues in a board's backlog | No |
+| Get Assigned Issues | Gets issues assigned to a user | No |
+| List Projects | Lists Jira projects | No |
+| List Boards | Lists boards | No |
+| List Sprints | Lists sprints for a board | No |
+| Get Active Sprint | Gets the currently active sprint for a board | No |
+| Get User Issues by Email | Finds issues for a user by their email | No |
+| Get Board User Issues | Gets a user's issues on a specific board | No |
+| Get Sprint Issues | Lists issues in a sprint | No |
+| Get Sprint Status | Summarizes a sprint's status and progress | No |
+| Get Team Workload | Reports how work is distributed across the team | No |
+| Generate Standup Report | Builds a daily standup report for a board | No |
+
+## 6. Example usage
+
+**"Create a bug in the WEB project titled 'Login button broken on mobile' and assign it to Priya."**
+Behind the scenes: Search Users (to find Priya) → Create Issue → Assign Issue.
+
+**"Give me today's standup for the Sprint board and move JIRA-204 to In Progress."**
+Behind the scenes: Get Active Sprint → Generate Standup Report → List Transitions → Transition Issue.
+
+## 7. Permissions & data access
+
+**UnleashX CAN:**
+- Read projects, boards, sprints, backlogs, and issues you can access.
+- Create and update issues, add comments, and transition issues.
+- Assign issues and look up users.
+- Generate sprint status, team workload, and standup reports.
+
+**UnleashX CANNOT:**
+- Access projects your Jira account can't see.
+- Change Jira admin, workflow, or billing configuration.
+- Act beyond the permissions your Atlassian account has.
+
+**To disconnect:** In UnleashX, open your agent → **Data Connectors** → **Jira** → **Disconnect**. To fully revoke access, go to [https://id.atlassian.com/manage-profile/security/api-tokens](https://id.atlassian.com/manage-profile/security/api-tokens) and delete the token. Either action stops access immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| `401 Unauthorized` | Wrong email/token pair, or the token was revoked | Recreate the API token and re-enter email + token in UnleashX |
+| `403 Forbidden` | Your account lacks permission in that project | Ask a Jira admin to grant project access, then retry |
+| `404 Not Found` | The issue key, board, or sprint doesn't exist | Verify the key/ID; it may have moved or been deleted |
+| Transition fails | The target status isn't valid from the current one | Run List Transitions first to see allowed transitions |
+| Wrong site | The site URL is incorrect | Confirm the URL is `https://your-company.atlassian.net` |
+
+For general connection issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Is my data stored by UnleashX?**
+UnleashX calls Jira live using your token when a tool runs. It doesn't keep a separate copy of your issues beyond what's needed to complete a request.
+
+**Can multiple team members connect?**
+Yes. Each person creates their own Atlassian API token and connects with their own email. Each connection reflects that person's Jira permissions.
+
+**How do I rotate my key?**
+Create a new token at the Atlassian API tokens page, update it in UnleashX, then delete the old token. Access switches over immediately.
+
+**Why Basic auth and not OAuth?**
+Jira Cloud's API token model uses HTTP Basic auth with your email + token. UnleashX follows Atlassian's documented approach.
+
+## 10. References
+
+- Jira Cloud REST API: [https://developer.atlassian.com/cloud/jira/platform/rest/v3/](https://developer.atlassian.com/cloud/jira/platform/rest/v3/)
+- Create API token: [https://id.atlassian.com/manage-profile/security/api-tokens](https://id.atlassian.com/manage-profile/security/api-tokens)
+- Basic auth reference: [https://developer.atlassian.com/cloud/jira/platform/basic-auth-for-rest-apis/](https://developer.atlassian.com/cloud/jira/platform/basic-auth-for-rest-apis/)

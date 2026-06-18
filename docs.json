@@ -60,6 +60,82 @@
             ]
           },
           {
+            "group": "MCP Servers",
+            "pages": [
+              "mcp/introduction",
+              "mcp/integrations",
+              "mcp/workflows",
+              {
+                "group": "Communication",
+                "pages": [
+                  "mcp/slack",
+                  "mcp/gmail",
+                  "mcp/outlook",
+                  "mcp/zoho-mail",
+                  "mcp/whatsapp-business",
+                  "mcp/whatsapp-web",
+                  "mcp/kwiqreply"
+                ]
+              },
+              {
+                "group": "Productivity & Scheduling",
+                "pages": [
+                  "mcp/google-calendar",
+                  "mcp/outlook-calendar",
+                  "mcp/calcom",
+                  "mcp/calendly",
+                  "mcp/google-sheets",
+                  "mcp/google-docs",
+                  "mcp/google-slides",
+                  "mcp/google-form",
+                  "mcp/airtable",
+                  "mcp/clickup",
+                  "mcp/google-maps"
+                ]
+              },
+              {
+                "group": "Storage",
+                "pages": [
+                  "mcp/google-drive",
+                  "mcp/firebase"
+                ]
+              },
+              {
+                "group": "CRM & Marketing",
+                "pages": [
+                  "mcp/hubspot",
+                  "mcp/zoho-crm",
+                  "mcp/zoho-desk",
+                  "mcp/brevo",
+                  "mcp/sendgrid",
+                  "mcp/shopify"
+                ]
+              },
+              {
+                "group": "Dev Tools & Automation",
+                "pages": [
+                  "mcp/jira",
+                  "mcp/razorpay",
+                  "mcp/wordpress",
+                  "mcp/http-executor",
+                  "mcp/agents",
+                  "mcp/reporting"
+                ]
+              },
+              {
+                "group": "AI & Media",
+                "pages": [
+                  "mcp/ocr",
+                  "mcp/transcription",
+                  "mcp/image",
+                  "mcp/veo",
+                  "mcp/heygen",
+                  "mcp/rag"
+                ]
+              }
+            ]
+          },
+          {
             "group": "Features",
             "pages": [
               "features/connect-providers",
@@ -216,7 +292,7 @@
     "primary": {
       "type": "button",
       "label": "Login",
-      "href": "https://tryunleashx.com"
+      "href": "https://www.tryunleashx.com"
     }
   },
   "contextual": {

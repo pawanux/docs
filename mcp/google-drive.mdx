@@ -1,0 +1,184 @@
+---
+title: "Google Drive MCP"
+icon: "https://drive.google.com/favicon.ico"
+description: "Let your UnleashX agent find, create, organize, share, and manage Google Drive files and folders."
+tags: [mcp, google-drive, integration]
+---
+
+# Google Drive MCP
+
+> **In one line:** Connect Google Drive so your UnleashX agent can search files, create and move them, manage folders and shared drives, and control sharing.
+
+| | |
+|---|---|
+| **Category** | Storage |
+| **Authentication** | OAuth (Google sign-in) |
+| **Setup time** | ~2 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Organizing files, automating uploads/downloads, and managing sharing across teams |
+
+## 1. Overview
+
+Google Drive is Google's cloud file storage, holding documents, spreadsheets, forms, folders, and shared drives.
+
+Once connected, your UnleashX agent can search for files and folders, create files from text, copy/move/update files, upload and download, manage folders and shared drives, and set sharing permissions for people and teams. It can also watch for newly added files or spreadsheets.
+
+Connecting Google Drive to UnleashX makes file management hands-free: ask "find last month's invoices and share the folder with finance" or "upload this report to the Q3 folder," and the agent locates, organizes, and shares the right files for you.
+
+## 2. What you'll need
+
+<Steps>
+<Step title="A Google account with Drive">
+Any personal Google account or a Google Workspace account with Drive enabled.
+</Step>
+<Step title="Permission to grant access">
+You must be able to complete the Google sign-in and approve the requested permissions. Shared-drive actions may require team-membership rights.
+</Step>
+<Step title="An UnleashX agent">
+An agent in your UnleashX workspace where you'll add the Drive connector.
+</Step>
+</Steps>
+
+<Note>
+No admin access? On a managed Google Workspace account, your admin may need to allow UnleashX, and some shared-drive operations may be restricted by your role.
+</Note>
+
+## 3. Get your credentials
+
+Google Drive uses **Google OAuth 2.0**. You do **not** create or paste an API key. UnleashX redirects you to Google, you sign in once, and Google issues an access token to UnleashX automatically.
+
+<Steps>
+<Step title="Start the connection in UnleashX">
+In your agent's **Data Connectors**, find **Google Drive** and click **Connect** (see Section 4).
+</Step>
+<Step title="Sign in with Google">
+Choose the Google account whose Drive you want to connect.
+</Step>
+<Step title="Review and approve the requested scopes">
+Click **Allow** to grant access and return to UnleashX.
+</Step>
+</Steps>
+
+<Info>
+There is no key to copy. Access is granted by your Google sign-in and can be revoked anytime at your [Google Account permissions page](https://myaccount.google.com/permissions).
+</Info>
+
+**Scopes UnleashX requests for Google Drive:**
+
+| Scope | Why UnleashX needs it |
+|---|---|
+| `https://www.googleapis.com/auth/drive` | Full access to find, create, update, move, delete, and share files and folders. |
+| `https://www.googleapis.com/auth/drive.file` | Create and manage files the integration touches. |
+| `https://www.googleapis.com/auth/userinfo.email` | Identify which account is connected. |
+
+
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Sign in at [https://www.tryunleashx.com](https://www.tryunleashx.com) and open your agent.
+</Step>
+<Step title="Go to Data Connectors">
+In the agent, open **Data Connectors**.
+</Step>
+<Step title="Find Google Drive and connect">
+Locate **Google Drive** and click **Connect** / **Add** / **Configure**.
+</Step>
+<Step title="Authorize with Google">
+Click **Authorize**, sign in with Google, and approve the requested permissions.
+</Step>
+<Step title="Confirm success">
+You'll return to UnleashX and the connector status will show a **Connected** badge.
+</Step>
+</Steps>
+
+![01 drive connector](/images/mcp/google-drive/01-connector.png)
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| Get File | Get a file's metadata by ID. | No |
+| Find Spreadsheets | Find spreadsheets (optionally in a folder). | No |
+| Find Forms | Find Google Forms (optionally in a folder). | No |
+| Find Folder | Find a folder by name/parent. | No |
+| Find File | Find a file by query/folder. | No |
+| Find File with Changes | Find files and report changes since last run. | No |
+| List Drive Folders | List folders in Drive. | No |
+| List Drive Folders with Changes | List folders and report changes since last run. | No |
+| On New File | Trigger: return files added since last run. | No |
+| On New Spreadsheet | Trigger: return spreadsheets added since last run. | No |
+| Copy File | Copy a file (optional new name/folder). | ✏️ Yes |
+| Create File from Text | Create a file from text content. | ✏️ Yes |
+| Delete File | Delete a file. | ⚠️ Yes |
+| Download File | Download a file. | No |
+| Move File | Move a file to another folder. | ✏️ Yes |
+| Share File | Share a file with people at a permission level. | ✏️ Yes |
+| Update File | Update a file's content or name. | ✏️ Yes |
+| Search Files | Search files by term, type, location, date. | No |
+| Create Folder | Create a folder. | ✏️ Yes |
+| Delete Folder | Delete a folder. | ⚠️ Yes |
+| Share Folder | Share a folder with people at a permission level. | ✏️ Yes |
+| Create Shared Drive | Create a shared (team) drive. | ✏️ Yes |
+| Delete Shared Drive | Delete a shared drive. | ⚠️ Yes |
+| Get Shared Drive | Get details of one shared drive. | No |
+| Get Many Shared Drives | List multiple shared drives. | No |
+| Update Shared Drive | Update a shared drive's name/settings/theme. | ✏️ Yes |
+| Upload File | Upload a file to Drive. | ✏️ Yes |
+
+## 6. Example usage
+
+> **"Find the 'Q3 Reports' folder and share it with finance@acme.com as a commenter."**
+>
+> Runs **Find Folder**, then **Share Folder**.
+
+> **"Create a text file called 'meeting-notes' with today's notes in my Projects folder."**
+>
+> Runs **Find Folder** to locate the folder, then **Create File from Text**.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- Search, read, and download files and folders.
+- Create, copy, move, update, and upload files.
+- Create and manage folders and shared drives.
+- Set sharing permissions for files and folders.
+
+**UnleashX cannot:**
+- Access Gmail, Calendar, or other Google services unless connected separately.
+- Change your Google account settings or password.
+- Bypass shared-drive role restrictions enforced by your organization.
+
+**To disconnect:** In UnleashX, open **Data Connectors → Google Drive → Disconnect**, or revoke at [https://myaccount.google.com/permissions](https://myaccount.google.com/permissions). Revoking takes effect immediately.
+
+The connection authenticates each request with your Google OAuth access token (resolved from an `access-token` header, a `google_drive_access_token` header, or an `Authorization: Bearer` header, falling back to your UnleashX session), refreshed automatically when it expires.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| `401 Unauthorized` | The access token is missing or expired. | Reconnect Google Drive in **Data Connectors**. |
+| `403 Forbidden` | Missing scope, or you lack rights on the file/shared drive. | Re-authorize all scopes; confirm your role allows the action. |
+| `404 Not Found` | The file/folder ID doesn't exist or isn't shared with you. | Verify the ID and your access. |
+| Delete blocked | A delete tool requires confirmation. | Re-issue with `confirm_deletion` set to true. |
+
+For general connector issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Does UnleashX copy my whole Drive?**
+No. It accesses only the files and folders needed to fulfill a request, through Google's API in real time.
+
+**Can multiple team members connect Drive?**
+Yes. Each person authorizes their own Google account.
+
+**Are deletions reversible?**
+Deleted items go to Drive's trash per Google's normal behavior; recover them from Drive's Trash within the retention window.
+
+## 10. References
+
+- [Google Drive API documentation](https://developers.google.com/drive/api)
+- [Google Drive API OAuth scopes](https://developers.google.com/drive/api/guides/api-specific-auth)
+- [Google Cloud Console](https://console.cloud.google.com/)
+- [Manage third-party access to your Google Account](https://myaccount.google.com/permissions)

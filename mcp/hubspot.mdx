@@ -1,0 +1,175 @@
+---
+title: "HubSpot MCP"
+icon: "https://www.hubspot.com/favicon.ico"
+description: "Let UnleashX read and manage your HubSpot contacts, companies, deals, tickets and tasks by voice or automation."
+tags: [mcp, hubspot, integration]
+---
+
+# HubSpot MCP
+
+> **In one line:** Connect HubSpot so UnleashX can create and update contacts, companies and deals, log activity, manage tickets and tasks, and pull CRM records on demand.
+
+| | |
+|---|---|
+| **Category** | CRM |
+| **Authentication** | OAuth / Private App token |
+| **Setup time** | ~5 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Sales and support teams that want their voice agent or automations to keep HubSpot up to date automatically. |
+
+## 1. Overview
+
+HubSpot is a CRM platform where teams store contacts, companies, deals, tickets and the activity history that ties them together. It is the system of record for who your customers are and where each opportunity stands.
+
+Once HubSpot is connected to UnleashX, your agent can do the busywork for you: create a new contact after a call, log a note or meeting, move a deal forward, raise a support ticket, or look up a customer's details the moment they're mentioned. No more switching tabs to update the CRM.
+
+Connecting HubSpot to UnleashX keeps your CRM current without manual data entry. Conversations and automations become the source of truth, and your pipeline reflects reality in real time.
+
+## 2. What you'll need
+
+- A HubSpot account (any paid tier; most tools also work on the free CRM).
+- Permission to create a **Private App** — this requires HubSpot **Super Admin** access.
+- The scopes listed in Section 3 enabled on that Private App.
+
+<Note>
+No admin access? Ask a HubSpot Super Admin to create the Private App and share the access token with you. You only need the token to connect — you don't need admin rights inside UnleashX.
+</Note>
+
+## 3. Get your credentials
+
+UnleashX authenticates to HubSpot with a **Private App access token** (a long-lived Bearer token).
+
+<Steps>
+<Step title="Open Private Apps">
+Go to **HubSpot → Settings (gear icon) → Integrations → Private Apps**: `https://app.hubspot.com/private-apps`
+</Step>
+<Step title="Create a new app">
+Click **Create a private app**. Give it a name like "UnleashX" and an optional description.
+</Step>
+<Step title="Select scopes">
+Open the **Scopes** tab and enable the scopes from the table below.
+</Step>
+<Step title="Create and copy the token">
+Click **Create app**, confirm, then click **Show token** and **Copy**.
+<Warning>
+Treat this token like a password. Anyone with it can read and modify your CRM. Copy it now and store it safely.
+</Warning>
+</Step>
+</Steps>
+
+| Scope | Why UnleashX needs it |
+|---|---|
+| `crm.objects.contacts.read` | Look up and list contacts. |
+| `crm.objects.contacts.write` | Create, update and delete contacts. |
+| `crm.objects.companies.read` | Look up and list companies. |
+| `crm.objects.companies.write` | Create and update companies. |
+| `crm.objects.deals.read` | Read deals and pipeline data. |
+| `crm.objects.deals.write` | Create deals and manage associations. |
+| `tickets` | Read and create support tickets. |
+| `crm.objects.contacts.write` (engagements) | Log notes, calls, meetings and tasks on contacts. |
+| `automation` | Enroll contacts in workflows. |
+
+<Info>
+Exact scope names can vary slightly by HubSpot account type. If a tool returns a 403, open your Private App and add the scope HubSpot names in the error, then save.
+</Info>
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Sign in at `https://www.tryunleashx.com` and open the agent you want to connect.
+</Step>
+<Step title="Find HubSpot">
+Go to **Data Connectors** and find **HubSpot**.
+</Step>
+<Step title="Connect">
+Click **Connect** / **Add** / **Configure** and paste your Private App access token.
+</Step>
+<Step title="Confirm">
+Authenticate once. The status will switch to a **Connected** badge.
+</Step>
+</Steps>
+
+![01 hubspot connected](/images/mcp/hubspot/01-connected.png)
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| Create Contact | Create a new contact. | ✏️ Yes |
+| Create Company | Create a new company. | ✏️ Yes |
+| Delete Contact | Permanently delete a contact. | ⚠️ Yes |
+| Get All Contacts | List contacts (most recently modified first). | No |
+| Get Active Contacts | List the most recently active contacts. | No |
+| Get Active Companies | List the most recently active companies. | No |
+| Get Company Contacts | List contacts associated with a company. | No |
+| Get Company Deals | List deals associated with a company. | No |
+| Search Companies | Search companies by name/keyword. | No |
+| Search Contacts | Search contacts by name/keyword. | No |
+| Get Company Details | Read full details of one company. | No |
+| Get Contact Details | Read full details of one contact. | No |
+| Update Contact | Update fields on an existing contact. | ✏️ Yes |
+| Update Company | Update fields on an existing company. | ✏️ Yes |
+| Create Deal | Create a new deal. | ✏️ Yes |
+| Get Deals | List deals (most recently modified first). | No |
+| Associate Objects | Link two CRM objects (e.g. contact ↔ deal). | ✏️ Yes |
+| Get Contact by Email | Look up a contact by email address. | No |
+| Create Engagement | Log a call, email, note, meeting or task on a contact. | ✏️ Yes |
+| Create Ticket | Create a support ticket and link it to a contact. | ✏️ Yes |
+| New Task | Create a task and attach it to a contact. | ✏️ Yes |
+| New Event | Create a meeting/event and attach it to a contact. | ✏️ Yes |
+| Enroll Contact in Workflow | Enroll a contact into an automation workflow. | ✏️ Yes |
+| Add Contact to List | Add a contact to a static list. | ✏️ Yes |
+| Get File Public URL | Get the public URL of a stored file. | No |
+| Batch Create or Update Contacts | Bulk create or update many contacts at once. | ✏️ Yes |
+
+## 6. Example usage
+
+**"Add Jane Doe, jane@acme.com, from Acme Corp as a new contact and log that we spoke today."**
+Runs **Create Contact**, then **Create Engagement** (a CALL or NOTE) linked to the new contact.
+
+**"Find the deal for Acme Corp and show me its current stage and amount."**
+Runs **Search Companies** to find Acme, then **Get Company Deals** to read its open deals.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- Read, create, update and delete contacts; create and update companies and deals.
+- Log engagements (calls, emails, notes, meetings, tasks) and create tickets.
+- Enroll contacts in workflows and add them to lists.
+
+**UnleashX cannot:**
+- Access any HubSpot data outside the scopes you granted on the Private App.
+- Change billing, account settings or other users' permissions.
+- Delete companies or deals (no delete tool is exposed for those).
+
+**To disconnect:** In UnleashX go to **Data Connectors → HubSpot → Disconnect**. To fully revoke, also delete or rotate the Private App in **HubSpot → Settings → Integrations → Private Apps**. Revocation is immediate.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| `401 Unauthorized` | The access token is wrong, expired or revoked. | Reconnect in UnleashX with a fresh Private App token. |
+| `403 Forbidden` | The Private App is missing a required scope. | Open the app in HubSpot, add the scope named in the error, save, and retry. |
+| `404 Not Found` | The contact/company/deal ID doesn't exist. | Search first to get a valid ID, then retry. |
+| `429 Too Many Requests` | You hit HubSpot's API rate limit. | Wait a moment and retry; reduce bulk operation size. |
+| Tool runs but nothing changes | `DRY_RUN` mode may be enabled at the platform level. | Contact cs@unleashx.ai to confirm live mode. |
+
+For general connector issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Is my HubSpot data stored by UnleashX?**
+No. UnleashX calls the HubSpot API live when a tool runs and returns the result. It does not maintain a copy of your CRM (lightweight snapshots are used only to detect "new ticket/task" events).
+
+**Can multiple team members connect HubSpot?**
+Yes. Each agent stores its own token. Many teams create one shared "UnleashX" Private App and reuse its token across agents.
+
+**How do I rotate my token?**
+In HubSpot, open the Private App and click **Rotate** (or delete and recreate it), then reconnect in UnleashX with the new token.
+
+## 10. References
+
+- HubSpot Private Apps overview: https://developers.hubspot.com/docs/api/private-apps
+- Create a Private App / token page: https://app.hubspot.com/private-apps
+- CRM API & scopes reference: https://developers.hubspot.com/docs/api/crm/understanding-the-crm

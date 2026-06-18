@@ -1,0 +1,150 @@
+---
+title: "Shopify MCP"
+icon: "https://cdn.shopify.com/static/images/favicon.ico"
+description: "Let UnleashX search your Shopify products, add items to a cart, and subscribe customers to your newsletter."
+tags: [mcp, shopify, integration]
+---
+
+# Shopify MCP
+
+> **In one line:** Connect Shopify so UnleashX can find products, build a ready-to-checkout cart for a shopper, and add customers to your newsletter — straight from a conversation.
+
+| | |
+|---|---|
+| **Category** | Commerce |
+| **Authentication** | Admin API access token |
+| **Setup time** | ~6 minutes |
+| **Difficulty** | Medium |
+| **Best for** | Online stores that want a voice or chat agent to help shoppers find products, start a checkout, and capture newsletter sign-ups. |
+
+## 1. Overview
+
+Shopify is a commerce platform that powers online stores — products, variants, carts, checkout and customers all live there.
+
+Once connected to UnleashX, your agent can act as a shopping assistant: search your catalog by name or tag, add a chosen variant to a cart and hand back a checkout link, and sign a customer up for your newsletter.
+
+Connecting Shopify to UnleashX turns conversations into sales motions — shoppers get product answers and a ready checkout link without leaving the chat, and interested customers get added to your marketing list.
+
+## 2. What you'll need
+
+- A Shopify store and your **shop domain** (e.g. `your-store.myshopify.com`).
+- Permission to create a custom app — requires the store **owner** or a staff account with app-development access.
+- An **Admin API access token**, and a **Storefront API access token** for the cart tool.
+
+<Note>
+No admin access? Ask your store owner to create a custom app and share the shop domain plus the Admin and Storefront access tokens with you.
+</Note>
+
+## 3. Get your credentials
+
+UnleashX authenticates to Shopify with an **Admin API access token** (plus a **Storefront API access token** for cart creation) and your **shop domain**.
+
+<Steps>
+<Step title="Open app development">
+Go to **Shopify admin → Settings → Apps and sales channels → Develop apps**: `https://admin.shopify.com/store/<your-store>/settings/apps/development`
+</Step>
+<Step title="Create an app">
+Click **Create an app**, name it "UnleashX", and select a developer.
+</Step>
+<Step title="Configure Admin API scopes">
+Under **Configuration → Admin API integration**, enable the scopes from the table below.
+</Step>
+<Step title="Configure Storefront API">
+Enable **Storefront API** access and the unauthenticated scopes needed to read products and create carts.
+</Step>
+<Step title="Install and copy tokens">
+Click **Install app**, then under **API credentials** reveal and copy the **Admin API access token** and the **Storefront API access token**.
+<Warning>
+The Admin API access token is shown only once at install. Copy it now and store it safely.
+</Warning>
+</Step>
+</Steps>
+
+| Scope | Why UnleashX needs it |
+|---|---|
+| `read_products` (Admin) | Search products and read variant details. |
+| `write_customers` / `read_customers` (Admin) | Create/update a customer and subscribe them to the newsletter. |
+| `unauthenticated_read_product_listings` (Storefront) | Read products via the Storefront API. |
+| `unauthenticated_write_checkouts` / cart access (Storefront) | Create a cart and return a checkout URL. |
+
+<Info>
+You'll provide three things when connecting: the **shop domain**, the **Admin API access token**, and the **Storefront API access token**.
+</Info>
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Sign in at `https://www.tryunleashx.com` and open the agent you want to connect.
+</Step>
+<Step title="Find Shopify">
+Go to **Data Connectors** and find **Shopify**.
+</Step>
+<Step title="Connect">
+Click **Connect** / **Add** / **Configure** and enter your shop domain, Admin API access token, and Storefront API access token.
+</Step>
+<Step title="Confirm">
+Save. The status will switch to a **Connected** badge.
+</Step>
+</Steps>
+
+![01 shopify connected](/images/mcp/shopify/01-connected.png)
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| Fetch Products by Tag | Search products by tag or title and return matching products with variants. | No |
+| Add Product to Cart | Add a product variant to a cart and return a checkout URL. | ✏️ Yes |
+| Subscribe to Newsletter | Create/subscribe a customer to your newsletter by email. | ✏️ Yes |
+
+## 6. Example usage
+
+**"Do you have any blue running shoes, and can you start a checkout for one?"**
+Runs **Fetch Products by Tag** to find matching products, then **Add Product to Cart** with the chosen variant to return a checkout link.
+
+**"Sign me up for your newsletter — my email is jane@acme.com."**
+Runs **Subscribe to Newsletter** to add the customer to your marketing list.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- Search your product catalog and read variant details.
+- Create a cart and return a checkout URL.
+- Create/subscribe a customer to your newsletter.
+
+**UnleashX cannot:**
+- Edit or delete products, inventory or orders.
+- Process payments or complete checkout on the shopper's behalf.
+- Access store settings, finances or other staff accounts.
+
+**To disconnect:** In UnleashX go to **Data Connectors → Shopify → Disconnect**. To fully revoke, uninstall or delete the custom app in **Shopify admin → Settings → Apps and sales channels → Develop apps**. Revocation is immediate.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| `401 Unauthorized` | The access token is wrong or revoked, or the shop domain is incorrect. | Reconnect with the correct shop domain and tokens. |
+| `403 Forbidden` | The app is missing a required Admin/Storefront scope. | Add the scope in the app's API configuration, reinstall, and reconnect. |
+| Cart tool fails | Storefront API token missing or product variant ID invalid. | Provide a valid Storefront token; use **Fetch Products by Tag** to get a real variant ID. |
+| No products returned | The search term doesn't match any tag or title. | Try a broader keyword or the exact product tag. |
+| `429 Too Many Requests` | You hit Shopify's API rate limit. | Wait a moment and retry. |
+
+For general connector issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Is my store data stored by UnleashX?**
+No. Tools call the Shopify Admin and Storefront APIs live and return the result. UnleashX doesn't keep a copy of your catalog or customers.
+
+**Can the agent take payments?**
+No. It can build a cart and return a checkout URL, but the shopper completes payment on Shopify's secure checkout.
+
+**Why do I need two tokens?**
+Product search and newsletter sign-up use the **Admin API**, while cart creation uses the **Storefront API**. Each has its own token.
+
+## 10. References
+
+- Shopify custom apps guide: https://help.shopify.com/en/manual/apps/app-types/custom-apps
+- Admin API access token reference: https://shopify.dev/docs/api/admin-graphql
+- Storefront API (carts) reference: https://shopify.dev/docs/api/storefront

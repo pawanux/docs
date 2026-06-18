@@ -1,0 +1,167 @@
+---
+title: "Outlook Calendar MCP"
+icon: "https://outlook.live.com/favicon.ico"
+description: "Let your UnleashX agent view, create, update, and manage events across your Outlook calendars."
+tags: [mcp, outlook-calendar, integration]
+---
+
+# Outlook Calendar MCP
+
+> **In one line:** Connect your Microsoft Outlook calendar so your UnleashX agent can check availability, schedule meetings, update or cancel events, and manage multiple calendars for you.
+
+| | |
+|---|---|
+| **Category** | Productivity |
+| **Authentication** | OAuth (Microsoft 365 / Microsoft Graph) |
+| **Setup time** | ~2 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Anyone who wants an AI agent to book meetings, manage their schedule, and keep multiple Outlook calendars organized |
+
+## 1. Overview
+
+Outlook Calendar is Microsoft's scheduling service inside Microsoft 365. It holds your meetings, appointments, and reminders across one or more calendars, and it's tightly tied to your Outlook mailbox.
+
+Once connected to UnleashX, your agent can look up what's on your schedule, find a free slot, create a new event with attendees, reschedule or update meetings, and cancel events you no longer need. It can also work across multiple calendars — for example a personal calendar and a shared team calendar.
+
+Connecting Outlook Calendar to UnleashX means scheduling happens in plain language. Instead of clicking through the calendar grid, you can ask "set up a 30-minute call with Sam on Thursday afternoon" and the agent finds the time and creates the event.
+
+## 2. What you'll need
+
+- A Microsoft account with Outlook Calendar (personal `@outlook.com`/`@hotmail.com`, or a Microsoft 365 / Exchange Online work or school account).
+- Permission to use that calendar — for work accounts, your organization must allow third-party apps via Microsoft Graph.
+- An UnleashX account with access to **Data Connectors**.
+
+<Note>
+No API key required. Outlook Calendar uses OAuth — you click **Authorize** and sign in with Microsoft.
+</Note>
+
+<Warning>
+On a **work or school** Microsoft 365 account, your IT administrator may need to grant admin consent before UnleashX can connect. If you see a "need admin approval" message, contact your Microsoft 365 admin.
+</Warning>
+
+## 3. Get your credentials
+
+There's no key to copy. Authentication runs through Microsoft's secure OAuth sign-in.
+
+<Steps>
+<Step title="Start the connection in UnleashX">
+Connecting Outlook Calendar (Section 4) opens a Microsoft **Authorize** window.
+</Step>
+<Step title="Sign in with Microsoft">
+Sign in with your Microsoft 365 / Outlook account at `https://login.microsoftonline.com` and complete MFA if prompted.
+</Step>
+<Step title="Review and accept the permissions">
+Microsoft displays exactly what UnleashX requests (see the scopes table). Click **Accept**.
+</Step>
+<Step title="Return to UnleashX">
+You're redirected back automatically and the calendar is connected.
+</Step>
+</Steps>
+
+![01 microsoft authorize](/images/mcp/outlook-calendar/01-microsoft-authorize.png)
+
+**Permissions (Microsoft Graph scopes) UnleashX requests:**
+
+| Scope | Why UnleashX needs it |
+|---|---|
+| `Calendars.ReadWrite` | View your events and create, update, or delete them across your calendars. |
+| `Calendars.Read` | Read calendar details and check availability when only reading is needed. |
+| `User.Read` | Identify the signed-in account so events are created as you. |
+| `offline_access` | Keep the connection active by refreshing access without repeated sign-ins. |
+
+<Note>
+These are standard Microsoft Graph delegated scopes, enforced by Microsoft. UnleashX can never exceed the access you approve.
+</Note>
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to `https://www.tryunleashx.com` and open the agent you want to connect.
+</Step>
+<Step title="Open Data Connectors">
+Inside the agent, go to **Data Connectors**.
+</Step>
+<Step title="Find Outlook Calendar">
+Locate **Outlook Calendar** and click **Connect** (or **Add** / **Configure**).
+</Step>
+<Step title="Authorize with Microsoft">
+Click **Authorize**, sign in with Microsoft, and accept the permissions.
+</Step>
+<Step title="Confirm success">
+You return to UnleashX and the connector shows a **Connected** badge.
+</Step>
+</Steps>
+
+![02 connected badge](/images/mcp/outlook-calendar/02-connected-badge.png)
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| Search Events | Searches your calendars for matching events. | No |
+| Get Event | Retrieves the details of a single event. | No |
+| Create Event | Creates a new calendar event, optionally with attendees. | ✏️ Yes |
+| Update Event | Updates an existing event (time, title, attendees, etc.). | ✏️ Yes |
+| Delete Event | Deletes / cancels a calendar event. | ⚠️ Yes |
+| List Events | Lists events within a date range. | No |
+| List Calendars | Lists all calendars on the account. | No |
+| Get Calendar | Retrieves details of a specific calendar. | No |
+| Create Calendar | Creates a new calendar. | ✏️ Yes |
+| Update Calendar | Updates a calendar's name or settings. | ✏️ Yes |
+| Delete Calendar | Deletes a calendar. | ⚠️ Yes |
+
+## 6. Example usage
+
+**"What's on my calendar tomorrow, and book a 1:1 with Alex at the first free hour?"**
+→ Runs List Events to read tomorrow's schedule, then Create Event to book the 1:1.
+
+**"Move my 3pm design review to Friday and add Maria as an attendee."**
+→ Runs Search Events to find the meeting, then Update Event to reschedule and add the attendee.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- Read, search, and list events across your calendars.
+- Create, update, and delete events.
+- List, create, update, and delete calendars on your account.
+
+**UnleashX cannot:**
+- Access your email, contacts, or other Microsoft 365 services — only calendar data within the approved scopes.
+- Read calendars that haven't been shared with the signed-in account.
+- Change your Microsoft password or account security settings.
+
+**To disconnect:** In UnleashX, open **Data Connectors → Outlook Calendar → Disconnect**. You can also revoke access at `https://account.microsoft.com/privacy/app-access` (or your org's My Apps portal for work accounts). Disconnecting revokes access immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| **401 Unauthorized** | Your Microsoft sign-in expired or the token is invalid. | Reconnect Outlook Calendar in **Data Connectors** and sign in again. |
+| **403 Forbidden** | A required calendar permission wasn't granted, or your org blocked it. | Reconnect and accept all permissions; for work accounts ask your admin for admin consent. |
+| **"Need admin approval"** | Your organization requires admin consent for third-party apps. | Forward the consent request to your Microsoft 365 administrator. |
+| **Event not found** | The event was moved, deleted, or is on a calendar you can't access. | Ask the agent to list recent events or specify which calendar to use. |
+| **Cannot create event** | The chosen calendar is read-only or the time conflicts with a policy. | Pick a calendar you own and confirm the time is valid. |
+
+For general MCP issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Is my calendar data stored by UnleashX?**
+No. UnleashX reads and writes events live through Microsoft Graph for each request; it doesn't keep a copy of your calendar.
+
+**Can multiple team members connect their own calendars?**
+Yes. Each person authorizes their own Microsoft account, so the agent works against each user's own calendars.
+
+**Can the agent manage shared or team calendars?**
+Yes, as long as those calendars are shared with the signed-in account and the granted scopes allow editing.
+
+**Will deleting an event cancel it for attendees?**
+Deleting an event you organize generally sends cancellations, the same as deleting it in Outlook. Treat Delete Event as a real cancellation.
+
+## 10. References
+
+- Microsoft Graph calendar API: https://learn.microsoft.com/en-us/graph/api/resources/calendar
+- Microsoft Graph permissions reference: https://learn.microsoft.com/en-us/graph/permissions-reference
+- Manage app access / revoke (personal): https://account.microsoft.com/privacy/app-access
+- Microsoft sign-in: https://login.microsoftonline.com

@@ -1,0 +1,185 @@
+---
+title: "Google Sheets MCP"
+icon: "https://ssl.gstatic.com/docs/spreadsheets/favicon3.ico"
+description: "Let your UnleashX agent read, write, and manage Google Sheets spreadsheets, rows, and cells."
+tags: [mcp, google-sheets, integration]
+---
+
+# Google Sheets MCP
+
+> **In one line:** Connect Google Sheets so your UnleashX agent can read rows, write updates, manage tabs, and track changes in your spreadsheets.
+
+| | |
+|---|---|
+| **Category** | Productivity |
+| **Authentication** | OAuth (Google sign-in) |
+| **Setup time** | ~2 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Lead tracking, data logging, and structured read/write automation over spreadsheets |
+
+## 1. Overview
+
+Google Sheets is Google's spreadsheet service for storing structured data in rows, columns, and tabs.
+
+Once connected, your UnleashX agent can create and delete spreadsheets and sheets (tabs), read and write rows and cells, append or update data, clear ranges, delete rows/columns, and detect updates for trigger-style flows.
+
+Connecting Google Sheets to UnleashX turns spreadsheets into a live data backend for your agent: log new leads, update a status cell, or pull the latest rows into a prompt — all from natural language, with no manual copy-paste.
+
+## 2. What you'll need
+
+<Steps>
+<Step title="A Google account with Sheets">
+Any personal Google account or a Google Workspace account with Sheets enabled.
+</Step>
+<Step title="Permission to grant access">
+You must be able to complete the Google sign-in and approve the requested permissions.
+</Step>
+<Step title="An UnleashX agent">
+An agent in your UnleashX workspace where you'll add the Sheets connector.
+</Step>
+</Steps>
+
+<Note>
+No admin access? On a managed Google Workspace account, your admin may need to allow UnleashX before authorization succeeds.
+</Note>
+
+## 3. Get your credentials
+
+Google Sheets uses **Google OAuth 2.0**. You do **not** create or paste an API key. UnleashX redirects you to Google, you sign in once, and Google issues an access token to UnleashX automatically.
+
+<Steps>
+<Step title="Start the connection in UnleashX">
+In your agent's **Data Connectors**, find **Google Sheets** and click **Connect** (see Section 4).
+</Step>
+<Step title="Sign in with Google">
+Choose the Google account whose spreadsheets you want to connect.
+</Step>
+<Step title="Review and approve the requested scopes">
+Click **Allow** to grant access and return to UnleashX.
+</Step>
+</Steps>
+
+<Info>
+There is no key to copy. Access is granted by your Google sign-in and can be revoked anytime at your [Google Account permissions page](https://myaccount.google.com/permissions).
+</Info>
+
+**Scopes UnleashX requests for Google Sheets:**
+
+| Scope | Why UnleashX needs it |
+|---|---|
+| `https://www.googleapis.com/auth/spreadsheets` | Read and write spreadsheet values, rows, cells, and sheets. |
+| `https://www.googleapis.com/auth/drive` | List spreadsheets and create/delete spreadsheet files in Drive. |
+| `https://www.googleapis.com/auth/drive.file` | Access the specific spreadsheet files you open or create. |
+| `https://www.googleapis.com/auth/drive.readonly` | Find and list your spreadsheets. |
+| `https://www.googleapis.com/auth/userinfo.email` | Identify which account is connected. |
+| `https://www.googleapis.com/auth/userinfo.profile` | Read your basic profile (name, picture). |
+| `openid` | Sign-in / identity verification. |
+
+
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Sign in at [https://www.tryunleashx.com](https://www.tryunleashx.com) and open your agent.
+</Step>
+<Step title="Go to Data Connectors">
+In the agent, open **Data Connectors**.
+</Step>
+<Step title="Find Google Sheets and connect">
+Locate **Google Sheets** and click **Connect** / **Add** / **Configure**.
+</Step>
+<Step title="Authorize with Google">
+Click **Authorize**, sign in with Google, and approve the requested permissions.
+</Step>
+<Step title="Confirm success">
+You'll return to UnleashX and the connector status will show a **Connected** badge.
+</Step>
+</Steps>
+
+![01 sheets connector](/images/mcp/google-sheets/01-connector.png)
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| Create Spreadsheet | Create a new spreadsheet. | ✏️ Yes |
+| Delete Spreadsheet | Delete a spreadsheet. | ⚠️ Yes |
+| Append or Update Row | Append a row, or update it if it already exists. | ✏️ Yes |
+| Append Row | Append a row to a sheet. | ✏️ Yes |
+| Clear Sheet | Clear values from a sheet/range. | ⚠️ Yes |
+| Create Sheet | Create a new sheet (tab). | ✏️ Yes |
+| Delete Sheet | Delete a sheet (tab) by ID. | ⚠️ Yes |
+| Delete Rows or Columns | Delete rows or columns. | ⚠️ Yes |
+| Delete Row | Delete a single row. | ⚠️ Yes |
+| Get Sheet Columns | Get the columns of a sheet. | No |
+| Update Row in Sheet | Update a row by row number. | ✏️ Yes |
+| Get Spreadsheet | Get spreadsheet metadata. | No |
+| Get Cell | Get a cell value (or a default range). | No |
+| Update Cell | Update a single cell. | ✏️ Yes |
+| List Spreadsheets | List available spreadsheets. | No |
+| List Sheets | List sheets (tabs) in a spreadsheet. | No |
+| List Worksheets | List worksheets in a spreadsheet. | No |
+| Clear Rows | Clear a range of rows. | ⚠️ Yes |
+| Update Column | Update one or more columns. | ✏️ Yes |
+| Get Sheet Updates | Get sheet updates (trigger-style). | No |
+| Create Row | Create a row with key/value columns. | ✏️ Yes |
+| Update Row | Update a row by number with key/value columns. | ✏️ Yes |
+| Get Rows in Sheet | Get rows from a sheet. | No |
+| Find Row | Find a row matching criteria. | No |
+
+## 6. Example usage
+
+> **"Add a new lead to the Leads tab: name Alice, email alice@acme.com, status New."**
+>
+> Runs **List Sheets** to confirm the tab, then **Append Row**.
+
+> **"What's in cell B3 of the Budget sheet, and set it to 5000."**
+>
+> Runs **Get Cell**, then **Update Cell**.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- Read spreadsheet values, rows, and cells.
+- Create and delete spreadsheets and sheets (tabs).
+- Append, update, and clear rows, columns, and cells.
+- Detect updates for trigger-style flows.
+
+**UnleashX cannot:**
+- Access Gmail, Calendar, or other Google services unless connected separately.
+- Change your Google account settings or password.
+- Edit spreadsheets you don't have access to.
+
+**To disconnect:** In UnleashX, open **Data Connectors → Google Sheets → Disconnect**, or revoke at [https://myaccount.google.com/permissions](https://myaccount.google.com/permissions). Revoking takes effect immediately.
+
+The connection authenticates each request with your Google OAuth access token (resolved from an `access-token` header, a `google_sheets_access_token` header, or an `Authorization: Bearer` header, falling back to your UnleashX session), refreshed automatically when it expires.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| `401 Unauthorized` | The access token is missing or expired. | Reconnect Google Sheets in **Data Connectors**. |
+| `403 Forbidden` | Missing scope, or you lack edit rights on the spreadsheet. | Re-authorize all scopes; confirm you can edit the file. |
+| `404 Not Found` | The spreadsheet or sheet ID is wrong or not shared with you. | Verify the `spreadsheet_id` (the segment between `/d/` and `/edit` in the URL) and `sheet_id`. |
+| Wrong cell updated | A1 notation or sheet name was ambiguous. | Pass an explicit `sheet_id`/`sheet_name` and A1 cell reference. |
+
+For general connector issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Does UnleashX store my spreadsheet data?**
+No. It reads and writes through Google's API in real time to fulfill your requests.
+
+**Can multiple team members connect Sheets?**
+Yes. Each person authorizes their own Google account.
+
+**How do I find a spreadsheet ID?**
+It's the part of the URL between `/d/` and `/edit`: `https://docs.google.com/spreadsheets/d/{spreadsheet_id}/edit`.
+
+## 10. References
+
+- [Google Sheets API documentation](https://developers.google.com/sheets/api)
+- [Google Sheets API OAuth scopes](https://developers.google.com/sheets/api/scopes)
+- [Google Cloud Console](https://console.cloud.google.com/)
+- [Manage third-party access to your Google Account](https://myaccount.google.com/permissions)

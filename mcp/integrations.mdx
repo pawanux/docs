@@ -1,0 +1,329 @@
+---
+title: "Integrations"
+description: "Complete MCP integrations reference with direct tool names, auth guidance, and practical usage."
+---
+
+# MCP Integrations
+
+MCP integrations let your AI workflows connect directly to business tools, data systems, and communication platforms through dedicated MCP servers.  
+This page is your single reference for all available servers from `mcp-service-1/MCP/mcp-server/`, written with direct, human-friendly action names.
+
+## Integrations inside our platform
+
+Our platform includes a dedicated **Data Connectors** section where you can discover, connect, and configure MCP tools from one place.  
+You can enable connectors like HubSpot, Slack, Gmail, Google Sheets, Airtable, Google Maps, WordPress, Shopify, Zoho CRM, OCR, and many others - then immediately use them in your agent workflows.
+
+![UnleashX Data Connectors with MCP tools](/images/mcp-integrations-platform.png)
+
+### How this works in practice
+
+1. Open your agent and go to **Data Connectors**.
+2. Browse the available MCP tools and choose the services your workflow needs.
+3. Click **Connect**, **Add**, or **Configure** based on the provider requirements.
+4. Complete authentication once (OAuth, API key, or provider token).
+5. Use the connected tools directly in agent logic for actions like messaging, CRM updates, scheduling, document operations, and data sync.
+
+### Why this setup is useful
+
+- **Single place to manage integrations:** no need to configure each service in separate systems.
+- **Large tool variety:** supports communication, CRM, productivity, ecommerce, mapping, and AI utility connectors.
+- **Faster automation delivery:** connect tools once, then reuse them across multiple agents and flows.
+- **Operational clarity:** connector status is visible (`Connected`, `Connect`, `Configure`) so teams know what is ready to use.
+
+## How to use this reference
+
+For every integration below, use this pattern:
+
+1. Pick the server that matches your workflow goal.
+2. Use the direct action name (for example, **Send Email**, **Add Row**, **Create Event**).
+3. Pass the required IDs/fields and run the action.
+4. Use the returned data in the next workflow step.
+5. If an operation is not available, call the provider API directly with the same credentials.
+
+---
+
+## Integrations Directory
+
+### Google Sheets
+**Direct tool names:** Create Sheet, Read Rows, Add Row, Update Row, Read Cell, Update Cell, Clear Rows, Check Updates.  
+**Authentication:** Google access token via bearer/auth headers or session auth.  
+
+### Airtable
+**Direct tool names:** List Bases, List Tables, Read Records, Create Record, Update Record, Delete Record, Search Records, Check Updates.  
+**Authentication:** Airtable token in headers or session auth.  
+
+### Gmail
+**Direct tool names:** Read Emails, Search Emails, Send Email, Create Draft, Read Labels, Trigger on New Email.  
+**Authentication:** Google access token in headers or session auth.  
+
+### Google Calendar
+**Direct tool names:** List Calendars, Check Availability, Create Event, Update Event, Delete Event, List Events.  
+**Authentication:** Google calendar token via headers or session auth.  
+
+### Google Docs
+**Direct tool names:** List Drives, List Folders, List Documents, Create Document, Read Content, Replace Text, Append Text.  
+**Authentication:** Google docs token in headers or session auth.  
+
+### Google Drive
+**Direct tool names:** List Files, Search Files, Create File, Update File, Move File, Share File, Download File, Create Folder.  
+**Authentication:** Google drive token in headers or session auth.  
+
+### Google Form
+**Direct tool names:** Create Form, Read Form, Update Form, List Responses, Check Updates.  
+**Authentication:** Google forms token in headers or session auth.  
+
+### Google Maps
+**Direct tool names:** Search Places, Place Details, Geocode Address, Reverse Geocode, Get Directions, Distance Matrix.  
+**Authentication:** Google Maps API key via headers/payload/session/env.  
+
+### Google Slides
+**Direct tool names:** Create Presentation, Read Presentation, Add Slide, Update Slide Content, Replace Text.  
+**Authentication:** Google slides token in headers or session auth.  
+
+### Brevo
+**Direct tool names:** Create Contact, Update Contact, Search Contact, Manage Lists, Campaign Actions.  
+**Authentication:** Brevo API key in headers or session auth.  
+
+### Calcom
+**Direct tool names:** Check Availability, Create Booking, Update Booking, Cancel Booking.  
+**Authentication:** Cal.com token in headers or session auth.  
+
+### ClickUp
+**Direct tool names:** List Tasks, Create Task, Update Task, Search Task, Delete Task.  
+**Authentication:** ClickUp token in headers or session auth.  
+
+### Firebase
+**Direct tool names:** Read Data, Create Data, Update Data, Delete Data, Query Data.  
+**Authentication:** Firebase token in headers or session auth.  
+
+### HubSpot
+**Direct tool names:** Create Contact, Update Contact, List Contacts, Create Company, Create Deal, Check Updates.  
+**Authentication:** HubSpot token in headers or session auth.  
+
+### SendGrid
+**Direct tool names:** Send Email, Create List, Add Contact, List Campaigns, List Contacts.  
+**Authentication:** SendGrid API key + sender context, via headers/session.  
+
+### Shopify
+**Direct tool names:** Search Products, Read Product Details, Add to Cart, Subscribe Customer.  
+**Authentication:** Shopify tokens + shop domain from headers/session.  
+
+### Slack
+**Direct tool names:** Send Message, Read Channels, Read Messages, Update Message, Trigger Checks.  
+**Authentication:** Slack token in headers or session auth.  
+
+### Transcription
+**Direct tool names:** Transcribe Audio, Language Detection, Model-Based Transcription.  
+**Authentication:** Provider keys from environment (Deepgram/Azure).  
+
+### WhatsApp Business
+**Direct tool names:** Send Message, Send Template, List Templates, Upload Media, Download Media.  
+**Authentication:** Access token plus account IDs (`phone-number-id`, `waba-id` for some actions).  
+
+### WordPress
+**Direct tool names:** Create Post, Update Post, List Content, Publish Content, Search Content.  
+**Authentication:** WordPress REST auth through request/session context.  
+
+### Zoho CRM
+**Direct tool names:** List Records, Create Record, Update Record, Search Records, Delete Record.  
+**Authentication:** Zoho access token in header/body with session fallback.  
+
+### Zoho Desk
+**Direct tool names:** List Tickets, Read Ticket, Update Ticket, Add Comment, Search Tickets.  
+**Authentication:** Zoho Desk token plus optional org headers, session fallback.  
+
+### Zoho Mail
+**Direct tool names:** Read Emails, Search Emails, Send Email, Manage Mailbox.  
+**Authentication:** Zoho Mail token in headers or session auth.  
+
+### OCR
+**Direct tool names:** Extract Text, Parse Document, Validate Output.  
+**Authentication:** OpenAI key and optional vision model configuration.  
+
+---
+
+## Quick implementation tips
+
+- Use these direct action names in UI/workflow docs.
+- Keep one credential source per server to avoid token mismatch.
+- Validate required IDs before write actions.
+- For change monitoring, store last processed timestamp/record ID.
+
+<AccordionGroup>
+  <Accordion title="Google Sheets">
+    **What it does:** Spreadsheet automation with rows, sheets, and cell-level updates.
+
+    **Main operations:** create spreadsheet, list sheets, append/update rows, read/update cells, clear ranges, detect sheet updates.
+
+    **Authentication:** `access-token` / `sheets_access_token` / `Authorization: Bearer`, with session fallback (`google_sheets`).
+
+    **Links:** [MCP doc](/mcp/google-sheets) · [Google Sheets API](https://developers.google.com/sheets/api)
+  </Accordion>
+  <Accordion title="Airtable">
+    **What it does:** Airtable base/table/record management and change tracking.
+
+    **Main operations:** list bases/tables/columns, CRUD records, search records, monitor new/updated/deleted records.
+
+    **Authentication:** `access-token` / `airtable_access_token` / `Authorization: Bearer`, with session fallback (`airtable`).
+
+    **Links:** [MCP doc](/mcp/airtable) · [Airtable API](https://airtable.com/developers/web/api/introduction)
+  </Accordion>
+  <Accordion title="WhatsApp Business">
+    **What it does:** WhatsApp Business messaging, templates, and media workflows.
+
+    **Main operations:** send message, template operations, media upload/download/delete, response-driven communication flows.
+
+    **Authentication:** token via `access-token` / `meta_wa_access_token` / `Authorization: Bearer`, with required IDs (`phone-number-id`, `waba-id` depending on operation).
+
+    **References:** [MCP doc](/mcp/whatsapp-business) · [Meta Cloud API](https://developers.facebook.com/docs/whatsapp/cloud-api)
+
+    **Fallback approach:** If a specific operation is missing, call the endpoint directly with HTTP using the same credentials.
+  </Accordion>
+  <Accordion title="Gmail">
+    **Main operations:** send/search/read email, drafts, labels, triggers for new matching emails.
+
+    **Authentication:** `access-token` / `gmail_access_token` / `Authorization: Bearer`, with session fallback (`gmail`).
+
+    **Links:** [MCP doc](/mcp/gmail) · [Gmail API](https://developers.google.com/gmail/api)
+  </Accordion>
+  <Accordion title="Google Calendar">
+    **Main operations:** list calendars, check availability, create/update/delete events, fetch event windows.
+
+    **Authentication:** `access-token` / `calendar_access_token` / `Authorization: Bearer`, with session fallback (`google_calendar`).
+
+    **Links:** [MCP doc](/mcp/google-calendar) · [Google Calendar API](https://developers.google.com/workspace/calendar/api/guides/overview)
+  </Accordion>
+  <Accordion title="Google Docs">
+    **Main operations:** list drives/folders/docs, create docs, append/replace/get content, document triggers.
+
+    **Authentication:** `access-token` / `google_docs_access_token` / `Authorization: Bearer`, with session fallback (`google_docs`).
+
+    **Links:** [MCP doc](/mcp/google-docs) · [Google Docs API](https://developers.google.com/docs/api)
+  </Accordion>
+  <Accordion title="Google Drive">
+    **Main operations:** file/folder CRUD, share, move, search, download/upload, snapshots/triggers.
+
+    **Authentication:** `access-token` / `google_drive_access_token` / `Authorization: Bearer`, with session fallback (`google_drive`).
+
+    **Links:** [MCP doc](/mcp/google-drive) · [Google Drive API](https://developers.google.com/drive/api)
+  </Accordion>
+  <Accordion title="Google Form">
+    **Main operations:** create forms, manage questions/options, list responses and update form structure.
+
+    **Authentication:** `access-token` / `google_forms_access_token` / `Authorization: Bearer` (+ session auth where configured).
+
+    **Links:** [MCP doc](/mcp/google-form) · [Google Forms API](https://developers.google.com/forms/api)
+  </Accordion>
+  <Accordion title="Google Maps">
+    **Main operations:** places search/details, geocode/reverse geocode, directions, distance matrix, roads/elevation/timezone.
+
+    **Authentication:** API key via `api-key`/`api_key`/payload or bearer-like header; session fallback (`google_maps`).
+
+    **Links:** [MCP doc](/mcp/google-maps) · [Google Maps Platform](https://developers.google.com/maps/documentation)
+  </Accordion>
+  <Accordion title="Google Slides">
+    **Main operations:** create/update slides, manipulate presentation elements and slide content.
+
+    **Authentication:** `access-token` / `slides_access_token` / `Authorization: Bearer`, with session fallback (`google_slides`).
+
+    **Links:** [MCP doc](/mcp/google-slides) · [Google Slides API](https://developers.google.com/slides/api)
+  </Accordion>
+  <Accordion title="Brevo">
+    **Main operations:** contacts/lists/campaign/deals operations and lifecycle updates.
+
+    **Authentication:** API key in `brevo_api_key` / `brevo-api-key` / `api-key` / `api_key`, with session fallback (`brevo`).
+
+    **Links:** [MCP doc](/mcp/brevo) · [Brevo API](https://developers.brevo.com/reference/getting-started-1)
+  </Accordion>
+  <Accordion title="Calcom">
+    **Main operations:** scheduling actions and booking workflow integrations.
+
+    **Authentication:** `Authorization: Bearer`, `access-token`, or `token`, with session fallback (`calcom`).
+
+    **Links:** [MCP doc](/mcp/calcom) · [Cal.com API](https://cal.com/docs/api-reference/introduction)
+  </Accordion>
+  <Accordion title="Clickup">
+    **Main operations:** task/list workflow operations and project updates.
+
+    **Authentication:** `access-token` / `clickup_api_token` / `Authorization: Bearer`, with session fallback (`clickup`).
+
+    **Links:** [MCP doc](/mcp/clickup) · [ClickUp API](https://developer.clickup.com/docs)
+  </Accordion>
+  <Accordion title="Firebase">
+    **Main operations:** app data operations and backend workflow actions.
+
+    **Authentication:** `Authorization: Bearer`, `access-token`, or `token`, with session fallback (`firebase`).
+
+    **Links:** [MCP doc](/mcp/firebase) · [Firebase docs](https://firebase.google.com/docs)
+  </Accordion>
+  <Accordion title="Hubspot">
+    **Main operations:** contact/company/deal operations and CRM event workflows.
+
+    **Authentication:** `Authorization: Bearer`, `hubspot_access_token`, `access-token`, with session fallback (`hubspot`).
+
+    **Links:** [MCP doc](/mcp/hubspot) · [HubSpot API overview](https://developers.hubspot.com/docs/api/overview)
+  </Accordion>
+  <Accordion title="Sendgrid">
+    **Main operations:** send email, contacts/lists, campaigns and sender-based outbound workflows.
+
+    **Authentication:** API key via header/payload (`sendgrid_api_key`, `api_key`, bearer) + sender context for send flows; session fallback (`sendgrid`).
+
+    **Links:** [MCP doc](/mcp/sendgrid) · [SendGrid API](https://www.twilio.com/docs/sendgrid/api-reference)
+  </Accordion>
+  <Accordion title="Shopify">
+    **Main operations:** product retrieval, cart operations, customer/newsletter actions.
+
+    **Authentication:** `access-token` / `x-shopify-access-token` with shop domain and storefront/admin token context; session fallback (`shopify`).
+
+    **Links:** [MCP doc](/mcp/shopify) · [Shopify Admin GraphQL API](https://shopify.dev/docs/api/admin-graphql)
+  </Accordion>
+  <Accordion title="Slack">
+    **Main operations:** channel/user/message actions plus Slack event-style utility flows.
+
+    **Authentication:** `access-token` / `slack_access_token` / `Authorization: Bearer`, with session fallback (Slack auth resolver).
+
+    **Links:** [MCP doc](/mcp/slack) · [Slack Web API](https://api.slack.com/web)
+  </Accordion>
+  <Accordion title="Transcription">
+    **Main operations:** speech-to-text conversion and transcript processing.
+
+    **Authentication:** environment credentials for providers (`DEEPGRAM_API_KEY`, `AZURE_STT_API_KEY`, `AZURE_STT_ENDPOINT`).
+
+    **Links:** [MCP doc](/mcp/transcription)
+  </Accordion>
+  <Accordion title="Wordpress">
+    **Main operations:** content/publishing workflows and CMS operations.
+
+    **Authentication:** session auth context (`wordpress`) for REST operations; AI helper tools may also use OpenAI key.
+
+    **Links:** [MCP doc](/mcp/wordpress) · [WordPress REST API](https://developer.wordpress.org/rest-api/)
+  </Accordion>
+  <Accordion title="Zoho CRM">
+    **Main operations:** CRM modules, records, and pipeline-related automation.
+
+    **Authentication:** `access-token` (header/body), with session fallback (`zoho`); requests use `Zoho-oauthtoken`.
+
+    **Links:** [MCP doc](/mcp/zoho-crm) · [Zoho CRM API](https://www.zoho.com/crm/developer/docs/api/v8/)
+  </Accordion>
+  <Accordion title="Zoho Desk">
+    **Main operations:** support ticket and desk workflows.
+
+    **Authentication:** `access-token` plus org context headers (`org-id` variants) where required; session fallback (`zohodesk`/`zoho-desk`).
+
+    **Links:** [MCP doc](/mcp/zoho-desk) · [Zoho Desk API](https://desk.zoho.com/DeskAPIDocument)
+  </Accordion>
+  <Accordion title="Zoho Mail">
+    **Main operations:** mailbox and message automation in Zoho Mail.
+
+    **Authentication:** `access-token` or bearer auth, with session fallback (`zoho_mail`).
+
+    **Links:** [MCP doc](/mcp/zoho-mail) · [Zoho Mail API](https://www.zoho.com/mail/help/api/)
+  </Accordion>
+  <Accordion title="OCR">
+    **Main operations:** extract text from images/documents with vision models.
+
+    **Authentication:** `OPENAI_API_KEY` (and optional `OPENAI_VISION_MODEL`).
+
+    **Links:** [MCP doc](/mcp/ocr)
+  </Accordion>
+</AccordionGroup>

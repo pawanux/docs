@@ -1,0 +1,167 @@
+---
+title: "Google Docs MCP"
+icon: "https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico"
+description: "Let your UnleashX agent create Google Docs, read content, and update text automatically."
+tags: [mcp, google-docs, integration]
+---
+
+# Google Docs MCP
+
+> **In one line:** Connect Google Docs so your UnleashX agent can create documents, read them, and append or replace text for you.
+
+| | |
+|---|---|
+| **Category** | Productivity |
+| **Authentication** | OAuth (Google sign-in) |
+| **Setup time** | ~2 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Generating and updating documents from AI output and building repeatable doc workflows |
+
+## 1. Overview
+
+Google Docs is Google's word-processing service for creating and editing text documents stored in Drive.
+
+Once connected, your UnleashX agent can list drives, folders, and documents, create new documents in a folder, read a document's content, replace matching text, append text, generate an AI image into a doc, and watch for newly created documents.
+
+Connecting Google Docs to UnleashX makes document work conversational: ask "draft a project brief in the Projects folder" or "append today's summary to the standup doc," and the agent creates or updates the right document automatically.
+
+## 2. What you'll need
+
+<Steps>
+<Step title="A Google account with Docs">
+Any personal Google account or a Google Workspace account with Docs enabled.
+</Step>
+<Step title="Permission to grant access">
+You must be able to complete the Google sign-in and approve the requested permissions.
+</Step>
+<Step title="An UnleashX agent">
+An agent in your UnleashX workspace where you'll add the Docs connector.
+</Step>
+</Steps>
+
+<Note>
+No admin access? On a managed Google Workspace account, your admin may need to allow UnleashX before authorization succeeds.
+</Note>
+
+## 3. Get your credentials
+
+Google Docs uses **Google OAuth 2.0**. You do **not** create or paste an API key. UnleashX redirects you to Google, you sign in once, and Google issues an access token to UnleashX automatically.
+
+<Steps>
+<Step title="Start the connection in UnleashX">
+In your agent's **Data Connectors**, find **Google Docs** and click **Connect** (see Section 4).
+</Step>
+<Step title="Sign in with Google">
+Choose the Google account whose documents you want to connect.
+</Step>
+<Step title="Review and approve the requested scopes">
+Click **Allow** to grant access and return to UnleashX.
+</Step>
+</Steps>
+
+<Info>
+There is no key to copy. Access is granted by your Google sign-in and can be revoked anytime at your [Google Account permissions page](https://myaccount.google.com/permissions).
+</Info>
+
+**Scopes UnleashX requests for Google Docs:**
+
+| Scope | Why UnleashX needs it |
+|---|---|
+| `https://www.googleapis.com/auth/documents` | Read and edit document content (replace/append text). |
+| `https://www.googleapis.com/auth/drive` | List drives/folders/documents and create or delete document files. |
+| `https://www.googleapis.com/auth/userinfo.email` | Identify which account is connected. |
+
+
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Sign in at [https://www.tryunleashx.com](https://www.tryunleashx.com) and open your agent.
+</Step>
+<Step title="Go to Data Connectors">
+In the agent, open **Data Connectors**.
+</Step>
+<Step title="Find Google Docs and connect">
+Locate **Google Docs** and click **Connect** / **Add** / **Configure**.
+</Step>
+<Step title="Authorize with Google">
+Click **Authorize**, sign in with Google, and approve the requested permissions.
+</Step>
+<Step title="Confirm success">
+You'll return to UnleashX and the connector status will show a **Connected** badge.
+</Step>
+</Steps>
+
+![01 docs connector](/images/mcp/google-docs/01-connector.png)
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| List Drives | List available Google Drives. | No |
+| Folder List | List folders in a specific drive. | No |
+| List Document | List documents in a specific folder. | No |
+| Create Document | Create a new Google Document in a folder. | ✏️ Yes |
+| Delete Document | Delete a Google Document. | ⚠️ Yes |
+| Get Content Document | Read a document's content. | No |
+| Replace Text | Replace all occurrences of text in a document. | ✏️ Yes |
+| Append Text | Append text to the end of a document. | ✏️ Yes |
+| On New Document Created | Trigger: return documents added since last run. | No |
+| Generate AI Image | Generate an AI image (for use in a document). | ✏️ Yes |
+
+## 6. Example usage
+
+> **"Create a doc called 'Kickoff Notes' in the Projects folder and add today's agenda."**
+>
+> Runs **Create Document**, then **Append Text**.
+
+> **"In the contract doc, replace 'Acme Inc.' with 'Acme Corporation'."**
+>
+> Runs **Replace Text** on the target document.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- List drives, folders, and documents.
+- Create and delete documents.
+- Read document content, replace text, and append text.
+- Generate AI images for documents.
+
+**UnleashX cannot:**
+- Access Gmail, Calendar, or other Google services unless connected separately.
+- Change your Google account settings or password.
+- Edit documents you don't have access to.
+
+**To disconnect:** In UnleashX, open **Data Connectors → Google Docs → Disconnect**, or revoke at [https://myaccount.google.com/permissions](https://myaccount.google.com/permissions). Revoking takes effect immediately.
+
+The connection authenticates each request with your Google OAuth access token (resolved from an `access-token` header, a `google_docs_access_token` header, or an `Authorization: Bearer` header, falling back to your UnleashX session), refreshed automatically when it expires.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| `401 Unauthorized` | The access token is missing or expired. | Reconnect Google Docs in **Data Connectors**. |
+| `403 Forbidden` | Missing scope, or you lack edit rights on the document. | Re-authorize all scopes; confirm you can edit the file. |
+| `404 Not Found` | The document or folder ID is wrong or not shared with you. | Verify the `document_id`/`folder_id` and your access. |
+| Replace did nothing | The search text didn't match (case sensitivity). | Check exact text and the `match_case` setting. |
+
+For general connector issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Does UnleashX store my documents?**
+No. It reads and writes through Google's API in real time to fulfill your requests.
+
+**Can multiple team members connect Docs?**
+Yes. Each person authorizes their own Google account.
+
+**Can it format text, not just insert it?**
+The tools focus on creating documents and inserting/replacing text. Rich formatting beyond that isn't exposed by these tools.
+
+## 10. References
+
+- [Google Docs API documentation](https://developers.google.com/docs/api)
+- [Google Docs API OAuth scopes](https://developers.google.com/docs/api/concepts/scopes)
+- [Google Cloud Console](https://console.cloud.google.com/)
+- [Manage third-party access to your Google Account](https://myaccount.google.com/permissions)
