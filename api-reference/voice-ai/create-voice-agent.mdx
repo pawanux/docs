@@ -44,7 +44,7 @@ The Create Voice Agent API allows you to create and configure AI voice agents wi
     "language": "english"
   },
   "llm": {
-    "llm": "gpt-4o",
+    "llm": "openai",
     "model": "gpt-4o"
   },
   "configurations": {
@@ -270,12 +270,15 @@ The `llm` object configures the language model:
 
 | Property | Type | Required | Description |
 |----------|------|----------|-------------|
-| `llm` | string | Yes | LLM provider and model (see options below) |
-| `model` | string | Yes | Model name (typically same as `llm`) |
+| `llm` | string | Yes | LLM **provider name** (e.g. `openai`, `anthropic`, `Gemini`, `azure`) |
+| `model` | string | Yes | Model **Value** from that provider (e.g. `gpt-4o`) |
 
 ### Available LLM Models
 
-#### OpenAI Models
+Pass the **provider name** in `llm.llm` (e.g. `openai`) and the model's **Value** in `llm.model`
+(e.g. `gpt-4o`). Each group below shows its provider name in the heading.
+
+#### OpenAI Models (Provider: `openai`)
 
 | Model | Value | Description | Use Case |
 |-------|-------|-------------|----------|
