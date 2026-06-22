@@ -111,6 +111,11 @@ The `voice` object is **optional** and, if provided, contains the following prop
 | OpenAI | `openai` | Advanced text-to-speech with multiple voice options |
 | Deepgram | `deepgram` | Real-time speech recognition and voice synthesis |
 | Sarvam | `sarvam` | Multilingual voice synthesis optimized for Indian languages |
+| Cartesia | `cartesia` | Low-latency, expressive real-time voice synthesis |
+| Amazon Polly | `polly` | AWS text-to-speech with neural and generative voices |
+| Smallest | `smallest` | Fast, low-latency voice synthesis |
+| Soniox | `soniox` | Real-time text-to-speech |
+| Azure | `azure` | Microsoft Azure neural text-to-speech |
 
 ### Voice Models
 
@@ -120,6 +125,7 @@ The `voice` object is **optional** and, if provided, contains the following prop
 |-------|-------|-------------|
 | Turbo v2.5 | `eleven_turbo_v2_5` | Latest high-speed model with low latency (Recommended) |
 | Multilingual v2 | `eleven_multilingual_v2` | High-quality multilingual voice synthesis |
+| Flash v2.5 | `eleven_flash_v2_5` | Ultra-low-latency model |
 | Monolingual v1 | `eleven_monolingual_v1` | English-only optimized model |
 
 #### OpenAI Models
@@ -128,6 +134,47 @@ The `voice` object is **optional** and, if provided, contains the following prop
 |-------|-------|-------------|
 | TTS 1 | `tts-1` | Standard quality, faster generation |
 | TTS 1 HD | `tts-1-hd` | High definition, better quality |
+
+#### Sarvam Models
+
+| Model | Value | Description |
+|-------|-------|-------------|
+| Bulbul v3 | `bulbul:v3` | Multilingual voice optimized for Indian languages |
+
+#### Cartesia Models
+
+| Model | Value | Description |
+|-------|-------|-------------|
+| Sonic 3 | `sonic-3` | Low-latency, expressive voice synthesis |
+
+#### Amazon Polly Models
+
+| Model | Value | Description |
+|-------|-------|-------------|
+| Generative | `generative` | Most natural, expressive AWS voices |
+| Neural | `neural` | Neural text-to-speech |
+| Longform | `longform` | Optimized for long-form content |
+| Standard | `standard` | Standard text-to-speech |
+
+#### Smallest Models
+
+| Model | Value | Description |
+|-------|-------|-------------|
+| Lightning v3.1 | `lightning-v3.1` | Latest low-latency model |
+| Lightning v2 | `lightning-v2` | Low-latency model |
+| Pulse | `pulse` | Fast voice synthesis |
+
+#### Soniox Models
+
+| Model | Value | Description |
+|-------|-------|-------------|
+| TTS RT v1 | `tts-rt-v1` | Real-time text-to-speech |
+
+#### Azure Models
+
+| Model | Value | Description |
+|-------|-------|-------------|
+| Azure | `azure` | Microsoft Azure neural text-to-speech |
 
 ### Voice Settings
 
@@ -190,6 +237,32 @@ The `speech_to_text` object configures the transcription service:
 | Model | Value | Description |
 |-------|-------|-------------|
 | Sarvam | `sarvam` | Optimized for Indian languages |
+| Saaras v3 | `saaras:v3` | Latest multilingual speech-to-text |
+
+#### ElevenLabs (Provider: `elevenLabs`)
+
+| Model | Value | Description |
+|-------|-------|-------------|
+| Scribe v2 Realtime | `scribe_v2_realtime` | Real-time multilingual transcription |
+
+#### Cartesia (Provider: `cartesia`)
+
+| Model | Value | Description |
+|-------|-------|-------------|
+| Ink Whisper | `ink-whisper` | Low-latency real-time transcription |
+
+#### Soniox (Provider: `soniox`)
+
+| Model | Value | Description |
+|-------|-------|-------------|
+| STT RT v5 | `stt-rt-v5` | Latest real-time speech-to-text |
+| STT RT v4 | `stt-rt-v4` | Real-time speech-to-text |
+
+#### Azure (Provider: `azure`)
+
+| Model | Value | Description |
+|-------|-------|-------------|
+| Azure | `azure` | Microsoft Azure speech-to-text |
 
 ## LLM Configuration
 
@@ -213,6 +286,8 @@ The `llm` object configures the language model:
 | GPT-4.1 Mini | `gpt-4.1-mini` | Compact GPT-4.1 | Efficient processing |
 | GPT-4.1 Nano | `gpt-4.1-nano` | Ultra-fast GPT-4.1 | Ultra-low latency |
 | GPT-3.5 Turbo | `gpt-3.5-turbo` | Fast and cost-effective | Simple conversations |
+| GPT-5.4 | `gpt-5.4` | Latest flagship model | Highest quality reasoning |
+| GPT-5.4 Mini | `gpt-5.4-mini` | Compact GPT-5.4 | Fast, cost-effective |
 
 #### OpenAI Realtime Models
 
@@ -242,6 +317,69 @@ The `llm` object configures the language model:
 |-------|-------|-------------|
 | L3.1 70B Euryale v2.2 | `l3.1-70b-euryale-v2.2` | Fine-tuned LLaMA variant |
 | DeepSeek v3 | `deepseek-v3` | Advanced reasoning model |
+
+#### Anthropic Models (Provider: `anthropic`)
+
+| Model | Value | Description |
+|-------|-------|-------------|
+| Claude Opus 4.8 | `claude-opus-4-8` | Most capable Claude model |
+| Claude Opus 4.7 | `claude-opus-4-7` | High-capability reasoning |
+| Claude Opus 4.6 | `claude-opus-4-6` | High-capability reasoning |
+| Claude Opus 4.5 | `claude-opus-4-5` | High-capability reasoning |
+| Claude Opus 4.1 | `claude-opus-4-1-20250805` | Opus 4.1 |
+| Claude Opus 4.2 | `claude-opus-4-20250514` | Opus 4 |
+| Claude Sonnet 4.6 | `claude-sonnet-4-6` | Balanced speed and quality (Recommended) |
+| Claude Sonnet 4.5 | `claude-sonnet-4-5` | Balanced speed and quality |
+| Claude Sonnet 4.0 | `claude-sonnet-4-0` | Sonnet 4 |
+| Claude Haiku 4.5 | `claude-haiku-4-5` | Fast, cost-effective |
+| Claude Haiku 3.5 | `claude-haiku-3-5-20241022` | Fast, cost-effective |
+
+#### Google Gemini Models (Provider: `Gemini`)
+
+| Model | Value | Description |
+|-------|-------|-------------|
+| Gemini 3.1 Pro Preview | `gemini-3.1-pro-preview` | Latest high-capability Gemini |
+| Gemini 3.1 Flash Lite Preview | `gemini-3.1-flash-lite-preview` | Fast, lightweight |
+| Gemini 3 Flash Preview | `gemini-3-flash-preview` | Fast Gemini 3 |
+| Gemini 2.5 Pro | `gemini-2.5-pro` | High-capability reasoning |
+| Gemini 2.5 Flash | `gemini-2.5-flash` | Fast, balanced |
+| Gemini 2.5 Flash Lite | `gemini-2.5-flash-lite` | Lightweight, low latency |
+
+#### Azure OpenAI Models (Provider: `azure`)
+
+| Model | Value | Description |
+|-------|-------|-------------|
+| GPT-4o | `gpt-4o` | Azure-hosted GPT-4o |
+| GPT-4o Mini | `gpt-4o-mini` | Azure-hosted GPT-4o Mini |
+| GPT-5 Mini | `gpt-5-mini` | Azure-hosted GPT-5 Mini |
+
+#### Sarvam Models (Provider: `sarvam`)
+
+| Model | Value | Description |
+|-------|-------|-------------|
+| Sarvam 105B | `sarvam-105b` | Large multilingual model for Indian languages |
+| Sarvam 30B | `sarvam-30b` | Efficient multilingual model |
+
+#### AWS Bedrock Models (Provider: `bedrock`)
+
+| Model | Value | Description |
+|-------|-------|-------------|
+| Qwen3 VL 235B | `qwen.qwen3-vl-235b-a22b` | Large multimodal model via Bedrock |
+| GPT-OSS 120B | `openai.gpt-oss-120b-1:0` | Open-weight GPT model via Bedrock |
+
+#### Cerebras Models (Provider: `cerebras`)
+
+| Model | Value | Description |
+|-------|-------|-------------|
+| ZAI GLM 4.6 | `zai-glm-4.6` | High-throughput hosted model |
+| Qwen3 235B Instruct | `qwen-3-235b-a22b-instruct-2507` | Large instruct model |
+| GPT-OSS 120B | `gpt-oss-120b` | Open-weight GPT model |
+
+#### Grok Models (Provider: `grok`)
+
+| Model | Value | Description |
+|-------|-------|-------------|
+| Grok | `grok` | xAI Grok model |
 
 ## Configurations
 
