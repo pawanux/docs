@@ -42,6 +42,7 @@
               "enterprise/enterprise-plan"
             ]
           },
+          "voice-agents/introduction",
           {
             "group": "Multilingual Voice agents",
             "pages": [
