@@ -73,8 +73,6 @@ There is no key to copy. Access is granted by your Google sign-in and can be rev
 | `https://www.googleapis.com/auth/drive` | List forms and spreadsheets, and delete forms in Drive. |
 | `https://www.googleapis.com/auth/userinfo.email` | Identify which account is connected. |
 
-
-
 ## 4. Connect on UnleashX
 
 <Steps>
@@ -95,7 +93,36 @@ You'll return to UnleashX and the connector status will show a **Connected** bad
 </Step>
 </Steps>
 
-![01 forms connector](/images/mcp/google-form/01-connector.png)
+{/* workflow-usage-section */}
+### Use Google Forms in a Workflow
+
+Once connected, you can add **Google Forms** to any automation from the **Workflows** builder. Its triggers and tools appear in the Apps panel, marked with an **MCP** badge.
+
+<Steps>
+<Step title="Add a trigger or action node">
+Open **Workflows → New Workflow**. On the canvas, click **+ Add Trigger** (or the **+** below any node) to add a step.
+
+![Add a trigger on the workflow canvas](/images/mcp/workflows/05-add-trigger.png)
+</Step>
+<Step title="Pick Google Forms from the Apps panel">
+In the **Paths** panel, open the **Apps** tab and select **Google Forms**. Use the search box if you have many connectors.
+
+![Choose your app from the Apps list](/images/mcp/workflows/06-apps-list.png)
+</Step>
+<Step title="Choose a trigger or tool">
+Pick the trigger or action you want. Configure its fields — required fields are marked with a red asterisk (*).
+</Step>
+<Step title="Add or select your account">
+Under **Selected account**, choose an already-connected account, or click **Add Account** to connect one now.
+</Step>
+<Step title="Save and test">
+Fill in the remaining fields and click **Save**. Use **Test** to verify the step, then toggle **Publish** when the workflow is ready.
+</Step>
+</Steps>
+
+<Note>
+The steps are the same for every connector. For the full workflow builder guide, see [Using MCP in Workflows](/mcp/workflows).
+</Note>
 
 ## 5. Available tools
 
