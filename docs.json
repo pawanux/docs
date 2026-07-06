@@ -129,15 +129,7 @@
           {
             "group": "Features",
             "pages": [
-              "features/connect-providers",
-              "features/import-voices",
-              "features/clone-your-voice",
-              "features/adding-variables",
-              "features/extract-structured-data",
-              "features/implementing-guardrails",
-              "features/add-your-server-url",
-              "features/using-knowledgebases",
-              "features/multi-agent-prompt"
+              "features/connect-providers"
             ]
           },
           {
