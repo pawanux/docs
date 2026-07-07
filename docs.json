@@ -20,7 +20,7 @@
     "tabs": [
       {
         "tab": "Documentation",
-        "groups": [
+        "pages": [
           {
             "group": "Getting started",
             "pages": [
@@ -42,7 +42,6 @@
               "enterprise/enterprise-plan"
             ]
           },
-          "voice-agents/introduction",
           {
             "group": "Multilingual Voice agents",
             "pages": [
