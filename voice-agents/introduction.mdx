@@ -1,0 +1,176 @@
+---
+title: "Voice Agents"
+description: "Build an AI voice agent on UnleashX — set its behaviour and prompt, attach knowledge and tools, pick a voice, capture structured outputs, and tune call behaviour."
+---
+
+# Voice Agents
+
+> **In one line:** A voice agent is an AI that talks to people on a phone call — it listens, understands, follows your instructions, uses tools and knowledge, and captures the outcome, all in a natural back-and-forth conversation.
+
+## 1. What is a voice agent?
+
+A **voice agent** is an AI-powered caller you configure once and then put on the phone. It handles real conversations end-to-end: it greets the caller, understands what they say (speech-to-text), decides how to respond using a language model and your instructions, and speaks back in a natural voice (text-to-speech). Along the way it can look things up in a **knowledge base**, take actions through **tools** (like creating a CRM contact or booking a slot), and record **structured outputs** so every call leaves clean, usable data.
+
+Voice agents run in two directions:
+
+- **Outbound** — the agent places calls (reminders, collections, lead qualification, follow-ups).
+- **Inbound** — the agent answers calls (support, FAQs, order status, bookings).
+
+You build a voice agent in a **5-step wizard**: **Agent Behaviour → Voice Setup → Phone Number → Structured Outputs → Configurations**. The sections below walk through each one.
+
+## 2. Create an agent
+
+<Steps>
+<Step title="Open Voice AI">
+In the left sidebar under **Build**, click **Voice AI**, then **+ Create Agent** in the top-right.
+
+![Voice AI agents list with the Create Agent button](/images/voice-agents/01-create-agent.png)
+</Step>
+<Step title="Start from a template or from scratch">
+Choose **Create from Scratch** to build your own, or pick a **pre-built template** (e.g. Loan Recovery, Patient Appointment Reminder, Candidate Pre-Screener) and click **Proceed to Clone** to start from a working example.
+
+![Create Agent — choose a template or start from scratch](/images/voice-agents/02-choose-template.png)
+</Step>
+<Step title="Name your agent and choose a type">
+Give the agent a **name and icon**, then choose the **agent type**:
+
+- **Single Prompt** — one instruction handles the whole call. Best for wide, unpredictable conversations like FAQs, order status, bookings, and general support.
+- **Multi-Prompt Flow Builder** — a structured, step-by-step flow. Best for predictable, low-variance calls like renewals, collections, hiring, and cart recovery.
+
+Click **Create Agent** to open the builder.
+
+![Set the agent name and choose Single Prompt or Multi-Prompt Flow Builder](/images/voice-agents/03-name-and-type.png)
+</Step>
+</Steps>
+
+## 3. Step 1 — Agent Behaviour
+
+This is where you define *who the agent is* and *how it should talk*.
+
+| Field | What it does |
+|---|---|
+| **Outbound / Inbound** | Sets the call direction the agent is built for. |
+| **Default Language** | The language the agent speaks and listens in (e.g. English). |
+| **Purpose** | The high-level goal (e.g. *Automate repetitive tasks*), which tunes the agent's behaviour. |
+| **Greeting Message** | The first line the agent says when the call connects (e.g. "Hi! How can I assist you?"). |
+| **Agent Prompt** | The core instruction set — the agent's personality, goals, rules, and how to handle the conversation. |
+
+![Step 1 Agent Behaviour — language, purpose, greeting, and prompt](/images/voice-agents/04-agent-behaviour.png)
+
+### Writing the Agent Prompt
+
+The **Agent Prompt** is the most important field — it's the brain of the agent. Describe who the agent is, what it's trying to achieve, the steps to follow, and what it should and shouldn't do. Two helpers speed this up:
+
+- **+ Input Variables** — insert dynamic placeholders (like a customer's name or order ID) that get filled in per call, so one prompt personalizes every conversation.
+- **Templates** — start from a proven prompt and adapt it.
+
+<Tip>
+Write the prompt like you're briefing a new teammate: state the goal, the tone, the exact steps, and the edge cases. Clear, specific prompts produce far more reliable calls.
+</Tip>
+
+### Knowledge
+
+The **Knowledge** section lets you **upload files and links** the agent can draw on during a call — think product docs, policies, price lists, or FAQs. Click **+ Add Knowledge** to attach them.
+
+![Knowledge section — upload files and links for agent context](/images/voice-agents/05-knowledge.png)
+
+**Why attach a knowledge base?**
+
+- **Accurate answers** — the agent responds from *your* content instead of guessing.
+- **Always current** — update the source once and every call reflects it.
+- **Smaller prompts** — keep reference material in knowledge instead of stuffing it into the prompt.
+- **Fewer escalations** — the agent can resolve more on its own.
+
+### Tools
+
+**Tools** let the agent *take action* mid-call, not just talk. Click **+ Add Tool**, pick an app (HubSpot, Google Sheets, Google Docs, Slack, Gmail, Jira, WhatsApp, and more), then:
+
+![Add Tool — pick an app to give the agent](/images/voice-agents/06-add-tool.png)
+
+1. **Select Account** — choose the connected account the tool should use.
+2. **Pick the actions** — tick the specific operations to enable (e.g. for HubSpot: **Create Contact**, **Update Contact**, **Get Contact**, **Delete Contact**, **Search Contact**).
+3. Click **Add Tool** to attach it.
+
+![Select an account and choose the actions to enable](/images/voice-agents/07-hubspot-actions.png)
+
+During a call the agent calls these tools automatically when the conversation calls for it — for example creating a CRM contact after qualifying a lead.
+
+## 4. Step 2 — Voice Setup
+
+Configure the models that power the agent's understanding and speech.
+
+![Step 2 Voice Setup — LLM, transcriber, and voice configuration](/images/voice-agents/08-voice-setup.png)
+
+<Steps>
+<Step title="LLM Configuration">
+Choose the **Provider** and **Model** (e.g. OpenAI · GPT-5.4-mini) that drive the agent's reasoning and replies. **Enable Fallback** (Enterprise) uses a backup model if the primary provider fails.
+</Step>
+<Step title="Transcriber">
+Pick the **speech-to-text** provider and model that convert the caller's audio into text. A transcriber fallback is available on Enterprise.
+</Step>
+<Step title="Voice Configuration">
+Select the **voice provider and model** for speech output (e.g. ElevenLabs · Eleven Turbo V2.5), then choose a **Voice**. Use the search box to filter voices by name or style, and the **play** button to preview each one before selecting.
+
+![Voice Configuration — pick a provider, model, and voice with preview](/images/voice-agents/09-voice-configuration.png)
+</Step>
+</Steps>
+
+## 5. Step 3 — Phone Number
+
+Assign the phone number the agent uses to place or receive calls. Attach a purchased number here so outbound calls dial from it and inbound calls route to this agent.
+
+## 6. Step 4 — Structured Outputs
+
+**Structured Outputs** define the key information to capture *after* each call — turning a conversation into clean, queryable data.
+
+![Step 4 Structured Outputs — model provider and outputs list](/images/voice-agents/10-structured-outputs.png)
+
+- Choose a **Model Provider** and **Model** (e.g. Gemini · gemini-2.5-flash) to do the extraction.
+- Click **+ Add Output** and either **Create from Scratch** (your own schema) or pick a **pre-built template**: Customer Name, Customer Phone, Customer Email, Customer Address, Call Outcome, Caller Intent, Call Summary, Issue Category, Resolved On Call, Appointment Date/Time, Payment Amount, and more.
+
+![Create Structured Output — start from scratch or pick a template](/images/voice-agents/11-output-templates.png)
+
+The **Dispositions** tab lets you categorize the result of each call (e.g. resolved, callback, not interested) for reporting.
+
+<Note>
+Structured outputs are what make calls measurable — every call ends with the fields you defined, ready for dashboards, exports, or follow-up workflows.
+</Note>
+
+## 7. Step 5 — Configurations
+
+Fine-tune how the agent behaves on the line. Settings are grouped into collapsible sections.
+
+### Audio & Speech
+- **Background Denoising** — removes unwanted noise so the agent hears clearly.
+- **Sentiment Analysis** — evaluates the whole call for overall customer sentiment.
+- **Emotions Analysis** — detects the caller's emotional tone (happy, frustrated, anxious, etc.).
+- **Unanswered Queries** — captures questions the agent didn't answer.
+- **Voicemail Detection** — detects when no person answers and avoids talking to a recording; set the **Voicemail Detection Message** and a **Voice Detection Confidence Threshold** (higher = less likely to falsely detect voice).
+
+![Configurations — Audio & Speech settings](/images/voice-agents/12-config-audio-speech.png)
+
+### Memory & Context
+- **Memory Recall** — lets the agent remember past details for smoother, more personal conversations.
+
+### Scheduling & Timing
+- **Timezone**, **Calling Hours** (e.g. 24 Hours), and **Calling Start Time** control when the agent may call.
+
+![Configurations — Memory & Context and Scheduling & Timing](/images/voice-agents/13-config-scheduling.png)
+
+### Call Behaviour
+- **Agent Can Terminate Call** — lets the agent end the call itself, with a **Termination Message** (e.g. "Goodbye").
+- **Call Recording** — enable or disable recording (off by default).
+- **Do Not Call Detection** — detects "Do Not Call" intent to stay compliant with telemarketing rules.
+- **Inactivity Handling** — prompts the caller after an **Idle time** (e.g. 10 sec) with a **Message** (e.g. "Hello?") to keep them engaged.
+
+![Configurations — Call Behaviour settings](/images/voice-agents/14-config-call-behaviour.png)
+
+## 8. Test & publish
+
+Once the five steps are set, **save** the agent and run a **test call** to hear it live and confirm the prompt, voice, tools, and outputs behave as expected. When you're happy, **publish** the agent and connect it to a [campaign](/index) or phone number to start handling real calls.
+
+## 9. Related
+
+- [Voice AI Agent Function calls](/voice-agent-function-calls/introduction) — how the agent transfers calls, checks/books slots, and runs custom functions.
+- [Multilingual voice agents](/multilingual-voice-agents/supported-languages) — supported languages and non-English prompting.
+- [MCP Integrations](/mcp/integrations) — the apps your agent's tools can connect to.

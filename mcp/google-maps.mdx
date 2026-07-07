@@ -1,11 +1,11 @@
 ---
-title: "Google Maps MCP"
+title: "Google Maps"
 icon: "https://maps.google.com/favicon.ico"
 description: "Search places, geocode addresses, get directions, and look up timezones and elevation from your UnleashX agent."
 tags: [mcp, google-maps, integration]
 ---
 
-# Google Maps MCP
+# Google Maps
 
 > **In one line:** Give your UnleashX agent location superpowers — find places, convert addresses to coordinates, calculate routes and travel times, and look up timezones and elevation.
 
@@ -164,7 +164,36 @@ When the key works, the status changes to a **Connected** badge. Your agent can 
 </Step>
 </Steps>
 
-![01 google maps connect](/images/mcp/google-maps/01-connect.png)
+{/* workflow-usage-section */}
+### Use Google Maps in a Workflow
+
+Once connected, you can add **Google Maps** to any automation from the **Workflows** builder. Its triggers and tools appear in the Apps panel, marked with an **MCP** badge.
+
+<Steps>
+<Step title="Add a trigger or action node">
+Open **Workflows → New Workflow**. On the canvas, click **+ Add Trigger** (or the **+** below any node) to add a step.
+
+![Add a trigger on the workflow canvas](/images/mcp/workflows/05-add-trigger.png)
+</Step>
+<Step title="Pick Google Maps from the Apps panel">
+In the **Paths** panel, open the **Apps** tab and select **Google Maps**. Use the search box if you have many connectors.
+
+![Choose your app from the Apps list](/images/mcp/workflows/06-apps-list.png)
+</Step>
+<Step title="Choose a trigger or tool">
+Pick the trigger or action you want. Configure its fields — required fields are marked with a red asterisk (*).
+</Step>
+<Step title="Add or select your account">
+Under **Selected account**, choose an already-connected account, or click **Add Account** to connect one now.
+</Step>
+<Step title="Save and test">
+Fill in the remaining fields and click **Save**. Use **Test** to verify the step, then toggle **Publish** when the workflow is ready.
+</Step>
+</Steps>
+
+<Note>
+The steps are the same for every connector. For the full workflow builder guide, see [Using MCP in Workflows](/mcp/workflows).
+</Note>
 
 ## 5. Available tools
 

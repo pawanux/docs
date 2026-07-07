@@ -42,6 +42,7 @@
               "enterprise/enterprise-plan"
             ]
           },
+          "voice-agents/introduction",
           {
             "group": "Multilingual Voice agents",
             "pages": [
@@ -49,16 +50,7 @@
               "multilingual-voice-agents/prompts-for-non-english"
             ]
           },
-          {
-            "group": "Voice AI Agent Function calls",
-            "pages": [
-              "voice-agent-function-calls/introduction",
-              "voice-agent-function-calls/transfer-calls",
-              "voice-agent-function-calls/check-calendar-slots",
-              "voice-agent-function-calls/book-calendar-slots",
-              "voice-agent-function-calls/custom-function-calls"
-            ]
-          },
+          "voice-agent-function-calls/introduction",
           {
             "group": "MCP Servers",
             "pages": [
@@ -138,23 +130,7 @@
           {
             "group": "Features",
             "pages": [
-              "features/connect-providers",
-              "features/import-voices",
-              "features/clone-your-voice",
-              "features/adding-variables",
-              "features/extract-structured-data",
-              "features/implementing-guardrails",
-              "features/add-your-server-url",
-              "features/using-knowledgebases",
-              "features/multi-agent-prompt"
-            ]
-          },
-          {
-            "group": "Advance customizations",
-            "pages": [
-              "advance-customizations/identify-incoming-callers",
-              "advance-customizations/using-custom-llms",
-              "advance-customizations/capturing-precise-transcripts"
+              "features/connect-providers"
             ]
           },
           {

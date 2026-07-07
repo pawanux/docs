@@ -1,5 +1,109 @@
 ---
-title: Voice AI Agent Function calls - Introduction
+title: "Voice AI Agent Function calls"
+description: "How function calling lets your UnleashX voice agent take real actions mid-conversation — transfer calls, check and book calendar slots, and run your own custom functions."
 ---
 
-Overview of function calling for voice agents. 
+# Voice AI Agent Function calls
+
+> **In one line:** Function calls let your voice agent *do* things during a live call — not just talk. Mid-conversation, the agent can hand off to a human, look up availability, book a meeting, or hit your own API, then keep speaking naturally with the result.
+
+## What is a function call?
+
+A voice agent's core skill is conversation. But most useful tasks need it to reach outside the conversation — into a calendar, a CRM, a phone system, or your backend. A **function call** (also called *tool calling*) is how the agent does that.
+
+You describe an action to the agent as a **function**: a name, a plain-English description of when to use it, and the **parameters** it needs. During a call, when the caller's intent matches that description, the agent:
+
+1. **Decides** the function is needed based on what the caller said.
+2. **Extracts** the parameters from the conversation (e.g. a date, a name, a phone number).
+3. **Calls** the function — UnleashX runs it against the real service.
+4. **Uses the result** — the agent speaks the outcome back to the caller and continues the conversation.
+
+The key idea: *you* define the "what" (the function and its parameters), and the *agent* decides the "when" and fills in the "with what" from natural speech. No rigid menus or keypad trees.
+
+<Note>
+Function calls run **in real time, mid-call**. The caller experiences it as a natural pause ("let me check that for you…") rather than a handoff to a form.
+</Note>
+
+## How it works in a voice call
+
+```
+Caller speaks  →  Agent understands intent  →  Agent picks a function
+      ↑                                                │
+      │                                                ▼
+Agent speaks  ←  Agent phrases the result  ←  UnleashX runs the function
+```
+
+Because the whole loop happens during the call, latency matters. UnleashX streams the agent's speech, calls the function, and resumes speaking as soon as the result returns — so the caller hears a brief, natural "one moment" rather than dead air.
+
+## Built-in function calls
+
+UnleashX ships with ready-made functions for the most common voice-agent actions. Turn them on for an agent and it can use them immediately — no code required.
+
+<CardGroup cols={2}>
+
+<Card title="Transfer calls" icon="phone-arrow-right">
+Hand the live call off to a human or another number when the caller asks for a person, hits an edge case, or needs escalation. The agent transfers the active call to a configured destination and can pass along context.
+</Card>
+
+<Card title="Check calendar slots" icon="calendar-check">
+Look up real-time availability on a connected calendar. The caller asks "what's open Thursday afternoon?" and the agent reads back the free slots.
+</Card>
+
+<Card title="Book calendar slots" icon="calendar-plus">
+Create a booking on the connected calendar once the caller picks a time — capturing name, time, and any details, then confirming the appointment out loud.
+</Card>
+
+<Card title="Custom function calls" icon="code">
+Define your own function that calls your API or workflow. Give it a name, a description, and parameters, and the agent will invoke it whenever the conversation calls for it. See below.
+</Card>
+
+</CardGroup>
+
+## Custom function calls
+
+When the built-ins aren't enough, define a **custom function** to connect the agent to any service you can reach over HTTP — your order system, a lookup service, a payment link generator, or an internal workflow.
+
+A custom function is defined by three things:
+
+| Part | What it is | Example |
+|---|---|---|
+| **Name** | A short identifier for the action. | `lookup_order_status` |
+| **Description** | Plain-English guidance on *when* the agent should call it. This is what the agent matches against. | "Use when the caller asks about the status of an existing order and gives an order number." |
+| **Parameters** | The inputs the function needs, each with a type and description so the agent knows what to extract. | `order_number` (string), `email` (string, optional) |
+
+At call time, UnleashX sends the extracted parameters to your endpoint, waits for the response, and hands the result back to the agent to speak.
+
+<Tip>
+Write the **description** like an instruction to a new teammate: say exactly when to use the function and when *not* to. A clear description is the single biggest factor in whether the agent calls the right function at the right moment.
+</Tip>
+
+## Setting up a function call
+
+<Steps>
+<Step title="Open your agent">
+Sign in at [tryunleashx.com](https://www.tryunleashx.com) and open the voice agent you want to extend.
+</Step>
+<Step title="Add a function">
+In the agent's **Function calls** section, enable a built-in (Transfer, Check slots, Book slots) or choose **Add custom function**.
+</Step>
+<Step title="Configure it">
+For built-ins, connect the required service (e.g. a calendar or transfer destination). For a custom function, set the **name**, **description**, **parameters**, and the **endpoint** to call.
+</Step>
+<Step title="Test in the playground">
+Run a test call and speak the trigger scenario. Confirm the agent calls the function, extracts the right parameters, and speaks the result naturally.
+</Step>
+</Steps>
+
+## Best practices
+
+- **One job per function.** Narrow, single-purpose functions are easier for the agent to choose correctly than one function that does many things.
+- **Describe the trigger, not the mechanism.** The description should say *when* to use the function in the caller's terms, not how your backend works.
+- **Mark optional vs. required parameters.** If a parameter is required, the agent will ask the caller for it before calling — make sure that question feels natural.
+- **Keep endpoints fast.** Since the caller is waiting on the line, aim for responses in a second or two; return a graceful message the agent can speak if something goes wrong.
+- **Confirm irreversible actions.** For bookings, transfers, or anything that changes data, have the agent read back the details and confirm before it acts.
+
+## Related
+
+- [Making outgoing calls](/phone-calls/making-outgoing-calls) — how calls are placed and received.
+- [MCP Integrations](/mcp/integrations) — connect calendars, CRMs, and other tools your functions can reach.
+- [Agent setup](/playground/agent-setup) — configure and test your agent before going live.

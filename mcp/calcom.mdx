@@ -1,11 +1,11 @@
 ---
-title: "Cal.com MCP"
+title: "Cal.com"
 icon: "https://cal.com/favicon.ico"
 description: "Let your UnleashX agent book, reschedule, and cancel Cal.com meetings and check availability."
 tags: [mcp, calcom, integration]
 ---
 
-# Cal.com MCP
+# Cal.com
 
 > **In one line:** Connect Cal.com so your UnleashX agent can check availability, book meetings, reschedule or cancel them, and manage webhooks automatically.
 
@@ -91,7 +91,36 @@ Save. When the status shows a **Connected** badge, your agent can start scheduli
 </Step>
 </Steps>
 
-![01 calcom data connector](/images/mcp/calcom/01-data-connector.png)
+{/* workflow-usage-section */}
+### Use Cal.com in a Workflow
+
+Once connected, you can add **Cal.com** to any automation from the **Workflows** builder. Its triggers and tools appear in the Apps panel, marked with an **MCP** badge.
+
+<Steps>
+<Step title="Add a trigger or action node">
+Open **Workflows → New Workflow**. On the canvas, click **+ Add Trigger** (or the **+** below any node) to add a step.
+
+![Add a trigger on the workflow canvas](/images/mcp/workflows/05-add-trigger.png)
+</Step>
+<Step title="Pick Cal.com from the Apps panel">
+In the **Paths** panel, open the **Apps** tab and select **Cal.com**. Use the search box if you have many connectors.
+
+![Choose your app from the Apps list](/images/mcp/workflows/06-apps-list.png)
+</Step>
+<Step title="Choose a trigger or tool">
+Pick the trigger or action you want. Configure its fields — required fields are marked with a red asterisk (*).
+</Step>
+<Step title="Add or select your account">
+Under **Selected account**, choose an already-connected account, or click **Add Account** to connect one now.
+</Step>
+<Step title="Save and test">
+Fill in the remaining fields and click **Save**. Use **Test** to verify the step, then toggle **Publish** when the workflow is ready.
+</Step>
+</Steps>
+
+<Note>
+The screenshots above use Google Sheets as an example — the steps are identical for Cal.com. For the full workflow builder guide, see [Using MCP in Workflows](/mcp/workflows).
+</Note>
 
 ## 5. Available tools
 

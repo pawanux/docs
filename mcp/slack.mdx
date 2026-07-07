@@ -1,11 +1,11 @@
 ---
-title: "Slack MCP"
+title: "Slack"
 icon: "https://a.slack-edge.com/80588/marketing/img/meta/favicon-32.png"
 description: "Let your UnleashX agent read, send, search, and manage Slack messages, channels, files, and reminders."
 tags: [mcp, slack, integration]
 ---
 
-# Slack MCP
+# Slack
 
 > **In one line:** Connect Slack so your UnleashX agent can send and read messages, browse channels and users, share and find files, and set reminders — all in your workspace.
 
@@ -92,7 +92,36 @@ You'll be returned to UnleashX and the Slack connector will show a **Connected**
 </Step>
 </Steps>
 
-![01 connect slack](/images/mcp/slack/01-connect-slack.png)
+{/* workflow-usage-section */}
+### Use Slack in a Workflow
+
+Once connected, you can add **Slack** to any automation from the **Workflows** builder. Its triggers and tools appear in the Apps panel, marked with an **MCP** badge.
+
+<Steps>
+<Step title="Add a trigger or action node">
+Open **Workflows → New Workflow**. On the canvas, click **+ Add Trigger** (or the **+** below any node) to add a step.
+
+![Add a trigger on the workflow canvas](/images/mcp/workflows/05-add-trigger.png)
+</Step>
+<Step title="Pick Slack from the Apps panel">
+In the **Paths** panel, open the **Apps** tab and select **Slack**. Use the search box if you have many connectors.
+
+![Choose your app from the Apps list](/images/mcp/workflows/06-apps-list.png)
+</Step>
+<Step title="Choose a trigger or tool">
+Pick the trigger or action you want. Configure its fields — required fields are marked with a red asterisk (*).
+</Step>
+<Step title="Add or select your account">
+Under **Selected account**, choose an already-connected account, or click **Add Account** to connect one now.
+</Step>
+<Step title="Save and test">
+Fill in the remaining fields and click **Save**. Use **Test** to verify the step, then toggle **Publish** when the workflow is ready.
+</Step>
+</Steps>
+
+<Note>
+The steps are the same for every connector. For the full workflow builder guide, see [Using MCP in Workflows](/mcp/workflows).
+</Note>
 
 ## 5. Available tools
 

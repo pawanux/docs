@@ -1,11 +1,11 @@
 ---
-title: "Kwiqreply MCP"
+title: "Kwiqreply"
 icon: "https://kwiqreply.io/favicon.ico"
 description: "Send WhatsApp text, link-preview, button, and list messages through Kwiqreply, and read/write UnleashX datasource records."
 tags: [mcp, kwiqreply, integration]
 ---
 
-# Kwiqreply MCP
+# Kwiqreply
 
 > **In one line:** Connect Kwiqreply so your UnleashX agent can send rich WhatsApp messages (text, link previews, reply buttons, and interactive lists) and read or write your UnleashX datasource records in the same flow.
 
@@ -86,7 +86,36 @@ The connector shows a **Connected** badge once your token is accepted. You're re
 </Step>
 </Steps>
 
-![01 connect kwiqreply](/images/mcp/kwiqreply/01-connect-kwiqreply.png)
+{/* workflow-usage-section */}
+### Use Kwiqreply in a Workflow
+
+Once connected, you can add **Kwiqreply** to any automation from the **Workflows** builder. Its triggers and tools appear in the Apps panel, marked with an **MCP** badge.
+
+<Steps>
+<Step title="Add a trigger or action node">
+Open **Workflows → New Workflow**. On the canvas, click **+ Add Trigger** (or the **+** below any node) to add a step.
+
+![Add a trigger on the workflow canvas](/images/mcp/workflows/05-add-trigger.png)
+</Step>
+<Step title="Pick Kwiqreply from the Apps panel">
+In the **Paths** panel, open the **Apps** tab and select **Kwiqreply**. Use the search box if you have many connectors.
+
+![Choose your app from the Apps list](/images/mcp/workflows/06-apps-list.png)
+</Step>
+<Step title="Choose a trigger or tool">
+Pick the trigger or action you want. Configure its fields — required fields are marked with a red asterisk (*).
+</Step>
+<Step title="Add or select your account">
+Under **Selected account**, choose an already-connected account, or click **Add Account** to connect one now.
+</Step>
+<Step title="Save and test">
+Fill in the remaining fields and click **Save**. Use **Test** to verify the step, then toggle **Publish** when the workflow is ready.
+</Step>
+</Steps>
+
+<Note>
+The steps are the same for every connector. For the full workflow builder guide, see [Using MCP in Workflows](/mcp/workflows).
+</Note>
 
 ## 5. Available tools
 

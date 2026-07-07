@@ -1,11 +1,11 @@
 ---
-title: "WordPress MCP"
+title: "WordPress"
 icon: "https://s.w.org/favicon.ico"
 description: "Let your UnleashX agent publish and edit WordPress posts, categories, users, and featured images."
 tags: [mcp, wordpress, integration]
 ---
 
-# WordPress MCP
+# WordPress
 
 > **In one line:** Connect WordPress so your UnleashX agent can create and update posts, manage categories and users, set featured images, and even generate AI cover art.
 
@@ -114,7 +114,36 @@ Click **Add Tool**. When the status shows a **Connected** badge, your agent can 
 The **WP Username** must be the exact account the Application Password was generated under. If an admin created the password while signed in as `admin`, enter `admin` here — not your display name or email. A mismatch causes a `401 Unauthorized` even when the password is correct.
 </Warning>
 
-![01 wordpress data connector](/images/mcp/wordpress/01-data-connector.png)
+{/* workflow-usage-section */}
+### Use WordPress in a Workflow
+
+Once connected, you can add **WordPress** to any automation from the **Workflows** builder. Its triggers and tools appear in the Apps panel, marked with an **MCP** badge.
+
+<Steps>
+<Step title="Add a trigger or action node">
+Open **Workflows → New Workflow**. On the canvas, click **+ Add Trigger** (or the **+** below any node) to add a step.
+
+![Add a trigger on the workflow canvas](/images/mcp/workflows/05-add-trigger.png)
+</Step>
+<Step title="Pick WordPress from the Apps panel">
+In the **Paths** panel, open the **Apps** tab and select **WordPress**. Use the search box if you have many connectors.
+
+![Choose your app from the Apps list](/images/mcp/workflows/06-apps-list.png)
+</Step>
+<Step title="Choose a trigger or tool">
+Pick the trigger or action you want. Configure its fields — required fields are marked with a red asterisk (*).
+</Step>
+<Step title="Add or select your account">
+Under **Selected account**, choose an already-connected account, or click **Add Account** to connect one now.
+</Step>
+<Step title="Save and test">
+Fill in the remaining fields and click **Save**. Use **Test** to verify the step, then toggle **Publish** when the workflow is ready.
+</Step>
+</Steps>
+
+<Note>
+The steps are the same for every connector. For the full workflow builder guide, see [Using MCP in Workflows](/mcp/workflows).
+</Note>
 
 ## 5. Available tools
 
