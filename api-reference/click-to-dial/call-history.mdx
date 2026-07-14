@@ -1,0 +1,118 @@
+---
+title: Get Click-to-Dial History
+openapi: "api-reference/openapi.json GET /click-to-dial/history"
+---
+
+Retrieve the click-to-dial call history for your workspace, ordered by most recent first. Each entry includes a link to the call recording once the call has completed and the recording has been processed.
+
+## API Endpoint
+
+**GET** `/api/v1/global/click-to-dial/history`
+
+**Content-Type:** `application/json`
+
+**Authentication:** Required (Token header: `token` or `api_access_token`)
+
+## Query Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `app_id` | integer | No | Return only calls triggered with this `app_id` |
+| `page` | integer | No | Page number, starting at 1. Defaults to `1` |
+| `limit` | integer | No | Number of records per page. Defaults to `20` |
+
+## Success Response
+
+**Status Code:** `200 OK`
+
+```json
+{
+  "data": [
+    {
+      "call_id": "call_app_1a2b3c4d5e6f",
+      "created_date": "2026-07-14 11:32:05",
+      "recording": "https://recordings.example.com/call_app_1a2b3c4d5e6f.mp3",
+      "caller_number": "+919812345678",
+      "callee_number": "9876543210",
+      "display_number": "+918068001234"
+    },
+    {
+      "call_id": "call_app_9f8e7d6c5b4a",
+      "created_date": "2026-07-14 10:15:41",
+      "recording": null,
+      "caller_number": "+919812345678",
+      "callee_number": "9123456789",
+      "display_number": "+918068001234"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 20,
+    "total": 42,
+    "total_pages": 3
+  }
+}
+```
+
+## Response Fields
+
+### Call History Entry
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `call_id` | string | Unique identifier of the call, matching the `call_id` returned by the [trigger endpoint](/api-reference/click-to-dial/trigger-call) |
+| `created_date` | string | Timestamp when the call was triggered (`YYYY-MM-DD HH:mm:ss`) |
+| `recording` | string \| null | URL of the call recording, or `null` if not yet available |
+| `caller_number` | string | The agent's own phone number (`user_number` at trigger time) |
+| `callee_number` | string | The customer number that was dialled (`client_number` at trigger time) |
+| `display_number` | string | The DID shown to the customer as the caller ID (`did_number` at trigger time) |
+
+### Pagination
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `page` | integer | Current page number |
+| `limit` | integer | Records per page |
+| `total` | integer | Total number of call records |
+| `total_pages` | integer | Total number of pages |
+
+## Error Responses
+
+All errors are returned in a common envelope. Always check the `error` field of the response body.
+
+### 401 Unauthorized
+
+```json
+{
+  "error": true,
+  "code": 401,
+  "message": "Invalid Auth Key or Session Expired",
+  "data": {}
+}
+```
+
+## Example Requests
+
+### Get call history (paginated)
+
+```bash
+curl -X GET "https://www.tryunleashx.com/api/v1/global/click-to-dial/history?page=1&limit=20" \
+  -H "token: YOUR_API_TOKEN"
+```
+
+### Filter by app
+
+```bash
+curl -X GET "https://www.tryunleashx.com/api/v1/global/click-to-dial/history?app_id=123&page=1&limit=20" \
+  -H "token: YOUR_API_TOKEN"
+```
+
+## Important Notes
+
+### Call Recordings
+- The `recording` field is `null` while a call is still in progress or if no recording was captured
+- Poll this endpoint after the call ends to fetch the recording URL
+
+### Pagination
+- Results are ordered by most recent first
+- Use `page` and `limit` to page through results; `pagination.total_pages` tells you how many pages are available

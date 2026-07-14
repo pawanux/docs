@@ -1,0 +1,137 @@
+---
+title: Trigger Click-to-Dial Call
+openapi: "api-reference/openapi.json POST /click-to-dial"
+---
+
+Initiate an outbound click-to-dial call that connects a customer's number to your agent's phone. The system first rings the customer's phone (`client_number`) and, once answered, bridges the call to the agent (`user_number`). The customer sees the `did_number` as the incoming caller ID.
+
+## API Endpoint
+
+**POST** `/api/v1/global/click-to-dial`
+
+**Content-Type:** `application/json`
+
+**Authentication:** Required (Token header: `token` or `api_access_token`)
+
+## Request Body
+
+```json
+{
+  "client_number": "+919876543210",
+  "user_number": "+919812345678",
+  "did_number": "+918068001234",
+  "app_id": 123,
+  "object_id": 456,
+  "submitted_id": "SUB001",
+  "slug": "phone"
+}
+```
+
+## Required Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `client_number` | string | The customer's phone number to dial (the callee). This number is rung first. Country code prefixes are normalized automatically, e.g. `+919876543210` and `9876543210` are treated as the same number |
+| `user_number` | string | The calling agent's own phone number. The call is bridged to this number once the customer answers |
+| `did_number` | string | The DID to display as the caller ID. Must be an active DID owned by your workspace |
+
+## Optional Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `app_id` | integer | ID of the app to associate this call with, used for tracking and for filtering call history |
+| `object_id` | integer | ID of the record/object this call relates to (tracking metadata) |
+| `submitted_id` | string | Submission identifier to associate with this call (tracking metadata) |
+| `slug` | string | Field slug to associate with the dialled number (tracking metadata) |
+
+## Success Response
+
+**Status Code:** `200 OK`
+
+```json
+{
+  "data": {
+    "call_id": "call_app_1a2b3c4d5e6f",
+    "client_number": "9876543210",
+    "caller_id": "+918068001234",
+    "user_number": "+919812345678"
+  },
+  "message": "Call dialled successfully"
+}
+```
+
+## Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `call_id` | string | Unique identifier for this call. Use it to correlate the call with entries returned by the [call history endpoint](/api-reference/click-to-dial/call-history) |
+| `client_number` | string | The normalized customer number that was dialled |
+| `caller_id` | string | The DID displayed to the customer as the caller ID |
+| `user_number` | string | The agent number the call was bridged to |
+
+## Error Responses
+
+All errors are returned in a common envelope. Always check the `error` field of the response body.
+
+### 422 Unprocessable Entity
+
+```json
+{
+  "error": true,
+  "code": 422,
+  "message": "This number does not belong to your account, kindly buy it",
+  "data": {}
+}
+```
+
+| Message | Cause |
+|---------|-------|
+| `Invalid client number` | `client_number` is empty or not a valid phone number |
+| `Invalid user number` | `user_number` is empty |
+| `Invalid DID number` | `did_number` is empty |
+| `This number does not belong to your account, kindly buy it` | The `did_number` is not an active DID on your workspace. Purchase the DID or use one you own |
+| `Failed to dial the call` | The telephony provider could not place the call. Retry, or contact support if it persists |
+
+### 401 Unauthorized
+
+```json
+{
+  "error": true,
+  "code": 401,
+  "message": "Invalid Auth Key or Session Expired",
+  "data": {}
+}
+```
+
+## Example Request
+
+```bash
+curl -X POST "https://www.tryunleashx.com/api/v1/global/click-to-dial" \
+  -H "Content-Type: application/json" \
+  -H "token: YOUR_API_TOKEN" \
+  -d '{
+    "client_number": "+919876543210",
+    "user_number": "+919812345678",
+    "did_number": "+918068001234"
+  }'
+```
+
+## Important Notes
+
+### DID Ownership
+- The `did_number` must be a DID (phone number) that is already purchased and active on your workspace
+- Calls with a DID you do not own are rejected with `This number does not belong to your account, kindly buy it`
+
+### Call Flow
+1. The customer's phone (`client_number`) rings first
+2. Once the customer answers, the call is bridged to the agent (`user_number`)
+3. The customer sees the `did_number` as the incoming caller ID
+
+### Phone Number Format
+- Country code prefixes are normalized automatically, so `+919876543210` and `9876543210` are treated as the same number
+- It is still recommended to include the country code with the `+` prefix
+
+### Call Tracking
+- Store the `call_id` returned in the response for tracking purposes
+- Use the optional `app_id`, `object_id`, `submitted_id`, and `slug` fields to attach tracking metadata to the call
+- Calls triggered with an `app_id` can later be filtered in the [call history endpoint](/api-reference/click-to-dial/call-history)

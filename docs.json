@@ -183,6 +183,13 @@
             ]
           },
           {
+            "group": "Click to Call",
+            "pages": [
+              "api-reference/click-to-dial/trigger-call",
+              "api-reference/click-to-dial/call-history"
+            ]
+          },
+          {
             "group": "Call Logs",
             "pages": [
               "api-reference/call-logs",
