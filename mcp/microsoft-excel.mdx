@@ -1,0 +1,198 @@
+---
+title: "Microsoft Excel"
+icon: "https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/microsoftexcel.svg"
+description: "Let your UnleashX agent read and write data in your Excel workbooks stored in OneDrive or SharePoint."
+tags: [mcp, microsoft-excel, integration]
+---
+
+# Microsoft Excel
+
+> **In one line:** Connect Microsoft Excel so your UnleashX agent can read cell ranges, add and update rows, work with tables, and manage worksheets in your online workbooks — all in plain language.
+
+| | |
+|---|---|
+| **Category** | Productivity & Scheduling |
+| **Authentication** | OAuth (Microsoft 365 / Microsoft Graph) |
+| **Setup time** | ~3 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Teams that keep data in Excel workbooks on OneDrive/SharePoint and want an AI agent to read and update those sheets |
+
+## 1. Overview
+
+Microsoft Excel is the spreadsheet app in Microsoft 365. When your workbooks live in OneDrive or SharePoint, they can be read and edited through the Microsoft Graph API — the same data your team sees in Excel Online.
+
+Once connected to UnleashX, your agent can open a workbook, read a range or table, add and update rows, write values into cells, and add or list worksheets. You stay in control — the agent acts on your real files using your own Microsoft sign-in.
+
+Connecting Excel to UnleashX turns your spreadsheets into a live data store your agent can read and update. Instead of opening a workbook to log a row or check a value, you tell your agent and it makes the change.
+
+## 2. What you'll need
+
+- A Microsoft account (personal `@outlook.com`, or a Microsoft 365 work/school account) with Excel workbooks stored in **OneDrive** or **SharePoint**.
+- Permission to view and edit those workbooks. For work accounts, your organization must allow third-party apps via Microsoft Graph.
+- An UnleashX account with access to **Data Connectors**.
+
+<Note>
+You do **not** need to create or paste an API key. Excel uses OAuth — you click **Authorize** and sign in with Microsoft.
+</Note>
+
+<Warning>
+Only workbooks stored **online** (OneDrive/SharePoint) are accessible via the API. Files that live only on your local computer can't be reached.
+</Warning>
+
+## 3. Get your credentials
+
+There's nothing to copy and paste. Authentication runs through Microsoft's secure OAuth sign-in.
+
+<Steps>
+<Step title="Start the connection in UnleashX">
+Connecting Excel (Section 4) opens a Microsoft **Authorize** window.
+</Step>
+<Step title="Sign in with Microsoft">
+Enter your Microsoft / Microsoft 365 email and password at `https://login.microsoftonline.com`. Complete multi-factor authentication if prompted.
+</Step>
+<Step title="Review and accept the scopes">
+Microsoft shows exactly what UnleashX is asking for (see the scopes table). Click **Accept**.
+</Step>
+<Step title="Return to UnleashX">
+Microsoft redirects you back automatically and the connector links to your files. Behind the scenes UnleashX calls Microsoft Graph with a `Bearer` token — you never handle the token yourself.
+</Step>
+</Steps>
+
+<Note>
+If you use a **work or school** account, your IT administrator may need to approve UnleashX (admin consent) before the connection succeeds. If you see a "need admin approval" screen, contact your Microsoft 365 admin.
+</Note>
+
+**Permissions (Microsoft Graph scopes) UnleashX requests:**
+
+| Scope | Why UnleashX needs it |
+|---|---|
+| `Files.ReadWrite` | Read and write the Excel workbooks in your OneDrive/SharePoint. |
+| `Sites.ReadWrite.All` | Access workbooks stored in SharePoint sites (work/school). |
+| `User.Read` | Read your basic profile to identify the connected account. |
+| `offline_access` | Refresh access automatically so you don't re-authorize every session. |
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to `https://www.tryunleashx.com` and open the agent you want to connect.
+</Step>
+<Step title="Open Data Connectors">
+Inside the agent, go to **Data Connectors**.
+</Step>
+<Step title="Find Microsoft Excel">
+Locate **Microsoft Excel** and click **Connect** (or **Add** / **Configure**).
+</Step>
+<Step title="Authorize with Microsoft">
+Click **Authorize**, sign in with Microsoft, and accept the scopes.
+</Step>
+<Step title="Confirm success">
+You return to UnleashX and the Microsoft Excel connector shows a **Connected** badge.
+</Step>
+</Steps>
+
+{/* workflow-usage-section */}
+### Use Microsoft Excel in a Workflow
+
+Once connected, you can add **Microsoft Excel** to any automation from the **Workflows** builder. Its triggers and tools appear in the Apps panel, marked with an **MCP** badge.
+
+<Steps>
+<Step title="Add a trigger or action node">
+Open **Workflows → New Workflow**. On the canvas, click **+ Add Trigger** (or the **+** below any node) to add a step.
+
+![Add a trigger on the workflow canvas](/images/mcp/workflows/05-add-trigger.png)
+</Step>
+<Step title="Pick Microsoft Excel from the Apps panel">
+In the **Paths** panel, open the **Apps** tab and select **Microsoft Excel**. Use the search box if you have many connectors.
+
+![Choose your app from the Apps list](/images/mcp/workflows/06-apps-list.png)
+</Step>
+<Step title="Choose a trigger or tool">
+Pick the action you want (for example, "add row to table"). Configure its fields — required fields are marked with a red asterisk (*).
+</Step>
+<Step title="Add or select your account">
+Under **Selected account**, choose an already-connected account, or click **Add Account** to connect one now.
+</Step>
+<Step title="Save and test">
+Fill in the remaining fields and click **Save**. Use **Test** to verify the step, then toggle **Publish** when the workflow is ready.
+</Step>
+</Steps>
+
+<Note>
+The steps are the same for every connector. For the full workflow builder guide, see [Using MCP in Workflows](/mcp/workflows).
+</Note>
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| List Workbooks | Lists your Excel workbooks in OneDrive/SharePoint. | No |
+| List Worksheets | Lists the worksheets in a workbook. | No |
+| Get Range | Reads the values of a cell range. | No |
+| Get Used Range | Reads the used (populated) range of a worksheet. | No |
+| Update Range | Writes values into a cell range. | ✏️ Yes |
+| Add Worksheet | Adds a new worksheet to a workbook. | ✏️ Yes |
+| Delete Worksheet | Deletes a worksheet. | ⚠️ Yes |
+| List Tables | Lists tables defined in a workbook. | No |
+| Get Table Rows | Reads rows from a table. | No |
+| Add Table Row | Appends a row to a table. | ✏️ Yes |
+| Update Table Row | Updates a row in a table. | ✏️ Yes |
+| Delete Table Row | Deletes a row from a table. | ⚠️ Yes |
+| Create Table | Creates a table from a range. | ✏️ Yes |
+| Clear Range | Clears the contents of a range. | ✏️ Yes |
+
+## 6. Example usage
+
+**"Add a row to the Leads table in the Sales workbook: Jordan Lee, Acme Corp, jordan@acme.com."**
+→ Runs Add Table Row on the Leads table with the three values.
+
+**"What's the total in column C of the Budget sheet? Read the used range and sum it."**
+→ Runs Get Used Range on the Budget worksheet, then sums column C from the returned values.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- List your online workbooks and their worksheets and tables.
+- Read cell ranges, used ranges, and table rows.
+- Write and clear ranges, add/update/delete table rows, and add worksheets.
+- Delete worksheets and rows where you allow it (marked ⚠️).
+
+**UnleashX cannot:**
+- Access workbooks stored only on your local device.
+- Reach files your Microsoft account can't open.
+- Change Microsoft 365 admin or account settings.
+
+**To disconnect:** In UnleashX, open **Data Connectors → Microsoft Excel → Disconnect**. You can also revoke access at `https://myaccount.microsoft.com/` under **Privacy / Apps**. Disconnecting revokes access immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| **Need admin approval** | A work/school account requires admin consent. | Ask your Microsoft 365 admin to approve UnleashX. |
+| **401 Unauthorized** | The Microsoft token expired or was revoked. | Reconnect Microsoft Excel and sign in again. |
+| **404 Item not found** | The workbook or worksheet name is wrong or moved. | Have the agent list workbooks/worksheets to find it. |
+| **File is checked out / locked** | Someone has the file open exclusively. | Close the file elsewhere and retry. |
+| **Range/table not found** | The named range or table doesn't exist. | Verify the table/worksheet name in Excel. |
+
+For general MCP issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Does this work with local Excel files?**
+No. Only workbooks stored in OneDrive or SharePoint are reachable through the API.
+
+**Is my spreadsheet data stored by UnleashX?**
+No. UnleashX reads and writes live through Microsoft Graph per request; it doesn't keep a copy of your files.
+
+**Can the agent delete data?**
+Yes — tools marked ⚠️ (delete worksheet/row) make permanent changes. They only work if your account can edit the file. Use them deliberately.
+
+**Does it work with both personal and work accounts?**
+Yes — personal `@outlook.com` and Microsoft 365 work/school accounts both work, though work accounts may need admin consent.
+
+## 10. References
+
+- Excel REST API (Microsoft Graph): https://learn.microsoft.com/en-us/graph/api/resources/excel
+- Working with Excel in Microsoft Graph: https://learn.microsoft.com/en-us/graph/excel-concept-overview
+- Microsoft Graph permissions reference: https://learn.microsoft.com/en-us/graph/permissions-reference
+- Manage app access: https://myaccount.microsoft.com/

@@ -1,0 +1,205 @@
+---
+title: "Databricks"
+icon: "https://cdn.simpleicons.org/databricks"
+description: "Let your UnleashX agent run SQL queries, explore catalogs and tables, and manage jobs on your Databricks workspace."
+tags: [mcp, databricks, integration]
+---
+
+# Databricks
+
+> **In one line:** Connect your Databricks workspace so your UnleashX agent can query your lakehouse, browse catalogs, schemas, and tables, and trigger jobs — all in plain language.
+
+| | |
+|---|---|
+| **Category** | Data & Analytics |
+| **Authentication** | Personal Access Token (workspace) |
+| **Setup time** | ~5 minutes |
+| **Difficulty** | Medium |
+| **Best for** | Data and analytics teams that want an AI agent to run SQL, explore Unity Catalog, and check on jobs in Databricks |
+
+## 1. Overview
+
+Databricks is a unified data and AI platform built on the lakehouse architecture. Your workspace holds the catalogs, schemas, and tables that make up your data estate, the SQL warehouses that run queries, and the jobs and pipelines that keep everything fresh.
+
+Once connected to UnleashX, your agent can run SQL statements against a SQL warehouse, list and describe catalogs, schemas, and tables in Unity Catalog, preview data, and check or trigger jobs. It works against your live workspace using a personal access token, so it acts with your own identity and permissions.
+
+Connecting Databricks to UnleashX turns your lakehouse into something you can ask questions of directly. Instead of opening a notebook to run a query or check a table, you ask your agent in plain language and it runs the SQL, reads the schema, or reports on a job for you.
+
+## 2. What you'll need
+
+- A Databricks workspace and your **workspace URL** (e.g. `https://dbc-xxxxxxxx-xxxx.cloud.databricks.com` or your Azure/GCP host).
+- A **SQL warehouse** (or cluster) you can run queries on, and its **warehouse ID**.
+- Permission (via Unity Catalog grants) to read the catalogs, schemas, and tables you want the agent to access.
+- A **personal access token** for your Databricks user (see Section 3).
+- An UnleashX account with access to **Data Connectors**.
+
+<Note>
+You provide a **workspace URL**, a **warehouse ID**, and a **personal access token**. UnleashX uses the token as a Bearer credential on the Databricks REST API.
+</Note>
+
+<Warning>
+Databricks enforces **Unity Catalog permissions**. The agent can only query and read objects your token's user has been granted access to. Ask a workspace admin to grant the needed `USE`/`SELECT` privileges if a query is denied.
+</Warning>
+
+## 3. Get your credentials
+
+Databricks MCP authenticates with a **personal access token (PAT)** scoped to your user in a specific workspace.
+
+<Steps>
+<Step title="Open your Databricks workspace">
+Sign in to your workspace and note its URL — you'll provide this to your agent as the **host**.
+</Step>
+<Step title="Generate a personal access token">
+Click your username (top right) → **Settings** → **Developer** → **Access tokens** → **Manage** → **Generate new token**. Add a comment (e.g. "UnleashX") and set a lifetime, then **Generate**. Copy the token now — Databricks won't show it again.
+</Step>
+<Step title="Find your SQL warehouse ID">
+Go to **SQL Warehouses**, open the warehouse you'll use, and copy its **ID** from the details panel (or the URL). The agent runs queries against this warehouse.
+</Step>
+<Step title="Paste the details into UnleashX">
+When connecting (Section 4), paste your **workspace URL**, **warehouse ID**, and **personal access token**. UnleashX sends the token as an `Authorization: Bearer <token>` header on every request.
+</Step>
+</Steps>
+
+<Warning>
+A personal access token is as powerful as your account within its granted scopes. Store it securely, set an expiry, and revoke it if it's ever exposed. Prefer a token tied to a service principal with least-privilege grants where possible.
+</Warning>
+
+### Permissions this token grants UnleashX
+
+| Access | Why UnleashX needs it |
+|---|---|
+| Run SQL statements | Execute queries via the SQL Statement Execution API on your warehouse. |
+| Read Unity Catalog metadata | List and describe catalogs, schemas, and tables. |
+| Read query results | Fetch the rows a query returns. |
+| Read/trigger jobs | List jobs and (optionally) run them, subject to your permissions. |
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to `https://www.tryunleashx.com` and open the agent you want to connect.
+</Step>
+<Step title="Open Data Connectors">
+Inside the agent, go to **Data Connectors**.
+</Step>
+<Step title="Find Databricks">
+Locate **Databricks** and click **Connect** (or **Add** / **Configure**).
+</Step>
+<Step title="Enter your workspace details">
+Paste your **workspace URL**, **SQL warehouse ID**, and **personal access token**.
+</Step>
+<Step title="Confirm success">
+Click **Connect**. UnleashX validates the token and the Databricks connector shows a **Connected** badge.
+</Step>
+</Steps>
+
+{/* workflow-usage-section */}
+### Use Databricks in a Workflow
+
+Once connected, you can add **Databricks** to any automation from the **Workflows** builder. Its triggers and tools appear in the Apps panel, marked with an **MCP** badge.
+
+<Steps>
+<Step title="Add a trigger or action node">
+Open **Workflows → New Workflow**. On the canvas, click **+ Add Trigger** (or the **+** below any node) to add a step.
+
+![Add a trigger on the workflow canvas](/images/mcp/workflows/05-add-trigger.png)
+</Step>
+<Step title="Pick Databricks from the Apps panel">
+In the **Paths** panel, open the **Apps** tab and select **Databricks**. Use the search box if you have many connectors.
+
+![Choose your app from the Apps list](/images/mcp/workflows/06-apps-list.png)
+</Step>
+<Step title="Choose a trigger or tool">
+Pick the action you want (for example, "run SQL query"). Configure its fields — required fields are marked with a red asterisk (*).
+</Step>
+<Step title="Add or select your account">
+Under **Selected account**, choose an already-connected account, or click **Add Account** to connect one now.
+</Step>
+<Step title="Save and test">
+Fill in the remaining fields and click **Save**. Use **Test** to verify the step, then toggle **Publish** when the workflow is ready.
+</Step>
+</Steps>
+
+<Note>
+The steps are the same for every connector. For the full workflow builder guide, see [Using MCP in Workflows](/mcp/workflows).
+</Note>
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| Run Query | Executes a SQL statement on your SQL warehouse and returns results. | Depends on SQL* |
+| Get Statement Status | Checks the status of a running/queued SQL statement. | No |
+| List Catalogs | Lists catalogs in Unity Catalog. | No |
+| List Schemas | Lists schemas within a catalog. | No |
+| List Tables | Lists tables within a schema. | No |
+| Get Table | Describes a table (columns, types, metadata). | No |
+| Preview Table | Returns a sample of rows from a table. | No |
+| List Warehouses | Lists SQL warehouses in the workspace. | No |
+| Start Warehouse | Starts a stopped SQL warehouse. | ✏️ Yes |
+| Stop Warehouse | Stops a running SQL warehouse. | ✏️ Yes |
+| List Jobs | Lists jobs defined in the workspace. | No |
+| Get Job | Retrieves a job's definition and settings. | No |
+| Run Job | Triggers a job run. | ✏️ Yes |
+| Get Run Status | Checks the status of a job run. | No |
+| List Clusters | Lists compute clusters. | No |
+
+<Note>
+*Read-only `SELECT` statements don't change data. If you allow `INSERT`/`UPDATE`/`DELETE`/`MERGE` or DDL, **Run Query can modify or drop data** — restrict the token's grants to read-only if you want the agent limited to queries.
+</Note>
+
+## 6. Example usage
+
+**"How many orders did we ship last week? Query the sales.gold.orders table."**
+→ Runs Run Query with a `SELECT COUNT(*) … WHERE ship_date >= …` against your warehouse and returns the number.
+
+**"List the tables in the marketing schema and describe the campaigns table."**
+→ Runs List Tables on `marketing`, then Get Table on `campaigns` to return its columns and types.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- Run SQL statements on the warehouse you configured.
+- List and describe catalogs, schemas, and tables, and preview rows.
+- List and start/stop SQL warehouses.
+- List, inspect, and trigger jobs — all subject to your token's Unity Catalog and workspace permissions.
+
+**UnleashX cannot:**
+- Access catalogs, schemas, or tables your token's user hasn't been granted.
+- Query a different workspace than the one you configured.
+- Manage workspace users, tokens, or admin settings.
+
+**To disconnect:** In UnleashX, open **Data Connectors → Databricks → Disconnect**. Then revoke the token in Databricks under **Settings → Developer → Access tokens** (delete the "UnleashX" token). Disconnecting and revoking removes access immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| **401 Unauthorized** | The token is invalid, expired, or was revoked. | Generate a new personal access token and reconnect. |
+| **403 Forbidden / permission denied** | Your user lacks Unity Catalog grants on that object. | Ask an admin to grant `USE CATALOG`/`USE SCHEMA`/`SELECT`, then retry. |
+| **Warehouse is stopped** | The SQL warehouse isn't running, so queries can't execute. | Use Start Warehouse, or enable auto-start on the warehouse. |
+| **Wrong workspace URL** | The host doesn't match your workspace. | Reconnect with the exact workspace URL (including cloud/region). |
+| **Query timeout** | A long query exceeded the execution window. | Narrow the query, add filters, or use a larger warehouse. |
+
+For general MCP issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Is my data stored by UnleashX?**
+No. UnleashX runs queries and reads metadata live through the Databricks REST API per request; it doesn't copy your tables.
+
+**Can the agent modify or drop data?**
+Only if your token has write/DDL grants and you run a statement that changes data. For a read-only agent, grant the token `SELECT`-only access.
+
+**Does this work on AWS, Azure, and GCP?**
+Yes — provide the workspace URL for your cloud. Azure Databricks and Databricks on GCP use the same REST APIs.
+
+**Should I use a service principal instead of my own token?**
+For production, yes — a service principal with least-privilege grants is safer than a personal token and isn't tied to an individual user.
+
+## 10. References
+
+- Databricks REST API reference: https://docs.databricks.com/api/workspace/introduction
+- SQL Statement Execution API: https://docs.databricks.com/aws/en/dev-tools/sql-execution-tutorial
+- Personal access tokens: https://docs.databricks.com/aws/en/dev-tools/auth/pat
+- Unity Catalog privileges: https://docs.databricks.com/aws/en/data-governance/unity-catalog/manage-privileges/

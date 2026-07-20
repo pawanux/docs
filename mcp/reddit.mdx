@@ -1,0 +1,205 @@
+---
+title: "Reddit"
+icon: "https://cdn.simpleicons.org/reddit"
+description: "Let your UnleashX agent search Reddit, read posts and comments, monitor subreddits, and post on your behalf."
+tags: [mcp, reddit, integration]
+---
+
+# Reddit
+
+> **In one line:** Connect Reddit so your UnleashX agent can search discussions, read posts and comments across subreddits, track what people are saying, and post or reply on your behalf — all in plain language.
+
+| | |
+|---|---|
+| **Category** | Social & Web |
+| **Authentication** | OAuth (Reddit) |
+| **Setup time** | ~3 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Marketing, research, and community teams that want an AI agent to monitor subreddits, gather sentiment, and engage on Reddit |
+
+## 1. Overview
+
+Reddit is one of the largest discussion platforms on the web — thousands of communities (subreddits) where people ask questions, share news, and debate everything from products to politics. It's a rich source of real, unfiltered conversation.
+
+Once connected to UnleashX, your agent can search Reddit, read the top or newest posts in any subreddit, pull the comment threads under a post, look up a user's public activity, and — when you want it to — submit posts, leave comments, and vote. It acts through your own Reddit sign-in, so it posts as you and respects Reddit's rules and rate limits.
+
+Connecting Reddit to UnleashX turns Reddit into a live research and engagement channel. Instead of scrolling threads by hand, you ask your agent to surface what's trending in a community, summarize the discussion, or reply to a relevant post — all from a normal conversation.
+
+## 2. What you'll need
+
+- A Reddit account in good standing.
+- For posting/commenting: enough account age and karma to satisfy the target subreddit's rules (some communities restrict new accounts).
+- An UnleashX account with access to **Data Connectors**.
+
+<Note>
+No API key to paste. Reddit uses OAuth — you click **Authorize** and sign in with Reddit.
+</Note>
+
+<Warning>
+Reddit enforces **per-subreddit rules and site-wide rate limits**. Posting too often, or to communities that restrict new/low-karma accounts, can get actions blocked or your account flagged. Have the agent engage sparingly and follow each subreddit's rules.
+</Warning>
+
+## 3. Get your credentials
+
+There's no key to copy. Authentication runs through Reddit's secure OAuth sign-in.
+
+<Steps>
+<Step title="Start the connection in UnleashX">
+Connecting Reddit (Section 4) opens a Reddit **Authorize** window.
+</Step>
+<Step title="Sign in with Reddit">
+Sign in with your Reddit account at `https://www.reddit.com/login`. Complete two-factor authentication if you have it enabled.
+</Step>
+<Step title="Review and allow the scopes">
+Reddit shows the access UnleashX is requesting (see the scopes table). Click **Allow**.
+</Step>
+<Step title="Return to UnleashX">
+Reddit redirects you back automatically and the connector links to your account. Behind the scenes UnleashX calls Reddit with a `Bearer` token — you never handle the token yourself.
+</Step>
+</Steps>
+
+**Permissions (Reddit OAuth scopes) UnleashX requests:**
+
+| Scope | Why UnleashX needs it |
+|---|---|
+| `identity` | Read your Reddit username and basic account info. |
+| `read` | Read posts, comments, and listings across subreddits. |
+| `mysubreddits` | See the subreddits you're subscribed to. |
+| `submit` | Submit posts and comments on your behalf. |
+| `vote` | Upvote and downvote posts and comments. |
+| `save` | Save and unsave posts. |
+| `history` | Read your posts, comments, and saved items. |
+
+<Note>
+Reddit shows exactly which permissions UnleashX is asking for on the Allow screen. Reddit — not UnleashX — enforces these limits.
+</Note>
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to `https://www.tryunleashx.com` and open the agent you want to connect.
+</Step>
+<Step title="Open Data Connectors">
+Inside the agent, go to **Data Connectors**.
+</Step>
+<Step title="Find Reddit">
+Locate **Reddit** and click **Connect** (or **Add** / **Configure**).
+</Step>
+<Step title="Authorize with Reddit">
+Click **Authorize**, sign in with Reddit, and click **Allow**.
+</Step>
+<Step title="Confirm success">
+You return to UnleashX and the Reddit connector shows a **Connected** badge.
+</Step>
+</Steps>
+
+{/* workflow-usage-section */}
+### Use Reddit in a Workflow
+
+Once connected, you can add **Reddit** to any automation from the **Workflows** builder. Its triggers and tools appear in the Apps panel, marked with an **MCP** badge.
+
+<Steps>
+<Step title="Add a trigger or action node">
+Open **Workflows → New Workflow**. On the canvas, click **+ Add Trigger** (or the **+** below any node) to add a step.
+
+![Add a trigger on the workflow canvas](/images/mcp/workflows/05-add-trigger.png)
+</Step>
+<Step title="Pick Reddit from the Apps panel">
+In the **Paths** panel, open the **Apps** tab and select **Reddit**. Use the search box if you have many connectors.
+
+![Choose your app from the Apps list](/images/mcp/workflows/06-apps-list.png)
+</Step>
+<Step title="Choose a trigger or tool">
+Pick the trigger or action you want (for example, "new post in subreddit"). Configure its fields — required fields are marked with a red asterisk (*).
+</Step>
+<Step title="Add or select your account">
+Under **Selected account**, choose an already-connected account, or click **Add Account** to connect one now.
+</Step>
+<Step title="Save and test">
+Fill in the remaining fields and click **Save**. Use **Test** to verify the step, then toggle **Publish** when the workflow is ready.
+</Step>
+</Steps>
+
+<Note>
+The steps are the same for every connector. For the full workflow builder guide, see [Using MCP in Workflows](/mcp/workflows).
+</Note>
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| Search Posts | Searches Reddit for posts matching a query (optionally within a subreddit). | No |
+| Get Subreddit Posts | Lists posts in a subreddit (hot, new, top, rising). | No |
+| Get Post | Retrieves a single post by ID with its details. | No |
+| Get Post Comments | Retrieves the comment thread under a post. | No |
+| Get Subreddit Info | Retrieves a subreddit's description, rules, and stats. | No |
+| Search Subreddits | Finds subreddits matching a query. | No |
+| Get User Profile | Retrieves a Reddit user's public profile. | No |
+| Get User Posts | Lists a user's public posts. | No |
+| Get User Comments | Lists a user's public comments. | No |
+| Get My Subreddits | Lists the subreddits you're subscribed to. | No |
+| Submit Post | Submits a new text or link post to a subreddit. | ✏️ Yes |
+| Submit Comment | Replies with a comment on a post or comment. | ✏️ Yes |
+| Vote | Upvotes or downvotes a post or comment. | ✏️ Yes |
+| Save Post | Saves a post to your account. | ✏️ Yes |
+| Send Message | Sends a private message to a user. | ✏️ Yes |
+| Delete Post | Deletes one of your own posts. | ⚠️ Yes |
+| Delete Comment | Deletes one of your own comments. | ⚠️ Yes |
+
+## 6. Example usage
+
+**"What are people saying about our product in r/SaaS this week? Summarize the top threads."**
+→ Runs Get Subreddit Posts (or Search Posts) to pull recent discussions, then Get Post Comments to read the threads before summarizing.
+
+**"Find the question about voice AI pricing in r/artificial and post a helpful reply linking our docs."**
+→ Runs Search Posts to find the thread, then Submit Comment to post the reply.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- Search Reddit and read posts, comments, subreddits, and public user activity.
+- List the subreddits you subscribe to.
+- Submit posts and comments, vote, save posts, and send messages on your behalf.
+- Delete your own posts and comments (these tools are clearly marked ⚠️).
+
+**UnleashX cannot:**
+- Post to communities where your account doesn't meet the rules, or bypass rate limits.
+- Read private subreddits or content your account can't see.
+- Act as a moderator unless your account already has those privileges.
+- Change your Reddit password or account security settings.
+
+**To disconnect:** In UnleashX, open **Data Connectors → Reddit → Disconnect**. You can also revoke access under Reddit **Settings → Privacy & Security → Connected apps** (`https://www.reddit.com/prefs/apps`). Disconnecting revokes access immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| **401 Unauthorized** | The Reddit token expired or was revoked. | Reconnect Reddit in **Data Connectors** and sign in again. |
+| **403 Forbidden** | Your account can't perform that action in the target subreddit. | Check the subreddit's rules (age/karma limits) or pick another community. |
+| **429 Too Many Requests** | You hit Reddit's rate limit. | Wait a minute and retry; have the agent engage less frequently. |
+| **Post removed by AutoModerator** | The subreddit's automod filtered the post. | Review the subreddit rules and adjust the content. |
+| **Empty results** | The query matched nothing, or the subreddit is private/banned. | Broaden the query or verify the subreddit name. |
+
+For general MCP issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Does the agent post as me?**
+Yes. Actions run through your own Reddit sign-in, so posts, comments, and votes are attributed to your account.
+
+**Is Reddit data stored by UnleashX?**
+No. UnleashX reads Reddit live through the API per request; it doesn't keep a copy of Reddit content.
+
+**Can the agent read private or NSFW content?**
+It can only see what your account can see. Private subreddits you don't belong to remain inaccessible.
+
+**Will heavy use get my account limited?**
+It can. Reddit rate-limits API access and communities restrict spammy behavior — keep the agent's posting deliberate and rule-abiding.
+
+## 10. References
+
+- Reddit API documentation: https://www.reddit.com/dev/api/
+- Reddit OAuth2 guide & scopes: https://github.com/reddit-archive/reddit/wiki/OAuth2
+- Reddit connected apps / revoke access: https://www.reddit.com/prefs/apps
+- Reddit API terms & rate limits: https://support.reddithelp.com/hc/en-us/articles/16160319875092

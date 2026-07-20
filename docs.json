@@ -65,7 +65,8 @@
                   "mcp/zoho-mail",
                   "mcp/whatsapp-business",
                   "mcp/whatsapp-web",
-                  "mcp/kwiqreply"
+                  "mcp/kwiqreply",
+                  "mcp/zoom"
                 ]
               },
               {
@@ -81,7 +82,10 @@
                   "mcp/google-form",
                   "mcp/airtable",
                   "mcp/clickup",
-                  "mcp/google-maps"
+                  "mcp/google-maps",
+                  "mcp/asana",
+                  "mcp/monday",
+                  "mcp/microsoft-excel"
                 ]
               },
               {
@@ -97,6 +101,9 @@
                   "mcp/hubspot",
                   "mcp/zoho-crm",
                   "mcp/zoho-desk",
+                  "mcp/zoho-books",
+                  "mcp/pipedrive",
+                  "mcp/intercom",
                   "mcp/brevo",
                   "mcp/sendgrid",
                   "mcp/shopify"
@@ -109,6 +116,7 @@
                   "mcp/razorpay",
                   "mcp/wordpress",
                   "mcp/http-executor",
+                  "mcp/hyperbrowser",
                   "mcp/agents",
                   "mcp/reporting"
                 ]
@@ -122,6 +130,26 @@
                   "mcp/veo",
                   "mcp/heygen",
                   "mcp/rag"
+                ]
+              },
+              {
+                "group": "Data & Analytics",
+                "pages": [
+                  "mcp/databricks",
+                  "mcp/bigquery"
+                ]
+              },
+              {
+                "group": "Forms & Surveys",
+                "pages": [
+                  "mcp/typeform",
+                  "mcp/surveymonkey"
+                ]
+              },
+              {
+                "group": "Social & Web",
+                "pages": [
+                  "mcp/reddit"
                 ]
               }
             ]
