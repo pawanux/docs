@@ -1,0 +1,221 @@
+---
+title: "Zoho Books"
+icon: "https://cdn.simpleicons.org/zoho"
+description: "Let your UnleashX agent manage invoices, bills, customers, vendors, payments, and expenses in Zoho Books."
+tags: [mcp, zoho-books, integration]
+---
+
+# Zoho Books
+
+> **In one line:** Connect Zoho Books so your UnleashX agent can raise invoices, record payments and expenses, look up customers and vendors, and keep your accounting up to date — all in plain language.
+
+| | |
+|---|---|
+| **Category** | Finance & Accounting |
+| **Authentication** | OAuth (Zoho) |
+| **Setup time** | ~3 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Finance and operations teams that want an AI agent to create invoices, log expenses, and track payments in Zoho Books |
+
+## 1. Overview
+
+Zoho Books is Zoho's online accounting platform. It's the system of record for your receivables and payables — customers, vendors, invoices, bills, estimates, payments, expenses, and the chart of accounts that ties them together.
+
+Once connected to UnleashX, your agent can create and send invoices, record customer payments, log expenses and bills, add customers and vendors, and pull the status of anything outstanding. It works against your live Zoho Books organization using your own Zoho sign-in, so it respects your role and permissions.
+
+Connecting Zoho Books to UnleashX means your books stay current as you talk. Instead of opening Zoho to raise an invoice or mark a bill paid, you tell your agent and it makes the change — cutting the manual data entry while keeping your accounts accurate.
+
+## 2. What you'll need
+
+- A Zoho Books account with at least one **organization** set up (any paid edition; some API features require Standard or above).
+- Your Zoho Books **Organization ID** (Settings → Organizations, or shown in the URL).
+- A user role with permission to view and edit invoices, bills, customers, and payments.
+- An UnleashX account with access to **Data Connectors**.
+
+<Note>
+No API key to paste. Zoho Books uses OAuth — you click **Authorize** and sign in with Zoho.
+</Note>
+
+<Warning>
+Zoho enforces your **role permissions**. If your Zoho Books user can't create invoices or approve bills, the agent can't either. Ask your organization admin to adjust your role if needed.
+</Warning>
+
+## 3. Get your credentials
+
+There's no key to copy. Authentication runs through Zoho's secure OAuth sign-in.
+
+<Steps>
+<Step title="Start the connection in UnleashX">
+Connecting Zoho Books (Section 4) opens a Zoho **Authorize** window.
+</Step>
+<Step title="Sign in with Zoho">
+Sign in with your Zoho account at `https://accounts.zoho.com` (use the matching data center — e.g. `.eu`, `.in`, `.com.au` — if your org is hosted there). Complete two-factor authentication if prompted.
+</Step>
+<Step title="Review and accept the scopes">
+Zoho shows the access UnleashX is requesting (see the scopes table). Click **Accept**.
+</Step>
+<Step title="Confirm your organization">
+If you have multiple Zoho Books organizations, select the one you want the agent to work with. UnleashX uses its **Organization ID** on every request.
+</Step>
+<Step title="Return to UnleashX">
+Zoho redirects you back automatically and the connector links to your books. Behind the scenes UnleashX calls Zoho with a `Zoho-oauthtoken` authorization header — you never handle the token yourself.
+</Step>
+</Steps>
+
+**Permissions (Zoho OAuth scopes) UnleashX requests:**
+
+| Scope | Why UnleashX needs it |
+|---|---|
+| `ZohoBooks.invoices.ALL` | Create, read, update, and send invoices, and record payments against them. |
+| `ZohoBooks.bills.ALL` | Read and manage vendor bills. |
+| `ZohoBooks.contacts.ALL` | Read and manage customers and vendors. |
+| `ZohoBooks.expenses.ALL` | Create and read expenses. |
+| `ZohoBooks.estimates.ALL` | Create and read estimates/quotes. |
+| `ZohoBooks.settings.READ` | Read taxes, accounts, and organization settings the agent needs. |
+| `offline_access` | Refresh access automatically so you don't re-authorize every session. |
+
+<Note>
+Zoho OAuth scopes are granular. UnleashX requests only what these tools need, and Zoho — not UnleashX — enforces the limits.
+</Note>
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to `https://www.tryunleashx.com` and open the agent you want to connect.
+</Step>
+<Step title="Open Data Connectors">
+Inside the agent, go to **Data Connectors**.
+</Step>
+<Step title="Find Zoho Books">
+Locate **Zoho Books** and click **Connect** (or **Add** / **Configure**).
+</Step>
+<Step title="Authorize with Zoho">
+Click **Authorize**, sign in with Zoho, accept the scopes, and pick your organization.
+</Step>
+<Step title="Confirm success">
+You return to UnleashX and the Zoho Books connector shows a **Connected** badge.
+</Step>
+</Steps>
+
+{/* workflow-usage-section */}
+### Use Zoho Books in a Workflow
+
+Once connected, you can add **Zoho Books** to any automation from the **Workflows** builder. Its triggers and tools appear in the Apps panel, marked with an **MCP** badge.
+
+<Steps>
+<Step title="Add a trigger or action node">
+Open **Workflows → New Workflow**. On the canvas, click **+ Add Trigger** (or the **+** below any node) to add a step.
+
+![Add a trigger on the workflow canvas](/images/mcp/workflows/05-add-trigger.png)
+</Step>
+<Step title="Pick Zoho Books from the Apps panel">
+In the **Paths** panel, open the **Apps** tab and select **Zoho Books**. Use the search box if you have many connectors.
+
+![Choose your app from the Apps list](/images/mcp/workflows/06-apps-list.png)
+</Step>
+<Step title="Choose a trigger or tool">
+Pick the trigger or action you want. Configure its fields — required fields are marked with a red asterisk (*).
+</Step>
+<Step title="Add or select your account">
+Under **Selected account**, choose an already-connected account, or click **Add Account** to connect one now.
+</Step>
+<Step title="Save and test">
+Fill in the remaining fields and click **Save**. Use **Test** to verify the step, then toggle **Publish** when the workflow is ready.
+</Step>
+</Steps>
+
+<Note>
+The steps are the same for every connector. For the full workflow builder guide, see [Using MCP in Workflows](/mcp/workflows).
+</Note>
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| Get Invoice | Retrieves a single invoice by ID. | No |
+| List Invoices | Lists invoices (filter by status, customer, date). | No |
+| Create Invoice | Creates a new invoice. | ✏️ Yes |
+| Update Invoice | Updates an existing invoice. | ✏️ Yes |
+| Send Invoice | Emails an invoice to the customer. | ✏️ Yes |
+| Mark Invoice Sent | Marks a draft invoice as sent. | ✏️ Yes |
+| Void Invoice | Voids an invoice. | ⚠️ Yes |
+| Record Payment | Records a customer payment against an invoice. | ✏️ Yes |
+| List Payments | Lists customer payments received. | No |
+| Get Customer | Retrieves a single customer (contact) by ID. | No |
+| List Customers | Lists customers. | No |
+| Create Customer | Creates a new customer contact. | ✏️ Yes |
+| Update Customer | Updates a customer contact. | ✏️ Yes |
+| Get Vendor | Retrieves a single vendor by ID. | No |
+| List Vendors | Lists vendors. | No |
+| Create Vendor | Creates a new vendor. | ✏️ Yes |
+| Get Bill | Retrieves a single vendor bill by ID. | No |
+| List Bills | Lists vendor bills. | No |
+| Create Bill | Creates a new vendor bill. | ✏️ Yes |
+| Update Bill | Updates a vendor bill. | ✏️ Yes |
+| Create Expense | Records a new expense. | ✏️ Yes |
+| List Expenses | Lists expenses. | No |
+| Create Estimate | Creates a new estimate/quote. | ✏️ Yes |
+| List Estimates | Lists estimates. | No |
+| Convert Estimate to Invoice | Converts an accepted estimate into an invoice. | ✏️ Yes |
+| List Items | Lists line items / products. | No |
+| Create Item | Creates a new item. | ✏️ Yes |
+| List Chart of Accounts | Lists the chart of accounts. | No |
+| Get Organizations | Lists the Zoho Books organizations you can access. | No |
+| Delete Invoice | Deletes a specified invoice. | ⚠️ Yes |
+
+## 6. Example usage
+
+**"Raise an invoice to Acme Corp for 10 hours of consulting at $150/hr and email it to them."**
+→ Runs Create Invoice to draft the invoice, then Send Invoice to email it to the customer.
+
+**"Mark the March invoice for Globex as paid — they sent $2,000 by bank transfer."**
+→ Runs List Invoices to find the invoice, then Record Payment to log the $2,000 bank transfer against it.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- Read and list invoices, bills, estimates, payments, customers, vendors, items, and expenses.
+- Create and update invoices, bills, estimates, customers, vendors, and expenses.
+- Send invoices, record payments, and convert estimates.
+- Void or delete records where your role allows (these tools are clearly marked ⚠️).
+
+**UnleashX cannot:**
+- Do anything your Zoho Books role doesn't permit.
+- Access other Zoho products (Zoho CRM, Desk, Mail) — those are separate connectors.
+- Change your Zoho account password or org-wide security settings.
+
+**To disconnect:** In UnleashX, open **Data Connectors → Zoho Books → Disconnect**. You can also revoke access at `https://accounts.zoho.com/home#sessions/usersession` (Connected Apps). Disconnecting revokes access immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| **401 Unauthorized** | The Zoho token expired or is invalid. | Reconnect Zoho Books in **Data Connectors** and sign in again. |
+| **403 Forbidden** | Your Zoho Books role lacks permission for that action. | Ask your org admin to grant the needed permission, then retry. |
+| **Wrong organization** | The agent is acting on a different Zoho Books org. | Reconnect and select the correct Organization ID. |
+| **Wrong data center** | You signed in at the wrong Zoho domain (e.g. `.com` vs `.eu`). | Reconnect using the data center where your org is hosted. |
+| **Rate limit exceeded** | Your Zoho edition's daily API limit was reached. | Wait for the limit to reset or upgrade your Zoho edition. |
+
+For general MCP issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Is my accounting data stored by UnleashX?**
+No. UnleashX reads and writes your records live through the Zoho Books API per request; it doesn't keep a copy of your books.
+
+**Which organization does the agent use?**
+The one you selected when connecting. If you manage several organizations, connect each one separately or reconnect to switch.
+
+**Can the agent really void or delete invoices?**
+Yes — tools marked ⚠️ (void/delete) make permanent changes in Zoho Books. They only work if your role allows it. Use them deliberately.
+
+**Which data center should I use?**
+Use the one your Zoho org lives in (US `.com`, EU `.eu`, India `.in`, Australia `.com.au`, etc.). Signing in at the wrong one causes auth errors.
+
+## 10. References
+
+- Zoho Books API documentation: https://www.zoho.com/books/api/v3/
+- Zoho OAuth overview & scopes: https://www.zoho.com/books/api/v3/oauth/
+- Zoho Connected Apps / revoke access: https://accounts.zoho.com/home#sessions/usersession
+- Zoho sign-in: https://accounts.zoho.com

@@ -1,0 +1,203 @@
+---
+title: "BigQuery"
+icon: "https://cdn.simpleicons.org/googlebigquery"
+description: "Let your UnleashX agent run SQL queries and explore datasets and tables in Google BigQuery."
+tags: [mcp, bigquery, integration]
+---
+
+# BigQuery
+
+> **In one line:** Connect Google BigQuery so your UnleashX agent can run SQL queries, browse datasets and tables, and pull analytics results — all in plain language.
+
+| | |
+|---|---|
+| **Category** | Data & Analytics |
+| **Authentication** | OAuth (Google) |
+| **Setup time** | ~5 minutes |
+| **Difficulty** | Medium |
+| **Best for** | Data and analytics teams whose warehouse lives in BigQuery and who want an AI agent to query it and describe schemas on demand |
+
+## 1. Overview
+
+BigQuery is Google Cloud's serverless data warehouse. It stores your analytics data in **datasets** and **tables**, and runs fast SQL queries across huge volumes without any infrastructure to manage.
+
+Once connected to UnleashX, your agent can run SQL against your BigQuery project, list datasets and tables, describe a table's schema, preview rows, and return query results. It works against your live project using your Google sign-in, so it acts with your own IAM permissions.
+
+Connecting BigQuery to UnleashX turns your warehouse into something you can ask questions of in plain language. Instead of opening the BigQuery console to write a query, you tell your agent what you want to know and it runs the SQL and reports the answer.
+
+## 2. What you'll need
+
+- A Google Cloud project with **BigQuery** enabled, and its **project ID**.
+- IAM permission to run queries and read the datasets you want the agent to access (typically **BigQuery Data Viewer** + **BigQuery Job User**, or **BigQuery User**).
+- A Google account (or service account) with access to that project.
+- An UnleashX account with access to **Data Connectors**.
+
+<Note>
+No API key to paste. BigQuery uses Google OAuth — you click **Authorize** and sign in with Google. You'll also provide your **project ID**.
+</Note>
+
+<Warning>
+BigQuery bills for **bytes scanned** by queries. A broad `SELECT *` over a large table can be expensive. Have the agent select only the columns and date ranges it needs, and consider setting a **maximum bytes billed** limit in your project.
+</Warning>
+
+## 3. Get your credentials
+
+BigQuery MCP authenticates with a **Google OAuth 2.0 access token** that has access to your project. The token is sent to Google's APIs as a Bearer credential.
+
+<Steps>
+<Step title="Open your Google Cloud project">
+Go to the [Google Cloud Console](https://console.cloud.google.com/) and select the project whose data you want to connect. Note its **Project ID** — you'll provide this to your agent.
+</Step>
+<Step title="Confirm the API is enabled">
+Under **APIs & Services → Library**, make sure the **BigQuery API** is enabled for the project.
+</Step>
+<Step title="Check your IAM roles">
+In **IAM & Admin**, confirm your account has at least **BigQuery Data Viewer** (read tables) and **BigQuery Job User** (run queries) on the project — or **BigQuery User**.
+</Step>
+<Step title="Authorize through UnleashX">
+When connecting (Section 4), sign in with Google and grant the scopes below. UnleashX uses the resulting token as a Bearer credential and refreshes it automatically.
+
+**Scopes UnleashX requests for BigQuery:**
+
+| Scope | Why UnleashX needs it |
+|---|---|
+| `https://www.googleapis.com/auth/bigquery` | Run jobs (queries) and read datasets, tables, and results. |
+| `https://www.googleapis.com/auth/cloud-platform` | Access the BigQuery project resources. |
+| `https://www.googleapis.com/auth/userinfo.email` | Identify which account is connected. |
+| `openid` | Sign-in / identity verification. |
+</Step>
+</Steps>
+
+<Note>
+Prefer read-only access? Grant `https://www.googleapis.com/auth/bigquery.readonly` (or the **BigQuery Data Viewer** + **Job User** roles without write access) so the agent can query and browse but not modify data.
+</Note>
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to `https://www.tryunleashx.com` and open the agent you want to connect.
+</Step>
+<Step title="Open Data Connectors">
+Inside the agent, go to **Data Connectors**.
+</Step>
+<Step title="Find BigQuery">
+Locate **BigQuery** and click **Connect** (or **Add** / **Configure**).
+</Step>
+<Step title="Authorize with Google">
+Click **Authorize**, sign in with Google, and grant the scopes. Enter your **Project ID** when prompted.
+</Step>
+<Step title="Confirm success">
+You return to UnleashX and the BigQuery connector shows a **Connected** badge.
+</Step>
+</Steps>
+
+{/* workflow-usage-section */}
+### Use BigQuery in a Workflow
+
+Once connected, you can add **BigQuery** to any automation from the **Workflows** builder. Its triggers and tools appear in the Apps panel, marked with an **MCP** badge.
+
+<Steps>
+<Step title="Add a trigger or action node">
+Open **Workflows → New Workflow**. On the canvas, click **+ Add Trigger** (or the **+** below any node) to add a step.
+
+![Add a trigger on the workflow canvas](/images/mcp/workflows/05-add-trigger.png)
+</Step>
+<Step title="Pick BigQuery from the Apps panel">
+In the **Paths** panel, open the **Apps** tab and select **BigQuery**. Use the search box if you have many connectors.
+
+![Choose your app from the Apps list](/images/mcp/workflows/06-apps-list.png)
+</Step>
+<Step title="Choose a trigger or tool">
+Pick the action you want (for example, "run query"). Configure its fields — required fields are marked with a red asterisk (*).
+</Step>
+<Step title="Add or select your account">
+Under **Selected account**, choose an already-connected account, or click **Add Account** to connect one now.
+</Step>
+<Step title="Save and test">
+Fill in the remaining fields and click **Save**. Use **Test** to verify the step, then toggle **Publish** when the workflow is ready.
+</Step>
+</Steps>
+
+<Note>
+The steps are the same for every connector. For the full workflow builder guide, see [Using MCP in Workflows](/mcp/workflows).
+</Note>
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| Run Query | Runs a SQL query and returns the results. | Depends on SQL* |
+| Get Query Results | Fetches the results of a completed query job. | No |
+| Dry Run Query | Validates a query and estimates bytes scanned without running it. | No |
+| List Datasets | Lists datasets in the project. | No |
+| Get Dataset | Retrieves a dataset's metadata. | No |
+| List Tables | Lists tables in a dataset. | No |
+| Get Table | Describes a table's schema and metadata. | No |
+| Preview Table | Returns a sample of rows from a table (`tabledata.list`). | No |
+| List Jobs | Lists recent query jobs in the project. | No |
+| Get Job | Retrieves a job's status and statistics. | No |
+| Create Dataset | Creates a new dataset. | ✏️ Yes |
+| Create Table | Creates a new table. | ✏️ Yes |
+| Insert Rows | Streams rows into a table. | ✏️ Yes |
+| Delete Table | Deletes a table. | ⚠️ Yes |
+
+<Note>
+*Read-only `SELECT` queries don't change data. If you run DML (`INSERT`/`UPDATE`/`DELETE`/`MERGE`) or DDL, **Run Query can modify data** — connect with read-only scope/roles to keep the agent limited to queries.
+</Note>
+
+## 6. Example usage
+
+**"What was our total revenue by month this year? Query analytics.sales."**
+→ Runs Run Query with a `SELECT … GROUP BY month` against `analytics.sales` and returns the monthly totals.
+
+**"List the tables in the events dataset and show me the schema of page_views."**
+→ Runs List Tables on `events`, then Get Table on `page_views` to return its columns and types.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- Run SQL queries and fetch their results.
+- Dry-run queries to estimate cost before running them.
+- List and describe datasets and tables, and preview rows.
+- List and inspect query jobs — all subject to your IAM permissions.
+
+**UnleashX cannot:**
+- Access datasets or tables your account isn't granted in IAM.
+- Query a project other than the one you configured.
+- Manage IAM, billing, or project-level Google Cloud settings.
+
+**To disconnect:** In UnleashX, open **Data Connectors → BigQuery → Disconnect**. You can also revoke access at `https://myaccount.google.com/permissions` (Google account → Third-party access). Disconnecting revokes access immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| **401 Unauthorized** | The Google token expired or was revoked. | Reconnect BigQuery in **Data Connectors** and sign in again. |
+| **403 Access Denied** | Your account lacks the IAM role for that dataset or to run jobs. | Ask a project admin for **BigQuery Data Viewer** + **Job User**, then retry. |
+| **404 Not found: Dataset/Table** | The dataset/table name or project is wrong. | Verify the fully-qualified name `project.dataset.table` and your project ID. |
+| **Query exceeded quota / bytes billed** | The query scanned more than the allowed bytes. | Add filters/column selection, or raise the maximum-bytes-billed limit. |
+| **Wrong project** | The agent is querying a different project. | Reconnect and enter the correct Project ID. |
+
+For general MCP issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Is my data stored by UnleashX?**
+No. UnleashX runs queries and reads metadata live through the BigQuery API per request; it doesn't copy your tables.
+
+**Will queries cost money?**
+BigQuery bills by bytes scanned. Use Dry Run Query to estimate cost first, and select only the columns and date ranges you need.
+
+**Can the agent modify data?**
+Only if your account has write access and you run DML/DDL. Connect with read-only scope or roles for a query-only agent.
+
+**Can I use a service account instead?**
+Yes — for automation, a service account with least-privilege BigQuery roles is often preferable to an individual Google login.
+
+## 10. References
+
+- BigQuery REST API reference: https://cloud.google.com/bigquery/docs/reference/rest
+- Running queries: https://cloud.google.com/bigquery/docs/running-queries
+- BigQuery IAM roles: https://cloud.google.com/bigquery/docs/access-control
+- Controlling query cost: https://cloud.google.com/bigquery/docs/best-practices-costs

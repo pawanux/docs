@@ -1,0 +1,243 @@
+---
+title: "Asana"
+icon: "https://cdn.simpleicons.org/asana"
+description: "Let your UnleashX agent create and manage tasks, projects, and comments in Asana."
+tags: [mcp, asana, integration]
+---
+
+# Asana
+
+> **In one line:** Connect Asana so your UnleashX agent can create and update tasks, move work across projects and sections, add comments, and check on progress — all in plain language.
+
+| | |
+|---|---|
+| **Category** | Productivity & Scheduling |
+| **Authentication** | Personal Access Token |
+| **Setup time** | ~2 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Teams that run work in Asana and want an AI agent to create tasks, assign work, and update projects hands-free |
+
+## 1. Overview
+
+Asana is a work-management platform where teams organize projects, tasks, and deadlines. Your workspace holds the projects, tasks, sections, and comments that track who's doing what by when.
+
+Once connected to UnleashX, your agent can create and update tasks, assign them, set due dates, move tasks between sections and projects, add comments, and list what's outstanding. It works against your live Asana account using a personal access token, so it acts with your own permissions.
+
+Connecting Asana to UnleashX means your task board keeps itself current as you talk. Instead of opening Asana to file a task or reassign work, you tell your agent and it makes the change.
+
+## 2. What you'll need
+
+- An Asana account with access to the workspace and projects you want the agent to manage.
+- A **personal access token** (see Section 3).
+- An UnleashX account with access to **Data Connectors**.
+
+<Note>
+You paste a **personal access token**. UnleashX sends it to the Asana API as a `Bearer` credential.
+</Note>
+
+<Warning>
+Your token acts with **your Asana permissions**. The agent can only see and edit projects and tasks your account has access to.
+</Warning>
+
+## 3. Get your credentials
+
+Asana MCP authenticates with a **personal access token (PAT)** — a secret string tied to your Asana user that you create in Asana's developer console. There's no app to publish and no review process; a PAT works immediately.
+
+### Step-by-step
+
+<Steps>
+<Step title="Sign in to Asana">
+Go to [app.asana.com](https://app.asana.com/) and sign in with the account whose access you want the agent to have. The token inherits that user's workspaces and project permissions.
+</Step>
+
+<Step title="Open Settings">
+Click your **profile picture** in the top-right corner, then choose **Settings**. A settings dialog opens with a left-hand list: **Profile**, **Notifications**, **Email Forwarding**, **Account**, **Display**, **Apps**, and **Hacks**.
+</Step>
+
+<Step title="Open the Apps tab">
+Click **Apps** in that list. The tab shows **Authorized Apps** at the top (empty until you connect something), then **Discover new apps** with suggestions like Slack, Gmail Add-on, and Microsoft Teams.
+
+Scroll past those to the bottom.
+
+![The Apps tab in Asana Settings, with View developer console at the bottom](/images/mcp/asana/setup/01-settings-apps.png)
+</Step>
+
+<Step title="Open the developer console">
+Under the **Build new apps** heading at the bottom, click **View developer console**. It opens the Asana Developers site in a new tab.
+
+![The Asana Developers console, My apps page](/images/mcp/asana/setup/02-developer-apps.png)
+</Step>
+
+<Step title="Go to Personal access tokens">
+You'll land on **My apps**. In the developer console, open the **Personal access tokens** section.
+
+<Note>
+Don't click **Create new app** — that's for building an OAuth integration and isn't what you need here. A personal access token is the quick path for connecting your own account.
+</Note>
+</Step>
+
+<Step title="Create a new token">
+Click **Create new token**, give it a recognisable name such as **UnleashX**, and accept the API terms if prompted.
+</Step>
+
+<Step title="Copy the token immediately">
+Asana shows the token **once**, right after creating it. Copy it straight away into a password manager or directly into the UnleashX connector.
+
+If you close the dialog before copying, the token can't be revealed again — delete it and create a replacement.
+</Step>
+
+<Step title="Paste it into UnleashX">
+Head to **Data Connectors → Asana** in UnleashX and paste the token (full walkthrough in Section 4). UnleashX validates it on save, so a bad paste shows up right away.
+</Step>
+</Steps>
+
+### Good to know
+
+<Tip>
+You can jump straight to the developer console at [app.asana.com/0/my-apps](https://app.asana.com/0/my-apps) and skip the Settings → Apps navigation entirely.
+</Tip>
+
+<Warning>
+A personal access token grants **everything your Asana account can reach** — every workspace, project, and task you can see, with the same edit rights. Treat it like a password:
+
+- Never commit it to git or share it in chat.
+- Create a separate token per integration so you can revoke one without breaking the others.
+- If it leaks, deauthorize it in the developer console under **Personal access tokens** and create a new one.
+</Warning>
+
+<Note>
+**Lost your token?** It can't be viewed again after creation. Delete the old one in the developer console, create a fresh token, and reconnect the connector in UnleashX with the new value.
+</Note>
+
+### Permissions this token grants UnleashX
+
+| Access | Why UnleashX needs it |
+|---|---|
+| Read/write tasks | Create, update, complete, and move tasks. |
+| Read/write projects | List projects and manage sections. |
+| Read/write comments (stories) | Add and read comments on tasks. |
+| Read workspaces & users | Resolve assignees and workspace context. |
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to `https://www.tryunleashx.com` and open the agent you want to connect.
+</Step>
+<Step title="Open Data Connectors">
+Inside the agent, go to **Data Connectors**.
+</Step>
+<Step title="Find Asana">
+Locate **Asana** and click **Connect** (or **Add** / **Configure**).
+</Step>
+<Step title="Paste your token">
+Paste your **personal access token** and click **Connect**.
+</Step>
+<Step title="Confirm success">
+UnleashX validates the token and the Asana connector shows a **Connected** badge.
+</Step>
+</Steps>
+
+{/* workflow-usage-section */}
+### Use Asana in a Workflow
+
+Once connected, you can add **Asana** to any automation from the **Workflows** builder. Its triggers and tools appear in the Apps panel, marked with an **MCP** badge.
+
+<Steps>
+<Step title="Add a trigger or action node">
+Open **Workflows → New Workflow**. On the canvas, click **+ Add Trigger** (or the **+** below any node) to add a step.
+
+![Add a trigger on the workflow canvas](/images/mcp/workflows/05-add-trigger.png)
+</Step>
+<Step title="Pick Asana from the Apps panel">
+In the **Paths** panel, open the **Apps** tab and select **Asana**. Use the search box if you have many connectors.
+
+![Choose your app from the Apps list](/images/mcp/workflows/06-apps-list.png)
+</Step>
+<Step title="Choose a trigger or tool">
+Pick the trigger or action you want (for example, "new task in project"). Configure its fields — required fields are marked with a red asterisk (*).
+</Step>
+<Step title="Add or select your account">
+Under **Selected account**, choose an already-connected account, or click **Add Account** to connect one now.
+</Step>
+<Step title="Save and test">
+Fill in the remaining fields and click **Save**. Use **Test** to verify the step, then toggle **Publish** when the workflow is ready.
+</Step>
+</Steps>
+
+<Note>
+The steps are the same for every connector. For the full workflow builder guide, see [Using MCP in Workflows](/mcp/workflows).
+</Note>
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| List Tasks | Lists tasks in a project, section, or assigned to a user. | No |
+| Get Task | Retrieves a single task by ID. | No |
+| Create Task | Creates a new task. | ✏️ Yes |
+| Update Task | Updates a task (name, notes, due date, assignee). | ✏️ Yes |
+| Complete Task | Marks a task complete. | ✏️ Yes |
+| Delete Task | Deletes a task. | ⚠️ Yes |
+| Move Task to Section | Moves a task into a section. | ✏️ Yes |
+| Add Subtask | Adds a subtask to a task. | ✏️ Yes |
+| Search Tasks | Searches tasks by text/filters in a workspace. | No |
+| List Projects | Lists projects in a workspace. | No |
+| Get Project | Retrieves a project by ID. | No |
+| Create Project | Creates a new project. | ✏️ Yes |
+| List Sections | Lists sections in a project. | No |
+| Add Comment | Adds a comment (story) to a task. | ✏️ Yes |
+| List Comments | Lists comments on a task. | No |
+| List Workspaces | Lists workspaces you belong to. | No |
+| List Users | Lists users in a workspace. | No |
+| List Tags | Lists tags in a workspace. | No |
+
+## 6. Example usage
+
+**"Create a task 'Draft Q3 report', assign it to me, and set it due next Friday in the Marketing project."**
+→ Runs Create Task in the Marketing project with the assignee and due date set.
+
+**"What's still open in the Website Launch project? Add a comment on the blocked task asking for an update."**
+→ Runs List Tasks on the project, then Add Comment on the blocked task.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- List and read tasks, projects, sections, comments, and users.
+- Create and update tasks, complete and move them, and add subtasks.
+- Create projects and add comments.
+- Delete tasks where your permissions allow (marked ⚠️).
+
+**UnleashX cannot:**
+- Access workspaces, projects, or tasks your account can't see.
+- Change Asana admin, billing, or organization settings.
+
+**To disconnect:** In UnleashX, open **Data Connectors → Asana → Disconnect**. You can also deauthorize the token in the Asana developer console ([app.asana.com/0/my-apps](https://app.asana.com/0/my-apps)) under **Personal access tokens**. Disconnecting removes access immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| **401 Unauthorized** | The token is invalid or was deauthorized. | Create a new personal access token and reconnect. |
+| **403 Forbidden** | Your account lacks access to that project or task. | Get added to the project, or pick one you can access. |
+| **404 Not found** | The task/project ID is wrong or was deleted. | Have the agent list/search to find the correct ID. |
+| **429 Too Many Requests** | You hit Asana's rate limit. | Wait and retry; space out bulk operations. |
+
+For general MCP issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Is my Asana data stored by UnleashX?**
+No. UnleashX reads and writes live through the Asana API per request; it doesn't keep a copy.
+
+**Can the agent delete tasks?**
+Yes — tools marked ⚠️ make permanent changes and only work if your permissions allow it. Use them deliberately.
+
+**Can multiple team members connect Asana?**
+Yes. Each person uses their own personal access token, so the agent acts with that user's access.
+
+## 10. References
+
+- Asana API documentation: https://developers.asana.com/docs
+- Personal access tokens: https://developers.asana.com/docs/personal-access-token
+- Rate limits: https://developers.asana.com/docs/rate-limits

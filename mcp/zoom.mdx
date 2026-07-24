@@ -1,0 +1,204 @@
+---
+title: "Zoom"
+icon: "https://cdn.simpleicons.org/zoom"
+description: "Let your UnleashX agent schedule and manage Zoom meetings and webinars, and pull recordings and participant details."
+tags: [mcp, zoom, integration]
+---
+
+# Zoom
+
+> **In one line:** Connect Zoom so your UnleashX agent can schedule, update, and cancel meetings and webinars, share join links, and fetch recordings and participant lists — all in plain language.
+
+| | |
+|---|---|
+| **Category** | Communication |
+| **Authentication** | OAuth (Zoom) |
+| **Setup time** | ~3 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Teams that run meetings and webinars in Zoom and want an AI agent to schedule them, send join links, and pull recordings automatically |
+
+## 1. Overview
+
+Zoom is the video-meetings platform your team uses for calls, webinars, and recorded sessions. Behind each meeting is a schedule, an invite link, a participant list, and — when recorded — a cloud recording.
+
+Once connected to UnleashX, your agent can create and update meetings and webinars, list what's on your calendar, generate and share join links, register attendees, and pull cloud recordings and participant reports. It acts through your own Zoom sign-in, so it respects your Zoom role and plan limits.
+
+Connecting Zoom to UnleashX means meetings organize themselves as you talk. Instead of opening Zoom to schedule a call or hunt for a recording, you tell your agent and it sets up the meeting, shares the link, or fetches the recording for you.
+
+## 2. What you'll need
+
+- A Zoom account (Basic works for meetings; webinars and cloud recording require a paid plan/add-on).
+- Permission on your Zoom account to schedule meetings/webinars and access recordings.
+- An UnleashX account with access to **Data Connectors**.
+
+<Note>
+No API key to paste. Zoom uses OAuth — you click **Authorize** and sign in with Zoom.
+</Note>
+
+<Warning>
+Some tools need a **paid Zoom plan**. Webinars require a Webinar add-on, and cloud recordings require Cloud Recording to be enabled. If a tool returns a plan error, check your Zoom subscription and account settings.
+</Warning>
+
+## 3. Get your credentials
+
+There's no key to copy. Authentication runs through Zoom's secure OAuth sign-in.
+
+<Steps>
+<Step title="Start the connection in UnleashX">
+Connecting Zoom (Section 4) opens a Zoom **Authorize** window.
+</Step>
+<Step title="Sign in with Zoom">
+Sign in with your Zoom account at `https://zoom.us/signin`. Complete two-factor authentication if prompted.
+</Step>
+<Step title="Review and allow the scopes">
+Zoom shows the access UnleashX is requesting (see the scopes table). Click **Allow**.
+</Step>
+<Step title="Return to UnleashX">
+Zoom redirects you back automatically and the connector links to your account. Behind the scenes UnleashX calls Zoom with a `Bearer` token — you never handle the token yourself.
+</Step>
+</Steps>
+
+**Permissions (Zoom OAuth scopes) UnleashX requests:**
+
+| Scope | Why UnleashX needs it |
+|---|---|
+| `user:read` | Read your Zoom profile and account info. |
+| `meeting:read` | List and read your meetings and their details. |
+| `meeting:write` | Create, update, and delete meetings. |
+| `webinar:read` | List and read webinars. |
+| `webinar:write` | Create, update, and delete webinars, and register attendees. |
+| `recording:read` | List and fetch cloud recordings. |
+| `report:read:admin` | Read participant/usage reports (where your role allows). |
+
+<Note>
+Zoom shows exactly which permissions UnleashX is asking for on the Allow screen. Zoom — not UnleashX — enforces these limits and your plan.
+</Note>
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to `https://www.tryunleashx.com` and open the agent you want to connect.
+</Step>
+<Step title="Open Data Connectors">
+Inside the agent, go to **Data Connectors**.
+</Step>
+<Step title="Find Zoom">
+Locate **Zoom** and click **Connect** (or **Add** / **Configure**).
+</Step>
+<Step title="Authorize with Zoom">
+Click **Authorize**, sign in with Zoom, and click **Allow**.
+</Step>
+<Step title="Confirm success">
+You return to UnleashX and the Zoom connector shows a **Connected** badge.
+</Step>
+</Steps>
+
+{/* workflow-usage-section */}
+### Use Zoom in a Workflow
+
+Once connected, you can add **Zoom** to any automation from the **Workflows** builder. Its triggers and tools appear in the Apps panel, marked with an **MCP** badge.
+
+<Steps>
+<Step title="Add a trigger or action node">
+Open **Workflows → New Workflow**. On the canvas, click **+ Add Trigger** (or the **+** below any node) to add a step.
+
+![Add a trigger on the workflow canvas](/images/mcp/workflows/05-add-trigger.png)
+</Step>
+<Step title="Pick Zoom from the Apps panel">
+In the **Paths** panel, open the **Apps** tab and select **Zoom**. Use the search box if you have many connectors.
+
+![Choose your app from the Apps list](/images/mcp/workflows/06-apps-list.png)
+</Step>
+<Step title="Choose a trigger or tool">
+Pick the trigger or action you want (for example, "meeting created" or "schedule meeting"). Configure its fields — required fields are marked with a red asterisk (*).
+</Step>
+<Step title="Add or select your account">
+Under **Selected account**, choose an already-connected account, or click **Add Account** to connect one now.
+</Step>
+<Step title="Save and test">
+Fill in the remaining fields and click **Save**. Use **Test** to verify the step, then toggle **Publish** when the workflow is ready.
+</Step>
+</Steps>
+
+<Note>
+The steps are the same for every connector. For the full workflow builder guide, see [Using MCP in Workflows](/mcp/workflows).
+</Note>
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| List Meetings | Lists your scheduled, upcoming, or past meetings. | No |
+| Get Meeting | Retrieves a meeting's details, including the join URL. | No |
+| Create Meeting | Schedules a new meeting and returns the join link. | ✏️ Yes |
+| Update Meeting | Updates a meeting's time, topic, or settings. | ✏️ Yes |
+| Delete Meeting | Cancels/deletes a meeting. | ⚠️ Yes |
+| Add Meeting Registrant | Registers an attendee for a meeting. | ✏️ Yes |
+| List Meeting Registrants | Lists registrants for a meeting. | No |
+| List Webinars | Lists your webinars. | No |
+| Get Webinar | Retrieves a webinar's details. | No |
+| Create Webinar | Schedules a new webinar. | ✏️ Yes |
+| Update Webinar | Updates a webinar's settings. | ✏️ Yes |
+| Add Webinar Registrant | Registers an attendee for a webinar. | ✏️ Yes |
+| List Recordings | Lists cloud recordings for a user or meeting. | No |
+| Get Meeting Recording | Retrieves recording files and download links for a meeting. | No |
+| Delete Recording | Deletes a cloud recording. | ⚠️ Yes |
+| Get Meeting Participants | Retrieves the participant report for a past meeting. | No |
+| Get User | Retrieves your Zoom user profile. | No |
+
+## 6. Example usage
+
+**"Schedule a 30-minute product demo with the Acme team next Tuesday at 2pm and send me the join link."**
+→ Runs Create Meeting for the specified time, then returns the meeting's join URL.
+
+**"Get the cloud recording from yesterday's onboarding call and the list of who attended."**
+→ Runs List Recordings (or Get Meeting Recording) for the download link, then Get Meeting Participants for the attendee report.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- List and read your meetings and webinars, and their join links.
+- Create, update, and cancel meetings and webinars, and register attendees.
+- List and fetch cloud recordings and participant reports.
+- Delete meetings and recordings (these tools are clearly marked ⚠️).
+
+**UnleashX cannot:**
+- Use features your Zoom plan doesn't include (e.g. webinars without the add-on).
+- Access other users' meetings or recordings unless your role permits it.
+- Change account-wide Zoom admin settings or your password.
+
+**To disconnect:** In UnleashX, open **Data Connectors → Zoom → Disconnect**. You can also revoke access in the Zoom App Marketplace under **Manage → Added Apps** (`https://marketplace.zoom.us/user/installed`). Disconnecting revokes access immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| **401 Unauthorized** | The Zoom token expired or was revoked. | Reconnect Zoom in **Data Connectors** and sign in again. |
+| **400 / plan error** | The action needs a feature your plan doesn't include (webinar, cloud recording). | Upgrade your Zoom plan or enable the feature in Zoom settings. |
+| **300 Recording not found** | The meeting wasn't recorded to the cloud, or was deleted. | Confirm cloud recording was on for that meeting. |
+| **429 Too Many Requests** | You hit Zoom's API rate limit. | Wait and retry; space out bulk operations. |
+| **Scope error** | A tool needs a scope you didn't grant. | Reconnect and allow the requested scopes. |
+
+For general MCP issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Does the agent schedule meetings as me?**
+Yes. Meetings and webinars are created under your own Zoom account, with you as the host.
+
+**Is my meeting data stored by UnleashX?**
+No. UnleashX reads and writes through the Zoom API live per request; it doesn't keep a copy of your meetings or recordings.
+
+**Can the agent access cloud recordings?**
+Yes, if cloud recording is enabled on your plan and the meeting was recorded. Recordings stored only locally aren't accessible via the API.
+
+**Can I connect a webinar without a paid plan?**
+No — webinars require the Zoom Webinar add-on. Meeting tools work on Basic accounts.
+
+## 10. References
+
+- Zoom API reference: https://developers.zoom.us/docs/api/
+- Zoom OAuth guide & scopes: https://developers.zoom.us/docs/integrations/oauth/
+- Zoom OAuth scopes reference: https://developers.zoom.us/docs/integrations/oauth-scopes/
+- Manage installed apps / revoke access: https://marketplace.zoom.us/user/installed
