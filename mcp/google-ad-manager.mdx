@@ -1,0 +1,200 @@
+---
+title: "Google Ad Manager"
+icon: "https://cdn.simpleicons.org/googleadmanager"
+description: "Let your UnleashX agent read networks, orders, line items, and reports in Google Ad Manager."
+tags: [mcp, google-ad-manager, integration]
+---
+
+# Google Ad Manager
+
+> **In one line:** Connect Google Ad Manager so your UnleashX agent can look up your network, browse orders and line items, and pull reports — all in plain language.
+
+| | |
+|---|---|
+| **Category** | Advertising & Analytics |
+| **Authentication** | OAuth (Google) |
+| **Setup time** | ~3 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Ad ops and revenue teams that want an AI agent to check orders, line items, and delivery reports in Google Ad Manager |
+
+## 1. Overview
+
+Google Ad Manager is Google's ad serving and inventory management platform. It's where publishers organize their network, sell inventory through orders and line items, and measure delivery with reports.
+
+Once connected to UnleashX, your agent can read your network details, list and open orders, browse the line items inside them, and pull the reports you use to track delivery and revenue. It works against your live Ad Manager network using your own Google sign-in, so it respects your role and permissions. This connector is read-focused — it looks things up rather than changing your ad setup.
+
+Connecting Google Ad Manager to UnleashX means you can ask about your inventory in plain language. Instead of clicking through the Ad Manager UI to check an order or find a line item, you ask your agent and it fetches the answer.
+
+## 2. What you'll need
+
+- A Google Ad Manager account with access to a **network**.
+- Your Ad Manager **network code** (shown in the Ad Manager UI and in the URL).
+- A user role in Ad Manager that can view orders, line items, and reports.
+- The **Google Ad Manager API** enabled for your network.
+- An UnleashX account with access to **Data Connectors**.
+
+<Note>
+No API key to paste. Google Ad Manager uses OAuth — you click **Authorize** and sign in with Google. You'll also supply your **network code** so the agent knows which network to read.
+</Note>
+
+<Warning>
+Google enforces your Ad Manager **role**. The **Google Ad Manager API** must be enabled for your network, and your Google user needs a role that can view orders, line items, and reports — otherwise the agent can't read them either. Ask your network admin to adjust access if needed.
+</Warning>
+
+## 3. Get your credentials
+
+There's no key to copy. Authentication runs through Google's secure OAuth sign-in.
+
+<Steps>
+<Step title="Start the connection in UnleashX">
+Connecting Google Ad Manager (Section 4) opens a Google **Sign in** window.
+</Step>
+<Step title="Sign in with Google">
+Sign in with the Google account that has access to your Ad Manager network. Complete two-factor authentication if prompted.
+</Step>
+<Step title="Review and accept the scopes">
+Google shows the access UnleashX is requesting (see the scopes table). Click **Allow**.
+</Step>
+<Step title="Enter your network code">
+Provide your Ad Manager **network code** so UnleashX knows which network to read. You can find it in the Ad Manager UI (Admin → Global settings) or in the page URL.
+</Step>
+<Step title="Return to UnleashX">
+Google redirects you back automatically and the connector links to your network. Behind the scenes UnleashX authenticates with Google using an OAuth token — you never handle the token yourself.
+</Step>
+</Steps>
+
+**Permissions (Google OAuth scopes) UnleashX requests:**
+
+| Scope | Why UnleashX needs it |
+|---|---|
+| `https://www.googleapis.com/auth/dfp` | Read your Ad Manager network, orders, line items, and reports. |
+| `openid` | Identify the signed-in Google account. |
+| `email` | Confirm which Google account is connected. |
+| `offline_access` | Refresh access automatically so you don't re-authorize every session. |
+
+<Note>
+Google OAuth scopes are granular. UnleashX requests only what these tools need, and Google — together with your Ad Manager role — enforces the limits.
+</Note>
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to `https://www.tryunleashx.com` and open the agent you want to connect.
+</Step>
+<Step title="Open Data Connectors">
+Inside the agent, go to **Data Connectors**.
+</Step>
+<Step title="Find Google Ad Manager">
+Locate **Google Ad Manager** and click **Connect** (or **Add** / **Configure**).
+</Step>
+<Step title="Authorize with Google">
+Click **Authorize**, sign in with Google, accept the scopes, and enter your network code.
+</Step>
+<Step title="Confirm success">
+You return to UnleashX and the Google Ad Manager connector shows a **Connected** badge.
+</Step>
+</Steps>
+
+{/* workflow-usage-section */}
+### Use Google Ad Manager in a Workflow
+
+Once connected, you can add **Google Ad Manager** to any automation from the **Workflows** builder. Its triggers and tools appear in the Apps panel, marked with an **MCP** badge.
+
+<Steps>
+<Step title="Add a trigger or action node">
+Open **Workflows → New Workflow**. On the canvas, click **+ Add Trigger** (or the **+** below any node) to add a step.
+
+![Add a trigger on the workflow canvas](/images/mcp/workflows/05-add-trigger.png)
+</Step>
+<Step title="Pick Google Ad Manager from the Apps panel">
+In the **Paths** panel, open the **Apps** tab and select **Google Ad Manager**. Use the search box if you have many connectors.
+
+![Choose your app from the Apps list](/images/mcp/workflows/06-apps-list.png)
+</Step>
+<Step title="Choose a trigger or tool">
+Pick the trigger or action you want. Configure its fields — required fields are marked with a red asterisk (*).
+</Step>
+<Step title="Add or select your account">
+Under **Selected account**, choose an already-connected account, or click **Add Account** to connect one now.
+</Step>
+<Step title="Save and test">
+Fill in the remaining fields and click **Save**. Use **Test** to verify the step, then toggle **Publish** when the workflow is ready.
+</Step>
+</Steps>
+
+<Note>
+The steps are the same for every connector. For the full workflow builder guide, see [Using MCP in Workflows](/mcp/workflows).
+</Note>
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| Get Network | Retrieves your Ad Manager network details. | No |
+| List Orders | Lists orders in the network (filter by status, advertiser, date). | No |
+| Get Order | Retrieves a single order by ID. | No |
+| List Line Items | Lists line items (optionally within an order). | No |
+| Get Line Item | Retrieves a single line item by ID. | No |
+| List Reports | Lists saved reports available in the network. | No |
+
+### Available triggers
+
+| Trigger | Fires when |
+|---|---|
+| On New Order | A new order is created in your Ad Manager network. |
+
+## 6. Example usage
+
+**"Show me all active orders for the Acme advertiser this quarter."**
+→ Runs List Orders filtered by advertiser and status, then returns the active orders.
+
+**"What line items are in order 12345, and which one is under-delivering?"**
+→ Runs Get Order for 12345, then List Line Items on it and reviews their delivery.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- Read your network details.
+- List and open orders and line items.
+- List saved reports in the network.
+
+**UnleashX cannot:**
+- Create, edit, or delete orders, line items, or reports (this connector is read-focused).
+- Do anything your Ad Manager role doesn't permit.
+- Access a different network than the network code you provided.
+
+**To disconnect:** In UnleashX, open **Data Connectors → Google Ad Manager → Disconnect**. You can also revoke access at `https://myaccount.google.com/permissions` (Third-party apps with account access). Disconnecting revokes access immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| **401 Unauthorized** | The Google token expired or is invalid. | Reconnect Google Ad Manager in **Data Connectors** and sign in again. |
+| **403 Forbidden** | Your Ad Manager role lacks permission, or the API isn't enabled. | Enable the Google Ad Manager API and ask your network admin for a role that can view orders and reports. |
+| **Wrong network** | The agent is reading a different Ad Manager network. | Reconnect and enter the correct network code. |
+| **No data returned** | Your role can't see those orders or line items. | Ask your network admin to grant access to the relevant teams/inventory. |
+| **Rate limit exceeded** | Ad Manager's API quota was reached. | Wait for the quota to reset, then retry. |
+
+For general MCP issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Is my ad data stored by UnleashX?**
+No. UnleashX reads your network, orders, and reports live through the Ad Manager API per request; it doesn't keep a copy.
+
+**Which network does the agent use?**
+The one whose network code you entered when connecting. To read a different network, reconnect with that network code.
+
+**Can the agent change my orders or line items?**
+No. This connector is read-focused — it looks things up but doesn't create or edit your ad setup.
+
+**Why do I need to enable the Google Ad Manager API?**
+The API must be turned on for your network before any tool can read data. Your Google user also needs an Ad Manager role with view access.
+
+## 10. References
+
+- Google Ad Manager API documentation: https://developers.google.com/ad-manager/api/start
+- Google Ad Manager API authentication: https://developers.google.com/ad-manager/api/authentication
+- Finding your network code: https://support.google.com/admanager/answer/7674889
+- Google account permissions / revoke access: https://myaccount.google.com/permissions

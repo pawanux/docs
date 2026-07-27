@@ -1,0 +1,220 @@
+---
+title: "Notion"
+icon: "https://cdn.simpleicons.org/notion"
+description: "Let your UnleashX agent read and manage pages, databases, blocks, and comments in your Notion workspace."
+tags: [mcp, notion, integration]
+---
+
+# Notion
+
+> **In one line:** Connect Notion so your UnleashX agent can search and read pages, create and update content, query databases, add comments, and keep your workspace organized — all in plain language.
+
+| | |
+|---|---|
+| **Category** | Productivity & Scheduling |
+| **Authentication** | OAuth (Notion) |
+| **Setup time** | ~3 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Teams that run their notes, docs, and databases in Notion and want an AI agent to read, create, and update that content |
+
+## 1. Overview
+
+Notion is a connected workspace for notes, docs, wikis, and databases. It holds your pages, the databases that organize them, the blocks of content inside each page, and the comments your team leaves along the way.
+
+Once connected to UnleashX, your agent can search for pages, read a page or an individual block, create and update pages, query and manage database items, and add comments. It works against your live Notion workspace using your own Notion sign-in, so it respects the pages and databases you've shared with the connection.
+
+Connecting Notion to UnleashX turns your workspace into something you can ask questions of and update by talking. Instead of opening Notion to jot a page, log a database row, or leave a comment, you tell your agent and it makes the change — while keeping everything in sync.
+
+## 2. What you'll need
+
+- A Notion account with a workspace you can access.
+- Permission to view and edit the pages and databases you want the agent to work with.
+- The pages or databases you want the agent to reach **shared with** the Notion connection during authorization.
+- An UnleashX account with access to **Data Connectors**.
+
+<Note>
+No API key to paste. Notion uses OAuth — you click **Authorize** and sign in with Notion, then choose which pages and databases to grant access to.
+</Note>
+
+<Warning>
+Notion only exposes the pages and databases you **explicitly share** with the connection. If the agent can't find a page, it's usually because that page (or its parent) wasn't shared during authorization — reconnect and add it.
+</Warning>
+
+## 3. Get your credentials
+
+There's no key to copy. Authentication runs through Notion's secure OAuth sign-in.
+
+<Steps>
+<Step title="Start the connection in UnleashX">
+Connecting Notion (Section 4) opens a Notion **Authorize** window.
+</Step>
+<Step title="Sign in with Notion">
+Sign in with your Notion account at `https://www.notion.so/login`. Complete two-factor authentication if prompted.
+</Step>
+<Step title="Select the workspace">
+If you belong to more than one Notion workspace, pick the one you want the agent to work with.
+</Step>
+<Step title="Choose the pages to share">
+Notion asks which pages and databases to give access to. Select the pages (and their subpages) the agent should be able to read and edit. You can broaden or narrow this later by reconnecting.
+</Step>
+<Step title="Review and accept the access">
+Notion shows the access UnleashX is requesting (see the scopes table). Click **Allow access**.
+</Step>
+<Step title="Return to UnleashX">
+Notion redirects you back automatically and the connector links to your workspace. Behind the scenes UnleashX calls Notion with a `Bearer` token — you never handle the token yourself.
+</Step>
+</Steps>
+
+**Permissions (Notion OAuth access) UnleashX requests:**
+
+| Access | Why UnleashX needs it |
+|---|---|
+| Read content | Search, read pages, blocks, page properties, and databases you shared. |
+| Insert content | Create pages, add content to pages, and create database items. |
+| Update content | Update pages and database items. |
+| Read comments | Read comments on shared pages. |
+| Insert comments | Add new comments to pages. |
+
+<Note>
+Notion access is scoped to the pages and databases you selected during authorization — not your whole workspace. Notion, not UnleashX, enforces those limits.
+</Note>
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to `https://www.tryunleashx.com` and open the agent you want to connect.
+</Step>
+<Step title="Open Data Connectors">
+Inside the agent, go to **Data Connectors**.
+</Step>
+<Step title="Find Notion">
+Locate **Notion** and click **Connect** (or **Add** / **Configure**).
+</Step>
+<Step title="Authorize with Notion">
+Click **Authorize**, sign in with Notion, choose the pages and databases to share, and accept the access.
+</Step>
+<Step title="Confirm success">
+You return to UnleashX and the Notion connector shows a **Connected** badge.
+</Step>
+</Steps>
+
+{/* workflow-usage-section */}
+### Use Notion in a Workflow
+
+Once connected, you can add **Notion** to any automation from the **Workflows** builder. Its triggers and tools appear in the Apps panel, marked with an **MCP** badge.
+
+<Steps>
+<Step title="Add a trigger or action node">
+Open **Workflows → New Workflow**. On the canvas, click **+ Add Trigger** (or the **+** below any node) to add a step.
+
+![Add a trigger on the workflow canvas](/images/mcp/workflows/05-add-trigger.png)
+</Step>
+<Step title="Pick Notion from the Apps panel">
+In the **Paths** panel, open the **Apps** tab and select **Notion**. Use the search box if you have many connectors.
+
+![Choose your app from the Apps list](/images/mcp/workflows/06-apps-list.png)
+</Step>
+<Step title="Choose a trigger or tool">
+Pick the trigger or action you want. Configure its fields — required fields are marked with a red asterisk (*).
+</Step>
+<Step title="Add or select your account">
+Under **Selected account**, choose an already-connected account, or click **Add Account** to connect one now.
+</Step>
+<Step title="Save and test">
+Fill in the remaining fields and click **Save**. Use **Test** to verify the step, then toggle **Publish** when the workflow is ready.
+</Step>
+</Steps>
+
+<Note>
+The steps are the same for every connector. For the full workflow builder guide, see [Using MCP in Workflows](/mcp/workflows).
+</Note>
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| Search Pages | Searches your shared pages by title or content. | No |
+| Get Page | Retrieves a single page by ID. | No |
+| Create Page | Creates a new page. | ✏️ Yes |
+| Update Page | Updates an existing page's properties. | ✏️ Yes |
+| Delete Page | Archives (deletes) a page. | ⚠️ Yes |
+| Get Database | Retrieves a database's structure and metadata. | No |
+| Query Database | Queries a database with filters and sorts. | No |
+| Retrieve Block | Retrieves a single content block. | No |
+| Retrieve Page Property | Reads a specific property value from a page. | No |
+| Duplicate Page | Creates a copy of an existing page. | ✏️ Yes |
+| Create Comment | Adds a comment to a page. | ✏️ Yes |
+| Add Content To Page | Appends new content blocks to a page. | ✏️ Yes |
+| Create Database Item | Creates a new item (row) in a database. | ✏️ Yes |
+| Update Database Item | Updates an item (row) in a database. | ✏️ Yes |
+| Find Database Item | Finds an item in a database by its values. | No |
+
+### Available triggers
+
+| Trigger | Fires when |
+|---|---|
+| On New Page | A new page is created in the shared workspace. |
+| On Page Or Subpage Updated | A page or any of its subpages is updated. |
+| On New Or Updated Page In Database | A page in a database is created or updated. |
+| On Updated Database Item | An existing database item is updated. |
+| On New Comment Created | A new comment is added to a page. |
+| On New Database | A new database is created. |
+| On New Database Item | A new item is added to a database. |
+| On Updated Page | An existing page is updated. |
+
+## 6. Example usage
+
+**"Add a row to the Roadmap database: title 'Q3 launch', status In Progress, owner Priya."**
+→ Runs Create Database Item on the Roadmap database with the title, status, and owner values.
+
+**"Find the meeting notes page from yesterday and add a comment asking for the action items."**
+→ Runs Search Pages to locate the notes page, then Create Comment to post the question on it.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- Search and read pages, blocks, page properties, and databases you shared.
+- Create and update pages, add content, and duplicate pages.
+- Create, update, and find items in databases.
+- Read and add comments on shared pages.
+
+**UnleashX cannot:**
+- Access pages or databases you didn't share during authorization.
+- Reach content in a different Notion workspace than the one you connected.
+- Change your Notion account, billing, or workspace-wide settings.
+
+**To disconnect:** In UnleashX, open **Data Connectors → Notion → Disconnect**. You can also revoke access in Notion under **Settings → Connections** (or **My connections**). Disconnecting revokes access immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| **401 Unauthorized** | The Notion token expired or was revoked. | Reconnect Notion in **Data Connectors** and sign in again. |
+| **Page not found** | The page wasn't shared with the connection, or was moved. | Reconnect and add the page (or its parent) to the shared selection. |
+| **Insufficient permissions** | The connection can read but not edit that page. | Grant edit access to the page in Notion, then retry. |
+| **Wrong workspace** | The agent is acting on a different Notion workspace. | Reconnect and select the correct workspace. |
+| **Rate limit exceeded** | Too many requests hit Notion's API limit. | Wait a moment and retry; avoid very broad searches. |
+
+For general MCP issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Is my Notion content stored by UnleashX?**
+No. UnleashX reads and writes your pages live through the Notion API per request; it doesn't keep a copy of your workspace.
+
+**Why can't the agent see a page I know exists?**
+Notion only exposes pages you explicitly shared with the connection. Reconnect and add that page (or its parent) to the shared selection.
+
+**Can the agent really delete pages?**
+Deleting a page archives it (the Delete Page tool is marked ⚠️). Archived pages can be restored from Notion's trash, but treat the action deliberately.
+
+**Which workspace does the agent use?**
+The one you selected when connecting. To switch workspaces, reconnect and choose a different one.
+
+## 10. References
+
+- Notion API documentation: https://developers.notion.com/
+- Notion API reference: https://developers.notion.com/reference/intro
+- Authorization (OAuth): https://developers.notion.com/docs/authorization
+- Manage connections: https://www.notion.so/help/add-and-manage-connections-with-the-api

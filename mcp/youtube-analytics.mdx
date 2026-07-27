@@ -1,0 +1,201 @@
+---
+title: "YouTube Analytics"
+icon: "https://cdn.simpleicons.org/youtube"
+description: "Let your UnleashX agent pull channel and video analytics, reports, and groups from YouTube."
+tags: [mcp, youtube-analytics, integration]
+---
+
+# YouTube Analytics
+
+> **In one line:** Connect YouTube Analytics so your UnleashX agent can pull channel and video reports, list your top-performing videos, and organize analytics groups — all in plain language.
+
+| | |
+|---|---|
+| **Category** | Advertising & Analytics |
+| **Authentication** | OAuth (Google) |
+| **Setup time** | ~2 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Creators and marketing teams that want an AI agent to pull YouTube performance reports without opening Studio |
+
+## 1. Overview
+
+YouTube Analytics is Google's reporting layer for YouTube channels. It holds the metrics behind your channel and videos — views, watch time, subscribers, traffic sources, and more — along with analytics groups that let you slice performance across sets of videos or channels.
+
+Once connected to UnleashX, your agent can pull channel and video reports, list your top videos by a metric, browse the channels and videos you manage, and read or create analytics groups. This connector is read and report focused — it surfaces your metrics rather than changing your content. It works against your live YouTube data using your own Google sign-in, so it respects your account and access.
+
+Connecting YouTube Analytics to UnleashX turns your performance data into something you can just ask about. Instead of opening YouTube Studio to build a report, you ask your agent in plain language and it pulls the numbers, ranks the videos, or summarizes the trend for you.
+
+## 2. What you'll need
+
+- A Google account that owns or manages a YouTube channel (or has Brand Account access to one).
+- Access to the channel's analytics in YouTube Studio.
+- An UnleashX account with access to **Data Connectors**.
+
+<Note>
+No API key to paste. YouTube Analytics uses OAuth — you click **Authorize** and sign in with Google.
+</Note>
+
+<Warning>
+Analytics data can be **delayed** — recent views and watch time may take a day or more to finalize. Very fresh reports can show partial numbers until YouTube completes processing.
+</Warning>
+
+## 3. Get your credentials
+
+There's no key to copy. Authentication runs through Google's secure OAuth sign-in.
+
+<Steps>
+<Step title="Start the connection in UnleashX">
+Connecting YouTube Analytics (Section 4) opens a Google **Sign in** window.
+</Step>
+<Step title="Sign in with Google">
+Choose the Google account that manages the channel you want to report on, and sign in at `https://accounts.google.com`. Complete two-factor authentication if prompted.
+</Step>
+<Step title="Review and accept the scopes">
+Google shows the access UnleashX is requesting (see the scopes table). Review it and click **Allow**.
+</Step>
+<Step title="Confirm the channel">
+If your account manages multiple channels or Brand Accounts, make sure you picked the one whose analytics you want to pull.
+</Step>
+<Step title="Return to UnleashX">
+Google redirects you back automatically and the connector links to your account. Behind the scenes UnleashX uses Google's OAuth token — you never handle it yourself.
+</Step>
+</Steps>
+
+**Permissions (Google OAuth scopes) UnleashX requests:**
+
+| Scope | Why UnleashX needs it |
+|---|---|
+| `https://www.googleapis.com/auth/yt-analytics.readonly` | Read channel and video analytics reports. |
+| `https://www.googleapis.com/auth/youtube.readonly` | List the channels and videos you manage. |
+| `https://www.googleapis.com/auth/youtube` | Create and manage analytics groups. |
+| `openid` | Identify the Google account being connected. |
+| `https://www.googleapis.com/auth/userinfo.email` | Confirm which account is linked so you can manage the connection. |
+
+<Note>
+Google OAuth scopes are granular. UnleashX requests only what these tools need, and Google — not UnleashX — enforces the limits.
+</Note>
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to `https://www.tryunleashx.com` and open the agent you want to connect.
+</Step>
+<Step title="Open Data Connectors">
+Inside the agent, go to **Data Connectors**.
+</Step>
+<Step title="Find YouTube Analytics">
+Locate **YouTube Analytics** and click **Connect** (or **Add** / **Configure**).
+</Step>
+<Step title="Authorize with Google">
+Click **Authorize**, sign in with Google, and accept the scopes.
+</Step>
+<Step title="Confirm success">
+You return to UnleashX and the YouTube Analytics connector shows a **Connected** badge.
+</Step>
+</Steps>
+
+{/* workflow-usage-section */}
+### Use YouTube Analytics in a Workflow
+
+Once connected, you can add **YouTube Analytics** to any automation from the **Workflows** builder. Its triggers and tools appear in the Apps panel, marked with an **MCP** badge.
+
+<Steps>
+<Step title="Add a trigger or action node">
+Open **Workflows → New Workflow**. On the canvas, click **+ Add Trigger** (or the **+** below any node) to add a step.
+
+![Add a trigger on the workflow canvas](/images/mcp/workflows/05-add-trigger.png)
+</Step>
+<Step title="Pick YouTube Analytics from the Apps panel">
+In the **Paths** panel, open the **Apps** tab and select **YouTube Analytics**. Use the search box if you have many connectors.
+
+![Choose your app from the Apps list](/images/mcp/workflows/06-apps-list.png)
+</Step>
+<Step title="Choose a trigger or tool">
+Pick the trigger or action you want. Configure its fields — required fields are marked with a red asterisk (*).
+</Step>
+<Step title="Add or select your account">
+Under **Selected account**, choose an already-connected account, or click **Add Account** to connect one now.
+</Step>
+<Step title="Save and test">
+Fill in the remaining fields and click **Save**. Use **Test** to verify the step, then toggle **Publish** when the workflow is ready.
+</Step>
+</Steps>
+
+<Note>
+The steps are the same for every connector. For the full workflow builder guide, see [Using MCP in Workflows](/mcp/workflows).
+</Note>
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| Get Channel Report | Pulls an analytics report for your channel over a date range. | No |
+| Get Video Report | Pulls an analytics report for a specific video. | No |
+| List Top Videos | Ranks your videos by a chosen metric. | No |
+| List Channels | Lists the channels your account manages. | No |
+| List Videos | Lists videos on a channel. | No |
+| List Groups | Lists your YouTube Analytics groups. | No |
+| Create Group | Creates a new analytics group. | ✏️ Yes |
+
+### Available triggers
+
+| Trigger | Fires when |
+|---|---|
+| On New Video | A new video is published on the channel. |
+
+## 6. Example usage
+
+**"How did the channel do last month? Give me views, watch time, and new subscribers."**
+→ Runs Get Channel Report for last month's date range and summarizes the key metrics.
+
+**"What were my five most-viewed videos this quarter?"**
+→ Runs List Top Videos ranked by views for the quarter and returns the top five.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- Pull channel and video analytics reports.
+- List your top videos, channels, and videos.
+- Read your analytics groups.
+- Create new analytics groups (this tool is marked ✏️).
+
+**UnleashX cannot:**
+- Edit, upload, or delete your videos or channel content.
+- Access analytics for channels your account doesn't manage.
+- Change your Google account password or security settings.
+
+**To disconnect:** In UnleashX, open **Data Connectors → YouTube Analytics → Disconnect**. You can also revoke access at `https://myaccount.google.com/permissions` (Third-party apps with account access). Disconnecting revokes access immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| **401 Unauthorized** | The Google token expired or is invalid. | Reconnect YouTube Analytics in **Data Connectors** and sign in again. |
+| **403 Forbidden** | Access to analytics was blocked or not granted. | Re-authorize and accept the scopes; confirm the account manages the channel. |
+| **Wrong channel** | The report is for a different channel or Brand Account. | Reconnect and select the channel whose analytics you want. |
+| **Empty or partial report** | The data hasn't finished processing yet. | Wait for YouTube to finalize recent metrics, then re-run the report. |
+| **Rate limit exceeded** | Google's API request/quota limit was reached. | Wait for the quota to reset or narrow the report's date range. |
+
+For general MCP issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Is my analytics data stored by UnleashX?**
+No. UnleashX pulls reports live through the YouTube Analytics API per request; it doesn't keep a copy of your data.
+
+**Which channel does the agent report on?**
+The one tied to the Google account you selected when connecting. If you manage several, reconnect to switch, or pick the channel in the report.
+
+**Can the agent change my videos or channel?**
+No. This connector is read and report focused — the only write action is creating analytics groups. It can't upload, edit, or delete content.
+
+**Why are recent numbers lower than expected?**
+YouTube takes time to process views and watch time. Very recent reports can show partial figures until processing completes.
+
+## 10. References
+
+- YouTube Analytics API documentation: https://developers.google.com/youtube/analytics
+- YouTube Data API documentation: https://developers.google.com/youtube/v3
+- Google OAuth 2.0 scopes: https://developers.google.com/identity/protocols/oauth2/scopes
+- Manage third-party access to your Google Account: https://myaccount.google.com/permissions

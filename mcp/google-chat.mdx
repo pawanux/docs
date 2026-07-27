@@ -1,0 +1,200 @@
+---
+title: "Google Chat"
+icon: "https://cdn.simpleicons.org/googlechat"
+description: "Let your UnleashX agent read and send messages across your Google Chat spaces."
+tags: [mcp, google-chat, integration]
+---
+
+# Google Chat
+
+> **In one line:** Connect Google Chat so your UnleashX agent can browse spaces, read and search messages, and post, edit, or remove messages — all in plain language.
+
+| | |
+|---|---|
+| **Category** | Communication |
+| **Authentication** | OAuth (Google) |
+| **Setup time** | ~2 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Teams that want an AI agent to read what's happening in their Google Chat spaces and post updates automatically |
+
+## 1. Overview
+
+Google Chat is Google's team messaging platform in Workspace. Conversations live in spaces — group rooms and direct messages — where teams share updates, files, and threaded discussions.
+
+Once connected to UnleashX, your agent can list the spaces you belong to, read and pull up individual messages, post new messages, edit ones it sent, and delete messages when needed. It works against your live Google Chat using your own Google sign-in, so it respects your account and space memberships.
+
+Connecting Google Chat to UnleashX means your agent can keep the conversation moving. Instead of switching to Chat to post an update or catch up on a space, you tell your agent and it reads the thread or sends the message for you.
+
+## 2. What you'll need
+
+- A Google Workspace account with Google Chat enabled.
+- Membership in the spaces you want the agent to read from or post to.
+- An UnleashX account with access to **Data Connectors**.
+
+<Note>
+No API key to paste. Google Chat uses OAuth — you click **Authorize** and sign in with Google.
+</Note>
+
+<Warning>
+Your **Workspace admin** controls whether third-party apps can connect to Google Chat, and the agent can only see spaces you're a member of. If authorization is blocked or a space is missing, ask your admin to allow UnleashX or add you to the space.
+</Warning>
+
+## 3. Get your credentials
+
+There's no key to copy. Authentication runs through Google's secure OAuth sign-in.
+
+<Steps>
+<Step title="Start the connection in UnleashX">
+Connecting Google Chat (Section 4) opens a Google **Sign in** window.
+</Step>
+<Step title="Sign in with Google">
+Choose the Google account whose Chat spaces you want the agent to use, and sign in at `https://accounts.google.com`. Complete two-factor authentication if prompted.
+</Step>
+<Step title="Review and accept the scopes">
+Google shows the access UnleashX is requesting (see the scopes table). Review it and click **Allow**.
+</Step>
+<Step title="Confirm the account">
+If you're signed in to more than one Google account, make sure you picked the one that belongs to the spaces you want to work with.
+</Step>
+<Step title="Return to UnleashX">
+Google redirects you back automatically and the connector links to your account. Behind the scenes UnleashX uses Google's OAuth token — you never handle it yourself.
+</Step>
+</Steps>
+
+**Permissions (Google OAuth scopes) UnleashX requests:**
+
+| Scope | Why UnleashX needs it |
+|---|---|
+| `https://www.googleapis.com/auth/chat.spaces.readonly` | List and read the spaces you belong to. |
+| `https://www.googleapis.com/auth/chat.messages` | Read, send, edit, and delete messages in your spaces. |
+| `openid` | Identify the Google account being connected. |
+| `https://www.googleapis.com/auth/userinfo.email` | Confirm which account is linked so you can manage the connection. |
+
+<Note>
+Google OAuth scopes are granular. UnleashX requests only what these tools need, and Google — not UnleashX — enforces the limits.
+</Note>
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to `https://www.tryunleashx.com` and open the agent you want to connect.
+</Step>
+<Step title="Open Data Connectors">
+Inside the agent, go to **Data Connectors**.
+</Step>
+<Step title="Find Google Chat">
+Locate **Google Chat** and click **Connect** (or **Add** / **Configure**).
+</Step>
+<Step title="Authorize with Google">
+Click **Authorize**, sign in with Google, and accept the scopes.
+</Step>
+<Step title="Confirm success">
+You return to UnleashX and the Google Chat connector shows a **Connected** badge.
+</Step>
+</Steps>
+
+{/* workflow-usage-section */}
+### Use Google Chat in a Workflow
+
+Once connected, you can add **Google Chat** to any automation from the **Workflows** builder. Its triggers and tools appear in the Apps panel, marked with an **MCP** badge.
+
+<Steps>
+<Step title="Add a trigger or action node">
+Open **Workflows → New Workflow**. On the canvas, click **+ Add Trigger** (or the **+** below any node) to add a step.
+
+![Add a trigger on the workflow canvas](/images/mcp/workflows/05-add-trigger.png)
+</Step>
+<Step title="Pick Google Chat from the Apps panel">
+In the **Paths** panel, open the **Apps** tab and select **Google Chat**. Use the search box if you have many connectors.
+
+![Choose your app from the Apps list](/images/mcp/workflows/06-apps-list.png)
+</Step>
+<Step title="Choose a trigger or tool">
+Pick the trigger or action you want. Configure its fields — required fields are marked with a red asterisk (*).
+</Step>
+<Step title="Add or select your account">
+Under **Selected account**, choose an already-connected account, or click **Add Account** to connect one now.
+</Step>
+<Step title="Save and test">
+Fill in the remaining fields and click **Save**. Use **Test** to verify the step, then toggle **Publish** when the workflow is ready.
+</Step>
+</Steps>
+
+<Note>
+The steps are the same for every connector. For the full workflow builder guide, see [Using MCP in Workflows](/mcp/workflows).
+</Note>
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| List Spaces | Lists the Google Chat spaces you belong to. | No |
+| Get Space | Retrieves details of a single space. | No |
+| List Messages | Lists messages in a space. | No |
+| Get Message | Retrieves a single message by ID. | No |
+| Create Message | Posts a new message to a space. | ✏️ Yes |
+| Update Message | Edits a message the agent sent. | ✏️ Yes |
+| Delete Message | Deletes a specified message. | ⚠️ Yes |
+
+### Available triggers
+
+| Trigger | Fires when |
+|---|---|
+| On New Message | A new message is posted in a space. |
+
+## 6. Example usage
+
+**"Post 'Deploy is done — production is live' to the Engineering space."**
+→ Runs List Spaces to find Engineering, then Create Message to post the update.
+
+**"Catch me up on the latest messages in the Product space."**
+→ Runs List Messages on the Product space and summarizes the recent conversation.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- List the spaces you belong to and read their details.
+- Read and list messages in those spaces.
+- Post new messages and edit ones it sent.
+- Delete messages where you allow it (this tool is clearly marked ⚠️).
+
+**UnleashX cannot:**
+- Access spaces you're not a member of.
+- Access other Google services (Gmail, Drive, Calendar) — those are separate connectors.
+- Change your Google account password or security settings.
+
+**To disconnect:** In UnleashX, open **Data Connectors → Google Chat → Disconnect**. You can also revoke access at `https://myaccount.google.com/permissions` (Third-party apps with account access). Disconnecting revokes access immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| **401 Unauthorized** | The Google token expired or is invalid. | Reconnect Google Chat in **Data Connectors** and sign in again. |
+| **403 Forbidden** | Access to Chat was blocked or not granted. | Re-authorize and accept the scopes; ask your Workspace admin to allow UnleashX. |
+| **Space not found** | You're not a member of the space, or its ID changed. | Use List Spaces to find spaces you can access, or ask to be added. |
+| **Can't edit or delete a message** | The message wasn't sent by the agent. | Update and Delete only apply to messages the connector posted. |
+| **Rate limit exceeded** | Google's Chat API request limit was reached. | Wait a moment and retry with fewer, more specific requests. |
+
+For general MCP issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Are my messages stored by UnleashX?**
+No. UnleashX reads and writes messages live through the Google Chat API per request; it doesn't keep a copy.
+
+**Which account does the agent use?**
+The Google account you selected when connecting. To switch, reconnect and choose a different account.
+
+**Can the agent post in any space?**
+Only spaces you're a member of. It can't see or post to spaces you don't belong to.
+
+**Does this work with personal Google accounts?**
+Google Chat is a Workspace feature, so it works with Workspace accounts where Chat is enabled and third-party access is allowed.
+
+## 10. References
+
+- Google Chat API documentation: https://developers.google.com/workspace/chat/api-overview
+- Google OAuth 2.0 scopes: https://developers.google.com/identity/protocols/oauth2/scopes
+- Manage third-party access to your Google Account: https://myaccount.google.com/permissions
+- Google sign-in: https://accounts.google.com

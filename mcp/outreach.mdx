@@ -1,0 +1,204 @@
+---
+title: "Outreach"
+icon: "https://www.outreach.io/favicon.ico"
+description: "Let your UnleashX agent manage prospects, sequences, and accounts in Outreach."
+tags: [mcp, outreach, integration]
+---
+
+# Outreach
+
+> **In one line:** Connect Outreach so your UnleashX agent can manage prospects, add them to sequences, create accounts, and keep your sales engagement moving — all in plain language.
+
+| | |
+|---|---|
+| **Category** | Sales & Outreach |
+| **Authentication** | OAuth (Outreach) |
+| **Setup time** | ~3 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Sales teams that want an AI agent to manage prospects, run sequences, and keep accounts up to date in Outreach |
+
+## 1. Overview
+
+Outreach is a sales engagement platform. It's where your reps manage prospects and accounts, run multi-step sequences across email and calls, and track the tasks and activities that move deals forward.
+
+Once connected to UnleashX, your agent can list and inspect prospects, create and update them, add prospects to sequences, and create accounts. It works against your live Outreach instance using your own Outreach sign-in, so it respects your role and permissions.
+
+Connecting Outreach to UnleashX means your engagement runs from a conversation. Instead of opening Outreach to add a prospect or enroll someone in a sequence, you tell your agent and it makes the change — cutting the manual data entry while keeping your pipeline current.
+
+## 2. What you'll need
+
+- An Outreach account with a user seat.
+- A user role with permission to view and edit prospects, sequences, and accounts.
+- An UnleashX account with access to **Data Connectors**.
+
+<Note>
+No API key to paste. Outreach uses OAuth — you click **Authorize** and sign in with Outreach.
+</Note>
+
+<Warning>
+Outreach enforces your **role permissions**. If your Outreach user can't create prospects or add them to sequences, the agent can't either. Ask your Outreach admin to adjust your role if needed.
+</Warning>
+
+## 3. Get your credentials
+
+There's no key to copy. Authentication runs through Outreach's secure OAuth sign-in.
+
+<Steps>
+<Step title="Start the connection in UnleashX">
+Connecting Outreach (Section 4) opens an Outreach **Authorize** window.
+</Step>
+<Step title="Sign in with Outreach">
+Sign in with your Outreach account at `https://accounts.outreach.io`. Complete two-factor authentication if prompted.
+</Step>
+<Step title="Review and accept the scopes">
+Outreach shows the access UnleashX is requesting (see the scopes table). Click **Allow**.
+</Step>
+<Step title="Return to UnleashX">
+Outreach redirects you back automatically and the connector links to your instance. Behind the scenes UnleashX calls Outreach with a bearer authorization token — you never handle the token yourself.
+</Step>
+</Steps>
+
+**Permissions (Outreach OAuth scopes) UnleashX requests:**
+
+| Scope | Why UnleashX needs it |
+|---|---|
+| `prospects.all` | Create, read, update, and delete prospects. |
+| `sequences.all` | List sequences and enroll prospects in them. |
+| `sequenceStates.all` | Add prospects to sequences and read their sequence state. |
+| `accounts.all` | Create and read accounts. |
+| `tasks.read` | Read tasks so triggers can fire on new tasks. |
+| `calls.read` | Read call activity so triggers can fire on new calls. |
+| `mailings.read` | Read email activity so triggers can fire on new emails. |
+
+<Note>
+Outreach OAuth scopes are granular. UnleashX requests only what these tools need, and Outreach — not UnleashX — enforces the limits.
+</Note>
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to `https://www.tryunleashx.com` and open the agent you want to connect.
+</Step>
+<Step title="Open Data Connectors">
+Inside the agent, go to **Data Connectors**.
+</Step>
+<Step title="Find Outreach">
+Locate **Outreach** and click **Connect** (or **Add** / **Configure**).
+</Step>
+<Step title="Authorize with Outreach">
+Click **Authorize**, sign in with Outreach, and accept the scopes.
+</Step>
+<Step title="Confirm success">
+You return to UnleashX and the Outreach connector shows a **Connected** badge.
+</Step>
+</Steps>
+
+{/* workflow-usage-section */}
+### Use Outreach in a Workflow
+
+Once connected, you can add **Outreach** to any automation from the **Workflows** builder. Its triggers and tools appear in the Apps panel, marked with an **MCP** badge.
+
+<Steps>
+<Step title="Add a trigger or action node">
+Open **Workflows → New Workflow**. On the canvas, click **+ Add Trigger** (or the **+** below any node) to add a step.
+
+![Add a trigger on the workflow canvas](/images/mcp/workflows/05-add-trigger.png)
+</Step>
+<Step title="Pick Outreach from the Apps panel">
+In the **Paths** panel, open the **Apps** tab and select **Outreach**. Use the search box if you have many connectors.
+
+![Choose your app from the Apps list](/images/mcp/workflows/06-apps-list.png)
+</Step>
+<Step title="Choose a trigger or tool">
+Pick the trigger or action you want. Configure its fields — required fields are marked with a red asterisk (*).
+</Step>
+<Step title="Add or select your account">
+Under **Selected account**, choose an already-connected account, or click **Add Account** to connect one now.
+</Step>
+<Step title="Save and test">
+Fill in the remaining fields and click **Save**. Use **Test** to verify the step, then toggle **Publish** when the workflow is ready.
+</Step>
+</Steps>
+
+<Note>
+The steps are the same for every connector. For the full workflow builder guide, see [Using MCP in Workflows](/mcp/workflows).
+</Note>
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| List Prospects | Lists prospects (filter by attributes). | No |
+| Get Prospect | Retrieves a single prospect by ID. | No |
+| Create Prospect | Creates a new prospect. | ✏️ Yes |
+| Update Prospect | Updates an existing prospect. | ✏️ Yes |
+| Delete Prospect | Deletes a specified prospect. | ⚠️ Yes |
+| List Sequences | Lists sequences in your Outreach instance. | No |
+| Add Prospect To Sequence | Enrolls a prospect in a sequence. | ✏️ Yes |
+| Create Account | Creates a new account. | ✏️ Yes |
+
+### Available triggers
+
+| Trigger | Fires when |
+|---|---|
+| On New Prospect | A new prospect is created in Outreach. |
+| On New Task | A new task is created for a user. |
+| On New Email | A new email (mailing) activity is recorded. |
+| On New Call | A new call activity is logged. |
+
+## 6. Example usage
+
+**"Add jane@acme.com as a prospect and enroll her in the Enterprise Outbound sequence."**
+→ Runs Create Prospect to add the contact, then Add Prospect To Sequence to enroll her.
+
+**"Create an account for Globex and add their VP of Sales as a new prospect."**
+→ Runs Create Account for Globex, then Create Prospect for the VP linked to that account.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- Read and list prospects, sequences, and accounts.
+- Create and update prospects and accounts.
+- Add prospects to sequences.
+- Delete prospects where your role allows (this tool is clearly marked ⚠️).
+
+**UnleashX cannot:**
+- Do anything your Outreach role doesn't permit.
+- Change your Outreach account password or org-wide admin settings.
+- Access unrelated systems — those are separate connectors.
+
+**To disconnect:** In UnleashX, open **Data Connectors → Outreach → Disconnect**. You can also revoke access from your Outreach account settings under connected apps. Disconnecting revokes access immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| **401 Unauthorized** | The Outreach token expired or is invalid. | Reconnect Outreach in **Data Connectors** and sign in again. |
+| **403 Forbidden** | Your Outreach role lacks permission for that action. | Ask your admin to grant the needed permission, then retry. |
+| **429 Too Many Requests** | You hit the Outreach API rate limit. | Slow down requests and retry after a short wait. |
+| **Prospect already exists** | A prospect with that email is already in Outreach. | Update the existing prospect instead of creating a duplicate. |
+| **Sequence enrollment failed** | The sequence is inactive or the prospect is missing a required field. | Check the sequence status and the prospect's fields, then retry. |
+
+For general MCP issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Is my sales data stored by UnleashX?**
+No. UnleashX reads and writes your records live through the Outreach API per request; it doesn't keep a copy of your data.
+
+**Which Outreach instance does the agent use?**
+The one tied to the account you signed in with when connecting. To switch, reconnect with a different account.
+
+**Can the agent really delete prospects?**
+Yes — the Delete Prospect tool (marked ⚠️) makes a permanent change in Outreach. It only works if your role allows it. Use it deliberately.
+
+**Can it send emails or make calls?**
+It manages prospects, sequences, and accounts. Sequences drive the actual sending and tasks within Outreach under your instance's settings.
+
+## 10. References
+
+- Outreach API documentation: https://developers.outreach.io/api/
+- Outreach OAuth overview & scopes: https://developers.outreach.io/api/oauth/
+- Outreach sign-in: https://accounts.outreach.io
+- Outreach support: https://support.outreach.io/

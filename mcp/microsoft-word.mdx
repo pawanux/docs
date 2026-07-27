@@ -1,0 +1,200 @@
+---
+title: "Microsoft Word"
+icon: "https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/microsoftword.svg"
+description: "Let your UnleashX agent create, read, update, and manage Word documents stored in OneDrive or SharePoint."
+tags: [mcp, microsoft-word, integration]
+---
+
+# Microsoft Word
+
+> **In one line:** Connect Microsoft Word so your UnleashX agent can list, read, create, update, and delete Word documents in your OneDrive or SharePoint — all in plain language.
+
+| | |
+|---|---|
+| **Category** | Productivity & Scheduling |
+| **Authentication** | OAuth (Microsoft 365 / Microsoft Graph) |
+| **Setup time** | ~3 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Teams that keep documents in Word on OneDrive/SharePoint and want an AI agent to draft, read, and update those files |
+
+## 1. Overview
+
+Microsoft Word is the document app in Microsoft 365. When your documents live in OneDrive or SharePoint, they can be read and managed through the Microsoft Graph API — the same files your team sees in Word Online.
+
+Once connected to UnleashX, your agent can list your documents, read a document's content, create a new document, update an existing one, and delete a document. You stay in control — the agent acts on your real files using your own Microsoft sign-in.
+
+Connecting Word to UnleashX turns your documents into something you can draft and manage by talking. Instead of opening Word to write up a note or pull a paragraph, you tell your agent and it creates, reads, or updates the file for you.
+
+## 2. What you'll need
+
+- A Microsoft account (personal `@outlook.com`, or a Microsoft 365 work/school account) with Word documents stored in **OneDrive** or **SharePoint**.
+- Permission to view and edit those documents. For work accounts, your organization must allow third-party apps via Microsoft Graph.
+- An UnleashX account with access to **Data Connectors**.
+
+<Note>
+You do **not** need to create or paste an API key. Word uses OAuth — you click **Authorize** and sign in with Microsoft.
+</Note>
+
+<Warning>
+Only documents stored **online** (OneDrive/SharePoint) are accessible via the API. Files that live only on your local computer can't be reached.
+</Warning>
+
+## 3. Get your credentials
+
+There's nothing to copy and paste. Authentication runs through Microsoft's secure OAuth sign-in.
+
+<Steps>
+<Step title="Start the connection in UnleashX">
+Connecting Word (Section 4) opens a Microsoft **Authorize** window.
+</Step>
+<Step title="Sign in with Microsoft">
+Enter your Microsoft / Microsoft 365 email and password at `https://login.microsoftonline.com`. Complete multi-factor authentication if prompted.
+</Step>
+<Step title="Review and accept the scopes">
+Microsoft shows exactly what UnleashX is asking for (see the scopes table). Click **Accept**.
+</Step>
+<Step title="Return to UnleashX">
+Microsoft redirects you back automatically and the connector links to your files. Behind the scenes UnleashX calls Microsoft Graph with a `Bearer` token — you never handle the token yourself.
+</Step>
+</Steps>
+
+<Note>
+If you use a **work or school** account, your IT administrator may need to approve UnleashX (admin consent) before the connection succeeds. If you see a "need admin approval" screen, contact your Microsoft 365 admin.
+</Note>
+
+**Permissions (Microsoft Graph scopes) UnleashX requests:**
+
+| Scope | Why UnleashX needs it |
+|---|---|
+| `Files.ReadWrite` | Read, create, update, and delete the Word documents in your OneDrive/SharePoint. |
+| `Sites.ReadWrite.All` | Access documents stored in SharePoint sites (work/school). |
+| `User.Read` | Read your basic profile to identify the connected account. |
+| `offline_access` | Refresh access automatically so you don't re-authorize every session. |
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to `https://www.tryunleashx.com` and open the agent you want to connect.
+</Step>
+<Step title="Open Data Connectors">
+Inside the agent, go to **Data Connectors**.
+</Step>
+<Step title="Find Microsoft Word">
+Locate **Microsoft Word** and click **Connect** (or **Add** / **Configure**).
+</Step>
+<Step title="Authorize with Microsoft">
+Click **Authorize**, sign in with Microsoft, and accept the scopes.
+</Step>
+<Step title="Confirm success">
+You return to UnleashX and the Microsoft Word connector shows a **Connected** badge.
+</Step>
+</Steps>
+
+{/* workflow-usage-section */}
+### Use Microsoft Word in a Workflow
+
+Once connected, you can add **Microsoft Word** to any automation from the **Workflows** builder. Its triggers and tools appear in the Apps panel, marked with an **MCP** badge.
+
+<Steps>
+<Step title="Add a trigger or action node">
+Open **Workflows → New Workflow**. On the canvas, click **+ Add Trigger** (or the **+** below any node) to add a step.
+
+![Add a trigger on the workflow canvas](/images/mcp/workflows/05-add-trigger.png)
+</Step>
+<Step title="Pick Microsoft Word from the Apps panel">
+In the **Paths** panel, open the **Apps** tab and select **Microsoft Word**. Use the search box if you have many connectors.
+
+![Choose your app from the Apps list](/images/mcp/workflows/06-apps-list.png)
+</Step>
+<Step title="Choose a trigger or tool">
+Pick the trigger or action you want (for example, "create document"). Configure its fields — required fields are marked with a red asterisk (*).
+</Step>
+<Step title="Add or select your account">
+Under **Selected account**, choose an already-connected account, or click **Add Account** to connect one now.
+</Step>
+<Step title="Save and test">
+Fill in the remaining fields and click **Save**. Use **Test** to verify the step, then toggle **Publish** when the workflow is ready.
+</Step>
+</Steps>
+
+<Note>
+The steps are the same for every connector. For the full workflow builder guide, see [Using MCP in Workflows](/mcp/workflows).
+</Note>
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| List Documents | Lists your Word documents in OneDrive/SharePoint. | No |
+| Get Document | Retrieves a document's metadata by ID. | No |
+| Get Document Content | Reads the text/content of a document. | No |
+| Create Document | Creates a new document by uploading its file content. | ✏️ Yes |
+| Update Document | Updates an existing document by uploading new file content. | ✏️ Yes |
+| Delete Document | Deletes a document. | ⚠️ Yes |
+
+<Note>
+Documents are created and updated by uploading file content — the agent builds the document body and writes it to the file, replacing the existing content on an update.
+</Note>
+
+### Available triggers
+
+| Trigger | Fires when |
+|---|---|
+| On New Document | A new Word document is added to your OneDrive/SharePoint. |
+
+## 6. Example usage
+
+**"Draft a one-page project kickoff note and save it as 'Kickoff — Acme' in my OneDrive."**
+→ Runs Create Document to write the note into a new Word file in OneDrive.
+
+**"Read the latest contract draft and summarize the key terms."**
+→ Runs List Documents to find the draft, then Get Document Content to read it and summarize the terms.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- List your online Word documents and read their content and metadata.
+- Create new documents by uploading file content.
+- Update existing documents with new content.
+- Delete documents where you allow it (marked ⚠️).
+
+**UnleashX cannot:**
+- Access documents stored only on your local device.
+- Reach files your Microsoft account can't open.
+- Change Microsoft 365 admin or account settings.
+
+**To disconnect:** In UnleashX, open **Data Connectors → Microsoft Word → Disconnect**. You can also revoke access at `https://myaccount.microsoft.com/` under **Privacy / Apps**. Disconnecting revokes access immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| **Need admin approval** | A work/school account requires admin consent. | Ask your Microsoft 365 admin to approve UnleashX. |
+| **401 Unauthorized** | The Microsoft token expired or was revoked. | Reconnect Microsoft Word and sign in again. |
+| **404 Item not found** | The document name is wrong or the file was moved. | Have the agent list documents to find it. |
+| **File is checked out / locked** | Someone has the file open exclusively. | Close the file elsewhere and retry. |
+| **403 Forbidden** | Your account can't edit that file or SharePoint site. | Ask the owner for edit access, then retry. |
+
+For general MCP issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Does this work with local Word files?**
+No. Only documents stored in OneDrive or SharePoint are reachable through the API.
+
+**Is my document content stored by UnleashX?**
+No. UnleashX reads and writes live through Microsoft Graph per request; it doesn't keep a copy of your files.
+
+**Can the agent delete documents?**
+Yes — the Delete Document tool (marked ⚠️) makes permanent changes. It only works if your account can edit the file. Use it deliberately.
+
+**Does it work with both personal and work accounts?**
+Yes — personal `@outlook.com` and Microsoft 365 work/school accounts both work, though work accounts may need admin consent.
+
+## 10. References
+
+- Word / files in Microsoft Graph: https://learn.microsoft.com/en-us/graph/api/resources/driveitem
+- Working with files in Microsoft Graph: https://learn.microsoft.com/en-us/graph/api/resources/onedrive
+- Microsoft Graph permissions reference: https://learn.microsoft.com/en-us/graph/permissions-reference
+- Manage app access: https://myaccount.microsoft.com/

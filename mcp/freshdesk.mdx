@@ -1,0 +1,205 @@
+---
+title: "Freshdesk"
+icon: "https://cdn.simpleicons.org/freshworks"
+description: "Let your UnleashX agent manage support tickets, contacts, and companies in Freshdesk."
+tags: [mcp, freshdesk, integration]
+---
+
+# Freshdesk
+
+> **In one line:** Connect Freshdesk so your UnleashX agent can create, update, and triage support tickets, look up contacts and companies, and react to new tickets — all in plain language.
+
+| | |
+|---|---|
+| **Category** | CRM & Marketing |
+| **Authentication** | API key + domain |
+| **Setup time** | ~3 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Support teams that want an AI agent to raise, update, and triage tickets and manage contacts in Freshdesk |
+
+## 1. Overview
+
+Freshdesk is Freshworks' cloud-based customer support and help desk platform. It's where your support tickets, contacts, and companies live — the system of record for customer conversations and the SLAs that keep them on track.
+
+Once connected to UnleashX, your agent can create, read, update, and delete tickets, list and create contacts and companies, and react to new or updated tickets in a workflow. It works against your live Freshdesk account using your API key, so it respects your account's data and settings.
+
+Connecting Freshdesk to UnleashX means your help desk stays current as you talk. Instead of opening Freshdesk to raise a ticket or update a contact, you tell your agent and it makes the change — and workflows can respond the moment a new ticket arrives.
+
+## 2. What you'll need
+
+- A Freshdesk account and your **Freshdesk domain** (e.g. `yourcompany.freshdesk.com`).
+- Your Freshdesk **API key** (see Section 3).
+- An UnleashX account with access to **Data Connectors**.
+
+<Note>
+You paste **two** values: your Freshdesk **domain** and your **API key**. UnleashX sends the key to your domain using HTTP basic authentication.
+</Note>
+
+<Warning>
+Your Freshdesk **role** determines what the API key can do. If your Freshdesk user can't delete tickets or manage contacts, the agent can't either. Ask an admin to adjust your role if an action is denied.
+</Warning>
+
+## 3. Get your credentials
+
+Freshdesk MCP authenticates with your **domain** plus an **API key** tied to your Freshdesk user. You copy both once and paste them into UnleashX. There's no OAuth flow and nothing to install.
+
+<Steps>
+<Step title="Sign in to Freshdesk">
+Go to your Freshdesk account and sign in. Your **domain** is the address in your browser — for example `yourcompany.freshdesk.com`. UnleashX needs this so it knows which Freshdesk account to talk to.
+</Step>
+<Step title="Open your profile settings">
+Click your **profile picture** in the top-right corner, then select **Profile settings**.
+</Step>
+<Step title="Copy Your API Key">
+On the profile settings page, find **Your API Key** in the right-hand panel and copy it. Treat it like a password — it grants access to your account's API with your permissions.
+</Step>
+<Step title="Paste both into UnleashX">
+Head to **Data Connectors → Freshdesk** in UnleashX and paste **both** your domain and your API key (full walkthrough in Section 4). UnleashX validates them immediately, so you'll know right away if either was copied incorrectly.
+</Step>
+</Steps>
+
+<Warning>
+Your API key grants access to your Freshdesk account. Treat it like a password:
+
+- Never commit it to git, paste it in a ticket, or share it in chat.
+- If it's ever exposed, reset it from **Profile settings** in Freshdesk — the old key stops working, so reconnect UnleashX with the new value.
+</Warning>
+
+### Permissions this key grants UnleashX
+
+| Access | Why UnleashX needs it |
+|---|---|
+| Manage tickets | Create, read, update, and delete support tickets. |
+| Read contacts & companies | List contacts and companies in your account. |
+| Create contacts & companies | Add new contacts and companies. |
+| Watch for ticket events | Fire workflow triggers when tickets are created, updated, or noted. |
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to `https://www.tryunleashx.com` and open the agent you want to connect.
+</Step>
+<Step title="Open Data Connectors">
+Inside the agent, go to **Data Connectors**.
+</Step>
+<Step title="Find Freshdesk">
+Locate **Freshdesk** and click **Connect** (or **Add** / **Configure**).
+</Step>
+<Step title="Enter your domain and API key">
+Paste your **Freshdesk domain** and your **API key**, then click **Connect**.
+</Step>
+<Step title="Confirm success">
+UnleashX validates the credentials and the Freshdesk connector shows a **Connected** badge.
+</Step>
+</Steps>
+
+{/* workflow-usage-section */}
+### Use Freshdesk in a Workflow
+
+Once connected, you can add **Freshdesk** to any automation from the **Workflows** builder. Its triggers and tools appear in the Apps panel, marked with an **MCP** badge.
+
+<Steps>
+<Step title="Add a trigger or action node">
+Open **Workflows → New Workflow**. On the canvas, click **+ Add Trigger** (or the **+** below any node) to add a step.
+
+![Add a trigger on the workflow canvas](/images/mcp/workflows/05-add-trigger.png)
+</Step>
+<Step title="Pick Freshdesk from the Apps panel">
+In the **Paths** panel, open the **Apps** tab and select **Freshdesk**. Use the search box if you have many connectors.
+
+![Choose your app from the Apps list](/images/mcp/workflows/06-apps-list.png)
+</Step>
+<Step title="Choose a trigger or tool">
+Pick the trigger or action you want (for example, "on new ticket"). Configure its fields — required fields are marked with a red asterisk (*).
+</Step>
+<Step title="Add or select your account">
+Under **Selected account**, choose an already-connected account, or click **Add Account** to connect one now.
+</Step>
+<Step title="Save and test">
+Fill in the remaining fields and click **Save**. Use **Test** to verify the step, then toggle **Publish** when the workflow is ready.
+</Step>
+</Steps>
+
+<Note>
+The steps are the same for every connector. For the full workflow builder guide, see [Using MCP in Workflows](/mcp/workflows).
+</Note>
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| List Tickets | Lists support tickets (filter by status, priority, requester). | No |
+| Get Ticket | Retrieves a single ticket by ID. | No |
+| Create Ticket | Creates a new support ticket. | ✏️ Yes |
+| Update Ticket | Updates an existing ticket. | ✏️ Yes |
+| Delete Ticket | Deletes a specified ticket. | ⚠️ Yes |
+| List Contacts | Lists contacts in your account. | No |
+| List Companies | Lists companies in your account. | No |
+| Create Contact | Creates a new contact. | ✏️ Yes |
+| Create Company | Creates a new company. | ✏️ Yes |
+
+### Available triggers
+
+| Trigger | Fires when |
+|---|---|
+| On New Ticket | A new support ticket is created. |
+| On New Ticket Note | A note is added to a ticket. |
+| On Contact Created | A new contact is created. |
+| On Contact Updated | An existing contact is updated. |
+| On Ticket Updated | An existing ticket is updated. |
+
+## 6. Example usage
+
+**"Open a high-priority ticket for acme@customer.com about a failed login and assign it to the support queue."**
+→ Runs Create Ticket with the requester, subject, and high priority set.
+
+**"When a new ticket comes in tagged 'billing', create a contact for the requester if we don't have one."**
+→ Uses the On New Ticket trigger, then runs Create Contact for the requester in the workflow.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- Read and list tickets, contacts, and companies.
+- Create and update tickets, and create contacts and companies.
+- Delete tickets where your role allows (this tool is clearly marked ⚠️).
+- React to new and updated tickets and notes via workflow triggers.
+
+**UnleashX cannot:**
+- Access Freshdesk accounts other than the domain you connected.
+- Do anything your Freshdesk role doesn't permit.
+- Change your Freshdesk account password or admin settings.
+
+**To disconnect:** In UnleashX, open **Data Connectors → Freshdesk → Disconnect**. Then reset the API key in Freshdesk under **Profile settings**. Disconnecting and resetting removes access immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| **401 Unauthorized** | The API key is invalid or was reset. | Copy the current key from **Profile settings** and reconnect. |
+| **Wrong domain** | The domain doesn't match your account. | Reconnect using your exact `*.freshdesk.com` domain. |
+| **403 Forbidden** | Your Freshdesk role lacks permission for that action. | Ask an admin to grant the needed permission, then retry. |
+| **404 Not Found** | The ticket, contact, or company ID doesn't exist. | Confirm the record exists, or use a List tool to locate it first. |
+| **429 Too Many Requests** | You hit Freshdesk's API rate limit. | Slow down requests and retry after a moment. |
+
+For general MCP issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Is my support data stored by UnleashX?**
+No. UnleashX reads and writes your records live through the Freshdesk API per request; it doesn't keep a copy of your tickets or contacts.
+
+**Why do I need both a domain and an API key?**
+The API key authenticates you, and the domain tells UnleashX which Freshdesk account to reach. Both are needed for the connection to work.
+
+**Can the agent really delete tickets?**
+Yes — Delete Ticket (marked ⚠️) makes a permanent change in Freshdesk, and only works if your role allows it. Use it deliberately.
+
+**Where do the triggers fire?**
+Triggers like On New Ticket run inside Workflows — they start an automation the moment a matching event happens in Freshdesk.
+
+## 10. References
+
+- Freshdesk API documentation: https://developers.freshdesk.com/api/
+- API key & authentication: https://developers.freshdesk.com/api/#authentication
+- Freshdesk support: https://support.freshdesk.com/

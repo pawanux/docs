@@ -1,0 +1,211 @@
+---
+title: "LinkedIn Ads"
+icon: "https://cdn.simpleicons.org/linkedin"
+description: "Let your UnleashX agent manage LinkedIn ad accounts, campaign groups, campaigns, conversions, analytics, and reports."
+tags: [mcp, linkedin-ads, integration]
+---
+
+# LinkedIn Ads
+
+> **In one line:** Connect LinkedIn Ads so your UnleashX agent can manage ad accounts, campaign groups, and campaigns, send conversion events, and pull analytics and reports — all in plain language.
+
+| | |
+|---|---|
+| **Category** | Advertising & Analytics |
+| **Authentication** | OAuth (LinkedIn) |
+| **Setup time** | ~4 minutes |
+| **Difficulty** | Medium |
+| **Best for** | B2B marketing teams that want an AI agent to run LinkedIn Ads campaigns, track conversions, and report on performance |
+
+## 1. Overview
+
+LinkedIn Ads is LinkedIn's advertising platform for the LinkedIn Marketing API. It organizes paid activity into ad accounts, campaign groups, and campaigns, and layers on conversion tracking, lead-gen forms, and analytics that measure how each campaign performs.
+
+Once connected to UnleashX, your agent can list the ad accounts you can access, browse campaign groups and campaigns, create and update campaigns, send conversion events, query campaign analytics, and generate performance reports. It works against your live LinkedIn advertiser account using your own LinkedIn sign-in, so it respects your role and access.
+
+Connecting LinkedIn Ads to UnleashX means you can manage paid activity and read results as you talk. Instead of opening Campaign Manager to launch a campaign or pull a report, you tell your agent and it makes the change or returns the numbers — cutting the clicks while keeping your account accurate.
+
+## 2. What you'll need
+
+- A **LinkedIn Ads** (advertiser) account with at least one ad account you can manage.
+- **LinkedIn Marketing Developer Platform** access (advertiser access approved for the app used to authorize).
+- A user role with permission to create and edit campaigns and read reporting on the ad account.
+- Your account **currency** in mind — budgets and bids are set in the ad account's currency.
+- An UnleashX account with access to **Data Connectors**.
+
+<Note>
+No API key to paste. LinkedIn Ads uses OAuth — you click **Authorize** and sign in with LinkedIn.
+</Note>
+
+<Warning>
+LinkedIn enforces your **advertiser role and Marketing API access**. If your LinkedIn user can't manage campaigns on the ad account — or the app lacks advertiser access — the agent can't either. Budgets and bids are set in the **ad account's currency**, so make sure you're using the right account before creating campaigns.
+</Warning>
+
+## 3. Get your credentials
+
+There's no key to copy. Authentication runs through LinkedIn's secure OAuth sign-in.
+
+<Steps>
+<Step title="Start the connection in UnleashX">
+Connecting LinkedIn Ads (Section 4) opens a LinkedIn **Allow access** window.
+</Step>
+<Step title="Sign in with LinkedIn">
+Sign in with the LinkedIn account that has advertiser access to your ad account. Complete two-factor authentication if prompted.
+</Step>
+<Step title="Review and accept the access">
+LinkedIn shows the access UnleashX is requesting (see the scopes table). Click **Allow**.
+</Step>
+<Step title="Confirm your ad account">
+If you can access several ad accounts, pick the one you want the agent to work with. UnleashX uses its ad account ID on every request.
+</Step>
+<Step title="Return to UnleashX">
+LinkedIn redirects you back automatically and the connector links to your advertiser account. UnleashX handles the OAuth token for you — you never paste or store it yourself.
+</Step>
+</Steps>
+
+**Permissions (LinkedIn OAuth scopes) UnleashX requests:**
+
+| Scope | Why UnleashX needs it |
+|---|---|
+| `r_ads` | Read ad accounts, campaign groups, campaigns, and their settings. |
+| `rw_ads` | Create, update, and delete campaigns and campaign groups. |
+| `r_ads_reporting` | Read analytics and build performance reports. |
+| `rw_conversions` | Send conversion events for offline/online conversion tracking. |
+| `r_marketing_leadgen_automation` | Read lead-gen form responses and form events. |
+
+<Note>
+LinkedIn enforces the limits, not UnleashX. UnleashX requests only the access these tools need, and your LinkedIn advertiser role still governs what you can do on each ad account.
+</Note>
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to `https://www.tryunleashx.com` and open the agent you want to connect.
+</Step>
+<Step title="Open Data Connectors">
+Inside the agent, go to **Data Connectors**.
+</Step>
+<Step title="Find LinkedIn Ads">
+Locate **LinkedIn Ads** and click **Connect** (or **Add** / **Configure**).
+</Step>
+<Step title="Authorize with LinkedIn">
+Click **Authorize**, sign in with LinkedIn, accept the access, and pick your ad account.
+</Step>
+<Step title="Confirm success">
+You return to UnleashX and the LinkedIn Ads connector shows a **Connected** badge.
+</Step>
+</Steps>
+
+{/* workflow-usage-section */}
+### Use LinkedIn Ads in a Workflow
+
+Once connected, you can add **LinkedIn Ads** to any automation from the **Workflows** builder. Its triggers and tools appear in the Apps panel, marked with an **MCP** badge.
+
+<Steps>
+<Step title="Add a trigger or action node">
+Open **Workflows → New Workflow**. On the canvas, click **+ Add Trigger** (or the **+** below any node) to add a step.
+
+![Add a trigger on the workflow canvas](/images/mcp/workflows/05-add-trigger.png)
+</Step>
+<Step title="Pick LinkedIn Ads from the Apps panel">
+In the **Paths** panel, open the **Apps** tab and select **LinkedIn Ads**. Use the search box if you have many connectors.
+
+![Choose your app from the Apps list](/images/mcp/workflows/06-apps-list.png)
+</Step>
+<Step title="Choose a trigger or tool">
+Pick the trigger or action you want. Configure its fields — required fields are marked with a red asterisk (*).
+</Step>
+<Step title="Add or select your account">
+Under **Selected account**, choose an already-connected account, or click **Add Account** to connect one now.
+</Step>
+<Step title="Save and test">
+Fill in the remaining fields and click **Save**. Use **Test** to verify the step, then toggle **Publish** when the workflow is ready.
+</Step>
+</Steps>
+
+<Note>
+The steps are the same for every connector. For the full workflow builder guide, see [Using MCP in Workflows](/mcp/workflows).
+</Note>
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| List Ad Accounts | Lists the LinkedIn ad accounts you can access. | No |
+| List Campaign Groups | Lists campaign groups on an ad account. | No |
+| List Campaigns | Lists campaigns within an ad account or campaign group. | No |
+| Get Campaign | Retrieves a single campaign by ID. | No |
+| Create Campaign | Creates a new campaign. | ✏️ Yes |
+| Update Campaign | Updates an existing campaign (name, budget, status). | ✏️ Yes |
+| Delete Campaign | Deletes a specified campaign. | ⚠️ Yes |
+| Send Conversion Event | Sends a conversion event for conversion tracking. | ✏️ Yes |
+| Query Analytics Finder Campaign Sample | Queries campaign analytics for a sample of campaigns. | No |
+| Create Report | Generates a performance report. | No |
+| Create Report By Advertiser Account | Generates a performance report scoped to an advertiser account. | No |
+
+### Available triggers
+
+| Trigger | Fires when |
+|---|---|
+| On New Campaign | A new campaign is created on the ad account. |
+| On New Lead Gen Form Created | A new lead-gen form is created. |
+| On New Event Registration Form Response | Someone submits an event-registration form response. |
+
+## 6. Example usage
+
+**"Create a new campaign in our 'Q3 Demand Gen' campaign group and set its daily budget."**
+→ Runs List Campaign Groups to find the group, then Create Campaign in it with the budget set in the ad account's currency.
+
+**"How did last month's campaigns perform? Give me impressions, clicks, and spend."**
+→ Runs Create Report (or Query Analytics Finder Campaign Sample) for the date range and returns the metrics.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- List ad accounts, campaign groups, and campaigns, and get individual campaigns.
+- Create and update campaigns.
+- Send conversion events and pull analytics and performance reports.
+- Delete campaigns where your role allows (this tool is clearly marked ⚠️).
+
+**UnleashX cannot:**
+- Do anything your LinkedIn advertiser role doesn't permit.
+- Act on ad accounts you can't access, or without Marketing API advertiser access.
+- Change your LinkedIn account password or account-wide security settings.
+
+**To disconnect:** In UnleashX, open **Data Connectors → LinkedIn Ads → Disconnect**. You can also revoke access in LinkedIn under **Settings & Privacy → Data privacy → Permitted services**. Disconnecting revokes access immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| **401 Unauthorized** | The LinkedIn token expired or is invalid. | Reconnect LinkedIn Ads in **Data Connectors** and sign in again. |
+| **403 Forbidden** | Your LinkedIn user lacks access to that ad account, or the app lacks advertiser access. | Ask the account admin for access, or confirm Marketing API access, then retry. |
+| **Wrong ad account** | The agent is acting on a different ad account. | Reconnect and select the correct ad account. |
+| **Empty report / no data** | The date range or campaign filter returned no rows. | Widen the date range or confirm the campaigns were active in that period. |
+| **Conversion event rejected** | The conversion or the event payload is invalid. | Confirm the conversion is set up in Campaign Manager and the event fields are correct. |
+| **Rate limit exceeded** | You hit the LinkedIn Marketing API rate limit. | Wait for the window to reset, then retry. |
+
+For general MCP issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Do I need special LinkedIn access?**
+Yes. Managing ads through the API requires advertiser access via the LinkedIn Marketing Developer Platform. Without it, the connector can authorize but campaign and reporting calls will be denied.
+
+**What currency are budgets in?**
+Budgets and bids use the ad account's currency. Make sure you're working with the right ad account before creating or updating campaigns.
+
+**Can the agent capture leads?**
+It can read lead-gen form responses through the lead-gen triggers. Use **On New Lead Gen Form Created** and **On New Event Registration Form Response** to drive workflows from new forms and submissions.
+
+**Is my ad data stored by UnleashX?**
+No. UnleashX reads and writes through the LinkedIn Marketing API live per request; it doesn't keep a copy of your campaigns or reports.
+
+## 10. References
+
+- LinkedIn Marketing API documentation: https://learn.microsoft.com/en-us/linkedin/marketing/
+- Campaigns & campaign groups: https://learn.microsoft.com/en-us/linkedin/marketing/integrations/ads/account-structure/create-and-manage-campaigns
+- Ad analytics & reporting: https://learn.microsoft.com/en-us/linkedin/marketing/integrations/ads-reporting/ads-reporting
+- Conversions API: https://learn.microsoft.com/en-us/linkedin/marketing/integrations/ads/advertising-targeting/conversion-tracking
+- Lead-gen forms: https://learn.microsoft.com/en-us/linkedin/marketing/integrations/ads/lead-generation/leadsync-api

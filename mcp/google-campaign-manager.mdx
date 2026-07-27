@@ -1,0 +1,202 @@
+---
+title: "Google Campaign Manager"
+icon: "https://cdn.simpleicons.org/googlemarketingplatform"
+description: "Let your UnleashX agent manage campaigns, advertisers, and reports in Campaign Manager 360."
+tags: [mcp, google-campaign-manager, integration]
+---
+
+# Google Campaign Manager
+
+> **In one line:** Connect Campaign Manager 360 so your UnleashX agent can create and update campaigns, browse advertisers, and pull reports — all in plain language.
+
+| | |
+|---|---|
+| **Category** | Advertising & Analytics |
+| **Authentication** | OAuth (Google) |
+| **Setup time** | ~3 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Media and ad ops teams that want an AI agent to manage campaigns, advertisers, and reports in Campaign Manager 360 |
+
+## 1. Overview
+
+Google Campaign Manager 360 (CM360) is Google's ad management and measurement platform. It organizes work under user profiles, advertisers, and campaigns, and reports on how those campaigns deliver across sites and placements.
+
+Once connected to UnleashX, your agent can list your user profiles, browse advertisers and campaigns, create and update campaigns, and pull the reports you use to track performance. It works against your live CM360 account using your own Google sign-in, so it respects your role and permissions.
+
+Connecting Campaign Manager to UnleashX means you can manage your media in plain language. Instead of clicking through CM360 to spin up a campaign or find a report, you tell your agent and it makes the change or fetches the answer.
+
+## 2. What you'll need
+
+- A Campaign Manager 360 account with at least one **user profile**.
+- Your CM360 **user profile ID** (the agent works through a profile), and the **advertiser ID** for campaign work.
+- A user role in CM360 that can view and manage campaigns, advertisers, and reports.
+- The **Campaign Manager 360 API** enabled for your project.
+- An UnleashX account with access to **Data Connectors**.
+
+<Note>
+No API key to paste. Campaign Manager uses OAuth — you click **Authorize** and sign in with Google. The agent acts through your **user profile ID**, and uses an **advertiser ID** when working with campaigns.
+</Note>
+
+<Warning>
+Google enforces your CM360 **role**. The **Campaign Manager 360 API** must be enabled, and your Google user needs a profile with permission to manage campaigns and advertisers — otherwise the agent can't either. Ask your CM360 admin to adjust access if needed.
+</Warning>
+
+## 3. Get your credentials
+
+There's no key to copy. Authentication runs through Google's secure OAuth sign-in.
+
+<Steps>
+<Step title="Start the connection in UnleashX">
+Connecting Google Campaign Manager (Section 4) opens a Google **Sign in** window.
+</Step>
+<Step title="Sign in with Google">
+Sign in with the Google account that has access to your CM360 account. Complete two-factor authentication if prompted.
+</Step>
+<Step title="Review and accept the scopes">
+Google shows the access UnleashX is requesting (see the scopes table). Click **Allow**.
+</Step>
+<Step title="Confirm your user profile">
+Note your CM360 **user profile ID** — the agent works through it. If you manage several advertisers, keep the relevant **advertiser ID** handy for campaign work.
+</Step>
+<Step title="Return to UnleashX">
+Google redirects you back automatically and the connector links to your CM360 account. Behind the scenes UnleashX authenticates with Google using an OAuth token — you never handle the token yourself.
+</Step>
+</Steps>
+
+**Permissions (Google OAuth scopes) UnleashX requests:**
+
+| Scope | Why UnleashX needs it |
+|---|---|
+| `https://www.googleapis.com/auth/dfatrafficking` | Read and manage campaigns, advertisers, and related trafficking objects. |
+| `https://www.googleapis.com/auth/dfareporting` | Read and run Campaign Manager reports. |
+| `openid` | Identify the signed-in Google account. |
+| `email` | Confirm which Google account is connected. |
+| `offline_access` | Refresh access automatically so you don't re-authorize every session. |
+
+<Note>
+Google OAuth scopes are granular. UnleashX requests only what these tools need, and Google — together with your CM360 role — enforces the limits.
+</Note>
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to `https://www.tryunleashx.com` and open the agent you want to connect.
+</Step>
+<Step title="Open Data Connectors">
+Inside the agent, go to **Data Connectors**.
+</Step>
+<Step title="Find Google Campaign Manager">
+Locate **Google Campaign Manager** and click **Connect** (or **Add** / **Configure**).
+</Step>
+<Step title="Authorize with Google">
+Click **Authorize**, sign in with Google, and accept the scopes.
+</Step>
+<Step title="Confirm success">
+You return to UnleashX and the Google Campaign Manager connector shows a **Connected** badge.
+</Step>
+</Steps>
+
+{/* workflow-usage-section */}
+### Use Google Campaign Manager in a Workflow
+
+Once connected, you can add **Google Campaign Manager** to any automation from the **Workflows** builder. Its triggers and tools appear in the Apps panel, marked with an **MCP** badge.
+
+<Steps>
+<Step title="Add a trigger or action node">
+Open **Workflows → New Workflow**. On the canvas, click **+ Add Trigger** (or the **+** below any node) to add a step.
+
+![Add a trigger on the workflow canvas](/images/mcp/workflows/05-add-trigger.png)
+</Step>
+<Step title="Pick Google Campaign Manager from the Apps panel">
+In the **Paths** panel, open the **Apps** tab and select **Google Campaign Manager**. Use the search box if you have many connectors.
+
+![Choose your app from the Apps list](/images/mcp/workflows/06-apps-list.png)
+</Step>
+<Step title="Choose a trigger or tool">
+Pick the trigger or action you want. Configure its fields — required fields are marked with a red asterisk (*).
+</Step>
+<Step title="Add or select your account">
+Under **Selected account**, choose an already-connected account, or click **Add Account** to connect one now.
+</Step>
+<Step title="Save and test">
+Fill in the remaining fields and click **Save**. Use **Test** to verify the step, then toggle **Publish** when the workflow is ready.
+</Step>
+</Steps>
+
+<Note>
+The steps are the same for every connector. For the full workflow builder guide, see [Using MCP in Workflows](/mcp/workflows).
+</Note>
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| List User Profiles | Lists the CM360 user profiles you can act through. | No |
+| List Campaigns | Lists campaigns for an advertiser or profile. | No |
+| Get Campaign | Retrieves a single campaign by ID. | No |
+| Create Campaign | Creates a new campaign. | ✏️ Yes |
+| Update Campaign | Updates an existing campaign. | ✏️ Yes |
+| List Advertisers | Lists advertisers in the account. | No |
+| List Reports | Lists saved reports available to your profile. | No |
+
+### Available triggers
+
+| Trigger | Fires when |
+|---|---|
+| On New Campaign | A new campaign is created in your Campaign Manager account. |
+
+## 6. Example usage
+
+**"Create a Q3 brand awareness campaign under the Acme advertiser running July through September."**
+→ Runs List Advertisers to find Acme, then Create Campaign with the name and flight dates.
+
+**"List the campaigns for the Globex advertiser and show me the reports I can run."**
+→ Runs List Campaigns for Globex, then List Reports to show the saved reports.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- List your user profiles, advertisers, and campaigns.
+- Create and update campaigns.
+- List the saved reports available to your profile.
+
+**UnleashX cannot:**
+- Do anything your CM360 role doesn't permit.
+- Delete advertisers or accounts, or change account-level admin settings.
+- Act through a profile your Google user hasn't been granted.
+
+**To disconnect:** In UnleashX, open **Data Connectors → Google Campaign Manager → Disconnect**. You can also revoke access at `https://myaccount.google.com/permissions` (Third-party apps with account access). Disconnecting revokes access immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| **401 Unauthorized** | The Google token expired or is invalid. | Reconnect Google Campaign Manager in **Data Connectors** and sign in again. |
+| **403 Forbidden** | Your CM360 role lacks permission, or the API isn't enabled. | Enable the Campaign Manager 360 API and ask your admin for a profile that can manage campaigns. |
+| **Profile not found** | The user profile ID is wrong or not accessible. | Run List User Profiles and use a profile your account can access. |
+| **Advertiser not found** | The advertiser ID is wrong or outside your access. | Confirm the advertiser ID and that your profile can manage it. |
+| **Rate limit exceeded** | The Campaign Manager API quota was reached. | Wait for the quota to reset, then retry. |
+
+For general MCP issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Is my campaign data stored by UnleashX?**
+No. UnleashX reads and writes your CM360 objects live through the Campaign Manager API per request; it doesn't keep a copy.
+
+**Why does the agent need a user profile ID?**
+CM360 scopes access by user profile. The agent works through your profile, so its access matches what that profile is allowed to do.
+
+**Can the agent really create and update campaigns?**
+Yes — Create Campaign and Update Campaign (marked ✏️) make changes in CM360. They only work if your profile allows it.
+
+**Why do I need to enable the Campaign Manager 360 API?**
+The API must be turned on for your project before any tool can read or write data. Your Google user also needs a CM360 profile with the right permissions.
+
+## 10. References
+
+- Campaign Manager 360 API documentation: https://developers.google.com/doubleclick-advertisers/getting_started
+- Campaign Manager 360 API authorization & scopes: https://developers.google.com/doubleclick-advertisers/authorizing
+- User profiles in the API: https://developers.google.com/doubleclick-advertisers/rest/v4/userProfiles/list
+- Google account permissions / revoke access: https://myaccount.google.com/permissions
