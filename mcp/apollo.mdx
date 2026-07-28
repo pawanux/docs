@@ -52,20 +52,14 @@ Go to [app.apollo.io](https://app.apollo.io/) and sign in. If you don't have an 
 
 <Step title="Open Settings">
 Click the **gear icon** at the bottom of the left sidebar to open the **Team & Workspace setup** menu, then click **All settings**.
-
-![The Team & Workspace setup menu in Apollo, with All settings at the bottom](/images/mcp/apollo/setup/01-all-settings.png)
 </Step>
 
 <Step title="Open Integrations → API Keys">
 In the Settings sidebar, expand **Integrations** and click **API Keys**. It opens Apollo's **API Management** area in a new tab.
-
-![The Settings sidebar with Integrations expanded, showing API Keys](/images/mcp/apollo/setup/02-settings-integrations.png)
 </Step>
 
 <Step title="Open the API Keys page">
 In **API Management**, select **API Keys**. Any keys you've already created are listed here.
-
-![The API Management page with the Create new key button](/images/mcp/apollo/setup/03-api-keys.png)
 </Step>
 
 <Step title="Create a new API key">
@@ -76,8 +70,6 @@ Click **Create new key** and fill in the dialog:
 - **APIs** — the Apollo endpoints this key can call. Select the ones UnleashX needs (people/company search, contacts, accounts, opportunities, sequences), **or** turn on **Set as master key** to grant access to all endpoints. You must do one or the other — the dialog won't submit otherwise.
 
 Click **Create API key**.
-
-![The Create new API key dialog, with Name, Description, master key toggle, and APIs selector](/images/mcp/apollo/setup/04-create-new-key.png)
 
 <Tip>
 A **master key** is the quickest path to a working connector, since it covers every endpoint. If you'd rather scope it down, pick the individual APIs instead — just make sure they cover every tool you plan to use, or those calls will fail with a 403.
@@ -125,7 +117,7 @@ Your API key **spends your Apollo credits** and grants access to your account th
 
 <Steps>
 <Step title="Open your agent">
-Go to `https://www.tryunleashx.com` and open the agent you want to connect.
+Go to [https://www.tryunleashx.com](https://www.tryunleashx.com) and open the agent you want to connect.
 </Step>
 <Step title="Open Data Connectors">
 Inside the agent, go to **Data Connectors**.
@@ -147,24 +139,20 @@ UnleashX validates the key and the Apollo connector shows a **Connected** badge.
 Once connected, you can add **Apollo** to any automation from the **Workflows** builder. Its triggers and tools appear in the Apps panel, marked with an **MCP** badge.
 
 <Steps>
-<Step title="Add a trigger or action node">
-Open **Workflows → New Workflow**. On the canvas, click **+ Add Trigger** (or the **+** below any node) to add a step.
-
-![Add a trigger on the workflow canvas](/images/mcp/workflows/05-add-trigger.png)
+<Step title="Add a trigger node">
+Open **Workflows → New Workflow**. On the canvas, click **+ Add Trigger**. In the **Paths** panel, open the **Apps** tab and select **Apollo** — its **Triggers** are listed underneath. Use the search box if you have many connectors.
 </Step>
-<Step title="Pick Apollo from the Apps panel">
-In the **Paths** panel, open the **Apps** tab and select **Apollo**. Use the search box if you have many connectors.
-
-![Choose your app from the Apps list](/images/mcp/workflows/06-apps-list.png)
+<Step title="Add an action node">
+Click the **+** below any node to add a step, then pick **Apollo** again — this time the panel lists its **Actions**.
 </Step>
-<Step title="Choose a trigger or tool">
-Pick the trigger or action you want. Configure its fields — required fields are marked with a red asterisk (*).
+<Step title="Configure the step">
+Fill in the fields for the trigger or action you picked. Required fields are marked with a red asterisk (*).
 </Step>
 <Step title="Add or select your account">
 Under **Selected account**, choose an already-connected account, or click **Add Account** to connect one now.
 </Step>
 <Step title="Save and test">
-Fill in the remaining fields and click **Save**. Use **Test** to verify the step, then toggle **Publish** when the workflow is ready.
+Click **Save**. Use **Test** to verify the step, then toggle **Publish** when the workflow is ready.
 </Step>
 </Steps>
 

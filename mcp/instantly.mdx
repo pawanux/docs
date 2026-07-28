@@ -1,6 +1,6 @@
 ---
 title: "Instantly"
-icon: "https://cdn.simpleicons.org/instantly"
+icon: "https://app.instantly.ai/favicon.ico"
 description: "Let your UnleashX agent manage cold-email campaigns, leads, and outreach events in Instantly."
 tags: [mcp, instantly, integration]
 ---
@@ -52,20 +52,14 @@ Go to [app.instantly.ai](https://app.instantly.ai/) and sign in. If you don't ha
 
 <Step title="Open Settings">
 Click your **profile avatar** at the bottom of the left sidebar to open the account menu, then click **Settings**.
-
-![The Instantly account menu, with Settings near the bottom](/images/mcp/instantly/setup/01-account-menu-settings.png)
 </Step>
 
 <Step title="Go to the Integrations tab">
 At the top of Settings, open the **Integrations** tab. The left-hand panel there has three sections: **Integrations**, **Webhooks**, and **API Keys**.
-
-![The Integrations tab in Instantly Settings](/images/mcp/instantly/setup/02-settings-integrations.png)
 </Step>
 
 <Step title="Open API Keys">
 In that left-hand panel, click **API Keys**. Keep **Version 2** selected — Version 1 is deprecated. Any keys you've already created are listed here.
-
-![The API Keys section, with Version 2 selected and the Create API Key button](/images/mcp/instantly/setup/03-api-keys.png)
 </Step>
 
 <Step title="Create a new API key">
@@ -75,8 +69,6 @@ Click **Create API Key**, then fill in the form:
 - **Scopes** — the permissions the key carries. Select the scopes covering campaigns, leads, and events (see the table below), or select **`all:all`** to grant full access.
 
 Click **Create**.
-
-![The Create API Key form, with Name and Scopes fields](/images/mcp/instantly/setup/04-create-api-key.png)
 
 <Warning>
 Scopes **cannot be changed after the key is created**. If you pick too narrow a set, you'll have to delete the key and create a new one. Note also that `all:all` grants full access to every Instantly API endpoint — convenient, but only use it if you're comfortable with that.
@@ -126,7 +118,7 @@ Your API key grants full access to your Instantly account through the API. Treat
 
 <Steps>
 <Step title="Open your agent">
-Go to `https://www.tryunleashx.com` and open the agent you want to connect.
+Go to [https://www.tryunleashx.com](https://www.tryunleashx.com) and open the agent you want to connect.
 </Step>
 <Step title="Open Data Connectors">
 Inside the agent, go to **Data Connectors**.
@@ -148,24 +140,22 @@ UnleashX validates the key and the Instantly connector shows a **Connected** bad
 Once connected, you can add **Instantly** to any automation from the **Workflows** builder. Its triggers and tools appear in the Apps panel, marked with an **MCP** badge.
 
 <Steps>
-<Step title="Add a trigger or action node">
-Open **Workflows → New Workflow**. On the canvas, click **+ Add Trigger** (or the **+** below any node) to add a step.
+<Step title="Add a trigger node">
+Open **Workflows → New Workflow**. On the canvas, click **+ Add Trigger**. In the **Paths** panel, open the **Apps** tab and select **Instantly** — its **Triggers** are listed underneath. Use the search box if you have many connectors.
 
-![Add a trigger on the workflow canvas](/images/mcp/workflows/05-add-trigger.png)
+![Instantly triggers in the Apps panel](/images/mcp/instantly/workflows/06-apps-triggers.png)
 </Step>
-<Step title="Pick Instantly from the Apps panel">
-In the **Paths** panel, open the **Apps** tab and select **Instantly**. Use the search box if you have many connectors.
-
-![Choose your app from the Apps list](/images/mcp/workflows/06-apps-list.png)
+<Step title="Add an action node">
+Click the **+** below any node to add a step, then pick **Instantly** again — this time the panel lists its **Actions**.
 </Step>
-<Step title="Choose a trigger or tool">
-Pick the trigger or action you want. Configure its fields — required fields are marked with a red asterisk (*).
+<Step title="Configure the step">
+Fill in the fields for the trigger or action you picked. Required fields are marked with a red asterisk (*).
 </Step>
 <Step title="Add or select your account">
 Under **Selected account**, choose an already-connected account, or click **Add Account** to connect one now.
 </Step>
 <Step title="Save and test">
-Fill in the remaining fields and click **Save**. Use **Test** to verify the step, then toggle **Publish** when the workflow is ready.
+Click **Save**. Use **Test** to verify the step, then toggle **Publish** when the workflow is ready.
 </Step>
 </Steps>
 
