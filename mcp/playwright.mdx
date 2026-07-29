@@ -1,0 +1,154 @@
+---
+title: "Playwright"
+icon: "https://playwright.dev/img/playwright-logo.svg"
+description: "Let your UnleashX agent navigate pages, click and fill forms, screenshot, and extract content from any website."
+tags: [mcp, playwright, integration]
+---
+
+# Playwright
+
+> **In one line:** Add Playwright so your UnleashX agent can open web pages, click and fill forms, take screenshots, save pages as PDF, and pull text and content from the live web — all in plain language.
+
+| | |
+|---|---|
+| **Category** | Dev Tools & Automation |
+| **Authentication** | None (built-in hosted browser) |
+| **Setup time** | ~1 minute |
+| **Difficulty** | Easy |
+| **Best for** | Teams that need an AI agent to read live web pages, interact with sites, and capture content without setting up any browser or account |
+
+## 1. Overview
+
+Playwright is a browser automation engine that drives a real, headless web browser — navigating pages, clicking elements, filling forms, and reading rendered content the way a person would. UnleashX runs it for you as a hosted tool, so there's no browser to install and no infrastructure to manage.
+
+Once added to UnleashX, your agent can open a URL, click buttons and links, type into form fields, capture a screenshot, save a page as a PDF, and extract the visible text or full content of a page. It runs against UnleashX's built-in browser, so it works out of the box.
+
+Adding Playwright to UnleashX gives your agent hands and eyes on the live web. Instead of being limited to what it already knows, it can visit a page, interact with it, and turn what it finds into content you can use in a conversation or workflow.
+
+## 2. What you'll need
+
+- An UnleashX account with access to **Data Connectors** and **Workflows**.
+- The URL(s) of the pages you want the agent to work with.
+
+<Note>
+There's **nothing to connect**. Playwright is a hosted browser tool built into UnleashX — no account, no API key, and no OAuth. The agent uses UnleashX's own browser.
+</Note>
+
+<Warning>
+Playwright reaches **public web pages** as an anonymous visitor. It can't sign in to sites on your behalf, and some sites block automated browsers or challenge them with anti-bot checks (see Troubleshooting).
+</Warning>
+
+## 3. Get your credentials
+
+**No credentials needed.** Playwright uses UnleashX's built-in hosted browser — there's no external account to create, no key to paste, and no OAuth flow. There's nothing to authorize.
+
+### What it can do
+
+| Access | Why UnleashX needs it |
+|---|---|
+| Open pages | Navigate the hosted browser to any public URL. |
+| Interact with pages | Click elements and fill form fields. |
+| Read content | Extract visible text and full page content. |
+| Capture pages | Take screenshots and save pages as PDF. |
+
+## 4. Connect on UnleashX
+
+Because Playwright is built in, there's nothing to link under **Data Connectors** — you add it directly in the **Workflows** builder (or use it in a conversation) with no setup.
+
+{/* workflow-usage-section */}
+### Use Playwright in a Workflow
+
+Once connected, you can add **Playwright** to any automation from the **Workflows** builder. Its tools appear in the Apps panel, marked with an **MCP** badge.
+
+<Steps>
+<Step title="Add a trigger node">
+Open **Workflows → New Workflow**. On the canvas, click **+ Add Trigger**. In the **Paths** panel, open the **Apps** tab and select **Playwright** — its **Triggers** are listed underneath. Use the search box if you have many connectors.
+</Step>
+<Step title="Add an action node">
+Click the **+** below any node to add a step, then pick **Playwright** again — this time the panel lists its **Actions**.
+</Step>
+<Step title="Configure the step">
+Fill in the fields for the trigger or action you picked. Required fields are marked with a red asterisk (*).
+</Step>
+<Step title="Add or select your account">
+Under **Selected account**, choose an already-connected account, or click **Add Account** to connect one now.
+</Step>
+<Step title="Save and test">
+Click **Save**. Use **Test** to verify the step, then toggle **Publish** when the workflow is ready.
+</Step>
+</Steps>
+
+<Note>
+The steps are the same for every connector. For the full workflow builder guide, see [Using MCP in Workflows](/mcp/workflows).
+</Note>
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| Navigate | Opens a URL in the hosted browser. | No |
+| Screenshot | Captures a screenshot of the current page. | No |
+| Extract Text | Extracts the visible text from the current page. | No |
+| Click | Clicks an element on the page. | No |
+| Fill | Types a value into a form field. | No |
+| Get Page Content | Returns the rendered HTML/content of the page. | No |
+| Page PDF | Saves the current page as a PDF. | No |
+| Get Page Title | Returns the title of the current page. | No |
+
+<Note>
+These tools read and interact with external websites; they don't change your own data. Clicking and filling act on the page in the hosted browser session, not on any UnleashX record.
+</Note>
+
+## 6. Example usage
+
+**"Open our competitor's pricing page and tell me their plan tiers and prices."**
+→ Runs Navigate to the URL, then Extract Text to read the pricing tiers from the page.
+
+**"Go to this form, fill in my name and email, and take a screenshot of the completed form."**
+→ Runs Navigate to the page, Fill for each field, then Screenshot to capture the result.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- Open public web pages in the hosted browser.
+- Click elements, fill form fields, and read page text and content.
+- Capture screenshots and save pages as PDF.
+
+**UnleashX cannot:**
+- Sign in to sites or access pages behind a login.
+- Bypass a site's anti-bot protection, CAPTCHAs, or terms of use.
+- Reach pages on private networks it can't route to.
+
+**To disconnect:** Playwright has no stored credentials to revoke. To stop using it, remove the Playwright step from your workflow (or don't add it). There's nothing to disconnect under **Data Connectors**.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| **Page timeout** | The site was slow or never finished loading. | Retry, or point the agent at a lighter, more direct URL. |
+| **Selector not found** | The element to click or fill wasn't on the page. | Check the element description; the page layout may have changed. |
+| **Blocked / anti-bot page** | The site detected automation and served a challenge. | The page may be unreachable this way — try a different source. |
+| **JS-heavy page returns little** | Content loads dynamically after the initial render. | Wait for the page to settle, then re-extract, or capture a screenshot. |
+| **Empty content** | The page rendered nothing extractable. | Try Get Page Content, or take a screenshot instead of extracting text. |
+
+For general MCP issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Do I need to install or connect anything?**
+No. Playwright is a hosted browser built into UnleashX — no account, no key, no OAuth. Just add it in Workflows.
+
+**Can it log in to sites for me?**
+No. It browses as an anonymous visitor and can't sign in on your behalf or reach pages behind a login.
+
+**Does UnleashX store the pages it visits?**
+No. Pages are loaded live in the hosted browser per request and returned to your agent; UnleashX doesn't keep a copy.
+
+**Is automated browsing allowed?**
+Respect each site's terms of service and robots rules. You're responsible for how the agent uses the tool.
+
+## 10. References
+
+- Playwright documentation: https://playwright.dev/docs/intro
+- Playwright API reference: https://playwright.dev/docs/api/class-playwright
+- Using MCP in Workflows: https://www.tryunleashx.com

@@ -1,0 +1,162 @@
+---
+title: "Nano Banana"
+icon: "image"
+description: "Generate and edit images from a text prompt with Google's Nano Banana model."
+tags: [mcp, nano-banana, image, integration]
+---
+
+# Nano Banana
+
+> **In one line:** Let your UnleashX agent create images from a written description — or edit an existing image by describing the change.
+
+| | |
+|---|---|
+| **Category** | AI & Media |
+| **Authentication** | Platform-managed |
+| **Setup time** | ~1 minute |
+| **Difficulty** | Easy |
+| **Best for** | Marketing visuals, product mockups, and social assets generated on demand |
+
+## 1. Overview
+
+Nano Banana is Google's advanced image generation and editing model, available through the Gemini API. Describe what you want and it produces the image; supply an existing image with an instruction and it edits that image instead of starting over.
+
+Once connected, your agent can generate an image from a prompt and return a ready-to-use image URL. Generated images are saved to UnleashX media storage, so the link works in downstream steps — attach it to an email, post it, or drop it into a document.
+
+Connecting Nano Banana to UnleashX means visuals stop being a bottleneck: a campaign brief becomes a hero image, a product description becomes a mockup, without a designer in the loop for every draft.
+
+## 2. What you'll need
+
+<Note>
+Nano Banana is **built into UnleashX**. There is no Google Cloud or Gemini account for you to create and no API key for you to manage.
+</Note>
+
+- An active UnleashX account.
+- The image-generation feature enabled on your workspace/plan.
+- A clear text prompt (and, for editing, a source image by URL, path, or base64).
+- Permission to edit the agent (admin or editor role). Without it, ask a workspace admin to enable the feature.
+
+## 3. Get your credentials
+
+<Info>
+There are **no credentials to create**. Nano Banana is platform-managed — UnleashX provisions and rotates the underlying Google Gemini key and handles media storage. You never see or handle an API key.
+</Info>
+
+If you are a workspace admin, the only optional platform-side configuration is the model version and the default image size. UnleashX sets sensible defaults; most teams never change them.
+
+| Platform-managed setting | Plain-English reason it exists |
+|---|---|
+| Model version | Controls the quality and capabilities of generated images. |
+| Default image size / aspect ratio | Sets the default shape of generated images. |
+| Gemini API key & media storage | Provisioned and rotated by UnleashX so images generate and save automatically. |
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to [https://www.tryunleashx.com](https://www.tryunleashx.com) and open the agent that should generate images.
+</Step>
+<Step title="Open Data Connectors">
+In the agent, click **Data Connectors**.
+</Step>
+<Step title="Find Nano Banana and add it">
+Locate **Nano Banana** and click **Connect** / **Add**. It's platform-managed — no key to paste, it activates immediately.
+</Step>
+<Step title="Confirm it's connected">
+The Nano Banana tool should now show a **Connected** badge.
+</Step>
+</Steps>
+
+{/* workflow-usage-section */}
+### Use Nano Banana in a Workflow
+
+Once connected, you can add **Nano Banana** to any automation from the **Workflows** builder. Its tools appear in the Apps panel, marked with an **MCP** badge.
+
+<Steps>
+<Step title="Add a trigger node">
+Open **Workflows → New Workflow**. On the canvas, click **+ Add Trigger**. In the **Paths** panel, open the **Apps** tab and select **Nano Banana** — its **Triggers** are listed underneath. Use the search box if you have many connectors.
+</Step>
+<Step title="Add an action node">
+Click the **+** below any node to add a step, then pick **Nano Banana** again — this time the panel lists its **Actions**.
+
+![Nano Banana actions in the Apps panel](/images/mcp/nano-banana/workflows/07-apps-actions.png)
+</Step>
+<Step title="Configure the step">
+Fill in the fields for the trigger or action you picked. Required fields are marked with a red asterisk (*).
+</Step>
+<Step title="Add or select your account">
+Under **Selected account**, choose an already-connected account, or click **Add Account** to connect one now.
+</Step>
+<Step title="Save and test">
+Click **Save**. Use **Test** to verify the step, then toggle **Publish** when the workflow is ready.
+</Step>
+</Steps>
+
+<Note>
+The steps are the same for every connector. For the full workflow builder guide, see [Using MCP in Workflows](/mcp/workflows).
+</Note>
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| Create Image | Generates an image from a text prompt, or edits a supplied image from an instruction. | ✏️ Yes |
+
+<Note>
+**Create Image** is marked ✏️ Yes because it creates a new image file and saves it to UnleashX media storage. It does not modify or delete any existing data — editing a source image produces a new file rather than overwriting the original.
+</Note>
+
+## 6. Example usage
+
+> **"Generate a product shot of a matte black water bottle on a marble counter, soft daylight."**
+>
+> Runs **Create Image** and returns an image URL.
+
+> **"Take this logo and put it on a dark background with a subtle glow."**
+>
+> Runs **Create Image** with the source image and an edit instruction.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- Send your prompt (and optional source image) to the model and generate an image.
+- Save the generated image to UnleashX media storage and return a link.
+
+**UnleashX cannot:**
+- Generate images from content you don't provide.
+- Edit or delete images you created elsewhere.
+- Access your device or cloud storage on its own.
+
+**To disconnect:** Open the agent → **Data Connectors** → **Nano Banana** → **Disconnect**. Access is revoked immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| "prompt is required" | No text prompt was supplied. | Provide a descriptive prompt. |
+| **No image returned** | Safety filtering, model rejection, or quota limits. | Adjust the prompt; if it persists, contact support. |
+| **Edit ignored the source image** | The image wasn't passed in a supported form. | Supply the image by URL, path, or base64. |
+| `401` / credential error | The platform-managed Gemini key is unavailable. | Platform-side — contact **cs@unleashx.ai**. |
+| `403` / feature not enabled | Image generation isn't enabled on your plan. | Ask a workspace admin or contact support. |
+
+For general connector issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Is my prompt or source image stored?**
+The generated image is saved to UnleashX media storage so you can access it. Your input image is used to produce the result and is not retained as part of the integration.
+
+**Do I need a Google or Gemini account?**
+No. Nano Banana is platform-managed — UnleashX provides and rotates the underlying key.
+
+**Can it edit an existing image, or only create new ones?**
+Both. Supply a source image with an instruction and it edits that image; supply only a prompt and it generates from scratch.
+
+**How is this different from the [Image](/mcp/image) connector?**
+Nano Banana is a specific Google model exposed as its own connector. Pick whichever produces the style you want.
+
+## 10. References
+
+- [Google Gemini image generation docs](https://ai.google.dev/gemini-api/docs/image-generation)
+- [UnleashX dashboard](https://www.tryunleashx.com)
+- UnleashX integrations help: [/mcp/integrations](/mcp/integrations)

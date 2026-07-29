@@ -1,0 +1,219 @@
+---
+title: "ActiveCampaign"
+icon: "https://www.activecampaign.com/favicon.ico"
+description: "Let your UnleashX agent manage contacts, deals, accounts, campaigns, automations, and tasks in ActiveCampaign."
+tags: [mcp, activecampaign, integration]
+---
+
+# ActiveCampaign
+
+> **In one line:** Connect ActiveCampaign so your UnleashX agent can create and update contacts and deals, manage accounts and campaigns, add contacts to automations, and log tasks — all in plain language.
+
+| | |
+|---|---|
+| **Category** | CRM & Marketing |
+| **Authentication** | API key + account URL |
+| **Setup time** | ~3 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Sales and marketing teams that want an AI agent to manage contacts, move deals, and run automations in ActiveCampaign |
+
+## 1. Overview
+
+ActiveCampaign is a customer experience automation platform that combines CRM, email marketing, and marketing automation. It's where your contacts, deals, accounts, campaigns, and automations live, tied together by tags, lists, and custom fields.
+
+Once connected to UnleashX, your agent can create and update contacts and deals, manage accounts, add and remove tags, subscribe contacts to lists, enroll contacts in automations, create campaigns, and log notes and tasks. It works against your live ActiveCampaign account using your API key, so it respects your account's data and settings.
+
+Connecting ActiveCampaign to UnleashX means your CRM stays current as you talk. Instead of opening ActiveCampaign to update a contact or move a deal, you tell your agent and it makes the change — cutting the manual data entry while keeping your pipeline and lists accurate.
+
+## 2. What you'll need
+
+- An ActiveCampaign account (any plan that includes API access).
+- Your ActiveCampaign **API URL** (account URL) and **API key** (see Section 3).
+- An UnleashX account with access to **Data Connectors**.
+
+<Note>
+You paste **two** values: your ActiveCampaign **API URL** (account URL) and your **API key**. UnleashX sends the key to your account URL as an `Api-Token` header.
+</Note>
+
+<Warning>
+Both fields must come from the **same** ActiveCampaign account. If the API URL and API key don't match, the connection fails — copy both from **Settings → Developer** in one sitting.
+</Warning>
+
+## 3. Get your credentials
+
+ActiveCampaign MCP authenticates with an **API key** plus your account's **API URL**. Both are shown on the same page in your ActiveCampaign settings — you copy them once and paste them into UnleashX. There's no OAuth flow and nothing to install.
+
+<Steps>
+<Step title="Sign in to ActiveCampaign">
+Go to your ActiveCampaign account and sign in. You'll land on the main dashboard.
+</Step>
+<Step title="Open Settings → Developer">
+Click **Settings** (the gear icon in the lower-left), then open the **Developer** tab. This page holds everything the API needs.
+</Step>
+<Step title="Copy your API URL (account URL)">
+Under **API Access**, copy the **URL**. It looks like `https://<account>.api-us1.com` — your unique account endpoint. UnleashX needs this so it knows which ActiveCampaign account to talk to.
+</Step>
+<Step title="Copy your API Key">
+On the same page, copy the **Key** — a long secret string. Treat it like a password; it grants full access to your account's API.
+</Step>
+<Step title="Paste both into UnleashX">
+Head to **Data Connectors → ActiveCampaign** in UnleashX and paste **both** the API URL and the API key (full walkthrough in Section 4). UnleashX validates them immediately, so you'll know right away if either was copied incorrectly.
+</Step>
+</Steps>
+
+<Warning>
+Your API key grants full access to your ActiveCampaign account. Treat it like a password:
+
+- Never commit it to git, paste it in a ticket, or share it in chat.
+- If it's ever exposed, regenerate it under **Settings → Developer** — the old key stops working immediately, so reconnect UnleashX with the new value.
+</Warning>
+
+### Permissions this key grants UnleashX
+
+| Access | Why UnleashX needs it |
+|---|---|
+| Manage contacts | Create, read, update, and delete contacts. |
+| Manage deals | Create and update deals and their tasks. |
+| Manage accounts | Create and update accounts, and link contacts to them. |
+| Manage tags & lists | Add or remove tags and subscribe or unsubscribe contacts. |
+| Manage automations | Add contacts to and remove them from automations. |
+| Create campaigns & events | Create campaigns and record tracked events. |
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to [https://www.tryunleashx.com](https://www.tryunleashx.com) and open the agent you want to connect.
+</Step>
+<Step title="Open Data Connectors">
+Inside the agent, go to **Data Connectors**.
+</Step>
+<Step title="Find ActiveCampaign">
+Locate **ActiveCampaign** and click **Connect** (or **Add** / **Configure**).
+</Step>
+<Step title="Enter your API URL and API key">
+Paste your **API URL** (account URL) and your **API key**, then click **Connect**.
+</Step>
+<Step title="Confirm success">
+UnleashX validates the credentials and the ActiveCampaign connector shows a **Connected** badge.
+</Step>
+</Steps>
+
+{/* workflow-usage-section */}
+### Use ActiveCampaign in a Workflow
+
+Once connected, you can add **ActiveCampaign** to any automation from the **Workflows** builder. Its tools appear in the Apps panel, marked with an **MCP** badge.
+
+<Steps>
+<Step title="Add a trigger node">
+Open **Workflows → New Workflow**. On the canvas, click **+ Add Trigger**. In the **Paths** panel, open the **Apps** tab and select **ActiveCampaign** — its **Triggers** are listed underneath. Use the search box if you have many connectors.
+</Step>
+<Step title="Add an action node">
+Click the **+** below any node to add a step, then pick **ActiveCampaign** again — this time the panel lists its **Actions**.
+</Step>
+<Step title="Configure the step">
+Fill in the fields for the trigger or action you picked. Required fields are marked with a red asterisk (*).
+</Step>
+<Step title="Add or select your account">
+Under **Selected account**, choose an already-connected account, or click **Add Account** to connect one now.
+</Step>
+<Step title="Save and test">
+Click **Save**. Use **Test** to verify the step, then toggle **Publish** when the workflow is ready.
+</Step>
+</Steps>
+
+<Note>
+The steps are the same for every connector. For the full workflow builder guide, see [Using MCP in Workflows](/mcp/workflows).
+</Note>
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| List Contacts | Lists contacts (filter by list, tag, status). | No |
+| Get Contact | Retrieves a single contact by ID. | No |
+| Create Contact | Creates a new contact. | ✏️ Yes |
+| Update Contact | Updates an existing contact. | ✏️ Yes |
+| Delete Contact | Deletes a specified contact. | ⚠️ Yes |
+| List Deals | Lists deals in your pipelines. | No |
+| Create Deal | Creates a new deal. | ✏️ Yes |
+| Update Deal | Updates an existing deal. | ✏️ Yes |
+| Create Or Update Contact | Creates a contact, or updates it if it already exists. | ✏️ Yes |
+| Add Contact Note | Adds a note to a contact. | ✏️ Yes |
+| Add Note To Deal | Adds a note to a deal. | ✏️ Yes |
+| Add Contact To Account | Links a contact to an account. | ✏️ Yes |
+| Add Existing Contact To Automation | Enrolls an existing contact in an automation. | ✏️ Yes |
+| Remove Contact From Automation | Removes a contact from an automation. | ⚠️ Yes |
+| Add Secondary Contact To Deal | Adds a secondary contact to a deal. | ✏️ Yes |
+| Add Remove Tag From Contact | Adds or removes a tag on a contact. | ✏️ Yes |
+| Subscribe Or Unsubscribe Contact From List | Subscribes or unsubscribes a contact from a list. | ✏️ Yes |
+| Create Account | Creates a new account. | ✏️ Yes |
+| Update Account | Updates an existing account. | ✏️ Yes |
+| Create Or Update Account | Creates an account, or updates it if it already exists. | ✏️ Yes |
+| Create Campaign | Creates a new campaign. | ✏️ Yes |
+| Create Or Update Custom Object Record | Creates a custom object record, or updates it if it exists. | ✏️ Yes |
+| Create Or Update Contact Task | Creates a contact task, or updates it if it exists. | ✏️ Yes |
+| Create Or Update Deal Task | Creates a deal task, or updates it if it exists. | ✏️ Yes |
+| Create Tracked Event | Records a tracked event for a contact. | ✏️ Yes |
+| Api Request | Makes a custom request to the ActiveCampaign API. | ✏️ Yes |
+| Find Account | Finds an account by name or attributes. | No |
+| Find Deal | Finds a deal by name or attributes. | No |
+| Find Deal Owner | Finds the owner assigned to a deal. | No |
+| Find User | Finds a user in your account. | No |
+| Find Deal Task | Finds a task attached to a deal. | No |
+| Find Contact Task | Finds a task attached to a contact. | No |
+
+## 6. Example usage
+
+**"Add Jordan Lee (jordan@acme.com) as a contact, tag them 'Webinar 2026', and subscribe them to the Newsletter list."**
+→ Runs Create Or Update Contact to add Jordan, then Add Remove Tag From Contact and Subscribe Or Unsubscribe Contact From List to apply the tag and list.
+
+**"Create a deal 'Acme renewal' for $12,000 and add a note that they want annual billing."**
+→ Runs Create Deal to open the deal, then Add Note To Deal to record the billing preference.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- Read and list contacts, deals, accounts, and their tasks.
+- Create and update contacts, deals, accounts, campaigns, tasks, and custom object records.
+- Add or remove tags, subscribe or unsubscribe contacts, and enroll or remove contacts in automations.
+- Record tracked events and add notes to contacts and deals.
+
+**UnleashX cannot:**
+- Access ActiveCampaign accounts other than the one whose API URL and key you provided.
+- Change your ActiveCampaign account password or billing settings.
+- Do anything the API key's account doesn't permit.
+
+**To disconnect:** In UnleashX, open **Data Connectors → ActiveCampaign → Disconnect**. Then regenerate the API key in ActiveCampaign under **Settings → Developer**. Disconnecting and regenerating removes access immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| **401 Unauthorized** | The API key is invalid or was regenerated. | Copy the current key from **Settings → Developer** and reconnect. |
+| **URL / key mismatch** | The API URL and API key are from different accounts. | Recopy both from the same account's **Settings → Developer** page. |
+| **404 Not Found** | The contact, deal, or account ID doesn't exist. | Confirm the record exists, or use a Find/List tool to locate it first. |
+| **422 Validation error** | A required field is missing or malformed. | Check required fields (e.g. email for contacts) and retry. |
+| **429 Too Many Requests** | You hit ActiveCampaign's API rate limit. | Slow down requests and retry after a moment. |
+
+For general MCP issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Is my CRM data stored by UnleashX?**
+No. UnleashX reads and writes your records live through the ActiveCampaign API per request; it doesn't keep a copy of your contacts or deals.
+
+**Why do I need both an API URL and an API key?**
+The API key authenticates you, and the API URL tells UnleashX which ActiveCampaign account to reach. Both are on the same **Settings → Developer** page and must be from the same account.
+
+**Can the agent really delete contacts?**
+Yes — Delete Contact (marked ⚠️) permanently removes a contact. Removing a contact from an automation is also marked ⚠️. Use these deliberately.
+
+**What is the Api Request tool for?**
+It lets the agent make a custom call to the ActiveCampaign API for actions not covered by the named tools. Use it when you need something more specific.
+
+## 10. References
+
+- ActiveCampaign API documentation: https://developers.activecampaign.com/reference/overview
+- Getting started with the API (URL & key): https://developers.activecampaign.com/reference/authentication
+- ActiveCampaign help center: https://help.activecampaign.com/

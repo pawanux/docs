@@ -1,0 +1,195 @@
+---
+title: "Google Analytics"
+icon: "https://cdn.simpleicons.org/googleanalytics"
+description: "Let your UnleashX agent read GA4 accounts and properties and run standard and realtime analytics reports."
+tags: [mcp, google-analytics, integration]
+---
+
+# Google Analytics
+
+> **In one line:** Connect Google Analytics so your UnleashX agent can list your GA4 accounts and properties and run standard and realtime reports — all in plain language.
+
+| | |
+|---|---|
+| **Category** | Advertising & Analytics |
+| **Authentication** | OAuth (Google) |
+| **Setup time** | ~3 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Marketing and analytics teams that want an AI agent to pull GA4 metrics and realtime traffic without opening the dashboard |
+
+## 1. Overview
+
+Google Analytics 4 (GA4) is Google's web and app analytics platform. It organizes your data into accounts and properties, and reports on the traffic, engagement, and conversions those properties collect.
+
+Once connected to UnleashX, your agent can list the GA4 accounts and properties you can access, look up a property's details, and run both standard analytics reports and realtime reports. It works against your live GA4 data using your own Google sign-in, so it respects your role and permissions. This connector is read-focused — it reads metrics rather than changing your analytics setup.
+
+Connecting Google Analytics to UnleashX turns your metrics into something you can ask about directly. Instead of building a report in the GA4 UI, you ask your agent for the numbers and it runs the report for you.
+
+## 2. What you'll need
+
+- A Google Analytics account with at least one **GA4 property**.
+- The **property ID** of the property you want to report on (shown in Admin → Property Settings).
+- A user role on the property that can view reports (Viewer or above).
+- The **Google Analytics Data API** enabled for your project.
+- An UnleashX account with access to **Data Connectors**.
+
+<Note>
+No API key to paste. Google Analytics uses OAuth — you click **Authorize** and sign in with Google.
+</Note>
+
+<Warning>
+Google enforces your Analytics **role**. The **Google Analytics Data API** must be enabled, and your Google user needs at least **Viewer** access on the property — otherwise the agent can't read its reports either. Ask your Analytics admin to grant access if needed.
+</Warning>
+
+## 3. Get your credentials
+
+There's no key to copy. Authentication runs through Google's secure OAuth sign-in.
+
+<Steps>
+<Step title="Start the connection in UnleashX">
+Connecting Google Analytics (Section 4) opens a Google **Sign in** window.
+</Step>
+<Step title="Sign in with Google">
+Sign in with the Google account that has access to your GA4 property. Complete two-factor authentication if prompted.
+</Step>
+<Step title="Review and accept the scopes">
+Google shows the access UnleashX is requesting (see the scopes table). Click **Allow**.
+</Step>
+<Step title="Confirm your property">
+If you have access to multiple GA4 properties, note the **property ID** of the one you want to report on. The agent uses it when running reports.
+</Step>
+<Step title="Return to UnleashX">
+Google redirects you back automatically and the connector links to your Analytics account. Behind the scenes UnleashX authenticates with Google using an OAuth token — you never handle the token yourself.
+</Step>
+</Steps>
+
+**Permissions (Google OAuth scopes) UnleashX requests:**
+
+| Scope | Why UnleashX needs it |
+|---|---|
+| `https://www.googleapis.com/auth/analytics.readonly` | Read your GA4 accounts, properties, and report data. |
+| `openid` | Identify the signed-in Google account. |
+| `email` | Confirm which Google account is connected. |
+| `offline_access` | Refresh access automatically so you don't re-authorize every session. |
+
+<Note>
+Google OAuth scopes are granular. UnleashX requests read-only access, and Google — together with your Analytics role — enforces the limits.
+</Note>
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to [https://www.tryunleashx.com](https://www.tryunleashx.com) and open the agent you want to connect.
+</Step>
+<Step title="Open Data Connectors">
+Inside the agent, go to **Data Connectors**.
+</Step>
+<Step title="Find Google Analytics">
+Locate **Google Analytics** and click **Connect** (or **Add** / **Configure**).
+</Step>
+<Step title="Authorize with Google">
+Click **Authorize**, sign in with Google, and accept the scopes.
+</Step>
+<Step title="Confirm success">
+You return to UnleashX and the Google Analytics connector shows a **Connected** badge.
+</Step>
+</Steps>
+
+{/* workflow-usage-section */}
+### Use Google Analytics in a Workflow
+
+Once connected, you can add **Google Analytics** to any automation from the **Workflows** builder. Its triggers and tools appear in the Apps panel, marked with an **MCP** badge.
+
+<Steps>
+<Step title="Add a trigger node">
+Open **Workflows → New Workflow**. On the canvas, click **+ Add Trigger**. In the **Paths** panel, open the **Apps** tab and select **Google Analytics** — its **Triggers** are listed underneath. Use the search box if you have many connectors.
+</Step>
+<Step title="Add an action node">
+Click the **+** below any node to add a step, then pick **Google Analytics** again — this time the panel lists its **Actions**.
+</Step>
+<Step title="Configure the step">
+Fill in the fields for the trigger or action you picked. Required fields are marked with a red asterisk (*).
+</Step>
+<Step title="Add or select your account">
+Under **Selected account**, choose an already-connected account, or click **Add Account** to connect one now.
+</Step>
+<Step title="Save and test">
+Click **Save**. Use **Test** to verify the step, then toggle **Publish** when the workflow is ready.
+</Step>
+</Steps>
+
+<Note>
+The steps are the same for every connector. For the full workflow builder guide, see [Using MCP in Workflows](/mcp/workflows).
+</Note>
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| List Accounts | Lists the GA4 accounts you can access. | No |
+| List Properties | Lists GA4 properties within an account. | No |
+| Get Property | Retrieves a single property's details by ID. | No |
+| Run Report | Runs a standard GA4 report (metrics, dimensions, date range). | No |
+| Run Realtime Report | Runs a realtime report of current activity. | No |
+
+### Available triggers
+
+| Trigger | Fires when |
+|---|---|
+| On New Property | A new GA4 property appears in an account you can access. |
+
+## 6. Example usage
+
+**"How many users and sessions did our main site get last week?"**
+→ Runs Run Report with users and sessions metrics over the last-week date range and returns the totals.
+
+**"How many people are on the site right now, and which pages are they viewing?"**
+→ Runs Run Realtime Report to return active users and their current pages.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- List the GA4 accounts and properties you can access.
+- Read a property's details.
+- Run standard and realtime analytics reports.
+
+**UnleashX cannot:**
+- Change property settings, data streams, or your analytics configuration (this connector is read-focused).
+- Do anything your Analytics role doesn't permit.
+- Access properties your Google user hasn't been granted.
+
+**To disconnect:** In UnleashX, open **Data Connectors → Google Analytics → Disconnect**. You can also revoke access at `https://myaccount.google.com/permissions` (Third-party apps with account access). Disconnecting revokes access immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| **401 Unauthorized** | The Google token expired or is invalid. | Reconnect Google Analytics in **Data Connectors** and sign in again. |
+| **403 Forbidden** | Your Analytics role lacks access, or the API isn't enabled. | Enable the Google Analytics Data API and ask your admin for at least Viewer access. |
+| **Property not found** | The property ID is wrong or your user can't see it. | Confirm the property ID in Admin → Property Settings and that you have access. |
+| **No data / empty report** | The date range has no data, or the property is new. | Widen the date range or verify the property is collecting data. |
+| **Rate limit exceeded** | The Analytics Data API quota was reached. | Wait for the quota to reset, then retry. |
+
+For general MCP issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Is my analytics data stored by UnleashX?**
+No. UnleashX runs reports live through the Google Analytics Data API per request; it doesn't keep a copy of your metrics.
+
+**Which property does the agent report on?**
+The property whose ID you point it at. If you manage several, the agent can list them and you specify which to use.
+
+**Can the agent change my Analytics setup?**
+No. This connector is read-focused — it reads accounts, properties, and reports but doesn't change your configuration.
+
+**Does this work with Universal Analytics?**
+No. This connector uses the GA4 Data API. Universal Analytics properties have been retired by Google.
+
+## 10. References
+
+- Google Analytics Data API (GA4) documentation: https://developers.google.com/analytics/devguides/reporting/data/v1
+- Google Analytics Admin API: https://developers.google.com/analytics/devguides/config/admin/v1
+- Finding your GA4 property ID: https://support.google.com/analytics/answer/9539598
+- Google account permissions / revoke access: https://myaccount.google.com/permissions

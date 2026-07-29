@@ -66,7 +66,11 @@
                   "mcp/whatsapp-business",
                   "mcp/whatsapp-web",
                   "mcp/kwiqreply",
-                  "mcp/zoom"
+                  "mcp/zoom",
+                  "mcp/google-chat",
+                  "mcp/google-meet",
+                  "mcp/zoho-meet",
+                  "mcp/facebook"
                 ]
               },
               {
@@ -85,7 +89,10 @@
                   "mcp/google-maps",
                   "mcp/asana",
                   "mcp/monday",
-                  "mcp/microsoft-excel"
+                  "mcp/microsoft-excel",
+                  "mcp/microsoft-word",
+                  "mcp/notion",
+                  "mcp/google-tasks"
                 ]
               },
               {
@@ -104,9 +111,12 @@
                   "mcp/zoho-books",
                   "mcp/pipedrive",
                   "mcp/intercom",
+                  "mcp/activecampaign",
+                  "mcp/freshdesk",
                   "mcp/brevo",
                   "mcp/sendgrid",
-                  "mcp/shopify"
+                  "mcp/shopify",
+                  "mcp/mailchimp"
                 ]
               },
               {
@@ -117,8 +127,10 @@
                   "mcp/wordpress",
                   "mcp/http-executor",
                   "mcp/hyperbrowser",
+                  "mcp/playwright",
                   "mcp/agents",
-                  "mcp/reporting"
+                  "mcp/reporting",
+                  "mcp/firecrawl"
                 ]
               },
               {
@@ -129,7 +141,8 @@
                   "mcp/image",
                   "mcp/veo",
                   "mcp/heygen",
-                  "mcp/rag"
+                  "mcp/rag",
+                  "mcp/nano-banana"
                 ]
               },
               {
@@ -137,6 +150,25 @@
                 "pages": [
                   "mcp/databricks",
                   "mcp/bigquery"
+                ]
+              },
+              {
+                "group": "Advertising & Analytics",
+                "pages": [
+                  "mcp/google-analytics",
+                  "mcp/google-ad-manager",
+                  "mcp/google-campaign-manager",
+                  "mcp/twitter-ads",
+                  "mcp/linkedin-ads",
+                  "mcp/youtube-analytics"
+                ]
+              },
+              {
+                "group": "Sales & Outreach",
+                "pages": [
+                  "mcp/apollo",
+                  "mcp/instantly",
+                  "mcp/outreach"
                 ]
               },
               {
@@ -149,7 +181,8 @@
               {
                 "group": "Social & Web",
                 "pages": [
-                  "mcp/reddit"
+                  "mcp/reddit",
+                  "mcp/linkedin"
                 ]
               }
             ]
@@ -179,7 +212,6 @@
               "resources/faqs"
             ]
           }
-          
         ]
       },
       {
@@ -285,8 +317,8 @@
     ]
   },
   "logo": {
-  "light": "/logo/dark.png",
-  "dark": "/logo/light.png"
+    "light": "/logo/dark.png",
+    "dark": "/logo/light.png"
   },
   "navbar": {
     "links": [
@@ -307,15 +339,15 @@
   },
   "contextual": {
     "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
   },
   "footer": {
     "socials": {
@@ -329,8 +361,8 @@
     "collapsibleGroups": true
   },
   "api": {
-  "playground": {
-    "proxy": false
+    "playground": {
+      "proxy": false
+    }
   }
-}
 }

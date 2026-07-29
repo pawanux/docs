@@ -1,0 +1,196 @@
+---
+title: "Google Tasks"
+icon: "https://cdn.simpleicons.org/googletasks"
+description: "Let your UnleashX agent manage task lists and tasks in Google Tasks."
+tags: [mcp, google-tasks, integration]
+---
+
+# Google Tasks
+
+> **In one line:** Connect Google Tasks so your UnleashX agent can create task lists, add and update tasks, find what's due, and keep your to-dos organized — all in plain language.
+
+| | |
+|---|---|
+| **Category** | Productivity & Scheduling |
+| **Authentication** | OAuth (Google) |
+| **Setup time** | ~2 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Individuals and teams that want an AI agent to capture, organize, and update to-dos in Google Tasks |
+
+## 1. Overview
+
+Google Tasks is Google's lightweight to-do list, built into Gmail, Google Calendar, and Workspace. It organizes your work into task lists, each holding individual tasks with due dates, notes, and completion status.
+
+Once connected to UnleashX, your agent can create new task lists, add tasks, update details like due dates and notes, mark tasks complete, find a specific task, and clear out ones you no longer need. It works against your live Google Tasks using your own Google sign-in, so it respects your account and access.
+
+Connecting Google Tasks to UnleashX means your to-do list keeps up with the conversation. Instead of switching to Tasks to jot something down or check what's due, you tell your agent and it captures, updates, or looks up the item for you.
+
+## 2. What you'll need
+
+- A Google account (personal or Google Workspace) with Google Tasks enabled.
+- Access to Gmail, Google Calendar, or the Tasks app so you can see your lists.
+- An UnleashX account with access to **Data Connectors**.
+
+<Note>
+No API key to paste. Google Tasks uses OAuth — you click **Authorize** and sign in with Google.
+</Note>
+
+<Warning>
+If you're on **Google Workspace**, your admin can restrict which third-party apps may connect. If authorization is blocked, ask your Workspace admin to allow UnleashX.
+</Warning>
+
+## 3. Get your credentials
+
+There's no key to copy. Authentication runs through Google's secure OAuth sign-in.
+
+<Steps>
+<Step title="Start the connection in UnleashX">
+Connecting Google Tasks (Section 4) opens a Google **Sign in** window.
+</Step>
+<Step title="Sign in with Google">
+Choose the Google account whose tasks you want the agent to manage, and sign in at `https://accounts.google.com`. Complete two-factor authentication if prompted.
+</Step>
+<Step title="Review and accept the scopes">
+Google shows the access UnleashX is requesting (see the scopes table). Review it and click **Allow**.
+</Step>
+<Step title="Confirm the account">
+If you're signed in to more than one Google account, make sure you picked the one that holds the task lists you want to work with.
+</Step>
+<Step title="Return to UnleashX">
+Google redirects you back automatically and the connector links to your account. Behind the scenes UnleashX uses Google's OAuth token — you never handle it yourself.
+</Step>
+</Steps>
+
+**Permissions (Google OAuth scopes) UnleashX requests:**
+
+| Scope | Why UnleashX needs it |
+|---|---|
+| `https://www.googleapis.com/auth/tasks` | Create, read, update, and delete your task lists and tasks. |
+| `openid` | Identify the Google account being connected. |
+| `https://www.googleapis.com/auth/userinfo.email` | Confirm which account is linked so you can manage the connection. |
+
+<Note>
+Google OAuth scopes are granular. UnleashX requests only what these tools need, and Google — not UnleashX — enforces the limits.
+</Note>
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to [https://www.tryunleashx.com](https://www.tryunleashx.com) and open the agent you want to connect.
+</Step>
+<Step title="Open Data Connectors">
+Inside the agent, go to **Data Connectors**.
+</Step>
+<Step title="Find Google Tasks">
+Locate **Google Tasks** and click **Connect** (or **Add** / **Configure**).
+</Step>
+<Step title="Authorize with Google">
+Click **Authorize**, sign in with Google, and accept the scopes.
+</Step>
+<Step title="Confirm success">
+You return to UnleashX and the Google Tasks connector shows a **Connected** badge.
+</Step>
+</Steps>
+
+{/* workflow-usage-section */}
+### Use Google Tasks in a Workflow
+
+Once connected, you can add **Google Tasks** to any automation from the **Workflows** builder. Its triggers and tools appear in the Apps panel, marked with an **MCP** badge.
+
+<Steps>
+<Step title="Add a trigger node">
+Open **Workflows → New Workflow**. On the canvas, click **+ Add Trigger**. In the **Paths** panel, open the **Apps** tab and select **Google Tasks** — its **Triggers** are listed underneath. Use the search box if you have many connectors.
+</Step>
+<Step title="Add an action node">
+Click the **+** below any node to add a step, then pick **Google Tasks** again — this time the panel lists its **Actions**.
+</Step>
+<Step title="Configure the step">
+Fill in the fields for the trigger or action you picked. Required fields are marked with a red asterisk (*).
+</Step>
+<Step title="Add or select your account">
+Under **Selected account**, choose an already-connected account, or click **Add Account** to connect one now.
+</Step>
+<Step title="Save and test">
+Click **Save**. Use **Test** to verify the step, then toggle **Publish** when the workflow is ready.
+</Step>
+</Steps>
+
+<Note>
+The steps are the same for every connector. For the full workflow builder guide, see [Using MCP in Workflows](/mcp/workflows).
+</Note>
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| List Tasklists | Lists the task lists in your account. | No |
+| Create Tasklist | Creates a new task list. | ✏️ Yes |
+| List Tasks | Lists tasks within a task list. | No |
+| Get Task | Retrieves a single task by ID. | No |
+| Create Task | Adds a new task to a list. | ✏️ Yes |
+| Update Task | Updates a task's details or completion status. | ✏️ Yes |
+| Delete Task | Deletes a specified task. | ⚠️ Yes |
+| Find Task | Searches for a task matching your criteria. | No |
+
+### Available triggers
+
+| Trigger | Fires when |
+|---|---|
+| On New Task | A new task is added to a task list. |
+
+## 6. Example usage
+
+**"Add 'Send the Q3 report to finance' to my Work list, due Friday."**
+→ Runs Create Task on the Work list with the title and Friday's due date.
+
+**"What's on my Personal list, and mark 'Call the dentist' as done."**
+→ Runs List Tasks on the Personal list, then Update Task to mark "Call the dentist" complete.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- Read and list your task lists and tasks.
+- Create task lists and add new tasks.
+- Update task details, due dates, and completion status.
+- Delete tasks where you allow it (this tool is clearly marked ⚠️).
+
+**UnleashX cannot:**
+- Access other Google services (Gmail, Calendar, Drive) — those are separate connectors.
+- Change your Google account password or security settings.
+- Do anything your Google account doesn't permit.
+
+**To disconnect:** In UnleashX, open **Data Connectors → Google Tasks → Disconnect**. You can also revoke access at `https://myaccount.google.com/permissions` (Third-party apps with account access). Disconnecting revokes access immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| **401 Unauthorized** | The Google token expired or is invalid. | Reconnect Google Tasks in **Data Connectors** and sign in again. |
+| **403 Forbidden** | Access to Tasks was blocked or not granted. | Re-authorize and accept the scopes; on Workspace, ask your admin to allow UnleashX. |
+| **Wrong account** | The agent is acting on a different Google account. | Reconnect and pick the correct account. |
+| **Task not found** | The task or list ID no longer exists. | Use List Tasklists or Find Task to locate the current item, then retry. |
+| **Rate limit exceeded** | Google's Tasks API request limit was reached. | Wait a moment and retry with fewer, more specific requests. |
+
+For general MCP issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Are my tasks stored by UnleashX?**
+No. UnleashX reads and writes your tasks live through the Google Tasks API per request; it doesn't keep a copy.
+
+**Which account does the agent use?**
+The Google account you selected when connecting. To switch, reconnect and choose a different account.
+
+**Can the agent really delete tasks?**
+Yes — the Delete Task tool (marked ⚠️) permanently removes a task. Use it deliberately.
+
+**Does this work with Google Workspace accounts?**
+Yes, as long as your admin allows third-party app access. If authorization is blocked, ask your Workspace admin to permit UnleashX.
+
+## 10. References
+
+- Google Tasks API documentation: https://developers.google.com/tasks
+- Google OAuth 2.0 scopes: https://developers.google.com/identity/protocols/oauth2/scopes
+- Manage third-party access to your Google Account: https://myaccount.google.com/permissions
+- Google sign-in: https://accounts.google.com

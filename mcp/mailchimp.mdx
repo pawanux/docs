@@ -1,0 +1,216 @@
+---
+title: "MailChimp"
+icon: "https://cdn.simpleicons.org/mailchimp"
+description: "Let your UnleashX agent manage Mailchimp audiences, members, and campaigns in plain language."
+tags: [mcp, mailchimp, email-marketing, integration]
+---
+
+# MailChimp
+
+> **In one line:** Connect Mailchimp so your UnleashX agent can add and update subscribers, look people up, clean your audience, and check what campaigns are running — without opening the dashboard.
+
+| | |
+|---|---|
+| **Category** | CRM & Marketing |
+| **Authentication** | API key |
+| **Setup time** | ~2 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Marketing teams that want subscriber management handled automatically as leads come in |
+
+## 1. Overview
+
+Mailchimp is an email marketing platform. Your contacts live in **audiences** (Mailchimp's name for lists), and campaigns are sent to those audiences or to segments within them.
+
+Once connected to UnleashX, your agent can list your audiences, list and look up members, add new members, update existing ones, remove members, and list the campaigns in your account. It works against your live Mailchimp account using your API key, so it respects your plan's contact limits.
+
+Connecting Mailchimp to UnleashX means list hygiene stops being manual: a form comes in and the subscriber is added with the right tags, a customer churns and their status is updated — all as part of the workflow that already handles the event.
+
+## 2. What you'll need
+
+- A Mailchimp account.
+- An **API key** from your Mailchimp account settings (see Section 3).
+- An UnleashX account with access to **Data Connectors**.
+
+<Note>
+You paste an **API key**. UnleashX sends it to the Mailchimp API as an authorization credential on every request. The key ends in a data-center suffix (like `-us21`) that tells the API which server your account lives on — keep it intact when copying.
+</Note>
+
+<Warning>
+Adding a member with a `subscribed` status treats them as opted in. Only do that for people who actually consented — GDPR, CAN-SPAM, and Mailchimp's own terms all apply to you, not to the connector.
+</Warning>
+
+## 3. Get your credentials
+
+Mailchimp authenticates with an **API key** — a single secret string you generate once in your account settings and paste into UnleashX. There's no OAuth flow and nothing to install.
+
+<Steps>
+<Step title="Sign in to Mailchimp">
+Go to [mailchimp.com](https://login.mailchimp.com/) and sign in. If you don't have an account yet, sign up first.
+</Step>
+
+<Step title="Open your account settings">
+Click your **profile avatar** in the bottom-left corner, then choose **Account & billing**.
+</Step>
+
+<Step title="Go to Extras → API keys">
+From the account menu, open **Extras → API keys**. Any keys you've already created are listed here.
+</Step>
+
+<Step title="Create a new API key">
+Click **Create A Key**. Give it a name that tells you where it's used — for example **UnleashX**. The name is only a label for you; it doesn't affect what the key can do. A clear name matters later, when you need to know which key to revoke.
+</Step>
+
+<Step title="Copy the key immediately">
+Mailchimp displays the key so you can copy it. Copy it right away — including the `-usXX` suffix — and paste it somewhere safe (a password manager, or straight into the UnleashX connector).
+</Step>
+
+<Step title="Paste it into UnleashX">
+Head to **Data Connectors → MailChimp** in UnleashX and paste the key (full walkthrough in Section 4). UnleashX validates it immediately, so you'll know right away if it was copied correctly.
+</Step>
+</Steps>
+
+### Good to know
+
+<Tip>
+Use a **separate key per integration**. A dedicated key can be revoked on its own if it leaks, without breaking every other tool that uses your Mailchimp account.
+</Tip>
+
+<Warning>
+A Mailchimp API key grants **full access to your account** through the API — there are no per-key scopes. Treat it like a password:
+
+- Never commit it to git, paste it in a ticket, or share it in chat.
+- Use a separate key per integration so you can revoke one without disrupting the rest.
+- If it's ever exposed, disable it under **Extras → API keys** and create a replacement — revoking is instant.
+</Warning>
+
+### Permissions this key grants UnleashX
+
+| Access | Why UnleashX needs it |
+|---|---|
+| Read audiences | List the audiences (lists) in your account. |
+| Read members | List audience members and look one up by email. |
+| Manage members | Add, update, and remove audience members. |
+| Read campaigns | List the campaigns in your account. |
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to [https://www.tryunleashx.com](https://www.tryunleashx.com) and open the agent you want to connect.
+</Step>
+<Step title="Open Data Connectors">
+Inside the agent, go to **Data Connectors**.
+</Step>
+<Step title="Find MailChimp">
+Locate **MailChimp** and click **Connect** (or **Add** / **Configure**).
+</Step>
+<Step title="Paste your API key">
+Paste your **API key** and click **Connect**.
+</Step>
+<Step title="Confirm success">
+UnleashX validates the key and the MailChimp connector shows a **Connected** badge.
+</Step>
+</Steps>
+
+{/* workflow-usage-section */}
+### Use MailChimp in a Workflow
+
+Once connected, you can add **MailChimp** to any automation from the **Workflows** builder. Its tools appear in the Apps panel, marked with an **MCP** badge.
+
+<Steps>
+<Step title="Add a trigger node">
+Open **Workflows → New Workflow**. On the canvas, click **+ Add Trigger**. In the **Paths** panel, open the **Apps** tab and select **MailChimp** — its **Triggers** are listed underneath. Use the search box if you have many connectors.
+
+![MailChimp triggers in the Apps panel](/images/mcp/mailchimp/workflows/06-apps-triggers.png)
+</Step>
+<Step title="Add an action node">
+Click the **+** below any node to add a step, then pick **MailChimp** again — this time the panel lists its **Actions**.
+
+![MailChimp actions in the Apps panel](/images/mcp/mailchimp/workflows/07-apps-actions.png)
+</Step>
+<Step title="Configure the step">
+Fill in the fields for the trigger or action you picked. Required fields are marked with a red asterisk (*).
+</Step>
+<Step title="Add or select your account">
+Under **Selected account**, choose an already-connected account, or click **Add Account** to connect one now.
+</Step>
+<Step title="Save and test">
+Click **Save**. Use **Test** to verify the step, then toggle **Publish** when the workflow is ready.
+</Step>
+</Steps>
+
+<Note>
+The steps are the same for every connector. For the full workflow builder guide, see [Using MCP in Workflows](/mcp/workflows).
+</Note>
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| List Audiences | Lists the audiences (lists) in the Mailchimp account. | No |
+| List Members | Lists the members of a Mailchimp audience. | No |
+| Get Member | Gets a single audience member by email. | No |
+| Add Member | Adds a new member to a Mailchimp audience. | ✏️ Yes |
+| Update Member | Updates an existing audience member. | ✏️ Yes |
+| Delete Member | Removes a member from a Mailchimp audience. | ⚠️ Yes |
+| List Campaigns | Lists the campaigns in the Mailchimp account. | No |
+
+<Tip>
+Most member tools need an **audience ID**. Run **List Audiences** first to get it, then pass it into the member step.
+</Tip>
+
+## 6. Example usage
+
+> **"Add jane@acme.com to the Newsletter audience as subscribed, with first name Jane."**
+>
+> Runs **List Audiences** to resolve the ID, then **Add Member**.
+
+> **"Is bob@globex.com on any of our lists, and what's his status?"**
+>
+> Runs **Get Member** against the relevant audience.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- Read your audiences, members, and campaigns.
+- Add, update, and remove audience members.
+
+**UnleashX cannot:**
+- Create, edit, or send campaigns.
+- Exceed your Mailchimp plan's contact or sending limits.
+- Change your Mailchimp account settings or billing.
+
+**To disconnect:** In UnleashX, open **Data Connectors → MailChimp → Disconnect**. Then disable the key under **Extras → API keys** in Mailchimp. Disconnecting and revoking removes access immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| `401 Unauthorized` | The API key is invalid or was disabled. | Create a new key and reconnect. |
+| **"Wrong datacenter"** | The `-usXX` suffix was dropped when copying the key. | Re-copy the full key including the suffix. |
+| `400 Member Exists` | You tried to add someone already in that audience. | Use **Update Member** instead of **Add Member**. |
+| `404 Resource Not Found` | The audience ID or member email is wrong. | Run **List Audiences** to confirm the ID; check the email spelling. |
+| **"Forgotten email not subscribed"** | The contact previously unsubscribed or was deleted. | They must re-subscribe themselves — you can't re-add them via API. |
+| `429 Too Many Requests` | You hit the API rate limit. | Slow down requests and retry after a short wait. |
+
+For general connector issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Does UnleashX store my subscriber data?**
+No. It reads and writes your records live through the Mailchimp API per request; it doesn't keep a copy.
+
+**Can the agent send a campaign?**
+No. These tools cover audiences and members, plus listing campaigns. Sending still happens in Mailchimp.
+
+**What's the difference between an audience and a list?**
+They're the same thing — Mailchimp renamed lists to audiences, and the API still calls them lists.
+
+**Why can't I re-add someone who unsubscribed?**
+Mailchimp blocks it deliberately. An unsubscribed or "forgotten" contact has to opt back in themselves.
+
+## 10. References
+
+- [Mailchimp Marketing API documentation](https://mailchimp.com/developer/marketing/api/)
+- [Mailchimp API keys guide](https://mailchimp.com/help/about-api-keys/)
+- [Mailchimp dashboard](https://login.mailchimp.com/)

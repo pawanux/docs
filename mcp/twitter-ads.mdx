@@ -1,0 +1,189 @@
+---
+title: "X (Twitter) Ads"
+icon: "https://upload.wikimedia.org/wikipedia/commons/c/ce/X_logo_2023.svg"
+description: "Let your UnleashX agent manage ad accounts, campaigns, and line items on X (formerly Twitter) Ads."
+tags: [mcp, twitter-ads, integration]
+---
+
+# X (Twitter) Ads
+
+> **In one line:** Connect X (Twitter) Ads so your UnleashX agent can look up your ad accounts, create and manage campaigns, and review line items — all in plain language.
+
+| | |
+|---|---|
+| **Category** | Advertising & Analytics |
+| **Authentication** | OAuth (X Ads) |
+| **Setup time** | ~4 minutes |
+| **Difficulty** | Medium |
+| **Best for** | Marketing teams that want an AI agent to spin up and manage X (Twitter) Ads campaigns without leaving the conversation |
+
+## 1. Overview
+
+X Ads (formerly Twitter Ads) is X's advertising platform. It's where you organize paid activity into ad accounts, campaigns, and the line items that carry your budgets, bids, and targeting across the X timeline.
+
+Once connected to UnleashX, your agent can list the ad accounts you can access, create and update campaigns, pause or delete campaigns, and review the line items underneath them. It works against your live X Ads account using your own X sign-in, so it respects your role and access.
+
+Connecting X Ads to UnleashX means you can manage paid campaigns as you talk. Instead of opening the Ads Manager to launch or adjust a campaign, you tell your agent and it makes the change — cutting the clicks while keeping your account accurate.
+
+## 2. What you'll need
+
+- An **X Ads account** with a payment method and at least one campaign-ready ad account.
+- **Ads API access** approved for your account (X requires developer/API access for the Ads API).
+- A **funding instrument** on the ad account — its `funding_instrument_id` is required to create campaigns.
+- A user role with permission to create and edit campaigns on the ad account.
+- An UnleashX account with access to **Data Connectors**.
+
+<Note>
+No API key to paste. X Ads uses OAuth — you click **Authorize** and sign in with X.
+</Note>
+
+<Warning>
+X enforces your **account access and Ads API approval**. If your X user can't manage campaigns on the ad account — or the account hasn't been granted Ads API access — the agent can't either. Budgets are set in **local micro amounts** (the account currency × 1,000,000), so a $10.00 daily budget is `10000000`; passing a plain amount will be off by a million.
+</Warning>
+
+## 3. Get your credentials
+
+There's no key to copy. Authentication runs through X's secure OAuth sign-in.
+
+<Steps>
+<Step title="Start the connection in UnleashX">
+Connecting X Ads (Section 4) opens an X **Authorize app** window.
+</Step>
+<Step title="Sign in with X">
+Sign in with the X account that has access to your Ads account. Complete two-factor authentication if prompted.
+</Step>
+<Step title="Review and accept the access">
+X shows the access UnleashX is requesting (see the scopes table). Click **Authorize app**.
+</Step>
+<Step title="Confirm your ad account">
+If you can access several ad accounts, pick the one you want the agent to work with. UnleashX uses its ad account ID on every request.
+</Step>
+<Step title="Return to UnleashX">
+X redirects you back automatically and the connector links to your Ads account. UnleashX handles the OAuth token for you — you never paste or store it yourself.
+</Step>
+</Steps>
+
+**Permissions (X OAuth scopes) UnleashX requests:**
+
+| Scope | Why UnleashX needs it |
+|---|---|
+| `ads.read` | List ad accounts, campaigns, and line items, and read their settings. |
+| `ads.write` | Create, update, and delete campaigns on your ad account. |
+| `offline.access` | Refresh access automatically so you don't re-authorize every session. |
+
+<Note>
+X enforces the limits, not UnleashX. UnleashX requests only the access these tools need, and your X role still governs what you can do on each ad account.
+</Note>
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to [https://www.tryunleashx.com](https://www.tryunleashx.com) and open the agent you want to connect.
+</Step>
+<Step title="Open Data Connectors">
+Inside the agent, go to **Data Connectors**.
+</Step>
+<Step title="Find X (Twitter) Ads">
+Locate **X (Twitter) Ads** and click **Connect** (or **Add** / **Configure**).
+</Step>
+<Step title="Authorize with X">
+Click **Authorize**, sign in with X, accept the access, and pick your ad account.
+</Step>
+<Step title="Confirm success">
+You return to UnleashX and the X (Twitter) Ads connector shows a **Connected** badge.
+</Step>
+</Steps>
+
+{/* workflow-usage-section */}
+### Use X (Twitter) Ads in a Workflow
+
+Once connected, you can add **X (Twitter) Ads** to any automation from the **Workflows** builder. Its triggers and tools appear in the Apps panel, marked with an **MCP** badge.
+
+<Steps>
+<Step title="Add a trigger node">
+Open **Workflows → New Workflow**. On the canvas, click **+ Add Trigger**. In the **Paths** panel, open the **Apps** tab and select **X (Twitter) Ads** — its **Triggers** are listed underneath. Use the search box if you have many connectors.
+</Step>
+<Step title="Add an action node">
+Click the **+** below any node to add a step, then pick **X (Twitter) Ads** again — this time the panel lists its **Actions**.
+</Step>
+<Step title="Configure the step">
+Fill in the fields for the trigger or action you picked. Required fields are marked with a red asterisk (*).
+</Step>
+<Step title="Add or select your account">
+Under **Selected account**, choose an already-connected account, or click **Add Account** to connect one now.
+</Step>
+<Step title="Save and test">
+Click **Save**. Use **Test** to verify the step, then toggle **Publish** when the workflow is ready.
+</Step>
+</Steps>
+
+<Note>
+The steps are the same for every connector. For the full workflow builder guide, see [Using MCP in Workflows](/mcp/workflows).
+</Note>
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| List Accounts | Lists the X Ads accounts you can access. | No |
+| List Campaigns | Lists campaigns on an ad account. | No |
+| Create Campaign | Creates a new campaign (requires a funding instrument and budget in local micro amounts). | ✏️ Yes |
+| Update Campaign | Updates an existing campaign (name, budget, status). | ✏️ Yes |
+| Delete Campaign | Deletes a specified campaign. | ⚠️ Yes |
+| List Line Items | Lists the line items under a campaign. | No |
+
+## 6. Example usage
+
+**"Create a new campaign called 'Summer Launch' on our main ad account with a $50/day budget."**
+→ Runs List Accounts to find the ad account and its funding instrument, then Create Campaign with the budget set to `50000000` (local micro amounts).
+
+**"Pause the 'Spring Promo' campaign — we're out of budget."**
+→ Runs List Campaigns to find the campaign, then Update Campaign to set its status to paused.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- List the ad accounts, campaigns, and line items you can access.
+- Create and update campaigns on your ad account.
+- Delete campaigns where your role allows (this tool is clearly marked ⚠️).
+
+**UnleashX cannot:**
+- Do anything your X Ads role or account access doesn't permit.
+- Act on ad accounts you can't access, or without Ads API approval.
+- Change your X account password or account-wide security settings.
+
+**To disconnect:** In UnleashX, open **Data Connectors → X (Twitter) Ads → Disconnect**. You can also revoke access in X under **Settings → Security and account access → Apps and sessions → Connected apps**. Disconnecting revokes access immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| **401 Unauthorized** | The X token expired or is invalid. | Reconnect X (Twitter) Ads in **Data Connectors** and sign in again. |
+| **403 Forbidden** | Your X user lacks access to that ad account, or Ads API access isn't approved. | Ask the account admin for access, or confirm Ads API approval, then retry. |
+| **Campaign create fails** | No `funding_instrument_id` was supplied, or the funding instrument is inactive. | Add a valid funding instrument to the ad account and retry. |
+| **Budget looks wrong (off by a million)** | The budget was passed as a plain amount instead of local micro amounts. | Multiply the amount by 1,000,000 (e.g. $10.00 = `10000000`). |
+| **Rate limit exceeded** | You hit the X Ads API rate limit. | Wait for the window to reset, then retry. |
+
+For general MCP issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Do I need Ads API access?**
+Yes. The X Ads API requires your account to be approved for API access. Without it, the connector can authorize but calls to manage campaigns will be denied.
+
+**Why do I need a funding instrument ID?**
+X ties spending to a funding instrument (your payment source). Creating a campaign requires a valid `funding_instrument_id` on the ad account.
+
+**Why are my budgets so large?**
+Budgets use **local micro amounts** — the account currency multiplied by 1,000,000. A $25.00 budget is `25000000`. This is how the X Ads API represents money.
+
+**Is my ad data stored by UnleashX?**
+No. UnleashX reads and writes through the X Ads API live per request; it doesn't keep a copy of your campaigns.
+
+## 10. References
+
+- X Ads API documentation: https://developer.x.com/en/docs/x-ads-api
+- Campaign management: https://developer.x.com/en/docs/x-ads-api/campaign-management/api-reference/campaigns
+- X Ads API access & apps: https://developer.x.com/en/docs/x-ads-api/getting-started
+- X connected apps / revoke access: https://x.com/settings/connected_apps

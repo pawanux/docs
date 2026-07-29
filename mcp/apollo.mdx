@@ -1,0 +1,247 @@
+---
+title: "Apollo"
+icon: "https://www.apollo.io/favicon.ico"
+description: "Let your UnleashX agent search people and companies and manage contacts, accounts, opportunities, and sequences in Apollo."
+tags: [mcp, apollo, integration]
+---
+
+# Apollo
+
+> **In one line:** Connect Apollo so your UnleashX agent can search people and companies, manage contacts and accounts, track opportunities, and enroll contacts in sequences — all in plain language.
+
+| | |
+|---|---|
+| **Category** | Sales & Outreach |
+| **Authentication** | API key |
+| **Setup time** | ~2 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Sales and revenue teams that want an AI agent to prospect people and companies, manage contacts and opportunities, and run sequences in Apollo |
+
+## 1. Overview
+
+Apollo (apollo.io) is a sales intelligence and engagement platform. It combines a large B2B database of people and companies with the CRM-style records — contacts, accounts, opportunities — and the sequences your team uses to reach out.
+
+Once connected to UnleashX, your agent can search Apollo's people and company data, look up and manage contacts, create and update accounts, move contacts and accounts through stages, track opportunities, find sequences, and enroll contacts in them. It works against your live Apollo workspace using your API key, so it respects your account's data and limits.
+
+Connecting Apollo to UnleashX turns your prospecting and pipeline work into a conversation. Instead of opening Apollo to find a contact, update a stage, or enroll someone in a sequence, you tell your agent and it makes the change — cutting the manual steps while keeping your CRM current.
+
+## 2. What you'll need
+
+- An Apollo account.
+- An **API key** from your Apollo settings (see Section 3).
+- An UnleashX account with access to **Data Connectors**.
+
+<Note>
+You paste an **API key**. UnleashX sends it to the Apollo API as an authorization credential on every request.
+</Note>
+
+<Warning>
+Searching people and enriching data consume Apollo **credits** and are subject to your plan's limits. Broad searches can use credits quickly — scope searches to the records you actually need.
+</Warning>
+
+## 3. Get your credentials
+
+Apollo MCP authenticates with an **API key** — a single secret string you generate once in your Apollo settings and paste into UnleashX. There's no OAuth flow and nothing to install.
+
+### Step-by-step
+
+<Steps>
+<Step title="Sign in to Apollo">
+Go to [app.apollo.io](https://app.apollo.io/) and sign in. If you don't have an account yet, sign up first.
+</Step>
+
+<Step title="Open Settings">
+Click the **gear icon** at the bottom of the left sidebar to open the **Team & Workspace setup** menu, then click **All settings**.
+</Step>
+
+<Step title="Open Integrations → API Keys">
+In the Settings sidebar, expand **Integrations** and click **API Keys**. It opens Apollo's **API Management** area in a new tab.
+</Step>
+
+<Step title="Open the API Keys page">
+In **API Management**, select **API Keys**. Any keys you've already created are listed here.
+</Step>
+
+<Step title="Create a new API key">
+Click **Create new key** and fill in the dialog:
+
+- **Name** — a label that tells you where the key is used, for example **UnleashX**.
+- **Description** — optional; a note on what the key is for.
+- **APIs** — the Apollo endpoints this key can call. Select the ones UnleashX needs (people/company search, contacts, accounts, opportunities, sequences), **or** turn on **Set as master key** to grant access to all endpoints. You must do one or the other — the dialog won't submit otherwise.
+
+Click **Create API key**.
+
+<Tip>
+A **master key** is the quickest path to a working connector, since it covers every endpoint. If you'd rather scope it down, pick the individual APIs instead — just make sure they cover every tool you plan to use, or those calls will fail with a 403.
+</Tip>
+</Step>
+
+<Step title="Copy the key immediately">
+Apollo displays the key so you can copy it. Copy it right away and paste it somewhere safe (a password manager, or straight into the UnleashX connector).
+</Step>
+
+<Step title="Paste it into UnleashX">
+Head to **Data Connectors → Apollo** in UnleashX and paste the key (full walkthrough in Section 4). UnleashX validates it immediately, so you'll know right away if it was copied correctly.
+</Step>
+</Steps>
+
+### Good to know
+
+<Tip>
+Use a **separate key per integration**. A dedicated key can be revoked on its own if it leaks, without breaking every other tool that uses your Apollo account.
+</Tip>
+
+<Warning>
+Your API key **spends your Apollo credits** and grants access to your account through the API. Treat it like a password:
+
+- Never commit it to git, paste it in a ticket, or share it in chat.
+- Use a separate key per integration so you can revoke one without disrupting the rest.
+- If it's ever exposed, delete it in **Settings → Integrations → API Keys** and create a replacement — revoking is instant.
+</Warning>
+
+<Note>
+**Lost your key?** If you can't recover a key, delete the old one under **Settings → Integrations → API Keys**, create a new one, then reconnect the connector in UnleashX with the new value.
+</Note>
+
+### Permissions this key grants UnleashX
+
+| Access | Why UnleashX needs it |
+|---|---|
+| Search people & companies | Find people and companies in Apollo's database. |
+| Read & manage contacts | List, create, and update contacts and their stages. |
+| Read & manage accounts | List, create, and update accounts and their stages. |
+| Read & manage opportunities | View, create, and update opportunities. |
+| Manage sequences | Find sequences and enroll contacts in them. |
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to [https://www.tryunleashx.com](https://www.tryunleashx.com) and open the agent you want to connect.
+</Step>
+<Step title="Open Data Connectors">
+Inside the agent, go to **Data Connectors**.
+</Step>
+<Step title="Find Apollo">
+Locate **Apollo** and click **Connect** (or **Add** / **Configure**).
+</Step>
+<Step title="Paste your API key">
+Paste your **API key** and click **Connect**.
+</Step>
+<Step title="Confirm success">
+UnleashX validates the key and the Apollo connector shows a **Connected** badge.
+</Step>
+</Steps>
+
+{/* workflow-usage-section */}
+### Use Apollo in a Workflow
+
+Once connected, you can add **Apollo** to any automation from the **Workflows** builder. Its triggers and tools appear in the Apps panel, marked with an **MCP** badge.
+
+<Steps>
+<Step title="Add a trigger node">
+Open **Workflows → New Workflow**. On the canvas, click **+ Add Trigger**. In the **Paths** panel, open the **Apps** tab and select **Apollo** — its **Triggers** are listed underneath. Use the search box if you have many connectors.
+</Step>
+<Step title="Add an action node">
+Click the **+** below any node to add a step, then pick **Apollo** again — this time the panel lists its **Actions**.
+</Step>
+<Step title="Configure the step">
+Fill in the fields for the trigger or action you picked. Required fields are marked with a red asterisk (*).
+</Step>
+<Step title="Add or select your account">
+Under **Selected account**, choose an already-connected account, or click **Add Account** to connect one now.
+</Step>
+<Step title="Save and test">
+Click **Save**. Use **Test** to verify the step, then toggle **Publish** when the workflow is ready.
+</Step>
+</Steps>
+
+<Note>
+The steps are the same for every connector. For the full workflow builder guide, see [Using MCP in Workflows](/mcp/workflows).
+</Note>
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| List People | Searches and lists people in Apollo's database. | No |
+| Get Person | Retrieves a single person by ID. | No |
+| List Contacts | Lists your contacts. | No |
+| Create Contact | Creates a new contact. | ✏️ Yes |
+| Update Contact | Updates an existing contact. | ✏️ Yes |
+| List Accounts | Lists your accounts. | No |
+| Create Account | Creates a new account. | ✏️ Yes |
+| Update Account | Updates an existing account. | ✏️ Yes |
+| Update Account Stage | Moves an account to a different stage. | ✏️ Yes |
+| Update Opportunity | Updates an existing opportunity. | ✏️ Yes |
+| Search Sequences | Searches your sequences. | No |
+| Update Contact Stage | Moves a contact to a different stage. | ✏️ Yes |
+| Get Opportunity | Retrieves a single opportunity by ID. | No |
+| Create Opportunity | Creates a new opportunity. | ✏️ Yes |
+| Create Or Update Contact | Creates a contact, or updates it if it already exists. | ✏️ Yes |
+| Add Contacts To Sequence | Enrolls one or more contacts in a sequence. | ✏️ Yes |
+
+### Available triggers
+
+| Trigger | Fires when |
+|---|---|
+| On New Contact | A new contact is created in Apollo. |
+| On Updated Contact | An existing contact is updated. |
+| On New Account | A new account is created in Apollo. |
+| On Updated Account | An existing account is updated. |
+
+## 6. Example usage
+
+**"Find the VP of Marketing at Globex and add them as a contact, then enroll them in the Demo Follow-up sequence."**
+→ Runs List People to find the person, Create Contact to add them, then Add Contacts To Sequence to enroll them.
+
+**"Move the Acme Corp account to the Negotiation stage and update its opportunity to $50k."**
+→ Runs Update Account Stage to move Acme Corp, then Update Opportunity to set the amount.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- Search Apollo's people and company database.
+- Read and list contacts, accounts, and opportunities.
+- Create and update contacts, accounts, and opportunities.
+- Move contacts and accounts through stages, and enroll contacts in sequences.
+
+**UnleashX cannot:**
+- Do anything your Apollo plan or account doesn't permit.
+- Exceed your Apollo plan's credit or rate limits.
+- Change your Apollo account password or billing settings.
+
+**To disconnect:** In UnleashX, open **Data Connectors → Apollo → Disconnect**. Then revoke the key in Apollo under **Settings → Integrations → API Keys**. Disconnecting and revoking removes access immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| **401 Unauthorized** | The API key is invalid or was revoked. | Create a new key and reconnect. |
+| **403 Forbidden** | Your Apollo plan doesn't allow that action. | Check your plan, or upgrade, then retry. |
+| **402 / credits exhausted** | Your plan's search/enrichment credits are used up. | Top up or upgrade your Apollo plan. |
+| **429 Too Many Requests** | You hit the API rate limit. | Slow down requests and retry after a short wait. |
+| **Contact already exists** | A contact with that email is already in Apollo. | Use Create Or Update Contact instead of creating a duplicate. |
+
+For general MCP issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Does UnleashX store my Apollo data?**
+No. UnleashX reads and writes your records live through the Apollo API per request; it doesn't keep a copy of your contacts, accounts, or opportunities.
+
+**Will searching cost me?**
+Yes — searching people and enriching data consume Apollo credits. Scope searches to what you need.
+
+**How do I avoid duplicate contacts?**
+Use the Create Or Update Contact tool, which updates an existing contact when one matches instead of creating a new one.
+
+**Where do I find my API key again?**
+Open **Settings → Integrations → API Keys** in Apollo. If you can't recover a key, delete the old one, create a new one, and reconnect.
+
+## 10. References
+
+- Apollo API documentation: https://docs.apollo.io/
+- Apollo API keys & authentication: https://docs.apollo.io/reference/authentication
+- Apollo app / settings: https://app.apollo.io/
+- Apollo help center: https://knowledge.apollo.io/
