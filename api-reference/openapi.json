@@ -2540,7 +2540,16 @@
                 "deleted"
               ]
             },
-            "description": "Filter by status. Defaults to all except deleted."
+            "description": "Filter by status. Accepts a single value or a JSON array such as [\"draft\",\"inprogress\"]. Defaults to all except deleted."
+          },
+          {
+            "name": "workspace_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Workspace scope override. Accepts a single id (293), a JSON array ([293,294]) or a comma-free JSON string. When omitted the token's own workspace is used. Always restricted to the token's company."
           }
         ],
         "responses": {
@@ -2551,7 +2560,7 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "datalist": {
+                    "campaigns": {
                       "type": "array",
                       "items": {
                         "type": "object",
@@ -2565,28 +2574,258 @@
                           "is_published": {
                             "type": "integer"
                           },
+                          "is_legacy": {
+                            "type": "integer",
+                            "description": "1 when the campaign uses the legacy audience model"
+                          },
+                          "agent_id": {
+                            "type": "integer"
+                          },
                           "agent_name": {
                             "type": "string"
                           },
-                          "start_end_date": {
+                          "workspace_id": {
+                            "type": "integer",
+                            "description": "Workspace the campaign belongs to"
+                          },
+                          "workspace_name": {
                             "type": "string"
+                          },
+                          "start_end_date": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Schedule window, e.g. \"1 Dec - 31 Dec\""
                           },
                           "max_retry": {
                             "type": "integer"
                           },
+                          "max_delay": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "total_audience": {
+                            "type": "integer",
+                            "description": "Contacts connected to the campaign"
+                          },
                           "progress": {
-                            "type": "string"
+                            "type": "string",
+                            "description": "Formatted as called/total"
+                          },
+                          "has_audience": {
+                            "type": "boolean"
+                          },
+                          "has_fresh_inqueue_audience": {
+                            "type": "boolean"
                           },
                           "campaign_status_name": {
+                            "type": "string",
+                            "description": "Draft, Inprogress, Hold, Pause, Force Completed, Deleted, or Completed when end_date has passed"
+                          },
+                          "campaign_status": {
+                            "type": "integer",
+                            "description": "Numeric status: 0 draft, 1 inprogress, 2 hold, 3 pause, 4 force_completed, 5 deleted"
+                          },
+                          "last_updated": {
+                            "type": "string",
+                            "nullable": true
+                          }
+                        }
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "totalRecords": {
+                          "type": "integer"
+                        },
+                        "totalPages": {
+                          "type": "integer"
+                        },
+                        "currentPage": {
+                          "type": "integer"
+                        },
+                        "limit": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/campaign-consumption": {
+      "get": {
+        "summary": "Campaign consumption",
+        "description": "Per-campaign calls, talk time and cost across the whole company. Campaigns with no calls in the selected window are still returned, at zero.",
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Restrict to one or more workspaces. Accepts a single id, a comma-separated list, or a JSON array. Always restricted to the token's company."
+          },
+          {
+            "name": "campaign_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Restrict to one or more campaigns. Accepts a single id, a comma-separated list, or a JSON array."
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "today",
+                "yesterday",
+                "week",
+                "last_week",
+                "month",
+                "last_month",
+                "last_7_days"
+              ]
+            },
+            "description": "Date-range shorthand applied to the calls. Defaults to today when neither filter nor fromDate/toDate is supplied."
+          },
+          {
+            "name": "fromDate",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Custom range start (YYYY-MM-DD). Used only when filter is omitted; must be sent together with toDate."
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Custom range end (YYYY-MM-DD). Used only when filter is omitted; must be sent together with fromDate."
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Page number (default: 1)"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Records per page (default: 10)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Campaign consumption retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "consumption": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "campaign_id": {
+                            "type": "integer"
+                          },
+                          "campaign_name": {
                             "type": "string"
                           },
                           "campaign_status": {
-                            "type": "string",
-                            "description": "Status as string: draft, inprogress, hold, pause, force_completed, deleted"
+                            "type": "integer",
+                            "description": "Numeric status: 0 draft, 1 inprogress, 2 hold, 3 pause, 4 force_completed, 5 deleted"
                           },
-                          "last_updated": {
+                          "workspace_id": {
+                            "type": "integer"
+                          },
+                          "workspace_name": {
                             "type": "string"
+                          },
+                          "total_calls": {
+                            "type": "integer"
+                          },
+                          "total_duration": {
+                            "type": "string",
+                            "description": "Talk time formatted as 1h:2m:14s"
+                          },
+                          "total_cost": {
+                            "type": "string",
+                            "description": "Cost with the company's currency symbol, e.g. $12.40"
                           }
+                        }
+                      }
+                    },
+                    "totals": {
+                      "type": "object",
+                      "description": "Grand totals across every matching campaign, not just the current page",
+                      "properties": {
+                        "total_campaigns": {
+                          "type": "integer"
+                        },
+                        "total_calls": {
+                          "type": "integer"
+                        },
+                        "total_duration": {
+                          "type": "string"
+                        },
+                        "total_cost": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "date_range": {
+                      "type": "object",
+                      "nullable": true,
+                      "properties": {
+                        "from": {
+                          "type": "string"
+                        },
+                        "to": {
+                          "type": "string"
                         }
                       }
                     },
@@ -3431,6 +3670,122 @@
         "responses": {
           "200": {
             "description": "OK"
+          }
+        }
+      }
+    },
+    "/workspace-list": {
+      "get": {
+        "summary": "List workspaces (API token)",
+        "description": "Retrieve the workspaces available to the API token's owner. Use the returned workspace_id values with workspace-scoped endpoints such as /campaign-list and /campaign-consumption.",
+        "tags": [
+          "Workspaces"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Page number (default: 1)"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Records per page (default: 10)"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Partial workspace-name search (LIKE)"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "enum": [
+                0,
+                1
+              ]
+            },
+            "description": "Filter by workspace status: 1 active (default), 0 inactive"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Workspace list retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "workspaces": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "workspace_id": {
+                            "type": "integer"
+                          },
+                          "workspace_name": {
+                            "type": "string"
+                          },
+                          "status": {
+                            "type": "string",
+                            "description": "Active or Inactive"
+                          }
+                        }
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "totalRecords": {
+                          "type": "integer"
+                        },
+                        "totalPages": {
+                          "type": "integer"
+                        },
+                        "currentPage": {
+                          "type": "integer"
+                        },
+                        "limit": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
           }
         }
       }

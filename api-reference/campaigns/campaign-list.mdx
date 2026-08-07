@@ -5,69 +5,154 @@ openapi: "api-reference/openapi.json GET /campaign-list"
 
 Use this endpoint to **retrieve a paginated list of campaigns** with optional filters.
 
-## Endpoint
+## API Endpoint
 
-**GET** `/campaign-list`
+**GET** `/api/v1/global/campaign-list`
 
-**Authentication:** Required (workspace auth)
+**Base URL:** `https://www.tryunleashx.com`
+
+**Authentication:** Required (Token header: `token` or `api_access_token`)
 
 ## Query Parameters
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `page` | number | No | Page number (default: `1`) |
-| `limit` | number | No | Records per page (default: `10`) |
-| `agent_id` | number \| array | No | Filter by agent ID(s) |
+| `page` | integer | No | Page number (default: `1`) |
+| `limit` | integer | No | Records per page (default: `10`) |
+| `agent_id` | integer \| array | No | Filter by agent ID(s). Accepts `5` or a JSON array `[5,9]` |
 | `campaign_name` | string | No | Partial name search (LIKE) |
-| `campaign_status` | string | No | Filter by status. Valid values: `draft`, `inprogress`, `hold`, `pause`, `force_completed`, `deleted`. Defaults to all except `deleted`. |
+| `campaign_status` | string \| array | No | Filter by status. Valid values: `draft`, `inprogress`, `hold`, `pause`, `force_completed`, `deleted`. Accepts a JSON array such as `["draft","inprogress"]`. Defaults to all except `deleted`. |
+| `workspace_id` | integer \| array | No | Workspace scope override. Accepts a single id (`293`) or a JSON array (`[293,294]`). When omitted, only the token's own workspace is listed. |
+
+### Workspace Scope
+
+By default the list is scoped to the workspace the API token belongs to. Passing
+`workspace_id` overrides that, which is how a company-level token reads another
+workspace's campaigns:
+
+- `?workspace_id=293` — campaigns of workspace 293 only
+- `?workspace_id=[293,294]` — campaigns of both workspaces
+
+The scope is always restricted to the token's own company, so a `workspace_id`
+belonging to another company returns no records. Use
+[List Workspaces](/api-reference/workspaces/workspace-list) to discover the ids
+you can pass here.
 
 ## Campaign Status Values
 
-| Status | Description |
-|--------|-------------|
-| `draft` | Campaign is in draft mode |
-| `inprogress` | Campaign is actively running |
-| `hold` | Campaign is on hold |
-| `pause` | Campaign is paused |
-| `force_completed` | Campaign was force completed |
-| `deleted` | Campaign has been deleted |
+| Status | Numeric value | Description |
+|--------|---------------|-------------|
+| `draft` | `0` | Campaign is in draft mode |
+| `inprogress` | `1` | Campaign is actively running |
+| `hold` | `2` | Campaign is on hold |
+| `pause` | `3` | Campaign is paused |
+| `force_completed` | `4` | Campaign was force completed |
+| `deleted` | `5` | Campaign has been deleted |
 
-## Response
+## Success Response
+
+**Status Code:** `200 OK`
 
 ```json
 {
-  "datalist": [
-    {
-      "id": 42,
-      "campaign_name": "Winter Sale Campaign",
-      "agent_name": "Sales Agent",
-      "start_end_date": "1 Dec - 31 Dec",
-      "max_retry": 3,
-      "max_delay": "5m - 30m",
-      "progress": "120/500",
-      "campaign_status_name": "Inprogress",
-      "campaign_status": "inprogress",
-      "last_updated": "2 days ago"
+  "error": false,
+  "code": 200,
+  "message": "",
+  "timestamp": 1769243432947,
+  "data": {
+    "campaigns": [
+      {
+        "id": 42,
+        "campaign_name": "Winter Sale Campaign",
+        "is_published": 1,
+        "is_legacy": 0,
+        "agent_id": 18,
+        "agent_name": "Sales Agent",
+        "workspace_id": 293,
+        "workspace_name": "Growth Team",
+        "start_end_date": "1 Dec - 31 Dec",
+        "max_retry": 3,
+        "max_delay": "5m - 30m",
+        "total_audience": 500,
+        "progress": "120/500",
+        "has_audience": true,
+        "has_fresh_inqueue_audience": true,
+        "campaign_status_name": "Inprogress",
+        "campaign_status": 1,
+        "last_updated": "2 days ago"
+      }
+    ],
+    "pagination": {
+      "totalRecords": 25,
+      "totalPages": 3,
+      "currentPage": 1,
+      "limit": 10
     }
-  ],
-  "pagination": {
-    "totalRecords": 25,
-    "totalPages": 3,
-    "currentPage": 1,
-    "limit": 10
   }
 }
 ```
 
+## Response Fields
+
+### Campaign Object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | integer | Campaign ID |
+| `campaign_name` | string | Campaign name |
+| `is_published` | integer | `1` when the campaign has been published |
+| `is_legacy` | integer | `1` when the campaign uses the legacy audience model |
+| `agent_id` | integer | ID of the voice agent running the campaign |
+| `agent_name` | string | Name of the voice agent |
+| `workspace_id` | integer | Workspace the campaign belongs to |
+| `workspace_name` | string | Workspace name |
+| `start_end_date` | string or null | Schedule window, e.g. `"1 Dec - 31 Dec"` |
+| `max_retry` | integer | Configured re-attempts |
+| `max_delay` | string or null | Delay / condition between attempts |
+| `total_audience` | integer | Contacts connected to the campaign |
+| `progress` | string | Formatted as `called/total` |
+| `has_audience` | boolean | `true` when the campaign has any audience |
+| `has_fresh_inqueue_audience` | boolean | `true` when contacts are still waiting to be dialed |
+| `campaign_status_name` | string | Human-readable status (see table above), or `Completed` when `end_date` has passed |
+| `campaign_status` | integer | Numeric status value |
+| `last_updated` | string or null | Relative last-modified time, e.g. `"2 days ago"` |
+
+### Pagination Object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `totalRecords` | integer | Total number of matching campaigns |
+| `totalPages` | integer | Total number of pages |
+| `currentPage` | integer | Current page number |
+| `limit` | integer | Records per page |
+
 ## Notes
 
 - `campaign_status` defaults to all statuses except `deleted`.
-- A campaign is automatically labeled **Completed** if its `end_date` has passed.
+- A campaign is automatically labeled **Completed** in `campaign_status_name` if its `end_date` has passed. The numeric `campaign_status` is unchanged.
 - `progress` is formatted as `called/total` audience count.
+- `workspace_id` / `workspace_name` are returned only for API-token (global) requests.
+- Results are ordered by creation date, newest first.
 
 ## Example cURL
 
+### Campaigns of the token's own workspace
+
 ```bash
 curl -X GET "https://www.tryunleashx.com/api/v1/global/campaign-list?page=1&limit=10&campaign_status=inprogress" \
+  -H "token: <api_key>"
+```
+
+### Campaigns of a specific workspace
+
+```bash
+curl -X GET "https://www.tryunleashx.com/api/v1/global/campaign-list?workspace_id=293" \
+  -H "token: <api_key>"
+```
+
+### Campaigns across multiple workspaces
+
+```bash
+curl -X GET "https://www.tryunleashx.com/api/v1/global/campaign-list?workspace_id=[293,294]&limit=50" \
   -H "token: <api_key>"
 ```
