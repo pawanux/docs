@@ -1,0 +1,125 @@
+---
+title: List Workspaces (API Token)
+openapi: "api-reference/openapi.json GET /workspace-list"
+---
+
+Retrieve the workspaces available to your API token. This is the lookup endpoint
+for `workspace_id` values used by workspace-scoped endpoints such as
+[List Campaigns](/api-reference/campaigns/campaign-list) and
+[Campaign Consumption](/api-reference/campaigns/campaign-consumption).
+
+The response is intentionally trimmed to the three fields an API consumer needs —
+id, name and status. Owner, members, whitelisted domains and branding settings
+are internal UI data and are not returned here.
+
+## API Endpoint
+
+**GET** `/api/v1/global/workspace-list`
+
+**Base URL:** `https://www.tryunleashx.com`
+
+**Authentication:** Required (Token header: `token` or `api_access_token`)
+
+## Query Parameters
+
+All parameters are optional.
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `page` | integer | No | `1` | Page number, starting at 1 |
+| `limit` | integer | No | `10` | Records per page |
+| `name` | string | No | - | Partial workspace-name search (LIKE) |
+| `status` | integer | No | `1` | Workspace status. `1` = active, `0` = inactive |
+
+## Success Response
+
+**Status Code:** `200 OK`
+
+```json
+{
+  "error": false,
+  "code": 200,
+  "message": "",
+  "timestamp": 1769243432947,
+  "data": {
+    "workspaces": [
+      {
+        "workspace_id": 293,
+        "workspace_name": "Growth Team",
+        "status": "Active"
+      },
+      {
+        "workspace_id": 287,
+        "workspace_name": "Support",
+        "status": "Active"
+      }
+    ],
+    "pagination": {
+      "totalRecords": 2,
+      "currentPage": 1,
+      "limit": 10,
+      "totalPages": 1
+    }
+  }
+}
+```
+
+## Response Fields
+
+### Workspace Object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `workspace_id` | integer | Unique identifier of the workspace — pass this to workspace-scoped endpoints |
+| `workspace_name` | string | Name of the workspace |
+| `status` | string | `Active` or `Inactive` |
+
+### Pagination Object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `totalRecords` | integer | Total number of matching workspaces |
+| `currentPage` | integer | Current page number |
+| `limit` | integer | Records per page |
+| `totalPages` | integer | Total number of pages available |
+
+## Access Control
+
+Only workspaces the API token's owner is an active member of are returned. The
+token itself resolves to a user and a company; workspaces belonging to another
+company are never listed, so a `workspace_id` obtained here is always safe to
+pass to the campaign endpoints.
+
+## Example cURL
+
+### List all workspaces
+
+```bash
+curl -X GET "https://www.tryunleashx.com/api/v1/global/workspace-list" \
+  -H "token: <api_key>"
+```
+
+### Search workspaces by name
+
+```bash
+curl -X GET "https://www.tryunleashx.com/api/v1/global/workspace-list?name=growth" \
+  -H "token: <api_key>"
+```
+
+### Page through a large list
+
+```bash
+curl -X GET "https://www.tryunleashx.com/api/v1/global/workspace-list?page=2&limit=50" \
+  -H "token: <api_key>"
+```
+
+## Notes
+
+- Results are sorted by creation date, newest first.
+- `status` is a label, not the numeric column — filter with the numeric `status` parameter (`1` / `0`) but read the string back.
+- Pagination values fall back to `0` when there are no matching records.
+
+## Related Operations
+
+- [List Campaigns](/api-reference/campaigns/campaign-list) — accepts `workspace_id`
+- [Campaign Consumption](/api-reference/campaigns/campaign-consumption) — accepts `workspace_id`

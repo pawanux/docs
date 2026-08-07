@@ -1,0 +1,181 @@
+---
+title: Campaign Consumption
+openapi: "api-reference/openapi.json GET /campaign-consumption"
+---
+
+Retrieve **per-campaign call volume, talk time and cost** across your company.
+Unlike [List Campaigns](/api-reference/campaigns/campaign-list), this endpoint is
+not limited to the token's workspace — a company-level token can report on every
+workspace at once, or narrow to specific workspaces and campaigns.
+
+## API Endpoint
+
+**GET** `/api/v1/global/campaign-consumption`
+
+**Base URL:** `https://www.tryunleashx.com`
+
+**Authentication:** Required (Token header: `token` or `api_access_token`)
+
+## Query Parameters
+
+All parameters are optional.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `workspace_id` | integer \| array | No | Restrict to one or more workspaces. Accepts `287`, `287,288` or `[287,288]` |
+| `campaign_id` | integer \| array | No | Restrict to one or more campaigns. Accepts `202`, `202,203` or `[202,203]` |
+| `filter` | string | No | Date-range shorthand applied to the calls. See table below. Defaults to **today** |
+| `fromDate` | date | No | Custom range start (`YYYY-MM-DD`). Used only when `filter` is omitted; send together with `toDate` |
+| `toDate` | date | No | Custom range end (`YYYY-MM-DD`). Used only when `filter` is omitted; send together with `fromDate` |
+| `page` | integer | No | Page number (default: `1`) |
+| `limit` | integer | No | Records per page (default: `10`) |
+
+### Date Range Filters
+
+| `filter` value | Range covered |
+|----------------|---------------|
+| `today` (or `day`) | Today, 00:00:00 – 23:59:59 |
+| `yesterday` (or `previous_day`) | The previous calendar day |
+| `week` | Current week, Monday – Sunday |
+| `last_week` (or `lastweek`) | Previous week, Monday – Sunday |
+| `month` | Current calendar month |
+| `last_month` (or `lastmonth`) | Previous calendar month |
+| `last_7_days` (or `last7days`) | Rolling 7 days including today |
+
+<Note>
+If neither `filter` nor a valid `fromDate` / `toDate` pair is supplied, the range
+falls back to **today**. An unparseable custom range also falls back to today
+rather than returning an error.
+</Note>
+
+## Success Response
+
+**Status Code:** `200 OK`
+
+```json
+{
+  "error": false,
+  "code": 200,
+  "message": "",
+  "timestamp": 1769243432947,
+  "data": {
+    "consumption": [
+      {
+        "campaign_id": 202,
+        "campaign_name": "Renewal Reminder",
+        "campaign_status": 1,
+        "workspace_id": 287,
+        "workspace_name": "Support",
+        "total_calls": 1240,
+        "total_duration": "38h:12m:5s",
+        "total_cost": "$186.40"
+      },
+      {
+        "campaign_id": 205,
+        "campaign_name": "Winback July",
+        "campaign_status": 4,
+        "workspace_id": 287,
+        "workspace_name": "Support",
+        "total_calls": 0,
+        "total_duration": "0h:0m:0s",
+        "total_cost": "$0.00"
+      }
+    ],
+    "totals": {
+      "total_campaigns": 2,
+      "total_calls": 1240,
+      "total_duration": "38h:12m:5s",
+      "total_cost": "$186.40"
+    },
+    "date_range": {
+      "from": "2026-08-01 00:00:00",
+      "to": "2026-08-31 23:59:59"
+    },
+    "pagination": {
+      "totalRecords": 2,
+      "totalPages": 1,
+      "currentPage": 1,
+      "limit": 10
+    }
+  }
+}
+```
+
+## Response Fields
+
+### Consumption Object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `campaign_id` | integer | Campaign ID |
+| `campaign_name` | string | Campaign name |
+| `campaign_status` | integer | Numeric status: `0` draft, `1` inprogress, `2` hold, `3` pause, `4` force_completed, `5` deleted |
+| `workspace_id` | integer | Workspace the campaign belongs to |
+| `workspace_name` | string | Workspace name |
+| `total_calls` | integer | Number of calls in the selected date range |
+| `total_duration` | string | Talk time formatted as `1h:2m:14s` |
+| `total_cost` | string | Actual cost, prefixed with the company's currency symbol |
+
+### Totals Object
+
+Grand totals across **every** matching campaign, not just the current page — so
+page 2 reports the same totals as page 1.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `total_campaigns` | integer | Number of matching campaigns |
+| `total_calls` | integer | Calls across all matching campaigns |
+| `total_duration` | string | Combined talk time |
+| `total_cost` | string | Combined cost with currency symbol |
+
+### Date Range Object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `from` | string | Resolved range start (`YYYY-MM-DD HH:mm:ss`) |
+| `to` | string | Resolved range end (`YYYY-MM-DD HH:mm:ss`) |
+
+### Pagination Object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `totalRecords` | integer | Total number of matching campaigns |
+| `totalPages` | integer | Total number of pages |
+| `currentPage` | integer | Current page number |
+| `limit` | integer | Records per page |
+
+## Notes
+
+- **Campaigns with no calls are still returned, at zero.** The date range filters the calls, not the campaigns, so a campaign that was idle in the window appears with `total_calls: 0` instead of disappearing from the report.
+- Results are ordered by `total_cost` descending, then by campaign ID descending.
+- Cost comes from the actual charged call cost, not an estimate.
+- Filtering is always restricted to the token's company, so a `workspace_id` from another company returns no records. Use [List Workspaces](/api-reference/workspaces/workspace-list) to look up valid ids.
+
+## Example cURL
+
+### Monthly consumption for one campaign in one workspace
+
+```bash
+curl -X GET "https://www.tryunleashx.com/api/v1/global/campaign-consumption?campaign_id=202&filter=month&workspace_id=287" \
+  -H "token: <api_key>"
+```
+
+### All campaigns across the company for the last 7 days
+
+```bash
+curl -X GET "https://www.tryunleashx.com/api/v1/global/campaign-consumption?filter=last_7_days&limit=50" \
+  -H "token: <api_key>"
+```
+
+### Custom date range across two workspaces
+
+```bash
+curl -X GET "https://www.tryunleashx.com/api/v1/global/campaign-consumption?workspace_id=[287,293]&fromDate=2026-07-01&toDate=2026-07-31" \
+  -H "token: <api_key>"
+```
+
+## Related Operations
+
+- [List Campaigns](/api-reference/campaigns/campaign-list) — campaign metadata and progress
+- [Campaign Details](/api-reference/campaigns/campaign-details) — full configuration of one campaign
+- [List Workspaces](/api-reference/workspaces/workspace-list) — look up `workspace_id` values

@@ -265,6 +265,7 @@
               "api-reference/campaigns/update-campaign",
               "api-reference/campaigns/campaign-force-completed",
               "api-reference/campaigns/campaign-list",
+              "api-reference/campaigns/campaign-consumption",
               "api-reference/campaigns/campaign-details",
               "api-reference/campaigns/audience-list",
               "api-reference/campaigns/audience-format",
@@ -273,6 +274,12 @@
               "api-reference/campaigns/delete-audience",
               "api-reference/campaigns/export-campaign-data",
               "api-reference/campaigns/export-campaign-audience-data"
+            ]
+          },
+          {
+            "group": "Workspaces",
+            "pages": [
+              "api-reference/workspaces/workspace-list"
             ]
           },
           {
