@@ -124,6 +124,10 @@ For every integration below, use this pattern:
 **Direct tool names:** Create Post, Update Post, List Content, Publish Content, Search Content.  
 **Authentication:** WordPress REST auth through request/session context.  
 
+### WooCommerce
+**Direct tool names:** List Products, Get Product, Create Product, List Orders, Update Order Status, Search Customers.  
+**Authentication:** Consumer Key + Consumer Secret with store URL, from headers/session.  
+
 ### Zoho CRM
 **Direct tool names:** List Records, Create Record, Update Record, Search Records, Delete Record.  
 **Authentication:** Zoho access token in header/body with session fallback.  
@@ -297,6 +301,13 @@ For every integration below, use this pattern:
     **Authentication:** session auth context (`wordpress`) for REST operations; AI helper tools may also use OpenAI key.
 
     **Links:** [MCP doc](/mcp/wordpress) · [WordPress REST API](https://developer.wordpress.org/rest-api/)
+  </Accordion>
+  <Accordion title="WooCommerce">
+    **Main operations:** product catalog and category browsing, order lookup and status updates, customer records, payment gateways; triggers on new order/product/customer/coupon.
+
+    **Authentication:** `consumer_key` + `consumer_secret` with store URL (header/body); session fallback (`woocommerce`).
+
+    **Links:** [MCP doc](/mcp/woocommerce) · [WooCommerce REST API](https://woocommerce.github.io/woocommerce-rest-api-docs/)
   </Accordion>
   <Accordion title="Zoho CRM">
     **Main operations:** CRM modules, records, and pipeline-related automation.
