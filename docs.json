@@ -116,6 +116,7 @@
                   "mcp/brevo",
                   "mcp/sendgrid",
                   "mcp/shopify",
+                  "mcp/woocommerce",
                   "mcp/mailchimp"
                 ]
               },
