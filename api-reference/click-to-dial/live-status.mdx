@@ -1,0 +1,276 @@
+---
+title: Get Click-to-Call Live Status
+openapi: "api-reference/openapi.json GET /c2c-live-status/{call_id}"
+---
+
+Check the real-time status of one or more click-to-call (C2C) calls that were started with the [Click-to-Dial API](/api-reference/click-to-dial/trigger-call). Use it to poll a call you just triggered, or to pull a rolled-up view of every click-to-call made by your workspace on a given day.
+
+## API Endpoint
+
+```
+GET /api/v1/global/c2c-live-status/{call_id}
+```
+
+`{call_id}` is optional. Two distinct modes are supported depending on whether it's supplied:
+
+| Mode | When to use | Path |
+|------|-------------|------|
+| Single call | You have a specific `call_id` (returned when the call was triggered) and want its current status | `GET /api/v1/global/c2c-live-status/{call_id}` |
+| Bulk / date range | You want the status of every click-to-call made by your workspace over a day or range of days | `GET /api/v1/global/c2c-live-status` |
+
+**Content-Type:** `application/json`
+
+**Authentication:** Required (Token header: `token` or `api_access_token`)
+
+The token determines which company/workspace the request is scoped to — you cannot query calls belonging to another workspace.
+
+## Single Call: `GET /c2c-live-status/{call_id}`
+
+Returns the live status of exactly one call.
+
+### Path Parameter
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `call_id` | string | Yes | The call identifier returned by the [Click-to-Dial trigger API](/api-reference/click-to-dial/trigger-call) |
+
+### Success Response
+
+**Status Code:** `200 OK`
+
+```json
+{
+  "error": false,
+  "code": 200,
+  "message": "",
+  "timestamp": 1787031005485,
+  "data": {
+    "call_id": "call_app_cdf948429945",
+    "success": true,
+    "status": {
+      "status": "found",
+      "live_status": {
+        "timeline": [
+          {
+            "status": "queued",
+            "label": "queued",
+            "leg": 1,
+            "at": "2026-08-12T07:30:34.893432+00:00"
+          },
+          {
+            "status": "dialled",
+            "label": "dialled",
+            "leg": 1,
+            "at": "2026-08-12T07:30:37.007706+00:00"
+          },
+          {
+            "status": "Ringing",
+            "label": "ringing",
+            "leg": 1,
+            "at": "2026-08-12T07:30:39.032847+00:00"
+          },
+          {
+            "status": "answered",
+            "label": "answered",
+            "leg": 1,
+            "at": "2026-08-12T07:31:05.119845+00:00"
+          },
+          {
+            "status": "Ringing",
+            "label": "ringing",
+            "leg": 2,
+            "at": "2026-08-12T07:31:05.119845+00:00"
+          }
+        ],
+        "last_polled_at": "2026-08-12T07:31:13.214900+00:00"
+      },
+      "second_leg_connected": true,
+      "call_status": "user-ended",
+      "keep_polling": false
+    }
+  }
+}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `data.call_id` | string | Echoes the call id you asked about |
+| `data.success` | boolean | `true` if a live status could be fetched for this call, `false` if the lookup failed (e.g. unknown/expired call id) |
+| `data.status` | object | The live status payload for the call, present only when `success` is `true`. Always check `data.success` before reading it |
+| `data.error` | string | A short error description, present only when `success` is `false` |
+
+### `data.status` Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `status` | string | Lookup status for the call record, e.g. `found` |
+| `live_status.timeline` | array | Ordered list of status events for the call, oldest first. Each entry has `status` (raw label, e.g. `queued`, `dialled`, `Ringing`, `answered`), `label` (normalized label), `leg` (`1` for the customer leg, `2` for the agent leg), and `at` (ISO 8601 timestamp) |
+| `live_status.last_polled_at` | string | Timestamp this status was last refreshed from the telephony provider |
+| `second_leg_connected` | boolean | Whether the agent leg (leg 2) has connected |
+| `call_status` | string | Current high-level call status, e.g. `user-ended` |
+| `keep_polling` | boolean | Whether the client should continue polling this `call_id` for further updates. `false` once the call has reached a terminal state |
+
+The exact set of `status`/`label` values that can appear in `live_status.timeline` and `call_status` may grow over time as new call states are added — don't hardcode an exhaustive list; use `keep_polling` to decide when to stop polling.
+
+### Failure Example
+
+```json
+{
+  "error": false,
+  "code": 200,
+  "message": "",
+  "timestamp": 1755500000000,
+  "data": {
+    "call_id": "call_app_1a2b3c4d5e6f",
+    "success": false,
+    "error": "Call not found"
+  }
+}
+```
+
+A lookup failure for an unknown call still comes back as HTTP 200 with `success: false` inside `data` — it is not a top-level API error. Always branch on `data.success`, not on the HTTP status code, when reading the result.
+
+## Bulk / Date Range: `GET /c2c-live-status`
+
+Omit `call_id` to get the live status of every click-to-call made by your workspace within a date range. Defaults to **today** if no range is given.
+
+### Query Parameters
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `fromdate` | date (`YYYY-MM-DD`) | No | Start of the range. Defaults to today |
+| `todate` | date (`YYYY-MM-DD`) | No | End of the range. Defaults to `fromdate` (i.e. a single day) if omitted |
+
+`fromDate` / `toDate` (camelCase) are also accepted as aliases.
+
+### Success Response
+
+**Status Code:** `200 OK`
+
+```json
+{
+  "error": false,
+  "code": 200,
+  "message": "",
+  "timestamp": 1755500000000,
+  "data": {
+    "from_date": "2026-08-18",
+    "to_date": "2026-08-18",
+    "count": 2,
+    "data": [
+      {
+        "call_id": "call_app_cdf948429945",
+        "success": true,
+        "status": {
+          "status": "found",
+          "live_status": {
+            "timeline": [
+              { "status": "queued", "label": "queued", "leg": 1, "at": "2026-08-12T07:30:34.893432+00:00" },
+              { "status": "answered", "label": "answered", "leg": 1, "at": "2026-08-12T07:31:05.119845+00:00" }
+            ],
+            "last_polled_at": "2026-08-12T07:31:13.214900+00:00"
+          },
+          "second_leg_connected": true,
+          "call_status": "user-ended",
+          "keep_polling": false
+        }
+      },
+      {
+        "call_id": "call_app_2b3c4d5e6f7a",
+        "success": false,
+        "error": "Call not found"
+      }
+    ]
+  }
+}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `data.from_date` | string | The resolved start date actually applied (after defaulting) |
+| `data.to_date` | string | The resolved end date actually applied (after defaulting) |
+| `data.count` | integer | Number of calls found in that range for your workspace |
+| `data.data` | array | Array of per-call status entries, newest call first. Each entry has the same shape as the single-call response's `data` object (`call_id`, `success`, and either `status` or `error`) — see [`data.status` Fields](#data-status-fields) above |
+
+Only calls that were triggered via the Click-to-Dial trigger API for your workspace are included — this does not cover calls made through other channels (e.g. AI voice agent calling).
+
+## Error Responses
+
+All errors are returned in a common envelope. Always check the `error` field of the response body.
+
+### 401 Unauthorized
+
+```json
+{
+  "error": true,
+  "code": 401,
+  "message": "Invalid Auth Key or Session Expired",
+  "data": {}
+}
+```
+
+### 400 Bad Request
+
+```json
+{
+  "error": true,
+  "code": 400,
+  "message": "Invalid fromdate",
+  "data": {}
+}
+```
+
+| Cause | HTTP Status |
+|-------|-------------|
+| Missing or invalid API access token | 401 |
+| Malformed `fromdate`/`todate` value | 400 |
+
+Per-call lookup failures (unknown call id, upstream timeout, etc.) do **not** raise an HTTP error — they surface as `success: false` within the relevant entry, as shown above.
+
+## Example Requests
+
+### Poll a single call
+
+```bash
+curl -X GET "https://www.tryunleashx.com/api/v1/global/c2c-live-status/call_app_1a2b3c4d5e6f" \
+  -H "token: YOUR_API_TOKEN"
+```
+
+### Get today's activity
+
+```bash
+curl -X GET "https://www.tryunleashx.com/api/v1/global/c2c-live-status" \
+  -H "token: YOUR_API_TOKEN"
+```
+
+### Get activity over a date range
+
+```bash
+curl -X GET "https://www.tryunleashx.com/api/v1/global/c2c-live-status?fromdate=2026-08-01&todate=2026-08-18" \
+  -H "token: YOUR_API_TOKEN"
+```
+
+## Typical Flow
+
+1. Trigger a call with the [Click-to-Dial API](/api-reference/click-to-dial/trigger-call) and capture the returned `call_id`
+2. Poll `GET /c2c-live-status/{call_id}` until the call reaches a terminal state, or
+3. Periodically call `GET /c2c-live-status` (no `call_id`) to get a snapshot of all of today's click-to-call activity, e.g. for a dashboard
+
+## Important Notes
+
+### Status Payload
+- `data.status.live_status.timeline` gives you the full history of the call across both legs — `leg: 1` is the customer, `leg: 2` is the agent
+- Use `data.status.keep_polling` to decide when to stop polling, rather than matching on specific `call_status`/timeline label values, since new statuses may be added over time
+- Always check `data.success` before reading `data.status`
+
+### Scope
+- The token determines which workspace's calls are visible; you cannot query calls belonging to another workspace
+- The bulk endpoint only returns calls triggered via the Click-to-Dial trigger API — it does not include calls made through other channels such as AI voice agent calling
+
+### Date Ranges
+- If `fromdate` and `todate` are both omitted, the range defaults to today
+- If only `fromdate` is supplied, `todate` defaults to the same day

@@ -4547,6 +4547,299 @@
           }
         }
       }
+    },
+    "/c2c-live-status/{call_id}": {
+      "get": {
+        "summary": "Get Click-to-Call Live Status",
+        "tags": [
+          "Click to Call"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "call_id",
+            "in": "path",
+            "required": true,
+            "description": "The call identifier returned by the Click-to-Dial trigger API",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Live status retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "boolean"
+                    },
+                    "code": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "timestamp": {
+                      "type": "integer"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "call_id": {
+                          "type": "string"
+                        },
+                        "success": {
+                          "type": "boolean"
+                        },
+                        "status": {
+                          "type": "object",
+                          "description": "Live status payload for the call, present only when success is true",
+                          "properties": {
+                            "status": {
+                              "type": "string",
+                              "description": "Lookup status, e.g. found"
+                            },
+                            "live_status": {
+                              "type": "object",
+                              "properties": {
+                                "timeline": {
+                                  "type": "array",
+                                  "description": "Ordered list of status events for the call, oldest first",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "status": {
+                                        "type": "string",
+                                        "description": "Raw status label for this timeline event, e.g. queued, dialled, Ringing, answered"
+                                      },
+                                      "label": {
+                                        "type": "string",
+                                        "description": "Normalized/lowercased status label"
+                                      },
+                                      "leg": {
+                                        "type": "integer",
+                                        "description": "Call leg this event belongs to: 1 for the customer leg, 2 for the agent leg"
+                                      },
+                                      "at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "description": "Timestamp the event occurred, ISO 8601"
+                                      }
+                                    }
+                                  }
+                                },
+                                "last_polled_at": {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "description": "Timestamp this status was last refreshed from the telephony provider"
+                                }
+                              }
+                            },
+                            "second_leg_connected": {
+                              "type": "boolean",
+                              "description": "Whether the agent leg (leg 2) has connected"
+                            },
+                            "call_status": {
+                              "type": "string",
+                              "description": "Current high-level call status, e.g. user-ended"
+                            },
+                            "keep_polling": {
+                              "type": "boolean",
+                              "description": "Whether the client should continue polling this call_id for further updates"
+                            }
+                          }
+                        },
+                        "error": {
+                          "type": "string",
+                          "description": "Error description, present only when success is false"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/c2c-live-status": {
+      "get": {
+        "summary": "Get Click-to-Call Live Status (Bulk / Date Range)",
+        "tags": [
+          "Click to Call"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fromdate",
+            "in": "query",
+            "required": false,
+            "description": "Start of the date range (YYYY-MM-DD). Defaults to today. Alias: fromDate",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "todate",
+            "in": "query",
+            "required": false,
+            "description": "End of the date range (YYYY-MM-DD). Defaults to fromdate. Alias: toDate",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Live status snapshot retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "boolean"
+                    },
+                    "code": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "timestamp": {
+                      "type": "integer"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "from_date": {
+                          "type": "string"
+                        },
+                        "to_date": {
+                          "type": "string"
+                        },
+                        "count": {
+                          "type": "integer"
+                        },
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "call_id": {
+                                "type": "string"
+                              },
+                              "success": {
+                                "type": "boolean"
+                              },
+                              "status": {
+                                "type": "object",
+                                "description": "Live status payload for the call, present only when success is true",
+                                "properties": {
+                                  "status": {
+                                    "type": "string",
+                                    "description": "Lookup status, e.g. found"
+                                  },
+                                  "live_status": {
+                                    "type": "object",
+                                    "properties": {
+                                      "timeline": {
+                                        "type": "array",
+                                        "description": "Ordered list of status events for the call, oldest first",
+                                        "items": {
+                                          "type": "object",
+                                          "properties": {
+                                            "status": {
+                                              "type": "string",
+                                              "description": "Raw status label for this timeline event, e.g. queued, dialled, Ringing, answered"
+                                            },
+                                            "label": {
+                                              "type": "string",
+                                              "description": "Normalized/lowercased status label"
+                                            },
+                                            "leg": {
+                                              "type": "integer",
+                                              "description": "Call leg this event belongs to: 1 for the customer leg, 2 for the agent leg"
+                                            },
+                                            "at": {
+                                              "type": "string",
+                                              "format": "date-time",
+                                              "description": "Timestamp the event occurred, ISO 8601"
+                                            }
+                                          }
+                                        }
+                                      },
+                                      "last_polled_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "description": "Timestamp this status was last refreshed from the telephony provider"
+                                      }
+                                    }
+                                  },
+                                  "second_leg_connected": {
+                                    "type": "boolean",
+                                    "description": "Whether the agent leg (leg 2) has connected"
+                                  },
+                                  "call_status": {
+                                    "type": "string",
+                                    "description": "Current high-level call status, e.g. user-ended"
+                                  },
+                                  "keep_polling": {
+                                    "type": "boolean",
+                                    "description": "Whether the client should continue polling this call_id for further updates"
+                                  }
+                                }
+                              },
+                              "error": {
+                                "type": "string",
+                                "description": "Error description, present only when success is false"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - malformed fromdate/todate value"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
     }
   },
   "components": {
