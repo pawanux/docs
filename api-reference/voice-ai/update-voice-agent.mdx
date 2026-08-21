@@ -3,7 +3,7 @@ title: Update Voice Agent
 openapi: "api-reference/openapi.json POST /create-agent"
 ---
 
-The Update Voice Agent API uses the same request/response shape as Create Voice Agent, but you must include `agent_id` to identify which agent to update. Only `agent_id` is required — include any other fields you want to change.
+The Update Voice Agent API uses the same request/response shape as Create Voice Agent, but you must include `agent_id` to identify which agent to update. Only `agent_id` is required — include any other fields you want to change, including `status` to draft, publish, or delete the agent.
 
 ## API Endpoint
 
@@ -60,6 +60,31 @@ The Update Voice Agent API uses the same request/response shape as Create Voice 
 
 All other fields follow the same definitions as the Create Voice Agent API — include only the fields you want to update.
 
+| Field | Type | Description |
+|-------|------|-------------|
+| `status` | number | `1` = Active/Published, `2` = Deleted, `3` = Draft/Unpublished. See [Status](#status) below. |
+
+## Status
+
+Pass `status` on its own (just `agent_id` + `status`) to draft, publish, or delete the agent without touching anything else:
+
+```json
+{
+  "agent_id": 123,
+  "status": 1
+}
+```
+
+| Code | Meaning |
+|------|---------|
+| `1` | **Publish** — the agent can place and receive calls |
+| `2` | **Delete** (soft delete) — also releases every phone number assigned to the agent |
+| `3` | **Unpublish** — moves the agent back to Draft |
+
+<Note>
+New agents are created in Draft (`status: 3`) by default — see [Create Voice Agent](/api-reference/voice-ai/create-voice-agent). Publishing (`status: 1`) a **voice** agent (`AGENT_TYPE = 3`) requires it to already have at least one **active, workspace-owned** phone number attached — see [Attach Phone Number](/api-reference/voice-ai/attach-phone-number). Numbers from a shared/global provider don't count.
+</Note>
+
 ## Response
 
 ### Success Response
@@ -87,6 +112,14 @@ All other fields follow the same definitions as the Create Voice Agent API — i
   "message": "Agent ID is required"
 }
 ```
+
+Also returned for status changes:
+
+| Message | Cause |
+|---------|-------|
+| `Invalid status value` | `status` isn't `1`, `2`, or `3` |
+| `Add at least 1 phone number to your agent` | `status: 1` on a voice agent with no active phone number attached |
+| `Cannot publish agent with global provider phone numbers. Please use workspace-owned phone numbers.` | `status: 1` but the agent's only attached number(s) belong to a shared/global provider |
 
 #### 401 Unauthorized
 
@@ -144,11 +177,23 @@ curl -X POST "https://www.tryunleashx.com/api/v1/global/create-agent?agent_id=12
   }'
 ```
 
+```bash
+# Publish the agent (status only, no other fields changed)
+curl -X POST https://www.tryunleashx.com/api/v1/global/create-agent \
+  -H "Content-Type: application/json" \
+  -H "token: your_api_token_here" \
+  -d '{
+    "agent_id": 123,
+    "status": 1
+  }'
+```
+
 ## Notes
 
 - Only include fields you want to update; omitted fields will remain unchanged.
 - The agent must exist and belong to your workspace.
 - For available options for `voice.provider`, `speech_to_text.provider`, `speech_to_text.language`, `llm` models, and `tts_model`, refer to the Create Voice Agent API documentation.
 - The `agent_id` can be provided either in the request body or as a query parameter.
+- `status` can be sent alone or alongside other field changes — see [Status](#status) above.
 
 

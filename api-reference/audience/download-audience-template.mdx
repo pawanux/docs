@@ -17,10 +17,18 @@ Use this endpoint to **download a blank Excel template** whose columns match an 
 |-----------|------|----------|-------------|
 | `agent_id` | number | No | Derive columns from this agent's configured metadata input fields. `mobile_no` is force-added as the first column if the agent's fields don't already include it. |
 | `audience_id` | number | No | Derive columns from an existing audience's saved input variables. |
-| `variable_id` | number \| array | No | Input-variable registry ID(s) to use as columns, in the order given. Also accepted as `variable_ids`. |
+| `variable_id` | number \| array | No | Input-variable registry ID(s) to use as columns, in the order given. Accepts **multiple** IDs — see below. Also accepted as `variable_ids`. |
 | `audience_name` | string | No | Overrides the downloaded file's base name. Defaults to the audience's name (`audience_id` mode) or `audience_template`. |
 
 Only one source is used to resolve columns — `agent_id` is checked first, then `audience_id`, then `variable_id`/`variable_ids`.
+
+### Passing multiple `variable_id`s
+
+Any of these forms work — the resulting columns follow the order the IDs were given in:
+
+- Repeat the param: `?variable_id=12&variable_id=15`
+- Comma-separated string: `?variable_id=12,15`
+- JSON-encoded array: `?variable_id=%5B12%2C15%5D` (i.e. `[12,15]`, URL-encoded)
 
 ## Response
 
@@ -47,8 +55,18 @@ One column per resolved variable key, in the order resolved. `mobile_no` must be
 
 ## Example cURL
 
+### From an existing audience
+
 ```bash
 curl -X GET "https://www.tryunleashx.com/api/v1/global/audience/download-template?audience_id=55" \
+  -H "token: <api_key>" \
+  --output audience_template.xlsx
+```
+
+### From multiple chosen input variables
+
+```bash
+curl -X GET "https://www.tryunleashx.com/api/v1/global/audience/download-template?variable_id=12&variable_id=15" \
   -H "token: <api_key>" \
   --output audience_template.xlsx
 ```

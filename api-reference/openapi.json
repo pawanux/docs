@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "https://www.tryunleashx.com/api/v1/global/"
+      "url": "https://dev.tryunleashx.com/api/v1/global/"
     }
   ],
   "security": [
@@ -177,7 +177,8 @@
                 "type": "object",
                 "properties": {
                   "agent_id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "description": "ID of an existing agent to update. Omit to create a new agent."
                   },
                   "agent_name": {
                     "type": "string"
@@ -332,6 +333,15 @@
                   },
                   "configurations": {
                     "type": "object"
+                  },
+                  "status": {
+                    "type": "integer",
+                    "enum": [
+                      1,
+                      2,
+                      3
+                    ],
+                    "description": "1 = Active/Published, 2 = Deleted, 3 = Draft/Unpublished. New agents default to 3 (Draft) when omitted. Publishing (1) a voice agent (AGENT_TYPE 3) requires at least one active, workspace-owned phone number already attached."
                   }
                 }
               }
@@ -5750,7 +5760,13 @@
                 }
               ]
             },
-            "description": "Input-variable registry ID(s) to use as columns, in the order given. Also accepted as variable_ids."
+            "description": "Input-variable registry ID(s) to use as columns, in the order given. Pass multiple by repeating the param (variable_id=12&variable_id=15) or as a comma-separated string (variable_id=12,15). Also accepted as variable_ids.",
+            "style": "form",
+            "explode": true,
+            "example": [
+              12,
+              15
+            ]
           },
           {
             "name": "audience_name",
