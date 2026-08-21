@@ -1,0 +1,68 @@
+---
+title: Audience Details
+openapi: "api-reference/openapi.json GET /audience/details"
+---
+
+Use this endpoint to **retrieve a single audience's metadata**.
+
+## Endpoint
+
+**GET** `/audience/details`
+
+**Authentication:** Required (workspace auth)
+
+## Query Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `audience_id` | number | Yes | Audience identifier |
+
+## Response
+
+```json
+{
+  "id": 55,
+  "audience_name": "VIP Customers",
+  "description": "High value customers",
+  "source": 1,
+  "source_file": null,
+  "input_variables": [
+    { "key": "mobile_no", "type": "phone" },
+    { "key": "name", "type": "name" }
+  ],
+  "tags": ["vip", "renewal"],
+  "total_contacts": 320,
+  "status": 1,
+  "created_date": "10 Dec, 2025 14:30",
+  "updated_date": "2 hours ago"
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `source` | number | `1` = CSV/Bulk Upload, `2` = Manual |
+| `input_variables` | array | Each of the audience's saved variable keys with its data type resolved from the input-variable registry (defaults to `string` if not found). |
+| `status` | number | See [Audience Status Codes](#audience-status-codes) |
+| `updated_date` | string | Relative time (e.g. `2 hours ago`) |
+
+## Audience Status Codes
+
+| Code | Status |
+|------|--------|
+| `0` | Inactive |
+| `1` | Active |
+| `2` | Deleted |
+
+## Error Cases
+
+| Error | Cause |
+|-------|-------|
+| `Audience Id is missing.` | `audience_id` not provided |
+| `Audience not found` | `audience_id` doesn't belong to the caller's company/workspace, or is deleted |
+
+## Example cURL
+
+```bash
+curl -X GET "https://www.tryunleashx.com/api/v1/global/audience/details?audience_id=55" \
+  -H "token: <api_key>"
+```

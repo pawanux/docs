@@ -1,0 +1,63 @@
+---
+title: List Segment Contacts
+openapi: "api-reference/openapi.json GET /segment/contacts"
+---
+
+Use this endpoint to **retrieve a paginated list of a segment's contacts** — the materialized contact mapping created when the segment was built, not a live re-evaluation of its filter.
+
+## Endpoint
+
+**GET** `/segment/contacts`
+
+**Authentication:** Required (workspace auth)
+
+## Query Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `segment_id` | number | Yes | Segment identifier |
+| `page` | number | No | Page number (default: `1`) |
+| `limit` | number | No | Records per page (default: `10`) |
+| `search` | string | No | Partial mobile number search (LIKE) |
+
+## Response
+
+```json
+{
+  "datalist": [
+    {
+      "id": 1001,
+      "mobile_no": "+12025550123",
+      "plan": "premium",
+      "city": "Mumbai"
+    }
+  ],
+  "pagination": {
+    "totalRecords": 128,
+    "totalPages": 13,
+    "currentPage": 1,
+    "limit": 10
+  }
+}
+```
+
+## Behavior
+
+- Reads the segment's materialized contact mapping (`segment_contacts`, status = active) joined to the underlying audience contacts — the exact set a connected campaign would dial. The segment's filter is **not** re-evaluated here.
+- Dynamic columns come from the parent audience's saved input variables (stable order), plus any extra input keys found on this page's contacts. Phone-number aliases (`mobile_no`, `mobile`, `phone`, `phone_no`, `phone_number`) are skipped since `mobile_no` already has its own column.
+- `mobile_no` is masked when the workspace's company has phone number masking enabled.
+- As a side effect, the segment's cached `total_contacts` is refreshed to match the live count of materialized contacts if it had drifted.
+
+## Error Cases
+
+| Error | Cause |
+|-------|-------|
+| `Segment Id is required` | `segment_id` missing |
+| `Segment not found` | `segment_id` doesn't belong to the caller's company/workspace, or is deleted |
+
+## Example cURL
+
+```bash
+curl -X GET "https://www.tryunleashx.com/api/v1/global/segment/contacts?segment_id=501&page=1&limit=10" \
+  -H "token: <api_key>"
+```

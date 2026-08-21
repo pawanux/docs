@@ -1,0 +1,43 @@
+---
+title: Segment Summary List
+openapi: "api-reference/openapi.json GET /segment/summary-list"
+---
+
+Use this endpoint to **retrieve a lightweight, unpaginated list of segments** — id, name, and contact/variable counts — for use in dropdowns and pickers (e.g. attaching a segment to a campaign, or a workflow's `selectdynamic` field).
+
+## Endpoint
+
+**GET** `/segment/summary-list`
+
+**Authentication:** Required (workspace auth)
+
+This endpoint has no query parameters — it always returns every non-deleted segment in the caller's workspace.
+
+## Response
+
+```json
+[
+  {
+    "id": 501,
+    "segment_name": "Mumbai Premium",
+    "ID": 501,
+    "OBJECT_NAME": "Mumbai Premium",
+    "variable_count": 4,
+    "contact_count": 128
+  }
+]
+```
+
+| Field | Description |
+|-------|-------------|
+| `id` / `segment_name` | Segment identifier and name |
+| `ID` / `OBJECT_NAME` | Same values, duplicated under these keys so this list can double as a generic `selectdynamic` picker |
+| `variable_count` | Number of input variables saved on the segment's parent audience (`0` for campaign-sourced segments, which have no `audience_id`) |
+| `contact_count` | Cached `total_contacts` on the segment |
+
+## Example cURL
+
+```bash
+curl -X GET https://www.tryunleashx.com/api/v1/global/segment/summary-list \
+  -H "token: <api_key>"
+```

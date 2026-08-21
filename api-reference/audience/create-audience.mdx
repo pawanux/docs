@@ -1,0 +1,135 @@
+---
+title: Create Audience
+openapi: "api-reference/openapi.json POST /audience/create"
+---
+
+Use this endpoint to **create a new audience, or append contacts to an existing one**, from an uploaded file and/or a JSON contact list.
+
+## Endpoint
+
+**POST** `/audience/create`
+
+**Content-Type:** `multipart/form-data` (file upload) or `application/json` (JSON contacts only)
+**Authentication:** Required (workspace auth)
+
+## Two Modes
+
+- **Create new audience** — pass `audience_name` (+ file and/or `contacts`). Columns are taken from the uploaded file's header row (or the first 50 JSON `contacts` rows) when no `input_variables` are passed.
+- **Append to an existing audience** — pass `audience_id` (+ file and/or `contacts`) to add more contacts into that audience. At least one contact row (file or `contacts`) is required.
+
+## Request Body
+
+### Create new audience
+
+```json
+{
+  "audience_name": "VIP Customers",
+  "description": "High value customers",
+  "tags": ["vip", "renewal"],
+  "input_variables": [12, 15],
+  "contacts": [
+    { "mobile_no": "+12025550123", "name": "John Doe" },
+    { "mobile_no": "+12025550456", "name": "Jane Smith" }
+  ]
+}
+```
+
+### Append contacts to an existing audience
+
+```json
+{
+  "audience_id": 55,
+  "contacts": [
+    { "mobile_no": "+12025550789", "name": "Alex Kim" }
+  ]
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `audience_name` | string | Yes* | Name of the new audience. Required when `audience_id` is not provided. Must be unique within the workspace. |
+| `audience_id` | number | Yes* | ID of an existing audience to append contacts to. When provided, switches to append mode and `audience_name` is not required. |
+| `description` | string | No | Free-text description. Ignored in append mode. |
+| `source` | number | No | `1` = CSV/Bulk Upload, `2` = Manual. Forced to `1` whenever a file is uploaded, regardless of what's passed. Defaults to `2` when omitted and no file is uploaded. Ignored in append mode. |
+| `input_variables` | array | No | Input-variable registry IDs to use as this audience's columns, **or** an array of variable key strings directly (e.g. `["mobile_no","name"]`). Also accepted as `variable_id` / `variable_ids`. Ignored in append mode. |
+| `tags` | array | No | Free-form tags. Accepts an array, a JSON-string array, or a comma-separated string. Ignored in append mode. |
+| `is_global` | boolean | No | `1` = usable by any agent (default). `0` = agent-specific. Defaults to `0` when `agent_id` is passed without `is_global`. Ignored in append mode. |
+| `agent_id` | number | No | Agent this audience is scoped to. Implies `is_global = 0` unless `is_global` is explicitly set. Ignored in append mode. |
+| `contacts` | array \| JSON string | No | Contact rows as a JSON array of objects (each object's keys become/must match the audience's columns). Combines with an uploaded file if both are given. |
+| `audience` | file | No | CSV/Excel file of contact rows — the multipart field name must be `audience`. The file's header row supplies the column names. At least one of the file or `contacts` is required in append mode. |
+
+## Response
+
+### New audience created
+
+```json
+{
+  "message": "Audience created successfully",
+  "data": {
+    "id": 55,
+    "audience_name": "VIP Customers",
+    "total_contacts": 2,
+    "input_variables": ["mobile_no", "name"]
+  }
+}
+```
+
+### Contacts appended
+
+```json
+{
+  "message": "Contacts added to audience successfully",
+  "data": {
+    "id": 55,
+    "audience_name": "VIP Customers",
+    "total_contacts": 3
+  }
+}
+```
+
+## Behavior
+
+- Rows are pulled from the uploaded file (multipart field `audience`) and/or the JSON `contacts` array and merged into one list before insert; large files insert in 500-row chunks.
+- If `input_variables` (or `variable_id`/`variable_ids`) were explicitly selected and a file is uploaded, the file's header row must contain a column for every selected variable — values may be left blank, but the column must exist.
+- Appending contacts additionally requires the file to include a column for every one of the target audience's existing input variables.
+- A row without a usable phone/mobile value is skipped; if every row is skipped, the request fails rather than silently creating an empty audience.
+- New contacts are automatically synced into any campaign (or segment) already connected to the audience.
+
+## Error Cases
+
+| Error | Cause |
+|-------|-------|
+| `Audience Name is missing.` | `audience_name` not provided when creating a new audience |
+| `Audience name already exists in this workspace` | `audience_name` already used by another (non-deleted) audience in the workspace |
+| `Audience not found` | `audience_id` (append mode) doesn't belong to the caller's company/workspace, or is deleted |
+| `No contacts provided` | Append mode called with no file and no `contacts` rows |
+| `No valid contacts found — make sure the file has a phone/mobile column with values` | None of the rows had a usable mobile number |
+| `The uploaded file is empty — add at least one contact with a phone/mobile number` | Uploaded file parsed to zero rows (new audience mode) |
+| `Your file must include a column for every input variable in this audience. Column(s) "..." ... missing.` | Upload is missing one or more of the required input-variable columns |
+
+## Example cURL
+
+### JSON contacts only
+
+```bash
+curl -X POST https://www.tryunleashx.com/api/v1/global/audience/create \
+  -H "Content-Type: application/json" \
+  -H "token: <api_key>" \
+  -d '{
+    "audience_name": "VIP Customers",
+    "description": "High value customers",
+    "contacts": [
+      { "mobile_no": "+12025550123", "name": "John Doe" },
+      { "mobile_no": "+12025550456", "name": "Jane Smith" }
+    ]
+  }'
+```
+
+### File upload
+
+```bash
+curl -X POST https://www.tryunleashx.com/api/v1/global/audience/create \
+  -H "token: <api_key>" \
+  -F "audience_name=VIP Customers" \
+  -F "audience=@contacts.xlsx"
+```

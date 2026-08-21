@@ -1,0 +1,103 @@
+---
+title: Update Segment
+openapi: "api-reference/openapi.json POST /segment/update"
+---
+
+Use this endpoint to **update a segment's name, description, audience, filters, tags, or status**. Passing `status: 2` soft-deletes the segment.
+
+## Endpoint
+
+**POST** `/segment/update`
+
+**Content-Type:** `application/json`
+**Authentication:** Required (workspace auth)
+
+## Request Body
+
+### Update fields
+
+```json
+{
+  "segment_id": 501,
+  "segment_name": "Mumbai Premium (VIP)",
+  "description": "Updated description",
+  "audience_id": 12,
+  "match_type": "any",
+  "conditions": [
+    { "field": "plan", "operator": "is", "value": "premium" },
+    { "field": "plan", "operator": "is", "value": "vip" }
+  ],
+  "tags": ["premium", "vip"]
+}
+```
+
+### Soft-delete
+
+```json
+{
+  "segment_id": 501,
+  "status": 2
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `segment_id` | number | Yes | Segment identifier |
+| `segment_name` | string | No | New name. Must be unique within the workspace (among non-deleted segments, excluding this one). |
+| `description` | string | No | New description |
+| `audience_id` | number | No | Re-scope the segment to a different audience. Must belong to the caller's company/workspace. |
+| `conditions` (alias `filter_conditions`) | array | No | New filter, flat format `[{ field, operator, value }]` — see [Preview Segment](/api-reference/segment/preview-segment) for the operator list. |
+| `match_type` | string | No | `all` or `any`. Only takes effect together with (or after) `conditions`/`filter_conditions`. |
+| `tags` | array | No | Replaces the segment's tags. Accepts a real array, a JSON-stringified array, or a comma-separated string. |
+| `status` | number | No | `0` = Inactive, `1` = Active, `2` = Deleted (soft-delete). Any other value is ignored. |
+
+## Response
+
+```json
+{
+  "message": "Segment updated successfully",
+  "data": { "id": 501, "total_contacts": 140 }
+}
+```
+
+When `status: 2` is passed:
+
+```json
+{
+  "message": "Segment deleted successfully",
+  "data": { "id": 501, "total_contacts": 128 }
+}
+```
+
+## Behavior
+
+- `segment_id` must be an existing, non-deleted segment owned by the caller's company/workspace — you cannot use this endpoint to "undelete" a segment.
+- Renaming checks name-uniqueness against other non-deleted segments in the workspace (skipped while soft-deleting).
+- Changing `audience_id` re-validates ownership of the new audience via the same check used by [Create Segment](/api-reference/segment/create-segment) and [Preview Segment](/api-reference/segment/preview-segment).
+- Sending `conditions`/`filter_conditions` or `match_type` re-parses and stores the filter in the **flat** `{ match_type, conditions: [...] }` shape — this replaces (and is a different shape from) the CONDITIONLIST tree that Create Segment writes.
+- When the audience or filter actually changed (and the request isn't a delete), `total_contacts` is recomputed by evaluating the new filter against the (possibly new) audience's contacts in memory.
+
+<Note>
+Recomputing `total_contacts` here only updates the cached count — it does **not** re-materialize the segment's underlying contact mapping. [List Segment Contacts](/api-reference/segment/list-segment-contacts), [Export Segment Contacts](/api-reference/segment/export-segment-contacts), and any campaign already attached to this segment keep dialing/reading the contact set that was materialized at Create Segment time, until the segment is deleted and a new one is created in its place.
+</Note>
+
+## Error Cases
+
+| Error | Cause |
+|-------|-------|
+| `Segment Id is required` | `segment_id` missing |
+| `Segment not found` | `segment_id` doesn't belong to the caller's company/workspace, or is already deleted |
+| `Segment name already exists in this workspace` | `segment_name` collides with another non-deleted segment |
+| `Audience not found` | `audience_id` doesn't belong to the caller's company/workspace, or is deleted |
+
+## Example cURL
+
+```bash
+curl -X POST https://www.tryunleashx.com/api/v1/global/segment/update \
+  -H "Content-Type: application/json" \
+  -H "token: <api_key>" \
+  -d '{
+    "segment_id": 501,
+    "status": 2
+  }'
+```

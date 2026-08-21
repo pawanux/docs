@@ -1,0 +1,50 @@
+---
+title: Audience Summary List
+openapi: "api-reference/openapi.json GET /audience/summary-list"
+---
+
+Use this endpoint to **retrieve a lightweight, unpaginated list of audiences** in the workspace — for dropdowns and pickers.
+
+## Endpoint
+
+**GET** `/audience/summary-list`
+
+**Authentication:** Required (workspace auth)
+
+## Query Parameters
+
+None.
+
+## Response
+
+```json
+[
+  {
+    "id": 55,
+    "audience_name": "VIP Customers",
+    "ID": 55,
+    "OBJECT_NAME": "VIP Customers",
+    "variable_count": 2,
+    "contact_count": 320
+  }
+]
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` / `ID` | number | Audience ID. Both keys are returned so the same response also works with generic `selectdynamic` picker components (which read `ID`/`OBJECT_NAME`). |
+| `audience_name` / `OBJECT_NAME` | string | Audience name. |
+| `variable_count` | number | Number of input variables saved on the audience. |
+| `contact_count` | number | Total contacts in the audience. |
+
+## Behavior
+
+- Not paginated — returns every non-deleted audience in the workspace.
+- Ordered by `CREATED_DATE` descending.
+
+## Example cURL
+
+```bash
+curl -X GET https://www.tryunleashx.com/api/v1/global/audience/summary-list \
+  -H "token: <api_key>"
+```

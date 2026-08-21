@@ -1,0 +1,62 @@
+---
+title: List Audience Contacts
+openapi: "api-reference/openapi.json GET /audience/contacts"
+---
+
+Use this endpoint to **retrieve a paginated list of contacts inside an audience**.
+
+## Endpoint
+
+**GET** `/audience/contacts`
+
+**Authentication:** Required (workspace auth)
+
+## Query Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `audience_id` | number | Yes | Audience identifier |
+| `page` | number | No | Page number (default: `1`) |
+| `limit` | number | No | Records per page (default: `10`) |
+| `search` | string | No | Partial mobile number search (LIKE). `mobile_no` is accepted as a fallback alias. |
+
+## Response
+
+```json
+{
+  "datalist": [
+    {
+      "id": 101,
+      "mobile_no": "+12025550123",
+      "name": "John Doe",
+      "created_date": "10 Dec, 2025"
+    }
+  ],
+  "pagination": {
+    "totalRecords": 320,
+    "totalPages": 32,
+    "currentPage": 1,
+    "limit": 10
+  }
+}
+```
+
+## Behavior
+
+- If the workspace has phone number masking enabled, `mobile_no` is returned masked.
+- Dynamic columns (one per input variable, e.g. `name` above) are built from the audience's saved input variables plus any extra keys found on the contact rows themselves — mobile/phone alias columns are skipped since `mobile_no` already has its own column.
+- Results are ordered by contact `ID` descending.
+
+## Error Cases
+
+| Error | Cause |
+|-------|-------|
+| `Audience Id is missing.` | `audience_id` not provided |
+| `Audience not found` | `audience_id` doesn't belong to the caller's company/workspace, or is deleted |
+
+## Example cURL
+
+```bash
+curl -X GET "https://www.tryunleashx.com/api/v1/global/audience/contacts?audience_id=55&page=1&limit=10" \
+  -H "token: <api_key>"
+```

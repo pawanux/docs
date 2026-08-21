@@ -1,0 +1,70 @@
+---
+title: Create Input Variable
+openapi: "api-reference/openapi.json POST /input-variable/create"
+---
+
+Use this endpoint to **create a new User Defined input variable** in the workspace's registry.
+
+## Endpoint
+
+**POST** `/input-variable/create`
+
+**Content-Type:** `application/json`
+**Authentication:** Required (workspace auth)
+
+## Request Body
+
+```json
+{
+  "variable_key": "customer_plan",
+  "type": "string",
+  "description": "Subscription plan name"
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `variable_key` | string | Yes | Unique key for the variable. Letters, numbers and underscore only, and must start with a letter or underscore. |
+| `type` | string | Yes | Data type of the variable. One of: `string`, `number`, `date`, `email`, `phone`, `name`, `amount`, `address`, `pincode`, `no_type`. |
+| `description` | string | No | Human-readable description of the variable. |
+
+## Response
+
+```json
+{
+  "message": "Input variable added successfully",
+  "data": {
+    "id": 57,
+    "variable_key": "customer_plan",
+    "type": "string"
+  }
+}
+```
+
+## Behavior
+
+- The new variable is always created as **User Defined** (`IS_SYSTEM = 0`) and active (`STATUS = 1`).
+- `variable_key` must be unique across **both** the workspace's own variables and the global System variables — a key already used by either is rejected.
+- `type` is normalized to lowercase and validated against the allowed list before saving.
+
+## Error Cases
+
+| Error | Cause |
+|-------|-------|
+| `Variable Key may contain only letters, numbers and underscore, and must start with a letter or underscore` | `variable_key` fails the token format check |
+| `Type must be one of: string, number, date, email, phone, name, amount, address, pincode, no_type` | `type` is not one of the allowed values |
+| `This variable <variable_key> already exists as a system variable` | `variable_key` matches an existing System variable |
+| `This variable <variable_key> already exists in this workspace` | `variable_key` matches an existing User Defined variable in this workspace |
+
+## Example cURL
+
+```bash
+curl -X POST https://www.tryunleashx.com/api/v1/global/input-variable/create \
+  -H "Content-Type: application/json" \
+  -H "token: <api_key>" \
+  -d '{
+    "variable_key": "customer_plan",
+    "type": "string",
+    "description": "Subscription plan name"
+  }'
+```

@@ -267,6 +267,7 @@
               "api-reference/campaigns/update-campaign",
               "api-reference/campaigns/campaign-force-completed",
               "api-reference/campaigns/campaign-list",
+              "api-reference/campaigns/campaign-summary-list",
               "api-reference/campaigns/campaign-consumption",
               "api-reference/campaigns/campaign-details",
               "api-reference/campaigns/audience-list",
@@ -275,7 +276,47 @@
               "api-reference/campaigns/campaign-audience-stats",
               "api-reference/campaigns/delete-audience",
               "api-reference/campaigns/export-campaign-data",
-              "api-reference/campaigns/export-campaign-audience-data"
+              "api-reference/campaigns/export-campaign-audience-data",
+              "api-reference/campaigns/attach-campaign-sources",
+              "api-reference/campaigns/campaign-connected-contacts"
+            ]
+          },
+          {
+            "group": "Audience",
+            "pages": [
+              "api-reference/audience",
+              "api-reference/audience/create-audience",
+              "api-reference/audience/update-audience",
+              "api-reference/audience/list-audiences",
+              "api-reference/audience/audience-summary-list",
+              "api-reference/audience/audience-details",
+              "api-reference/audience/list-audience-contacts",
+              "api-reference/audience/export-audience-contacts",
+              "api-reference/audience/delete-audience-contacts",
+              "api-reference/audience/download-audience-template"
+            ]
+          },
+          {
+            "group": "Segment",
+            "pages": [
+              "api-reference/segment",
+              "api-reference/segment/create-segment",
+              "api-reference/segment/preview-segment",
+              "api-reference/segment/list-segments",
+              "api-reference/segment/segment-summary-list",
+              "api-reference/segment/segment-details",
+              "api-reference/segment/update-segment",
+              "api-reference/segment/list-segment-contacts",
+              "api-reference/segment/export-segment-contacts"
+            ]
+          },
+          {
+            "group": "Input Variables",
+            "pages": [
+              "api-reference/input-variables",
+              "api-reference/input-variables/create-input-variable",
+              "api-reference/input-variables/list-input-variables",
+              "api-reference/input-variables/update-input-variable"
             ]
           },
           {

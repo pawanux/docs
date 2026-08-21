@@ -4840,6 +4840,2401 @@
           }
         }
       }
+    },
+    "/audience/create": {
+      "post": {
+        "summary": "Create audience",
+        "description": "Create a new audience from an uploaded file and/or a JSON contacts array (pass audience_name), or append contacts to an existing audience (pass audience_id). Rows are collected from the uploaded file and/or the contacts array; rows without a usable mobile number are skipped, and every campaign/segment already connected to the audience is synced with the newly added contacts.",
+        "tags": [
+          "Audience"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "audience_name": {
+                    "type": "string",
+                    "description": "Name of the new audience. Required when audience_id is not provided. Must be unique within the workspace."
+                  },
+                  "audience_id": {
+                    "type": "integer",
+                    "description": "ID of an existing audience to append contacts to. Switches the request into append mode."
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Free-text description. Ignored in append mode."
+                  },
+                  "source": {
+                    "type": "integer",
+                    "enum": [
+                      1,
+                      2
+                    ],
+                    "description": "1=CSV/Bulk Upload, 2=Manual. Forced to 1 when a file is uploaded. Ignored in append mode."
+                  },
+                  "input_variables": {
+                    "type": "array",
+                    "items": {},
+                    "description": "Input-variable registry IDs, or an array of variable key strings directly. Also accepted as variable_id / variable_ids. Ignored in append mode."
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Free-form tags. Ignored in append mode."
+                  },
+                  "is_global": {
+                    "type": "boolean",
+                    "description": "1 = usable by any agent (default), 0 = agent-specific. Ignored in append mode."
+                  },
+                  "agent_id": {
+                    "type": "integer",
+                    "description": "Agent this audience is scoped to. Implies is_global=0 unless is_global is explicitly set. Ignored in append mode."
+                  },
+                  "contacts": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    },
+                    "description": "Contact rows as an array of objects, e.g. [{\"mobile_no\":\"+12025550123\",\"name\":\"John Doe\"}]. Combines with an uploaded file if both are given."
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "audience_name": {
+                    "type": "string"
+                  },
+                  "audience_id": {
+                    "type": "integer"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "source": {
+                    "type": "integer",
+                    "enum": [
+                      1,
+                      2
+                    ]
+                  },
+                  "input_variables": {
+                    "type": "string",
+                    "description": "JSON-string array of registry IDs or variable keys, or a comma-separated list"
+                  },
+                  "tags": {
+                    "type": "string",
+                    "description": "JSON-string array or comma-separated list"
+                  },
+                  "is_global": {
+                    "type": "boolean"
+                  },
+                  "agent_id": {
+                    "type": "integer"
+                  },
+                  "contacts": {
+                    "type": "string",
+                    "description": "JSON-string array of contact objects"
+                  },
+                  "audience": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "CSV/Excel file of contact rows. The multipart field name must be 'audience'; its header row supplies the column names."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Audience created, or contacts appended, successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer"
+                        },
+                        "audience_name": {
+                          "type": "string"
+                        },
+                        "total_contacts": {
+                          "type": "integer"
+                        },
+                        "input_variables": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "Only present when a new audience was created"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Audience Name is missing. / Audience name already exists in this workspace / No contacts provided / No valid contacts found / The uploaded file is empty / a required input-variable column is missing from the upload"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Audience not found (append mode, invalid audience_id)"
+          }
+        }
+      }
+    },
+    "/audience/update": {
+      "post": {
+        "summary": "Update audience",
+        "description": "Rename or describe an existing audience, or soft-delete it by passing status: 2.",
+        "tags": [
+          "Audience"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "audience_id"
+                ],
+                "properties": {
+                  "audience_id": {
+                    "type": "integer",
+                    "description": "ID of the audience to update"
+                  },
+                  "audience_name": {
+                    "type": "string",
+                    "description": "New name. Must be unique within the workspace. Ignored when status is 2."
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "New description"
+                  },
+                  "status": {
+                    "type": "integer",
+                    "enum": [
+                      0,
+                      1,
+                      2
+                    ],
+                    "description": "Set to 2 to soft-delete the audience. 0=Inactive, 1=Active, 2=Deleted."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Audience updated or deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Audience Id is missing. / Audience name already exists in this workspace"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Audience not found"
+          }
+        }
+      }
+    },
+    "/audience/list": {
+      "get": {
+        "summary": "List audiences",
+        "description": "Retrieve a paginated list of audiences in the workspace, including each audience's variables, connected campaigns, and contact counts.",
+        "tags": [
+          "Audience"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Page number (default: 1)"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Records per page (default: 10)"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Partial match against audience_name"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "enum": [
+                0,
+                1
+              ]
+            },
+            "description": "0=Inactive, 1=Active. Deleted audiences are always excluded."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Audience list retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "datalist": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer"
+                          },
+                          "audience_name": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string"
+                          },
+                          "tags": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "variables": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "key": {
+                                  "type": "string"
+                                },
+                                "type": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          },
+                          "campaign": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "integer"
+                                },
+                                "name": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          },
+                          "contacts": {
+                            "type": "integer"
+                          },
+                          "status": {
+                            "type": "string"
+                          },
+                          "show_edit": {
+                            "type": "integer"
+                          },
+                          "show_delete": {
+                            "type": "integer"
+                          },
+                          "delete_description": {
+                            "type": "string"
+                          },
+                          "created_by": {
+                            "type": "string"
+                          },
+                          "updated_by": {
+                            "type": "string"
+                          },
+                          "updated_on": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "totalRecords": {
+                          "type": "integer"
+                        },
+                        "totalPages": {
+                          "type": "integer"
+                        },
+                        "currentPage": {
+                          "type": "integer"
+                        },
+                        "limit": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/audience/summary-list": {
+      "get": {
+        "summary": "Audience summary list",
+        "description": "Retrieve a lightweight, unpaginated list of audiences in the workspace (id, name, variable count, contact count) for dropdowns and pickers.",
+        "tags": [
+          "Audience"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Audience summary list retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "audience_name": {
+                        "type": "string"
+                      },
+                      "ID": {
+                        "type": "integer"
+                      },
+                      "OBJECT_NAME": {
+                        "type": "string"
+                      },
+                      "variable_count": {
+                        "type": "integer"
+                      },
+                      "contact_count": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/audience/details": {
+      "get": {
+        "summary": "Audience details",
+        "description": "Retrieve a single audience's metadata, including its input variables with data types resolved from the input-variable registry.",
+        "tags": [
+          "Audience"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "audience_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Audience identifier"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Audience details retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "audience_name": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "source": {
+                      "type": "integer",
+                      "enum": [
+                        1,
+                        2
+                      ]
+                    },
+                    "source_file": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "input_variables": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "key": {
+                            "type": "string"
+                          },
+                          "type": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "tags": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "total_contacts": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "integer",
+                      "enum": [
+                        0,
+                        1,
+                        2
+                      ]
+                    },
+                    "created_date": {
+                      "type": "string"
+                    },
+                    "updated_date": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Audience Id is missing."
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Audience not found"
+          }
+        }
+      }
+    },
+    "/audience/contacts": {
+      "get": {
+        "summary": "List audience contacts",
+        "description": "Retrieve a paginated list of contacts inside an audience.",
+        "tags": [
+          "Audience"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "audience_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Audience identifier"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Page number (default: 1)"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Records per page (default: 10)"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Partial mobile number search (LIKE). mobile_no is accepted as a fallback alias."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Audience contacts retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "datalist": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "totalRecords": {
+                          "type": "integer"
+                        },
+                        "totalPages": {
+                          "type": "integer"
+                        },
+                        "currentPage": {
+                          "type": "integer"
+                        },
+                        "limit": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Audience Id is missing."
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Audience not found"
+          }
+        }
+      }
+    },
+    "/audience/contacts/export": {
+      "get": {
+        "summary": "Export audience contacts",
+        "description": "Export an audience's contacts, and call history if the audience has been dialed by a campaign, as a binary Excel (.xlsx) file.",
+        "tags": [
+          "Audience"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "audience_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Audience identifier"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Excel file download",
+            "content": {
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Audience Id is missing."
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Audience not found"
+          }
+        }
+      }
+    },
+    "/audience/delete-contacts": {
+      "post": {
+        "summary": "Delete audience contacts",
+        "description": "Soft-delete one or more contacts by contact ID, scoped to the caller's company/workspace. No audience_id is required; every affected audience's contact count is resynced.",
+        "tags": [
+          "Audience"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "contact_id": {
+                    "description": "Contact ID(s) to delete. Accepts a single ID, an array, a JSON-string array, or a comma-separated string.",
+                    "oneOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "integer"
+                        }
+                      }
+                    ]
+                  },
+                  "contact_ids": {
+                    "description": "Alias for contact_id. Either field is accepted.",
+                    "oneOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "integer"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contacts deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "deleted": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "contact_id is required"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/audience/download-template": {
+      "get": {
+        "summary": "Download audience template",
+        "description": "Download a blank Excel (.xlsx) template whose columns are derived from an agent's metadata input fields, an existing audience's saved input variables, or explicitly chosen input-variable IDs. mobile_no must be among the resolved columns.",
+        "tags": [
+          "Audience"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "agent_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Derive columns from this agent's configured metadata input fields. mobile_no is force-added first if missing. Checked before audience_id and variable_id."
+          },
+          {
+            "name": "audience_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Derive columns from an existing audience's saved input variables."
+          },
+          {
+            "name": "variable_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  }
+                }
+              ]
+            },
+            "description": "Input-variable registry ID(s) to use as columns, in the order given. Also accepted as variable_ids."
+          },
+          {
+            "name": "audience_name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Overrides the downloaded file's base name. Defaults to the audience's name (audience_id mode) or audience_template."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Excel file download",
+            "content": {
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "mobile_no is required \u2014 please include the mobile_no variable"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Audience not found"
+          }
+        }
+      }
+    },
+    "/segment/create": {
+      "post": {
+        "summary": "Create segment",
+        "description": "Create a Segment \u2014 a saved filter over either an audience's contacts (source_type=audience, SOURCE_TYPE=1) or a campaign's dial results (source_type=campaign, SOURCE_TYPE=2). Matching contacts are evaluated immediately and materialized into the segment's contact mapping.",
+        "tags": [
+          "Segment"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "segment_name",
+                  "source_type"
+                ],
+                "properties": {
+                  "segment_name": {
+                    "type": "string",
+                    "description": "Name for the segment. Must be unique within the workspace (among non-deleted segments)."
+                  },
+                  "source_type": {
+                    "type": "string",
+                    "enum": [
+                      "audience",
+                      "campaign"
+                    ],
+                    "description": "What to build the segment from."
+                  },
+                  "audience_id": {
+                    "type": "integer",
+                    "description": "ID of the audience to filter. Required when source_type is 'audience'."
+                  },
+                  "campaign_id": {
+                    "type": "integer",
+                    "description": "ID of the campaign whose dialed contacts to filter. Required when source_type is 'campaign'."
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Free-text description of the segment."
+                  },
+                  "filter_conditions": {
+                    "type": "object",
+                    "description": "Filter tree in CONDITIONLIST format: { CONDITIONLIST: { <branch>: { <group>: { <condition>: { CONDITION, OPRATER, VALUE_MATCH } } } } }. Conditions within a group are AND'ed; any matching group in any branch is a match (OR of ANDs). OPRATER supports =, ==, ===, !=, !==, >, >=, <, <=, contains, startsWith, endsWith, like. Alias: conditions. Omitted/empty matches every contact of the source."
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Tags for the segment. Accepts a real array, a JSON-stringified array, or a comma-separated string."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Segment created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer"
+                        },
+                        "segment_name": {
+                          "type": "string"
+                        },
+                        "total_contacts": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Segment Name / Source Type / Audience Id / Campaign Id is required, invalid source type, or segment name already exists in this workspace"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Audience not found or Campaign not found"
+          }
+        }
+      }
+    },
+    "/segment/preview": {
+      "post": {
+        "summary": "Preview segment",
+        "description": "Evaluate candidate filter conditions against an audience's active contacts without saving a segment. Returns the match count, percentage, and a sample of matching contacts.",
+        "tags": [
+          "Segment"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "audience_id"
+                ],
+                "properties": {
+                  "audience_id": {
+                    "type": "integer",
+                    "description": "Audience to preview against."
+                  },
+                  "conditions": {
+                    "type": "array",
+                    "description": "Flat filter conditions. Alias: filter_conditions. Omitted/empty matches every contact of the audience.",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "field": {
+                          "type": "string"
+                        },
+                        "operator": {
+                          "type": "string",
+                          "enum": [
+                            "is",
+                            "is_not",
+                            "contains",
+                            "not_contains",
+                            "starts_with",
+                            "ends_with",
+                            "is_empty",
+                            "is_not_empty",
+                            "in",
+                            "not_in",
+                            "gt",
+                            "lt"
+                          ]
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "match_type": {
+                    "type": "string",
+                    "enum": [
+                      "all",
+                      "any"
+                    ],
+                    "description": "all = AND across conditions (default), any = OR across conditions."
+                  },
+                  "sample_limit": {
+                    "type": "integer",
+                    "description": "Max number of sample contacts to return (default 20)."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Preview computed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "size": {
+                      "type": "integer",
+                      "description": "Number of contacts matching the filter"
+                    },
+                    "baselist_size": {
+                      "type": "integer",
+                      "description": "Total active contacts in the audience"
+                    },
+                    "percentage": {
+                      "type": "number",
+                      "description": "size / baselist_size * 100, rounded to 2 decimals"
+                    },
+                    "sample": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer"
+                          },
+                          "mobile_no": {
+                            "type": "string"
+                          },
+                          "input_field": {
+                            "type": "object"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Audience Id is required"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Audience not found"
+          }
+        }
+      }
+    },
+    "/segment/list": {
+      "get": {
+        "summary": "List segments",
+        "description": "Retrieve a paginated list of segments for the caller's workspace, with optional name search and status filter.",
+        "tags": [
+          "Segment"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Page number (default: 1)"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Records per page (default: 10)"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Partial match on segment_name (LIKE)"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "enum": [
+                0,
+                1
+              ]
+            },
+            "description": "0 = Inactive, 1 = Active. Deleted segments are always excluded."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Segment list retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "datalist": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "totalRecords": {
+                          "type": "integer"
+                        },
+                        "totalPages": {
+                          "type": "integer"
+                        },
+                        "currentPage": {
+                          "type": "integer"
+                        },
+                        "limit": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/segment/summary-list": {
+      "get": {
+        "summary": "Segment summary list",
+        "description": "Retrieve a lightweight, unpaginated list of every non-deleted segment in the workspace (id, name, variable count, contact count) for use in dropdowns and pickers.",
+        "tags": [
+          "Segment"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Segment summary list retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "segment_name": {
+                        "type": "string"
+                      },
+                      "ID": {
+                        "type": "integer"
+                      },
+                      "OBJECT_NAME": {
+                        "type": "string"
+                      },
+                      "variable_count": {
+                        "type": "integer"
+                      },
+                      "contact_count": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/segment/details": {
+      "get": {
+        "summary": "Segment details",
+        "description": "Retrieve one segment's full configuration, including its parsed filter conditions and parent audience.",
+        "tags": [
+          "Segment"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "segment_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Segment identifier"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Segment details retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "segment_name": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "audience_id": {
+                      "type": "integer"
+                    },
+                    "audience_name": {
+                      "type": "string"
+                    },
+                    "match_type": {
+                      "type": "string",
+                      "enum": [
+                        "all",
+                        "any"
+                      ]
+                    },
+                    "filter_conditions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "field": {
+                            "type": "string"
+                          },
+                          "operator": {
+                            "type": "string"
+                          },
+                          "value": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "tags": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "total_contacts": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "integer",
+                      "enum": [
+                        0,
+                        1,
+                        2
+                      ]
+                    },
+                    "updated_date": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Segment Id is required"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Segment not found"
+          }
+        }
+      }
+    },
+    "/segment/update": {
+      "post": {
+        "summary": "Update segment",
+        "description": "Update a segment's name, description, audience, filters, tags, or status. Passing status=2 soft-deletes the segment.",
+        "tags": [
+          "Segment"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "segment_id"
+                ],
+                "properties": {
+                  "segment_id": {
+                    "type": "integer",
+                    "description": "Segment identifier"
+                  },
+                  "segment_name": {
+                    "type": "string",
+                    "description": "New name. Must be unique within the workspace (among non-deleted segments, excluding this one)."
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "audience_id": {
+                    "type": "integer",
+                    "description": "Re-scope the segment to a different audience."
+                  },
+                  "conditions": {
+                    "type": "array",
+                    "description": "New filter, flat format. Alias: filter_conditions.",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "field": {
+                          "type": "string"
+                        },
+                        "operator": {
+                          "type": "string",
+                          "enum": [
+                            "is",
+                            "is_not",
+                            "contains",
+                            "not_contains",
+                            "starts_with",
+                            "ends_with",
+                            "is_empty",
+                            "is_not_empty",
+                            "in",
+                            "not_in",
+                            "gt",
+                            "lt"
+                          ]
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "match_type": {
+                    "type": "string",
+                    "enum": [
+                      "all",
+                      "any"
+                    ]
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "status": {
+                    "type": "integer",
+                    "enum": [
+                      0,
+                      1,
+                      2
+                    ],
+                    "description": "0 = Inactive, 1 = Active, 2 = Deleted (soft-delete)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Segment updated (or deleted) successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer"
+                        },
+                        "total_contacts": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Segment Id is required, or segment name already exists in this workspace"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Segment not found or Audience not found"
+          }
+        }
+      }
+    },
+    "/segment/contacts": {
+      "get": {
+        "summary": "List segment contacts",
+        "description": "Retrieve a paginated list of a segment's materialized contacts (the mapping created at segment-build time), with optional mobile number search.",
+        "tags": [
+          "Segment"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "segment_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Segment identifier"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Page number (default: 1)"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Records per page (default: 10)"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Partial mobile number search (LIKE)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Segment contacts retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "datalist": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "totalRecords": {
+                          "type": "integer"
+                        },
+                        "totalPages": {
+                          "type": "integer"
+                        },
+                        "currentPage": {
+                          "type": "integer"
+                        },
+                        "limit": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Segment Id is required"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Segment not found"
+          }
+        }
+      }
+    },
+    "/segment/contacts/export": {
+      "get": {
+        "summary": "Export segment contacts",
+        "description": "Export a segment's contacts as an Excel (.xlsx) file. Includes a Call History sheet when the segment has been dialed by a campaign.",
+        "tags": [
+          "Segment"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "segment_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Segment identifier"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Excel file download",
+            "content": {
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Segment Id is required"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Segment not found"
+          }
+        }
+      }
+    },
+    "/summary-list": {
+      "get": {
+        "summary": "Campaign summary list",
+        "description": "Retrieve a lightweight list of campaigns (id + label) in the caller's workspace, for use in dropdowns and pickers. No pagination.",
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Campaign summary list retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "description": "Campaign identifier"
+                      },
+                      "label": {
+                        "type": "string",
+                        "description": "Campaign name"
+                      },
+                      "agent_id": {
+                        "type": "integer",
+                        "nullable": true,
+                        "description": "Voice agent attached to the campaign, if any"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/campaign/attach-sources": {
+      "post": {
+        "summary": "Attach campaign sources",
+        "description": "Connect Audiences and/or Segments to a campaign. Only the links are stored in campaign_audience_sources; no contacts are copied at attach time \u2014 connected contacts are materialized in the background.",
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "campaign_id"
+                ],
+                "properties": {
+                  "campaign_id": {
+                    "type": "integer",
+                    "description": "Campaign identifier"
+                  },
+                  "audience_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "description": "Audience IDs to attach. At least one of audience_ids or segment_ids is required."
+                  },
+                  "segment_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "description": "Segment IDs to attach. At least one of audience_ids or segment_ids is required."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Sources connected to campaign successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "audience_ids": {
+                          "type": "array",
+                          "items": {
+                            "type": "integer"
+                          }
+                        },
+                        "segment_ids": {
+                          "type": "array",
+                          "items": {
+                            "type": "integer"
+                          }
+                        },
+                        "total": {
+                          "type": "integer",
+                          "description": "Total number of source links created/updated"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Campaign not found, no audience_ids/segment_ids passed, an id not found in this workspace, or an attached source is missing agent input fields"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/campaign/contacts-list": {
+      "get": {
+        "summary": "Campaign connected contacts",
+        "description": "Retrieve a paginated list of contacts from every Audience and Segment currently connected to a campaign.",
+        "tags": [
+          "Campaigns"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "campaign_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Campaign identifier"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Page number (default: 1)"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Records per page (default: 10)"
+          },
+          {
+            "name": "mobile_no",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Partial mobile number search (LIKE)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Connected contacts retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "datalist": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer"
+                          },
+                          "source_name": {
+                            "type": "string"
+                          },
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "Audience",
+                              "Segment"
+                            ]
+                          },
+                          "mobile_no": {
+                            "type": "string"
+                          },
+                          "input_data": {
+                            "type": "object"
+                          },
+                          "lead_status": {
+                            "type": "string",
+                            "enum": [
+                              "",
+                              "Fresh",
+                              "Completed",
+                              "Halted",
+                              "Inqueue"
+                            ]
+                          },
+                          "attempt": {
+                            "type": "string"
+                          },
+                          "call_status": {
+                            "type": "string"
+                          },
+                          "duration": {
+                            "type": "string"
+                          },
+                          "disposition": {
+                            "type": "string"
+                          },
+                          "last_attempt": {
+                            "type": "string"
+                          },
+                          "modified_by": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "totalRecords": {
+                          "type": "integer"
+                        },
+                        "totalPages": {
+                          "type": "integer"
+                        },
+                        "currentPage": {
+                          "type": "integer"
+                        },
+                        "limit": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Campaign not found"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/input-variable/create": {
+      "post": {
+        "summary": "Create input variable",
+        "description": "Create a new User Defined input variable in the workspace's registry. The variable key must be unique across the workspace's own variables and the global System variables.",
+        "tags": [
+          "Input Variables"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "variable_key",
+                  "type"
+                ],
+                "properties": {
+                  "variable_key": {
+                    "type": "string",
+                    "description": "Unique key for the variable. Letters, numbers and underscore only, and must start with a letter or underscore."
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "string",
+                      "number",
+                      "date",
+                      "email",
+                      "phone",
+                      "name",
+                      "amount",
+                      "address",
+                      "pincode",
+                      "no_type"
+                    ],
+                    "description": "Data type of the variable"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Human-readable description of the variable"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Input variable created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer"
+                        },
+                        "variable_key": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - invalid variable_key format, invalid type, or variable_key already exists"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/input-variable/list": {
+      "get": {
+        "summary": "List input variables",
+        "description": "Retrieve a paginated list of input variables for the workspace (System + User Defined), including where each variable is currently used and whether it can be edited or deleted.",
+        "tags": [
+          "Input Variables"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Page number (default: 1)"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Records per page (default: 10)"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Partial match against variable_key"
+          },
+          {
+            "name": "source",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "system",
+                "user"
+              ]
+            },
+            "description": "Filter by variable origin"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "One or more data types, comma-separated (e.g. string,name)"
+          },
+          {
+            "name": "agent_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "enum": [
+                2,
+                3,
+                4
+              ]
+            },
+            "description": "2=Chat, 3=Voice, 4=General. Hides System variables not applicable to that agent type (currently mobile_no for 2 and 4)."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Input variables retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "datalist": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "totalRecords": {
+                          "type": "integer"
+                        },
+                        "totalPages": {
+                          "type": "integer"
+                        },
+                        "currentPage": {
+                          "type": "integer"
+                        },
+                        "limit": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/input-variable/update": {
+      "post": {
+        "summary": "Update input variable",
+        "description": "Update a User Defined input variable's type/description, or soft-delete it by passing status = 2. System variables cannot be modified, and deleting a variable that is still in use by an agent or audience is blocked.",
+        "tags": [
+          "Input Variables"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "variable_id"
+                ],
+                "properties": {
+                  "variable_id": {
+                    "type": "integer",
+                    "description": "ID of the input variable to update"
+                  },
+                  "variable_key": {
+                    "type": "string",
+                    "description": "Accepted but ignored - the variable key is immutable and is never changed"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "string",
+                      "number",
+                      "date",
+                      "email",
+                      "phone",
+                      "name",
+                      "amount",
+                      "address",
+                      "pincode",
+                      "no_type"
+                    ],
+                    "description": "New data type"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "New description"
+                  },
+                  "status": {
+                    "type": "integer",
+                    "enum": [
+                      0,
+                      1,
+                      2
+                    ],
+                    "description": "0=inactive, 1=active, 2=deleted (soft-deletes the variable)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Input variable updated or deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - invalid type, or variable is in use by an agent/audience and cannot be deleted"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Input variable not found"
+          }
+        }
+      }
     }
   },
   "components": {

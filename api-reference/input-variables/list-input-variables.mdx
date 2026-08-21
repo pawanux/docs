@@ -1,0 +1,109 @@
+---
+title: List Input Variables
+openapi: "api-reference/openapi.json GET /input-variable/list"
+---
+
+Use this endpoint to **retrieve a paginated list of input variables** for the workspace, including where each variable is currently used.
+
+## Endpoint
+
+**GET** `/input-variable/list`
+
+**Authentication:** Required (workspace auth)
+
+## Query Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `page` | number | No | Page number (default: `1`) |
+| `limit` | number | No | Records per page (default: `10`) |
+| `search` | string | No | Partial match against `variable_key` |
+| `source` | string | No | `system` or `user` — filter by variable origin |
+| `type` | string | No | One or more data types, comma-separated (e.g. `string,name`). See [Variable Types](#variable-types). |
+| `agent_type` | number | No | Agent type the list is being requested for: `2` (Chat), `3` (Voice), `4` (General). Hides System variables that don't apply to that agent type (see Behavior). |
+
+## Variable Types
+
+| Value |
+|-------|
+| `string` |
+| `number` |
+| `date` |
+| `email` |
+| `phone` |
+| `name` |
+| `amount` |
+| `address` |
+| `pincode` |
+| `no_type` |
+
+## Response
+
+```json
+{
+  "datalist": [
+    {
+      "id": 1,
+      "variable_key": "mobile_no",
+      "type": "phone",
+      "description": "Contact mobile number",
+      "source": "System",
+      "is_required": 1,
+      "is_disabled": 0,
+      "used_in": [],
+      "show_edit": 0,
+      "show_delete": 0,
+      "update_description": "System variables cannot be updated.",
+      "delete_description": "System variables cannot be deleted.",
+      "updated_by": "",
+      "updated_on": ""
+    },
+    {
+      "id": 57,
+      "variable_key": "customer_plan",
+      "type": "string",
+      "description": "Subscription plan name",
+      "source": "User Defined",
+      "is_required": 0,
+      "is_disabled": 0,
+      "used_in": [
+        { "id": 8, "name": "Renewal Agent", "type": "agent" },
+        { "id": 21, "name": "Q4 Leads", "type": "audience" }
+      ],
+      "show_edit": 0,
+      "show_delete": 0,
+      "update_description": "The input variable is linked to 1 active agent and 1 active audience. First remove it from the agents and audiences to update.",
+      "delete_description": "The input variable is linked to 1 active agent and 1 active audience. First remove it from the agents and audiences to delete.",
+      "updated_by": "Jane Admin",
+      "updated_on": "10 Dec, 2025"
+    }
+  ],
+  "pagination": {
+    "totalRecords": 24,
+    "totalPages": 3,
+    "currentPage": 1,
+    "limit": 10
+  }
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `used_in` | array | Every agent and audience currently referencing the variable, as `{ id, name, type }` where `type` is `agent` or `audience`. |
+| `show_edit` / `show_delete` | number (0/1) | Whether the edit/delete action is allowed for this row. Always `0` for System variables and for any variable currently listed in `used_in`. |
+| `update_description` / `delete_description` | string | Human-readable reason the action is locked (empty string when allowed). |
+
+## Behavior
+
+- Returns the workspace's own User Defined variables **plus** the global System variables (`COMPANY_ID = 0`, `WORKSPACE_ID = 0`), so built-in variables show up in every workspace's list.
+- Results are sorted System variables first, then User Defined, both by ascending ID.
+- `agent_type` filters out System variables that don't apply to that agent type. Currently `mobile_no` is excluded when `agent_type` is `2` (Chat) or `4` (General) — Voice agents (`3`) keep it.
+- `used_in` is computed by scanning every non-deleted audience's saved variable keys and every non-deleted agent flow's `metadata_input` declarations, so it reflects live usage at request time.
+- A variable can only be edited or deleted when it is **User Defined** and **not** referenced by any agent or audience — otherwise `show_edit`/`show_delete` are `0` and the corresponding `*_description` field explains why.
+
+## Example cURL
+
+```bash
+curl -X GET "https://www.tryunleashx.com/api/v1/global/input-variable/list?page=1&limit=10&source=user" \
+  -H "token: <api_key>"
+```

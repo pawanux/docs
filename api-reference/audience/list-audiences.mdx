@@ -1,0 +1,85 @@
+---
+title: List Audiences
+openapi: "api-reference/openapi.json GET /audience/list"
+---
+
+Use this endpoint to **retrieve a paginated list of audiences** in the workspace, with each audience's variables, connected campaigns, and contact counts.
+
+## Endpoint
+
+**GET** `/audience/list`
+
+**Authentication:** Required (workspace auth)
+
+## Query Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `page` | number | No | Page number (default: `1`) |
+| `limit` | number | No | Records per page (default: `10`) |
+| `search` | string | No | Partial match against `audience_name` |
+| `status` | number | No | Filter by status: `1` = Active, `0` = Inactive. See [Audience Status Codes](#audience-status-codes). |
+
+## Audience Status Codes
+
+| Code | Status |
+|------|--------|
+| `0` | Inactive |
+| `1` | Active |
+
+Deleted audiences (`STATUS = 2`) are always excluded from the list.
+
+## Response
+
+```json
+{
+  "datalist": [
+    {
+      "id": 55,
+      "audience_name": "VIP Customers",
+      "description": "High value customers",
+      "tags": ["vip", "renewal"],
+      "variables": [
+        { "key": "mobile_no", "type": "phone" },
+        { "key": "name", "type": "name" }
+      ],
+      "campaign": [
+        { "id": 42, "name": "Renewal Reminder" }
+      ],
+      "contacts": 320,
+      "status": "Active",
+      "show_edit": 1,
+      "show_delete": 0,
+      "delete_description": "The audience is linked to 1 active campaign. First remove it from the campaign to delete.",
+      "created_by": "Jane Admin",
+      "updated_by": "Jane Admin",
+      "updated_on": "10 Dec, 2025"
+    }
+  ],
+  "pagination": {
+    "totalRecords": 1,
+    "totalPages": 1,
+    "currentPage": 1,
+    "limit": 10
+  }
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `variables` | array | Only the input variables saved on this audience, as `{ key, type }` — `type` is resolved from the input-variable registry (defaults to `string`). |
+| `campaign` | array | Campaigns this audience is currently connected to, as `{ id, name }`. |
+| `show_edit` / `show_delete` | number (0/1) | Whether the edit/delete action is allowed. Editing (rename) is always allowed; delete is `0` when the audience is connected to any active campaign. |
+| `delete_description` | string | Reason delete is locked (empty string when allowed). |
+
+## Behavior
+
+- Results are ordered by `CREATED_DATE` descending.
+- An audience connected to one or more active (non-deleted) campaigns cannot be deleted — only renamed/edited.
+
+## Example cURL
+
+```bash
+curl -X GET "https://www.tryunleashx.com/api/v1/global/audience/list?page=1&limit=10&search=vip" \
+  -H "token: <api_key>"
+```
