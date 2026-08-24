@@ -238,6 +238,7 @@
               "api-reference/voice-ai/update-voice-agent",
               "api-reference/voice-ai/delete-voice-agent",
               "api-reference/voice-ai/list-voice-agents",
+              "api-reference/voice-ai/get-agent-by-id",
               "api-reference/voice-ai/list-voices",
               "api-reference/voice-ai/make-call",
               "api-reference/voice-ai/attach-phone-number"
