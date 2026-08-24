@@ -4899,7 +4899,22 @@
                   },
                   "input_variables": {
                     "type": "array",
-                    "items": {},
+                    "items": {
+                      "oneOf": [
+                        {
+                          "type": "integer",
+                          "description": "Input-variable registry ID"
+                        },
+                        {
+                          "type": "string",
+                          "description": "Variable key"
+                        }
+                      ]
+                    },
+                    "example": [
+                      12,
+                      15
+                    ],
                     "description": "Input-variable registry IDs, or an array of variable key strings directly. Also accepted as variable_id / variable_ids. Ignored in append mode."
                   },
                   "tags": {
