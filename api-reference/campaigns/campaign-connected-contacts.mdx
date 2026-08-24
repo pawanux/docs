@@ -1,0 +1,85 @@
+---
+title: Campaign Connected Contacts
+openapi: "api-reference/openapi.json GET /campaign/contacts-list"
+---
+
+Use this endpoint to **retrieve a paginated list of contacts** from every Audience and Segment currently connected to a campaign (via [Attach Campaign Sources](/api-reference/campaigns/attach-campaign-sources)).
+
+## Endpoint
+
+**GET** `/campaign/contacts-list`
+
+**Authentication:** Required (workspace auth)
+
+## Query Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `campaign_id` | number | Yes | Campaign identifier |
+| `page` | number | No | Page number (default: `1`) |
+| `limit` | number | No | Records per page (default: `10`) |
+| `mobile_no` | string | No | Partial mobile number search (LIKE) |
+
+## Response
+
+```json
+{
+  "datalist": [
+    {
+      "id": 101,
+      "source_name": "VIP Customers",
+      "type": "Audience",
+      "mobile_no": "+12025550123",
+      "input_data": { "name": "John Doe", "plan": "premium" },
+      "lead_status": "Completed",
+      "attempt": "2/3",
+      "call_status": "COMPLETED",
+      "duration": "2m 30s",
+      "disposition": "Interested",
+      "last_attempt": "10 Dec, 2025 14:30",
+      "modified_by": "Jane Admin"
+    }
+  ],
+  "pagination": {
+    "totalRecords": 200,
+    "totalPages": 20,
+    "currentPage": 1,
+    "limit": 10
+  }
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | number | Contact ID |
+| `source_name` | string | Name of the connected Audience or Segment this row came from |
+| `type` | string | `Audience` or `Segment` |
+| `mobile_no` | string | Contact's mobile number (masked if phone number masking is enabled for the company) |
+| `input_data` | object | Contact's input variable values |
+| `lead_status` | string | `Fresh`, `Completed`, `Halted`, or `Inqueue`. Empty string if the contact hasn't been dialed yet. |
+| `attempt` | string | `"<attempts made>/<max retries>"`. Empty string if not yet dialed. |
+| `call_status` | string | Last raw call status. Empty string if not yet dialed. |
+| `duration` | string | Total call duration, formatted like `2m 30s`. Empty string if not yet dialed. |
+| `disposition` | string | Last call disposition. Empty string if not yet dialed. |
+| `last_attempt` | string | Last attempt timestamp, formatted `d M, Y H:i`. Empty string if not yet dialed. |
+| `modified_by` | string | Full name of the user who last updated the call record. Empty string if not yet dialed. |
+
+## Behavior
+
+- Expands each source connected to the campaign into its contacts — a campaign connected to 2 audiences of 100 contacts each returns 200 rows.
+- One row per `(source, contact)` pair: a contact present in more than one connected source appears once per source.
+- Only sources with an active link (not detached) are included.
+- Call-related fields (`lead_status`, `attempt`, `call_status`, `duration`, `disposition`, `last_attempt`, `modified_by`) are left-joined from the dial queue and stay blank until the contact is dialed.
+
+## Error Cases
+
+| Error | Cause |
+|-------|-------|
+| `Campaign not found` | Invalid `campaign_id`, or it doesn't belong to the caller's company/workspace |
+
+## Example cURL
+
+```bash
+curl -X GET "https://www.tryunleashx.com/api/v1/global/campaign/contacts-list?campaign_id=42&page=1&limit=10" \
+  -H "token: <api_key>"
+```

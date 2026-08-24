@@ -1,0 +1,81 @@
+---
+title: Attach Campaign Sources
+openapi: "api-reference/openapi.json POST /campaign/attach-sources"
+---
+
+Use this endpoint to **connect Audiences and/or Segments to a campaign**. Only the links are stored — no contacts are copied at attach time; connected contacts are materialized in the background.
+
+## Endpoint
+
+**POST** `/campaign/attach-sources`
+
+**Content-Type:** `application/json`
+**Authentication:** Required (workspace auth)
+
+## Request Body
+
+```json
+{
+  "campaign_id": 42,
+  "audience_ids": [101, 102],
+  "segment_ids": [55]
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `campaign_id` | number | Yes | Campaign identifier |
+| `audience_ids` | array | No | Audience IDs to attach. At least one of `audience_ids` or `segment_ids` is required. |
+| `segment_ids` | array | No | Segment IDs to attach. At least one of `audience_ids` or `segment_ids` is required. |
+
+## Response
+
+```json
+{
+  "message": "Sources connected to campaign successfully",
+  "data": {
+    "audience_ids": [101, 102],
+    "segment_ids": [55],
+    "total": 3
+  }
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `message` | string | Confirmation message |
+| `data.audience_ids` | array | Deduplicated, numeric audience IDs that were attached |
+| `data.segment_ids` | array | Deduplicated, numeric segment IDs that were attached |
+| `data.total` | number | Total number of source links created/updated |
+
+## Behavior
+
+- Both `audience_ids` and `segment_ids` are deduplicated and coerced to numbers; non-numeric or zero values are dropped.
+- Each ID is verified to belong to the caller's company **and** workspace, and to not be soft-deleted. Any ID that doesn't resolve fails the whole request.
+- If the campaign's agent has required input fields (from its latest flow), every attached audience — and every attached segment's parent audience — must already contain those input variables. Otherwise the attach is blocked, since the agent would otherwise dial contacts missing the data it needs.
+- **Idempotent:** re-attaching a source that was previously detached reactivates it instead of creating a duplicate link.
+- Attaching a source immediately queues contact materialization in the background; it does not block on that work completing.
+
+## Error Cases
+
+| Error | Cause |
+|-------|-------|
+| `Campaign not found` | Invalid `campaign_id`, or it doesn't belong to the caller's company/workspace |
+| `Pass at least one audience_ids or segment_ids` | Both `audience_ids` and `segment_ids` are empty after filtering |
+| `Audience not found in this workspace: <ids>` | One or more `audience_ids` don't belong to the caller's company/workspace, or are deleted |
+| `Segment not found in this workspace: <ids>` | One or more `segment_ids` don't belong to the caller's company/workspace, or are deleted |
+| `Audience "<name>" is missing agent input fields: <fields>` | An attached audience lacks input variables required by the campaign's agent |
+| `Segment "<name>" is missing agent input fields: <fields>` | An attached segment's parent audience lacks input variables required by the campaign's agent |
+
+## Example cURL
+
+```bash
+curl -X POST https://www.tryunleashx.com/api/v1/global/campaign/attach-sources \
+  -H "Content-Type: application/json" \
+  -H "token: <api_key>" \
+  -d '{
+    "campaign_id": 42,
+    "audience_ids": [101, 102],
+    "segment_ids": [55]
+  }'
+```

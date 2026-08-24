@@ -1,0 +1,149 @@
+---
+title: Create Segment
+openapi: "api-reference/openapi.json POST /segment/create"
+---
+
+Use this endpoint to **create a Segment** from an audience's contacts or a campaign's dial results, filtered by a set of conditions.
+
+## Endpoint
+
+**POST** `/segment/create`
+
+**Content-Type:** `application/json`
+**Authentication:** Required (workspace auth)
+
+## Request Body
+
+### Create from an Audience (`source_type: "audience"`)
+
+```json
+{
+  "segment_name": "Mumbai Premium",
+  "source_type": "audience",
+  "audience_id": 12,
+  "description": "Premium plan contacts in Mumbai",
+  "tags": ["premium", "mumbai"],
+  "filter_conditions": {
+    "CONDITIONLIST": {
+      "1": {
+        "1": {
+          "1": { "CONDITION": "city", "OPRATER": "=", "VALUE_MATCH": "Mumbai" },
+          "2": { "CONDITION": "plan", "OPRATER": "contains", "VALUE_MATCH": "premium" }
+        }
+      }
+    }
+  }
+}
+```
+
+### Create from a Campaign (`source_type: "campaign"`)
+
+```json
+{
+  "segment_name": "Interested - Q1 Outreach",
+  "source_type": "campaign",
+  "campaign_id": 42,
+  "filter_conditions": {
+    "CONDITIONLIST": {
+      "1": {
+        "1": {
+          "1": { "CONDITION": "last_disposition", "OPRATER": "=", "VALUE_MATCH": "Interested" }
+        }
+      }
+    }
+  }
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `segment_name` | string | Yes | Name for the segment. Must be unique within the workspace (among non-deleted segments). |
+| `source_type` | string | Yes | What to build the segment from: `audience` or `campaign`. |
+| `audience_id` | number | Yes, when `source_type` is `audience` | ID of the audience to filter. Must belong to the caller's company/workspace. |
+| `campaign_id` | number | Yes, when `source_type` is `campaign` | ID of the campaign whose dialed contacts to filter. Must belong to the caller's company/workspace. |
+| `description` | string | No | Free-text description. |
+| `filter_conditions` (alias `conditions`) | object | No | Filter tree in **CONDITIONLIST format** (see below). Omitted or empty → the segment matches every contact of the source. Accepts a JSON object or a JSON-stringified object. |
+| `tags` | array | No | Tags for the segment. Accepts a real array, a JSON-stringified array, or a comma-separated string. |
+
+## Filter Conditions Format (CONDITIONLIST)
+
+`filter_conditions` (or its alias `conditions`) is stored and evaluated **as received**, in the same nested tree format used by the product's condition builder elsewhere (e.g. workflow branching):
+
+```
+{
+  "CONDITIONLIST": {
+    "<branch>": {
+      "<group>": {
+        "<condition>": { "CONDITION": "<field>", "OPRATER": "<operator>", "VALUE_MATCH": "<value>" }
+      }
+    }
+  }
+}
+```
+
+- `CONDITIONLIST` contains numbered **branches**; each branch contains numbered **groups**; each group contains numbered **conditions**. The numbers themselves are arbitrary strings — only the nesting position matters.
+- Conditions within one **group** are AND'ed together. A contact matches the segment if **any** group in **any** branch has all of its conditions pass (OR of ANDs).
+- Supported `OPRATER` values: `=`, `==`, `===`, `!=`, `!==`, `>`, `>=`, `<`, `<=`, `contains`, `startsWith`, `endsWith`, `like`, plus the literal `true`/`false` shorthand.
+- An empty group (no conditions) is skipped; an entirely empty/absent `filter_conditions` matches **every** contact of the source.
+- For `source_type: "audience"`, `CONDITION` field names are matched against each contact's saved input fields (its `input_data`).
+- For `source_type: "campaign"`, in addition to the dial row's input fields, these computed fields are also available: `status`, `status_label`, `first_status`, `call_status`, `last_status`, `last_disposition`, `total_attempt`, `total_duration`, `followup_count`, `mobile_no`.
+
+<Note>
+This is a different shape from the `conditions` array used by [Preview Segment](/api-reference/segment/preview-segment) and [Update Segment](/api-reference/segment/update-segment) (`[{ field, operator, value }]`). Updating a segment's filters through Update Segment rewrites `filter_conditions` into that flat shape, replacing whatever CONDITIONLIST tree was stored at creation.
+</Note>
+
+## Response
+
+```json
+{
+  "message": "Segment created successfully",
+  "data": {
+    "id": 501,
+    "segment_name": "Mumbai Premium",
+    "total_contacts": 128
+  }
+}
+```
+
+## Behavior
+
+- `segment_name` uniqueness is checked across the whole workspace (non-deleted segments), regardless of source type.
+- **Audience source** (`SOURCE_TYPE = 1`): every active contact of the audience is evaluated against the filter now; matches are written into the segment's contact mapping (used later by List/Export Segment Contacts and by any campaign the segment is attached to).
+- **Campaign source** (`SOURCE_TYPE = 2`): the campaign's dial rows (`campaign_audience_details`) are evaluated instead — each row's call-outcome fields merged with its input data. Only dial rows already linked to an `audience_contacts` row are eligible; matched contacts are de-duplicated and mapped with their own resolved source audience (a campaign can span multiple audiences, so the segment's own `audience_id` is left `null`).
+- `total_contacts` on the created segment is the count of matched contacts at creation time (cached).
+- If at least one contact matched, the "On Segment Upload" workflow trigger fires for the workspace (failures here are logged but don't fail the request).
+
+## Error Cases
+
+| Error | Cause |
+|-------|-------|
+| `Segment Name is required` | `segment_name` missing |
+| `Source Type is required` | `source_type` missing |
+| `Invalid source type (expected 'audience' or 'campaign')` | `source_type` is not `audience` or `campaign` |
+| `Segment name already exists in this workspace` | `segment_name` already used by a non-deleted segment in the workspace |
+| `Audience Id is required` | `source_type` is `audience` but `audience_id` missing |
+| `Audience not found` | `audience_id` doesn't belong to the caller's company/workspace, or is deleted |
+| `Campaign Id is required` | `source_type` is `campaign` but `campaign_id` missing |
+| `Campaign not found` | `campaign_id` doesn't belong to the caller's company/workspace |
+
+## Example cURL
+
+```bash
+curl -X POST https://www.tryunleashx.com/api/v1/global/segment/create \
+  -H "Content-Type: application/json" \
+  -H "token: <api_key>" \
+  -d '{
+    "segment_name": "Mumbai Premium",
+    "source_type": "audience",
+    "audience_id": 12,
+    "filter_conditions": {
+      "CONDITIONLIST": {
+        "1": {
+          "1": {
+            "1": { "CONDITION": "city", "OPRATER": "=", "VALUE_MATCH": "Mumbai" }
+          }
+        }
+      }
+    }
+  }'
+```

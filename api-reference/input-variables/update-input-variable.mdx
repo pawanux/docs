@@ -1,0 +1,90 @@
+---
+title: Update Input Variable
+openapi: "api-reference/openapi.json POST /input-variable/update"
+---
+
+Use this endpoint to **update or soft-delete a User Defined input variable**.
+
+## Endpoint
+
+**POST** `/input-variable/update`
+
+**Content-Type:** `application/json`
+**Authentication:** Required (workspace auth)
+
+## Request Body
+
+### Update fields
+
+```json
+{
+  "variable_id": 57,
+  "type": "amount",
+  "description": "Updated description"
+}
+```
+
+### Soft-delete a variable
+
+```json
+{
+  "variable_id": 57,
+  "status": 2
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `variable_id` | number | Yes | ID of the input variable to update |
+| `variable_key` | string | No | Accepted but ignored — the key is immutable and is never changed (see Behavior). |
+| `type` | string | No | New data type. One of: `string`, `number`, `date`, `email`, `phone`, `name`, `amount`, `address`, `pincode`, `no_type`. |
+| `description` | string | No | New description |
+| `status` | number | No | `0` (inactive), `1` (active), or `2` (**deleted** — soft-deletes the variable) |
+
+## Response
+
+```json
+{
+  "message": "Input variable updated successfully",
+  "data": { "id": 57 }
+}
+```
+
+When `status: 2` is sent:
+
+```json
+{
+  "message": "Input variable deleted successfully",
+  "data": { "id": 57 }
+}
+```
+
+## Behavior
+
+- Only **User Defined** variables can be updated — System variables always fail with `System variables cannot be modified`.
+- `variable_key` is accepted in the request but is **immutable** and never applied — renaming a key would break every audience and agent that references it.
+- Passing `status: 2` **soft-deletes** the variable (`STATUS` is set to `2`; it no longer appears in [List Input Variables](/api-reference/input-variables/list-input-variables)). Deleting is blocked while the variable is referenced by any agent or audience.
+- Editing `type` and/or `description` **is allowed even while the variable is in use**. The change is propagated into every agent flow that references the variable by key — the matching `metadata_input` entry's `type`/`data_type` and `description` are updated in place. Audiences store variable keys only (no type/description), so they need no propagation.
+- Only the fields you send are applied; omitted fields are left unchanged.
+
+## Error Cases
+
+| Error | Cause |
+|-------|-------|
+| `Input variable not found` | `variable_id` is invalid, belongs to another workspace, or is already deleted |
+| `System variables cannot be modified` | The target variable has `IS_SYSTEM = 1` |
+| `Type must be one of: string, number, date, email, phone, name, amount, address, pincode, no_type` | `type` is not one of the allowed values |
+| `The input variable is linked to <N> active agent(s) and/or <N> active audience(s). First remove it from the agents/audiences to delete.` | `status: 2` sent while the variable is still referenced by an agent or audience |
+
+## Example cURL
+
+```bash
+curl -X POST https://www.tryunleashx.com/api/v1/global/input-variable/update \
+  -H "Content-Type: application/json" \
+  -H "token: <api_key>" \
+  -d '{
+    "variable_id": 57,
+    "type": "amount",
+    "description": "Updated description"
+  }'
+```

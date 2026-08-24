@@ -91,6 +91,11 @@ The `voice` object is optional — include it to configure TTS provider, voice I
 | `timezone` | string | Timezone for the agent (e.g., "America/New_York", "Europe/London") | UTC |
 | `greeting` | string | The agent's first message when the call starts | None |
 | `session_data_webhook` | string | Webhook URL to receive end-of-session data | None |
+| `status` | number | `1` = Active/Published, `3` = Draft. Pass `1` to publish the agent immediately on creation. | `3` (Draft) |
+
+<Note>
+New agents are created in **Draft** (`status: 3`) by default — they exist but can't yet place or receive calls. Publish the agent afterward (or immediately with `status: 1` above) using [Update Voice Agent](/api-reference/voice-ai/update-voice-agent) with just `agent_id` + `status: 1`. Publishing a voice agent requires at least one active, workspace-owned phone number attached first — see [Attach Phone Number](/api-reference/voice-ai/attach-phone-number).
+</Note>
 
 ## Voice Configuration
 
@@ -658,10 +663,12 @@ curl -X POST https://api.yourdomain.com/create-agent \
 
 9. Attaching phone numbers is necessary to place calls via agents
 
+10. **Draft by default**: new agents are created with `status: 3` (Draft) unless you pass `status: 1`. A draft agent cannot place or receive calls until it's published — see [Update Voice Agent](/api-reference/voice-ai/update-voice-agent#status).
+
 ## Related Endpoints
 
 - [List Voices](/api-reference/voice-ai/list-voices) - Get available voice IDs
-- [Update Voice Agent](/api-reference/voice-ai/update-voice-agent) - Modify agent settings
+- [Update Voice Agent](/api-reference/voice-ai/update-voice-agent) - Modify agent settings, or publish/unpublish/delete via `status`
 - [List Voice Agents](/api-reference/voice-ai/list-voice-agents) - View all agents
 - [Delete Voice Agent](/api-reference/voice-ai/delete-voice-agent) - Remove an agent
 - [Make Call](/api-reference/voice-ai/make-call) - Test your agent with a call

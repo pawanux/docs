@@ -1,0 +1,76 @@
+---
+title: List Segments
+openapi: "api-reference/openapi.json GET /segment/list"
+---
+
+Use this endpoint to **retrieve a paginated list of segments** for the Segment tab, with optional search and status filters.
+
+## Endpoint
+
+**GET** `/segment/list`
+
+**Authentication:** Required (workspace auth)
+
+## Query Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `page` | number | No | Page number (default: `1`) |
+| `limit` | number | No | Records per page (default: `10`) |
+| `search` | string | No | Partial match on `segment_name` (LIKE) |
+| `status` | number | No | Filter by segment status: `0` (Inactive) or `1` (Active). Deleted segments (`2`) are always excluded, so passing `status=2` returns no rows. |
+
+## Response
+
+```json
+{
+  "datalist": [
+    {
+      "id": 501,
+      "segment_name": "Mumbai Premium",
+      "tags": ["premium", "mumbai"],
+      "baselist": "Audience - Delhi NCR Leads",
+      "filters": 2,
+      "conditions": [
+        { "field": "city", "operator": "=", "value": "Mumbai" },
+        { "field": "plan", "operator": "contains", "value": "premium" }
+      ],
+      "campaign": [
+        { "id": 42, "name": "Q1 Outreach" }
+      ],
+      "contacts": 128,
+      "status": "Active",
+      "show_edit": 1,
+      "show_delete": 0,
+      "delete_description": "The segment is linked to 1 active campaign. First remove it from the campaign to delete.",
+      "updated_by": "Jane Admin",
+      "updated_on": "10 Dec, 2025"
+    }
+  ],
+  "pagination": {
+    "totalRecords": 24,
+    "totalPages": 3,
+    "currentPage": 1,
+    "limit": 10
+  }
+}
+```
+
+| Field | Description |
+|-------|-------------|
+| `baselist` | What the segment was built from: `Audience - <name>` or `Campaign - <name>` |
+| `filters` | Number of flattened leaf conditions in the segment's filter |
+| `conditions` | Flattened `[{ field, operator, value }]` list, parsed from the segment's stored filter |
+| `campaign` | Campaigns this segment is currently connected to (via Attach Campaign Sources) |
+| `show_delete` | `0` while the segment is connected to at least one campaign (deleting would affect a running campaign); `1` otherwise. Edit is always allowed (`show_edit` is always `1`). |
+
+<Note>
+`conditions`/`filters` are parsed assuming the segment's stored filter is in the CONDITIONLIST tree format written by [Create Segment](/api-reference/segment/create-segment). A segment whose filter was subsequently changed via [Update Segment](/api-reference/segment/update-segment) (which stores a flat `{ field, operator, value }` array instead) will show `filters: 0` and an empty `conditions` array here, even though its filter is still applied when contacts are (re-)evaluated.
+</Note>
+
+## Example cURL
+
+```bash
+curl -X GET "https://www.tryunleashx.com/api/v1/global/segment/list?page=1&limit=10&status=1" \
+  -H "token: <api_key>"
+```

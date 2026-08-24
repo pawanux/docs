@@ -1,0 +1,59 @@
+---
+title: Delete Audience Contacts
+openapi: "api-reference/openapi.json POST /audience/delete-contacts"
+---
+
+Use this endpoint to **soft-delete one or more contacts** by contact ID.
+
+## Endpoint
+
+**POST** `/audience/delete-contacts`
+
+**Content-Type:** `application/json`
+**Authentication:** Required (workspace auth)
+
+## Request Body
+
+```json
+{
+  "contact_id": [101, 102, 103]
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `contact_id` | number \| array | Yes* | Contact ID(s) to delete. Accepts a single ID, an array, a JSON-string array (e.g. `"[101,102]"`), or a comma-separated string (e.g. `"101,102"`). |
+| `contact_ids` | number \| array | Yes* | Alias for `contact_id`. Either field is accepted. |
+
+## Response
+
+```json
+{
+  "message": "Contacts deleted successfully",
+  "data": { "deleted": 3 }
+}
+```
+
+## Behavior
+
+- **Soft delete** — sets the contact's status to deleted; records are not removed from the database.
+- Scoped to the caller's company and workspace only — no `audience_id` is needed, and contact IDs outside the caller's scope, or already deleted, are silently skipped.
+- Every audience whose contacts were affected has its denormalized contact count resynced.
+- Any pending dial rows for the deleted contacts are halted immediately (they will not be called even if already queued).
+
+## Error Cases
+
+| Error | Cause |
+|-------|-------|
+| `contact_id is required` | Neither `contact_id` nor `contact_ids` resolved to at least one valid ID |
+
+## Example cURL
+
+```bash
+curl -X POST https://www.tryunleashx.com/api/v1/global/audience/delete-contacts \
+  -H "Content-Type: application/json" \
+  -H "token: <api_key>" \
+  -d '{
+    "contact_id": [101, 102, 103]
+  }'
+```

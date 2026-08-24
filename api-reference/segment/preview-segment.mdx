@@ -1,0 +1,109 @@
+---
+title: Preview Segment
+openapi: "api-reference/openapi.json POST /segment/preview"
+---
+
+Use this endpoint to **test filter conditions against an audience's contacts without saving a segment** — powers the "Preview Contacts" step of the Create Segment modal.
+
+## Endpoint
+
+**POST** `/segment/preview`
+
+**Content-Type:** `application/json`
+**Authentication:** Required (workspace auth)
+
+## Request Body
+
+```json
+{
+  "audience_id": 12,
+  "match_type": "all",
+  "conditions": [
+    { "field": "plan", "operator": "is", "value": "premium" },
+    { "field": "city", "operator": "contains", "value": "Mumbai" }
+  ],
+  "sample_limit": 20
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `audience_id` | number | Yes | Audience to preview against. Must belong to the caller's company/workspace. |
+| `conditions` (alias `filter_conditions`) | array | No | Filter conditions, each `{ field, operator, value }` (flat format — see below). Omitted/empty → matches every contact of the audience. |
+| `match_type` | string | No | `all` (AND across conditions, default) or `any` (OR across conditions). |
+| `sample_limit` | number | No | Max number of sample contacts to return (default `20`). |
+
+## Filter Condition Operators
+
+`operator` must be one of:
+
+| Operator | Meaning |
+|----------|---------|
+| `is` | Equals (case-insensitive) |
+| `is_not` | Not equals |
+| `contains` | Substring match |
+| `not_contains` | Substring does not match |
+| `starts_with` | Field starts with value |
+| `ends_with` | Field ends with value |
+| `is_empty` | Field is empty |
+| `is_not_empty` | Field is not empty |
+| `in` | Field is one of a comma-separated list of values |
+| `not_in` | Field is not one of a comma-separated list of values |
+| `gt` | Numeric greater-than |
+| `lt` | Numeric less-than |
+
+<Note>
+This flat `{ field, operator, value }` format is different from the CONDITIONLIST tree accepted by [Create Segment](/api-reference/segment/create-segment)'s `filter_conditions`. Passing a CONDITIONLIST payload here will not be understood — it is read as `{ conditions: [...] }` and, having no `conditions` array of its own, is treated as an empty filter (matches everything).
+</Note>
+
+## Response
+
+```json
+{
+  "size": 128,
+  "baselist_size": 500,
+  "percentage": 25.6,
+  "sample": [
+    {
+      "id": 1001,
+      "mobile_no": "+12025550123",
+      "input_field": { "plan": "premium", "city": "Mumbai" }
+    }
+  ]
+}
+```
+
+| Field | Description |
+|-------|-------------|
+| `size` | Number of contacts matching the filter |
+| `baselist_size` | Total active contacts in the audience |
+| `percentage` | `size / baselist_size * 100`, rounded to 2 decimals (`0` when the audience is empty) |
+| `sample` | Up to `sample_limit` matching contacts, each with `id`, `mobile_no`, and `input_field` (its raw input data) |
+
+## Behavior
+
+- Nothing is persisted — this endpoint only evaluates the filter.
+- Only active (non-soft-deleted) audience contacts are considered.
+- `mobile_no` in the sample is masked when the workspace's company has phone number masking enabled.
+
+## Error Cases
+
+| Error | Cause |
+|-------|-------|
+| `Audience Id is required` | `audience_id` missing |
+| `Audience not found` | `audience_id` doesn't belong to the caller's company/workspace, or is deleted |
+
+## Example cURL
+
+```bash
+curl -X POST https://www.tryunleashx.com/api/v1/global/segment/preview \
+  -H "Content-Type: application/json" \
+  -H "token: <api_key>" \
+  -d '{
+    "audience_id": 12,
+    "match_type": "all",
+    "conditions": [
+      { "field": "plan", "operator": "is", "value": "premium" }
+    ]
+  }'
+```

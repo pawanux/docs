@@ -1,0 +1,72 @@
+---
+title: Download Audience Template
+openapi: "api-reference/openapi.json GET /audience/download-template"
+---
+
+Use this endpoint to **download a blank Excel template** whose columns match an agent's, an existing audience's, or a chosen set of input variables — ready to fill in and upload via [Create Audience](/api-reference/audience/create-audience).
+
+## Endpoint
+
+**GET** `/audience/download-template`
+
+**Authentication:** Required (workspace auth)
+
+## Query Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `agent_id` | number | No | Derive columns from this agent's configured metadata input fields. `mobile_no` is force-added as the first column if the agent's fields don't already include it. |
+| `audience_id` | number | No | Derive columns from an existing audience's saved input variables. |
+| `variable_id` | number \| array | No | Input-variable registry ID(s) to use as columns, in the order given. Accepts **multiple** IDs — see below. Also accepted as `variable_ids`. |
+| `audience_name` | string | No | Overrides the downloaded file's base name. Defaults to the audience's name (`audience_id` mode) or `audience_template`. |
+
+Only one source is used to resolve columns — `agent_id` is checked first, then `audience_id`, then `variable_id`/`variable_ids`.
+
+### Passing multiple `variable_id`s
+
+Any of these forms work — the resulting columns follow the order the IDs were given in:
+
+- Repeat the param: `?variable_id=12&variable_id=15`
+- Comma-separated string: `?variable_id=12,15`
+- JSON-encoded array: `?variable_id=%5B12%2C15%5D` (i.e. `[12,15]`, URL-encoded)
+
+## Response
+
+Returns a downloadable **Excel file** (`.xlsx`).
+
+- **Content-Type:** `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`
+- **Filename:** `<audience_name>.xlsx` (sanitized; falls back to `audience_template.xlsx`)
+
+### Template Columns
+
+One column per resolved variable key, in the order resolved. `mobile_no` must be among them (see Error Cases).
+
+## Behavior
+
+- Duplicate keys (case-insensitive) are removed while preserving the first occurrence's order.
+- When using `variable_id`/`variable_ids`, only variables owned by the caller's workspace or global System variables resolve; unmatched IDs are silently dropped.
+
+## Error Cases
+
+| Error | Cause |
+|-------|-------|
+| `Audience not found` | `audience_id` doesn't belong to the caller's company/workspace, or is deleted |
+| `mobile_no is required — please include the mobile_no variable` | The resolved column set (via `audience_id` or `variable_id`/`variable_ids`) doesn't include a `mobile_no` variable |
+
+## Example cURL
+
+### From an existing audience
+
+```bash
+curl -X GET "https://www.tryunleashx.com/api/v1/global/audience/download-template?audience_id=55" \
+  -H "token: <api_key>" \
+  --output audience_template.xlsx
+```
+
+### From multiple chosen input variables
+
+```bash
+curl -X GET "https://www.tryunleashx.com/api/v1/global/audience/download-template?variable_id=12&variable_id=15" \
+  -H "token: <api_key>" \
+  --output audience_template.xlsx
+```

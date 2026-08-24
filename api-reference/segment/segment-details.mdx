@@ -1,0 +1,64 @@
+---
+title: Segment Details
+openapi: "api-reference/openapi.json GET /segment/details"
+---
+
+Use this endpoint to **retrieve one segment's full configuration**, including its parsed filter conditions and parent audience.
+
+## Endpoint
+
+**GET** `/segment/details`
+
+**Authentication:** Required (workspace auth)
+
+## Query Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `segment_id` | number | Yes | Segment identifier |
+
+## Response
+
+```json
+{
+  "id": 501,
+  "segment_name": "Mumbai Premium",
+  "description": "Premium plan contacts in Mumbai",
+  "audience_id": 12,
+  "audience_name": "Delhi NCR Leads",
+  "match_type": "all",
+  "filter_conditions": [
+    { "field": "plan", "operator": "is", "value": "premium" }
+  ],
+  "tags": ["premium", "mumbai"],
+  "total_contacts": 128,
+  "status": 1,
+  "updated_date": "2 days ago"
+}
+```
+
+| Field | Description |
+|-------|-------------|
+| `audience_id` / `audience_name` | The segment's source audience (`null` / empty for campaign-sourced segments) |
+| `match_type` | `all` or `any` |
+| `filter_conditions` | Flat `[{ field, operator, value }]` list |
+| `status` | Numeric segment status: `0` = Inactive, `1` = Active (deleted segments can't be fetched — see below) |
+| `updated_date` | Relative, human-readable string (e.g. `"2 days ago"`) |
+
+<Note>
+`filter_conditions` is only populated when the segment's stored filter is in the flat `{ field, operator, value }` shape written by [Update Segment](/api-reference/segment/update-segment). A segment that has never been updated since [Create Segment](/api-reference/segment/create-segment) stores its filter as a CONDITIONLIST tree instead, which this endpoint doesn't parse — for such segments `filter_conditions` is returned as an empty array even though the segment does have a filter applied.
+</Note>
+
+## Error Cases
+
+| Error | Cause |
+|-------|-------|
+| `Segment Id is required` | `segment_id` missing |
+| `Segment not found` | `segment_id` doesn't belong to the caller's company/workspace, or is deleted |
+
+## Example cURL
+
+```bash
+curl -X GET "https://www.tryunleashx.com/api/v1/global/segment/details?segment_id=501" \
+  -H "token: <api_key>"
+```

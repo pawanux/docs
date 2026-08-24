@@ -1,0 +1,50 @@
+---
+title: Export Audience Contacts
+openapi: "api-reference/openapi.json GET /audience/contacts/export"
+---
+
+Use this endpoint to **export an audience's contacts (and call history, if any) as an Excel file** (.xlsx).
+
+## Endpoint
+
+**GET** `/audience/contacts/export`
+
+**Authentication:** Required (workspace auth)
+
+## Query Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `audience_id` | number | Yes | Audience identifier |
+
+## Response
+
+Returns an Excel file (`.xlsx`) with up to two sheets:
+
+| Sheet | Contents |
+|-------|----------|
+| `Audience Contacts` | `Mobile No` plus one column per input variable (dynamic, derived from the audience's saved variables and the contacts' own data) |
+| `Call History` | Only included when this audience has been dialed by at least one campaign — `Mobile`, `Campaign ID`, `Call ID`, `Attempt`, `Call Status`, `Duration`, `Time`, `Agent Name`, `Disposition`, `Recording URL` |
+
+## Notes
+
+- The response is a binary Excel file stream, not JSON.
+- Set your HTTP client to handle binary/file responses.
+- Only active (non-deleted) contacts are included in the `Audience Contacts` sheet.
+- If phone number masking is enabled for the workspace, mobile numbers are masked in both sheets.
+- `Recording URL` links are signed (time-limited) at export time.
+
+## Error Cases
+
+| Error | Cause |
+|-------|-------|
+| `Audience Id is missing.` | `audience_id` not provided |
+| `Audience not found` | `audience_id` doesn't belong to the caller's company/workspace, or is deleted |
+
+## Example cURL
+
+```bash
+curl -X GET "https://www.tryunleashx.com/api/v1/global/audience/contacts/export?audience_id=55" \
+  -H "token: <api_key>" \
+  -o audience_contacts.xlsx
+```

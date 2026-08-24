@@ -1,0 +1,51 @@
+---
+title: Export Segment Contacts
+openapi: "api-reference/openapi.json GET /segment/contacts/export"
+---
+
+Use this endpoint to **export a segment's contacts as an Excel file** (`.xlsx`), including its call history when the segment has been dialed.
+
+## Endpoint
+
+**GET** `/segment/contacts/export`
+
+**Authentication:** Required (workspace auth)
+
+## Query Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `segment_id` | number | Yes | Segment identifier |
+
+## Response
+
+Returns an Excel file (`.xlsx`) with one or two sheets:
+
+| Sheet | When present | Columns |
+|-------|---------------|---------|
+| `Segment Contacts` | Always | Mobile No, plus one column per input variable saved on the parent audience (and any extra input keys found on the contacts) |
+| `Call History` | Only if this segment has been dialed by a campaign | Mobile, Campaign ID, Call ID, Attempt (e.g. `2/3`), Call Status, Duration, Time, Agent Name, Disposition, Recording URL |
+
+## Notes
+
+- The response is a binary Excel file stream, not JSON — set your HTTP client to handle binary/file responses.
+- The download filename is the segment's name, sanitized to safe filename characters, e.g. `mumbai_premium.xlsx`.
+- `Segment Contacts` rows come from the segment's materialized contact mapping (`segment_contacts`), the same set used by [List Segment Contacts](/api-reference/segment/list-segment-contacts) — not a live re-evaluation of the filter.
+- `Call History` rows come from dial rows created **from this segment** (`campaign_audience_details` where `SOURCE_TYPE = 2` and `SOURCE_ID` = the segment), across every campaign the segment has ever been attached to, joined to each call attempt in `agent_executions`.
+- Recording URLs are signed just before being written to the sheet (the underlying files are stored privately).
+- Both sheets mask mobile numbers when the workspace's company has phone number masking enabled.
+
+## Error Cases
+
+| Error | Cause |
+|-------|-------|
+| `Segment Id is required` | `segment_id` missing |
+| `Segment not found` | `segment_id` doesn't belong to the caller's company/workspace, or is deleted |
+
+## Example cURL
+
+```bash
+curl -X GET "https://www.tryunleashx.com/api/v1/global/segment/contacts/export?segment_id=501" \
+  -H "token: <api_key>" \
+  -o segment_contacts.xlsx
+```

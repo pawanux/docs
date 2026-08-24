@@ -1,0 +1,44 @@
+---
+title: Campaign Summary List
+openapi: "api-reference/openapi.json GET /summary-list"
+---
+
+Use this endpoint to **retrieve a lightweight list of campaigns** (id + label) in the caller's workspace, for use in dropdowns and pickers. No pagination.
+
+## Endpoint
+
+**GET** `/summary-list`
+
+**Authentication:** Required (workspace auth)
+
+This endpoint takes no query parameters. It returns every campaign belonging to the token's company and workspace, ordered by most recently created first.
+
+## Response
+
+```json
+[
+  {
+    "id": 42,
+    "label": "Diwali Outreach 2025",
+    "agent_id": 7
+  },
+  {
+    "id": 41,
+    "label": "Renewal Reminders",
+    "agent_id": null
+  }
+]
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | number | Campaign identifier |
+| `label` | string | Campaign name (empty string if not set) |
+| `agent_id` | number \| null | Voice agent attached to the campaign, if any |
+
+## Example cURL
+
+```bash
+curl -X GET "https://www.tryunleashx.com/api/v1/global/summary-list" \
+  -H "token: <api_key>"
+```

@@ -1,0 +1,87 @@
+---
+title: Update Audience
+openapi: "api-reference/openapi.json POST /audience/update"
+---
+
+Use this endpoint to **rename or describe an existing audience, or soft-delete it**.
+
+## Endpoint
+
+**POST** `/audience/update`
+
+**Content-Type:** `application/json`
+**Authentication:** Required (workspace auth)
+
+## Request Body
+
+### Rename / describe
+
+```json
+{
+  "audience_id": 55,
+  "audience_name": "VIP Customers 2026",
+  "description": "Updated description"
+}
+```
+
+### Soft-delete
+
+```json
+{
+  "audience_id": 55,
+  "status": 2
+}
+```
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `audience_id` | number | Yes | ID of the audience to update |
+| `audience_name` | string | No | New name. Must be unique within the workspace. Ignored when `status` is `2`. |
+| `description` | string | No | New description |
+| `status` | number | No | Set to `2` to soft-delete the audience. See [Audience Status Codes](#audience-status-codes). |
+
+## Audience Status Codes
+
+| Code | Status |
+|------|--------|
+| `0` | Inactive |
+| `1` | Active |
+| `2` | Deleted |
+
+## Response
+
+```json
+{
+  "message": "Audience updated successfully",
+  "data": { "id": 55 }
+}
+```
+
+When `status: 2` is passed:
+
+```json
+{
+  "message": "Audience deleted successfully",
+  "data": { "id": 55 }
+}
+```
+
+## Error Cases
+
+| Error | Cause |
+|-------|-------|
+| `Audience Id is missing.` | `audience_id` not provided |
+| `Audience not found` | `audience_id` doesn't belong to the caller's company/workspace, or is already deleted |
+| `Audience name already exists in this workspace` | `audience_name` clashes with another (non-deleted) audience in the workspace |
+
+## Example cURL
+
+```bash
+curl -X POST https://www.tryunleashx.com/api/v1/global/audience/update \
+  -H "Content-Type: application/json" \
+  -H "token: <api_key>" \
+  -d '{
+    "audience_id": 55,
+    "audience_name": "VIP Customers 2026"
+  }'
+```
