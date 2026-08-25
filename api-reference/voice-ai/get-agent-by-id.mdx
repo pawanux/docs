@@ -1,0 +1,210 @@
+---
+title: Get Agent Details by ID
+openapi: "api-reference/openapi.json GET /agents/get-by-id"
+---
+
+# Get Agent Details by ID
+
+Returns the full details of a single agent — basic details, configuration, knowledge base, tools, phone numbers, dispositions, denials, creator, guardrails, metadata config, and campaign info. Unlike [List Voice Agents](/api-reference/voice-ai/list-voice-agents), which returns a simplified agent object, this endpoint returns everything the agent builder UI uses to render an agent.
+
+## Endpoint
+
+**GET** `/api/v1/global/agents/get-by-id`
+
+## Authentication
+
+Include your API token in the request header:
+
+```
+token: <your_api_token>
+```
+
+or
+
+```
+api_access_token: <your_api_token>
+```
+
+## Query Parameters
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `agent_id` | integer | Yes | ID of the agent to retrieve |
+
+## Success Response
+
+**Status Code:** `200 OK`
+
+The response mirrors what the agent builder UI uses to render an agent — it is **not** the simplified field set returned by [List Voice Agents](/api-reference/voice-ai/list-voice-agents). Every field name is lower snake_case (already normalized from the raw DB columns).
+
+```json
+{
+  "error": false,
+  "code": 200,
+  "message": "",
+  "timestamp": 1767638299411,
+  "data": {
+    "basic_details": {
+      "id": 1919,
+      "workspace_id": 180,
+      "agent_name": "Sales Assistant",
+      "description": null,
+      "category": 1,
+      "category_description": { "id": 1, "label": "Sales", "textColor": "#8B1538", "backgroundColor": "#FFE5EC" },
+      "purpose": 1,
+      "purpose_description": { "id": 1, "label": "Automate repetitive tasks" },
+      "agent_type": 3,
+      "agent_type_description": { "id": 3, "label": "Telephony" },
+      "agent_prompt": "## Identity & Purpose\n...",
+      "agent_privacy": 0,
+      "status": 3,
+      "voice_id": "KYiVPerWcenyBTIvWbfY",
+      "agent_token": "<jwt>",
+      "voice_provider": 8,
+      "transcriber_provider": 14,
+      "calling_type": 1,
+      "company_id": 159,
+      "created_on": "2026-08-20T18:33:41.000Z",
+      "updated_on": "2026-08-24T16:57:24.000Z"
+    },
+    "configuration": {
+      "id": 987,
+      "agent_id": 1919,
+      "context_awareness": 0,
+      "temperature": 0.7,
+      "tts_model": 1,
+      "stt_model": 2,
+      "call_recording": 1,
+      "inactivity_handling_time": 10,
+      "max_call_duration": 10,
+      "voice_config": { "speed": "1", "stability": "0.7" },
+      "transcript_status": 1,
+      "skills": [],
+      "nudges": [],
+      "trigger": "workflow"
+    },
+    "knowledge_base": {
+      "agent_id": 1919,
+      "files": [],
+      "links": [],
+      "pages": [],
+      "tools": [],
+      "sub_agents": []
+    },
+    "tools": {
+      "tools": [],
+      "subagents": [],
+      "integrated_custom_events": { "toolHttpRequest": [] },
+      "denials": { "denied_words": [], "denied_topics": [] }
+    },
+    "phone_numbers": [],
+    "dispositions": [],
+    "dispositions_config": {
+      "disposition_provider": null,
+      "disposition_model": null
+    },
+    "denials": {
+      "denied_words": [],
+      "denied_topics": []
+    },
+    "creator": {
+      "user_id": 193,
+      "first_name": "Jane",
+      "last_name": "Doe",
+      "email": "jane@example.com",
+      "full_name": "Jane Doe"
+    },
+    "guardrails": {
+      "id": null,
+      "agent_id": 1919,
+      "hate_enabled": 1,
+      "insult_enabled": 1,
+      "violence_enabled": 1,
+      "sexual_enabled": 1,
+      "misconduct_enabled": 1,
+      "prompt_attack_enabled": 1,
+      "relevance_deviation_level": 1,
+      "knowledge_boundary_deviation_level": 1
+    },
+    "metadata_config": {
+      "metadata_input": [
+        { "key": "mobile_no", "type": "phone", "description": "Mobile No" }
+      ],
+      "metadata_output": [],
+      "metadata_output_provider": "gemini",
+      "metadata_output_model": "gemini-2.5-flash"
+    },
+    "last_modified": "",
+    "voice_analysis": false,
+    "campaign_count": 0,
+    "campaigns": [],
+    "is_campaign_on_hold": false,
+    "is_draft": true,
+    "is_audience": false,
+    "webhook_url": null
+  }
+}
+```
+
+### Top-level `data` fields
+
+| Field | Description |
+|-------|-------------|
+| `basic_details` | Core agent record — name, prompt, voice/transcriber providers, status, agent_token, timestamps |
+| `configuration` | Call/behavior configuration — temperature, TTS/STT models, voicemail/inactivity handling, voice_config, skills, nudges |
+| `knowledge_base` | Attached knowledgebase files, links, pages, tools, and sub-agents |
+| `tools` | Connected integrations/tools, sub-agents, HTTP custom events, and denials (duplicated under `denials` too) |
+| `phone_numbers` | Calling numbers currently attached to the agent |
+| `dispositions` | Configured call dispositions |
+| `dispositions_config` | Disposition analysis provider/model |
+| `denials` | Denied words and denied topics |
+| `creator` | User who created the agent |
+| `guardrails` | Safety guardrail toggles (hate/insult/violence/sexual/misconduct/prompt-attack) and deviation levels |
+| `metadata_config` | Configured metadata input/output fields and the output extraction provider/model |
+| `last_modified` | Human-readable "time ago" string for the most recent update, or `""` |
+| `voice_analysis` | Whether voice analysis is enabled for the workspace |
+| `campaign_count` | Number of active (non-hold) campaigns using this agent |
+| `campaigns` | Active campaigns using this agent |
+| `is_campaign_on_hold` | Whether any campaign using this agent is on hold |
+| `is_draft` | Whether the agent has no non-draft campaigns yet |
+| `is_audience` | Whether any campaign using this agent has an audience attached |
+| `webhook_url` | Agent's webhook URL, if generated |
+
+## Error Responses
+
+### 400 Bad Request — missing `agent_id`
+```json
+{
+  "error": true,
+  "message": "Agent ID is missing."
+}
+```
+
+### 401 Unauthorized
+```json
+{
+  "error": true,
+  "message": "Invalid Auth Key or Session Expired"
+}
+```
+
+### 404 Not Found
+```json
+{
+  "error": true,
+  "message": "Agent not found"
+}
+```
+
+## Example Request
+
+```bash
+curl -X GET "https://www.tryunleashx.com/api/v1/global/agents/get-by-id?agent_id=123" \
+  -H "token: your_api_token_here"
+```
+
+## Notes
+
+- `agent_id` is required — this endpoint never returns a list.
+- The agent must belong to your workspace; deleted agents (`STATUS = 2`) are not returned.
+- For a lightweight response (e.g. for dropdowns or simple lookups), use [List Voice Agents](/api-reference/voice-ai/list-voice-agents) with `agent_id` instead.
