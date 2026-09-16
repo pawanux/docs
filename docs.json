@@ -126,6 +126,7 @@
                   "mcp/jira",
                   "mcp/razorpay",
                   "mcp/wordpress",
+                  "mcp/webflow",
                   "mcp/http-executor",
                   "mcp/hyperbrowser",
                   "mcp/playwright",
@@ -138,6 +139,7 @@
                 "group": "AI & Media",
                 "pages": [
                   "mcp/ocr",
+                  "mcp/pdfco",
                   "mcp/transcription",
                   "mcp/image",
                   "mcp/veo",
