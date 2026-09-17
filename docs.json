@@ -125,6 +125,7 @@
                 "pages": [
                   "mcp/jira",
                   "mcp/razorpay",
+                  "mcp/stripe",
                   "mcp/wordpress",
                   "mcp/webflow",
                   "mcp/http-executor",

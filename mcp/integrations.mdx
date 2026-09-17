@@ -105,8 +105,12 @@ For every integration below, use this pattern:
 **Authentication:** SendGrid API key + sender context, via headers/session.  
 
 ### Shopify
-**Direct tool names:** Search Products, Read Product Details, Add to Cart, Subscribe Customer.  
-**Authentication:** Shopify tokens + shop domain from headers/session.  
+**Direct tool names:** Search Orders, Refund Order, Create Fulfillment, Search Products, Adjust Inventory, Create Draft Order.  
+**Authentication:** Custom app Client ID + Client Secret with shop domain; token minted per connection.  
+
+### Stripe
+**Direct tool names:** List Customers, List Charges, Create Payment Intent, List Invoices, Cancel Subscription, Create Refund.  
+**Authentication:** Stripe secret key as bearer; session fallback (`stripe`).  
 
 ### Slack
 **Direct tool names:** Send Message, Read Channels, Read Messages, Update Message, Trigger Checks.  
@@ -283,11 +287,18 @@ For every integration below, use this pattern:
     **Links:** [MCP doc](/mcp/sendgrid) · [SendGrid API](https://www.twilio.com/docs/sendgrid/api-reference)
   </Accordion>
   <Accordion title="Shopify">
-    **Main operations:** product retrieval, cart operations, customer/newsletter actions.
+    **Main operations:** orders, refunds and invoices, fulfillment with tracking, products and variants, inventory by location, customers, collections, pages and articles, tags, metafields, draft orders; eight triggers covering new/paid/cancelled orders, refunds, customers, products, draft orders and pages.
 
-    **Authentication:** `access-token` / `x-shopify-access-token` with shop domain and storefront/admin token context; session fallback (`shopify`).
+    **Authentication:** custom app `CLIENT_ID` + `CLIENT_SECRET` exchanged for a short-lived Admin API token, sent as `x-shopify-access-token` with a `shop-domain` header; session fallback (`shopify`). Admin GraphQL `2026-07` — no REST path.
 
     **Links:** [MCP doc](/mcp/shopify) · [Shopify Admin GraphQL API](https://shopify.dev/docs/api/admin-graphql)
+  </Accordion>
+  <Accordion title="Stripe">
+    **Main operations:** customers, charges and payment intents, invoices, subscriptions and cancellation, products and prices, refunds, account balance; triggers on new customer, charge, invoice and subscription.
+
+    **Authentication:** secret key (`sk_live_` / `sk_test_`) as `Authorization: Bearer`; form-encoded request bodies; session fallback (`stripe`).
+
+    **Links:** [MCP doc](/mcp/stripe) · [Stripe API](https://docs.stripe.com/api)
   </Accordion>
   <Accordion title="Slack">
     **Main operations:** channel/user/message actions plus Slack event-style utility flows.
