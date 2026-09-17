@@ -1,74 +1,93 @@
 ---
 title: "Shopify"
 icon: "https://cdn.shopify.com/static/images/favicon.ico"
-description: "Let UnleashX search your Shopify products, add items to a cart, and subscribe customers to your newsletter."
-tags: [mcp, shopify, integration]
+description: "Let your UnleashX agent run your Shopify store — orders, fulfillment, refunds, products, inventory, customers and content."
+tags: [mcp, shopify, commerce, integration]
 ---
 
 # Shopify
 
-> **In one line:** Connect Shopify so UnleashX can find products, build a ready-to-checkout cart for a shopper, and add customers to your newsletter — straight from a conversation.
+> **In one line:** Connect Shopify so your UnleashX agent can look up and refund orders, ship them with tracking, keep products and stock accurate, manage customers and storefront content, and start a workflow the moment an order lands.
 
 | | |
 |---|---|
-| **Category** | Commerce |
-| **Authentication** | Admin API access token |
-| **Setup time** | ~6 minutes |
+| **Category** | CRM & Marketing |
+| **Authentication** | Custom app Client ID + Client Secret |
+| **Setup time** | ~10 minutes |
 | **Difficulty** | Medium |
-| **Best for** | Online stores that want a voice or chat agent to help shoppers find products, start a checkout, and capture newsletter sign-ups. |
+| **Best for** | Stores that want an agent handling order support, fulfillment and catalog upkeep end to end |
+
+<Warning>
+**This connector was rebuilt.** It now runs on the Shopify **Admin GraphQL API** and authenticates with a custom app's **Client ID and Client Secret**, not a pasted Admin API access token. If you connected Shopify before this change, the old connection will stop working — follow Section 3 and reconnect. The Storefront API token is no longer used at all.
+</Warning>
 
 ## 1. Overview
 
-Shopify is a commerce platform that powers online stores — products, variants, carts, checkout and customers all live there.
+Shopify is a commerce platform: products and variants, inventory across locations, orders and their fulfillments, customers, and the storefront's pages and blogs.
 
-Once connected to UnleashX, your agent can act as a shopping assistant: search your catalog by name or tag, add a chosen variant to a cart and hand back a checkout link, and sign a customer up for your newsletter.
+Once connected to UnleashX, your agent works against the Shopify Admin API on the store's behalf. It can search and read orders, refund them in full or in part, email an invoice, and ship a fulfillment order with tracking. It can create, update and delete products, add and reprice variants, and adjust or set stock at a specific location. It can manage customers, collections, storefront pages, blog articles and metafields, and build a draft order and turn it into a real one.
 
-Connecting Shopify to UnleashX turns conversations into sales motions — shoppers get product answers and a ready checkout link without leaving the chat, and interested customers get added to your marketing list.
+Eight polling triggers let a workflow start on its own — a new order, a paid order, a cancelled order, a refund, a new customer, a new product, a new draft order, or a new page.
+
+Connecting Shopify to UnleashX turns store operations into conversation and automation: "where's my order" gets answered and, if needed, refunded; a new order fires a workflow; stock corrections land at the right location without anyone opening the admin.
 
 ## 2. What you'll need
 
-- A Shopify store and your **shop domain** (e.g. `your-store.myshopify.com`).
-- Permission to create a custom app — requires the store **owner** or a staff account with app-development access.
-- An **Admin API access token**, and a **Storefront API access token** for the cart tool.
+- A Shopify store and its **shop domain** (`your-store.myshopify.com`).
+- A **Shopify Partner account** to create the custom app — [partners.shopify.com](https://partners.shopify.com/), free to sign up.
+- Permission to install an app on the store (store **owner**, or staff with app-install rights).
+- The app's **Client ID** and **Client Secret** once it's installed.
 
 <Note>
-No admin access? Ask your store owner to create a custom app and share the shop domain plus the Admin and Storefront access tokens with you.
+Shopify no longer issues the old non-expiring `shpat_` Admin API access tokens for newly created admin custom apps. UnleashX stores the Client ID and Client Secret and exchanges them for a short-lived Admin API token automatically, refreshing it about every 24 hours — which is why you supply two values instead of a token.
 </Note>
 
 ## 3. Get your credentials
 
-UnleashX authenticates to Shopify with an **Admin API access token** (plus a **Storefront API access token** for cart creation) and your **shop domain**.
-
 <Steps>
-<Step title="Open app development">
-Go to **Shopify admin → Settings → Apps and sales channels → Develop apps**: `https://admin.shopify.com/store/<your-store>/settings/apps/development`
+<Step title="Create the app in the Partner Dashboard">
+Go to [partners.shopify.com](https://partners.shopify.com/) → **Apps → Create app**. Name it "UnleashX".
 </Step>
-<Step title="Create an app">
-Click **Create an app**, name it "UnleashX", and select a developer.
-</Step>
-<Step title="Configure Admin API scopes">
-Under **Configuration → Admin API integration**, enable the scopes from the table below.
-</Step>
-<Step title="Configure Storefront API">
-Enable **Storefront API** access and the unauthenticated scopes needed to read products and create carts.
-</Step>
-<Step title="Install and copy tokens">
-Click **Install app**, then under **API credentials** reveal and copy the **Admin API access token** and the **Storefront API access token**.
+<Step title="Set it to custom distribution">
+In the app's **Distribution** settings choose **Custom distribution** and enter the store's `your-store.myshopify.com` domain. This locks the app to that one store.
+
 <Warning>
-The Admin API access token is shown only once at install. Copy it now and store it safely.
+Distribution can't be changed once it's set. Pick **Custom distribution** — an app set up for the public app store won't work here.
+</Warning>
+</Step>
+<Step title="Request the Admin API scopes">
+In **Configuration → Admin API integration**, enable the scopes for the tools you plan to use (table below).
+</Step>
+<Step title="Install the app on the store">
+Generate the install link from the app's overview and install it on the store. Nothing authenticates until the app is installed.
+</Step>
+<Step title="Copy the Client ID and Client Secret">
+Open the app's **Client credentials** (also shown as API key and API secret key) and copy both.
+
+<Warning>
+Treat the Client Secret like a password. Anyone holding both values can mint an Admin API token for your store.
 </Warning>
 </Step>
 </Steps>
 
-| Scope | Why UnleashX needs it |
+### Scopes this app needs
+
+Grant only what your workflows use. When a call fails for a missing scope, the error names the scope it wanted.
+
+| Scope | Needed for |
 |---|---|
-| `read_products` (Admin) | Search products and read variant details. |
-| `write_customers` / `read_customers` (Admin) | Create/update a customer and subscribe them to the newsletter. |
-| `unauthenticated_read_product_listings` (Storefront) | Read products via the Storefront API. |
-| `unauthenticated_write_checkouts` / cart access (Storefront) | Create a cart and return a checkout URL. |
+| `read_orders`, `write_orders` | Order search and reads, refunds, invoices, tags |
+| `read_fulfillments`, `write_fulfillments` | Creating fulfillments and updating tracking |
+| `read_merchant_managed_fulfillment_orders`, `write_merchant_managed_fulfillment_orders` | Listing and acting on fulfillment orders shipped from your own locations |
+| `read_products`, `write_products` | Products, variants, collections |
+| `read_inventory`, `write_inventory` | Stock levels, adjusting and setting quantities |
+| `read_locations` | Listing inventory locations |
+| `read_customers`, `write_customers` | Customer search, create and update |
+| `read_content`, `write_content` | Storefront pages, blogs and articles |
+| `read_draft_orders`, `write_draft_orders` | Draft orders and completing them |
 
 <Info>
-You'll provide three things when connecting: the **shop domain**, the **Admin API access token**, and the **Storefront API access token**.
+You'll provide three things when connecting: the **shop domain**, the **Client ID**, and the **Client Secret**.
 </Info>
 
 ## 4. Connect on UnleashX
@@ -77,16 +96,27 @@ You'll provide three things when connecting: the **shop domain**, the **Admin AP
 <Step title="Open your agent">
 Sign in at [https://www.tryunleashx.com](https://www.tryunleashx.com) and open the agent you want to connect.
 </Step>
-<Step title="Find Shopify">
-Go to **Data Connectors** and find **Shopify**.
+<Step title="Open Data Connectors">
+In the agent, go to **Data Connectors** and find **Shopify**.
 </Step>
-<Step title="Connect">
-Click **Connect** / **Add** / **Configure** and enter your shop domain, Admin API access token, and Storefront API access token.
+<Step title="Fill in the fields">
+Click **Connect** / **Add** / **Configure** and enter:
+
+| Field | What to enter |
+|---|---|
+| **Shop Domain** | `your-store.myshopify.com` — the `.myshopify.com` address, not your custom domain |
+| **Client ID** | From the custom app's client credentials |
+| **Client Secret** | The matching secret |
+| **Account Name** | A label for this connection inside UnleashX |
 </Step>
 <Step title="Confirm">
 Save. The status will switch to a **Connected** badge.
 </Step>
 </Steps>
+
+<Note>
+Each connection is one store. To run several stores, add one connection per store — every tool also accepts an optional `shop_domain` to target a specific connected store explicitly.
+</Note>
 
 {/* workflow-usage-section */}
 ### Use Shopify in a Workflow
@@ -117,59 +147,182 @@ The steps are the same for every connector. For the full workflow builder guide,
 
 ## 5. Available tools
 
-| Tool | What it does | Changes data? |
+Names match the **Workflows** Apps panel, which lists them alphabetically; they're grouped here by what they act on. The **Tool ID** is what the agent calls behind the scenes. Every tool also takes an optional `shop_domain` when you have more than one store connected.
+
+**Orders**
+
+| Tool | Tool ID | What it does | Required | Changes data? |
+|---|---|---|---|---|
+| Search Orders | `shopify_search_orders` | Searches orders, newest first | — | No |
+| Get Order | `shopify_get_order` | Gets one order with line items, customer, addresses and fulfillments | `order_id` | No |
+| Refund Order | `shopify_refund_order` | Refunds an order in full or in part | `order_id` | ⚠️ Yes |
+| Send Order Invoice | `shopify_send_order_invoice` | Emails the customer an invoice for an order | `order_id` | ✏️ Yes |
+
+**Fulfillment**
+
+| Tool | Tool ID | What it does | Required | Changes data? |
+|---|---|---|---|---|
+| List Fulfillment Orders | `shopify_list_fulfillment_orders` | Lists what can be shipped for an order, and from where | `order_id` | No |
+| Create Fulfillment | `shopify_create_fulfillment` | Ships a fulfillment order, optionally with tracking | `fulfillment_order_id` | ✏️ Yes |
+| Update Fulfillment Tracking | `shopify_update_fulfillment_tracking` | Updates tracking on an existing fulfillment | `fulfillment_id` | ✏️ Yes |
+
+**Products and variants**
+
+| Tool | Tool ID | What it does | Required | Changes data? |
+|---|---|---|---|---|
+| Search Products | `shopify_search_products` | Searches products, newest first | — | No |
+| Get Product | `shopify_get_product` | Gets one product with variants and inventory item IDs | `product_id` | No |
+| Create Product | `shopify_create_product` | Creates a product (`status` defaults to `DRAFT`) | `title` | ✏️ Yes |
+| Update Product | `shopify_update_product` | Updates a product; omitted fields are left unchanged | `product_id` | ✏️ Yes |
+| Delete Product | `shopify_delete_product` | Permanently deletes a product and its variants | `product_id` | ⚠️ Yes |
+| Search Product Variants | `shopify_search_product_variants` | Searches variants across the store | — | No |
+| Create Product Variants | `shopify_create_product_variants` | Adds variants to a product (bulk — Shopify has no single-variant create) | `product_id`, `variants` | ✏️ Yes |
+| Update Product Variants | `shopify_update_product_variants` | Updates variant price, SKU, barcode, compare-at price | `product_id`, `variants` | ✏️ Yes |
+
+**Inventory**
+
+| Tool | Tool ID | What it does | Required | Changes data? |
+|---|---|---|---|---|
+| List Locations | `shopify_list_locations` | Lists inventory locations — needed before changing stock | — | No |
+| Get Inventory Levels | `shopify_get_inventory_levels` | Stock for one item across locations: available, on hand, committed | `inventory_item_id` | No |
+| Adjust Inventory | `shopify_adjust_inventory` | Changes stock by a relative amount at one location | `inventory_item_id`, `location_id`, `delta` | ⚠️ Yes |
+| Set Inventory | `shopify_set_inventory` | Sets stock to an exact number at one location | `inventory_item_id`, `location_id`, `quantity` | ⚠️ Yes |
+
+<Tip>
+Use **Adjust Inventory** when something happened (three units damaged: `delta: -3`). Use **Set Inventory** when your own system is the source of truth and you're overwriting Shopify's number.
+</Tip>
+
+**Customers**
+
+| Tool | Tool ID | What it does | Required | Changes data? |
+|---|---|---|---|---|
+| Search Customers | `shopify_search_customers` | Searches customers, newest first | — | No |
+| Get Customer | `shopify_get_customer` | Gets one customer with lifetime spend and 10 most recent orders | `customer_id` | No |
+| Create Customer | `shopify_create_customer` | Creates a customer — give at least an email or a phone | — | ✏️ Yes |
+| Update Customer | `shopify_update_customer` | Updates a customer; omitted fields are left unchanged | `customer_id` | ✏️ Yes |
+
+**Draft orders**
+
+| Tool | Tool ID | What it does | Required | Changes data? |
+|---|---|---|---|---|
+| List Draft Orders | `shopify_list_draft_orders` | Lists draft orders, most recently updated first | — | No |
+| Create Draft Order | `shopify_create_draft_order` | Creates a draft order and returns an invoice URL for the buyer | `line_items` | ✏️ Yes |
+| Complete Draft Order | `shopify_complete_draft_order` | Turns a draft into a real order — this is how an order is created via the API | `draft_order_id` | ⚠️ Yes |
+
+**Collections and content**
+
+| Tool | Tool ID | What it does | Required | Changes data? |
+|---|---|---|---|---|
+| List Collections | `shopify_list_collections` | Lists collections, most recently updated first | — | No |
+| Create Collection | `shopify_create_collection` | Creates a collection — smart with `rules`, manual without | `title` | ✏️ Yes |
+| Add Products To Collection | `shopify_add_products_to_collection` | Adds products to a manual collection | `collection_id`, `product_ids` | ✏️ Yes |
+| List Pages | `shopify_list_pages` | Lists storefront pages | — | No |
+| Create Page | `shopify_create_page` | Creates a storefront page | `title` | ✏️ Yes |
+| Update Page | `shopify_update_page` | Updates a page; omitted fields are left unchanged | `page_id` | ✏️ Yes |
+| Delete Page | `shopify_delete_page` | Permanently deletes a storefront page | `page_id` | ⚠️ Yes |
+| List Blogs | `shopify_list_blogs` | Lists blogs — needed to get a blog ID before creating an article | — | No |
+| List Articles | `shopify_list_articles` | Lists blog articles | — | No |
+| Create Article | `shopify_create_article` | Creates a blog article | `blog_id`, `title` | ✏️ Yes |
+| Update Article | `shopify_update_article` | Updates an article; omitted fields are left unchanged | `article_id` | ✏️ Yes |
+
+**Tags, metafields and store**
+
+| Tool | Tool ID | What it does | Required | Changes data? |
+|---|---|---|---|---|
+| Add Tags | `shopify_add_tags` | Adds tags to an order, customer, product, draft order or article | `resource_id`, `tags` | ✏️ Yes |
+| Remove Tags | `shopify_remove_tags` | Removes tags from the same resource types | `resource_id`, `tags` | ✏️ Yes |
+| Get Metafields | `shopify_get_metafields` | Reads custom metafields on a resource | `resource_id` | No |
+| Set Metafield | `shopify_set_metafield` | Creates or overwrites a metafield (upsert) | `resource_id`, `namespace`, `key`, `value` | ✏️ Yes |
+| Get Shop | `shopify_get_shop` | Store name, primary domain, currency, timezone and plan | — | No |
+
+**Triggers**
+
+| Trigger | Trigger ID | Fires when |
 |---|---|---|
-| Fetch Products by Tag | Search products by tag or title and return matching products with variants. | No |
-| Add Product to Cart | Add a product variant to a cart and return a checkout URL. | ✏️ Yes |
-| Subscribe to Newsletter | Create/subscribe a customer to your newsletter by email. | ✏️ Yes |
+| On New Order | `shopify_on_new_order` | An order is placed |
+| On New Paid Order | `shopify_on_new_paid_order` | An order reaches paid status |
+| On New Cancelled Order | `shopify_on_new_cancelled_order` | An order is cancelled |
+| On New Refund | `shopify_on_new_refund` | An order is refunded |
+| On New Customer | `shopify_on_new_customer` | A customer is created |
+| On New Product | `shopify_on_new_product` | A product is created |
+| On New Draft Order | `shopify_on_new_draft_order` | A draft order is created |
+| On New Page | `shopify_on_new_page` | A storefront page is created |
+
+<Note>
+**Refunds and stock changes are idempotent.** A retried step that sends the identical payload is collapsed by Shopify rather than refunding twice or double-counting stock. When you genuinely mean to repeat an identical operation — refunding the same amount a second time on purpose — pass your own `idempotency_key` to force it through.
+</Note>
 
 ## 6. Example usage
 
-**"Do you have any blue running shoes, and can you start a checkout for one?"**
-Runs **Fetch Products by Tag** to find matching products, then **Add Product to Cart** with the chosen variant to return a checkout link.
+**"Where's order 1042, and refund the shipping — it arrived late."**
+Runs **Get Order** → **Refund Order** with a shipping amount.
 
-**"Sign me up for your newsletter — my email is jane@acme.com."**
-Runs **Subscribe to Newsletter** to add the customer to your marketing list.
+**"Ship order 1042 with DHL tracking 1234567890."**
+Runs **List Fulfillment Orders** → **Create Fulfillment** with the tracking number and company.
+
+**"We found three damaged units of SKU-22 at the Mumbai warehouse."**
+Runs **Search Product Variants** → **List Locations** → **Adjust Inventory** with `delta: -3`.
+
+**"When a paid order comes in over ₹10,000, tag it VIP and tell the team on Slack."**
+A workflow starts on **On New Paid Order**, branches on the total, then runs **Add Tags** and your messaging connector.
+
+**"Build a quote for this wholesale buyer and send them a payment link."**
+Runs **Create Draft Order** and returns the invoice URL; **Complete Draft Order** converts it once they pay.
 
 ## 7. Permissions & data access
 
-**UnleashX can:**
-- Search your product catalog and read variant details.
-- Create a cart and return a checkout URL.
-- Create/subscribe a customer to your newsletter.
+**UnleashX CAN:**
+- Read and search orders, products, variants, customers, collections, pages, articles, inventory and metafields.
+- Refund orders, send invoices, and create fulfillments with tracking.
+- Create, update and delete products and pages; adjust and set stock; manage tags and metafields.
+- Create draft orders and complete them into real orders.
+- Start workflows on eight store events.
 
-**UnleashX cannot:**
-- Edit or delete products, inventory or orders.
-- Process payments or complete checkout on the shopper's behalf.
-- Access store settings, finances or other staff accounts.
+**UnleashX CANNOT:**
+- Do anything the installed app's scopes don't allow — the failure names the missing scope.
+- Take payments or complete checkout on a shopper's behalf.
+- Change store settings, themes, staff accounts or billing.
+- Reach any store other than the one the app is installed on.
 
-**To disconnect:** In UnleashX go to **Data Connectors → Shopify → Disconnect**. To fully revoke, uninstall or delete the custom app in **Shopify admin → Settings → Apps and sales channels → Develop apps**. Revocation is immediate.
+**To disconnect:** In UnleashX go to **Data Connectors → Shopify → Disconnect**. To fully revoke access, uninstall the app from **Shopify admin → Settings → Apps and sales channels**. Revocation is immediate — the short-lived Admin token can no longer be minted.
 
 ## 8. Troubleshooting
 
 | Problem | What it means | How to fix it |
 |---|---|---|
-| `401 Unauthorized` | The access token is wrong or revoked, or the shop domain is incorrect. | Reconnect with the correct shop domain and tokens. |
-| `403 Forbidden` | The app is missing a required Admin/Storefront scope. | Add the scope in the app's API configuration, reinstall, and reconnect. |
-| Cart tool fails | Storefront API token missing or product variant ID invalid. | Provide a valid Storefront token; use **Fetch Products by Tag** to get a real variant ID. |
-| No products returned | The search term doesn't match any tag or title. | Try a broader keyword or the exact product tag. |
-| `429 Too Many Requests` | You hit Shopify's API rate limit. | Wait a moment and retry. |
+| `401` / `403` on every call | The app isn't installed on the store, or the Client ID/Secret is wrong | Confirm the app is installed, then re-enter both values |
+| `403` on one tool only | That tool's scope wasn't granted | Add the scope the error names, reinstall the app, reconnect |
+| `429 Too Many Requests` | Shopify's GraphQL limit bills by query **cost**, not request count | Lower the `limit` on list tools rather than just retrying |
+| An action "succeeds" but nothing changed | Shopify reports write failures at HTTP 200 in `userErrors` | The connector surfaces these as errors — read the message; it names the field |
+| A refund ran twice | Two genuinely different operations hashed to the same idempotency key, or you retried expecting a second refund | Pass an explicit `idempotency_key` when a repeat is intentional |
+| Domain rejected at connect time | The value isn't a `.myshopify.com` address | Use `your-store.myshopify.com`, not your custom domain |
+| Old setup stopped working | This connector no longer accepts a pasted Admin API token | Create a custom app and reconnect with Client ID + Client Secret |
 
 For general connector issues, see [/mcp/integrations](/mcp/integrations).
 
 ## 9. Frequently asked questions
 
 **Is my store data stored by UnleashX?**
-No. Tools call the Shopify Admin and Storefront APIs live and return the result. UnleashX doesn't keep a copy of your catalog or customers.
+No. Tools call the Shopify Admin API live and return the result. UnleashX keeps only the bookkeeping a polling trigger needs to know what it has already seen.
+
+**Why Client ID and Client Secret instead of an access token?**
+Shopify's Admin API token for a custom app is now short-lived. UnleashX mints a fresh one from the two values roughly every 24 hours, so there's nothing for you to rotate manually.
+
+**What happened to the cart and newsletter tools?**
+They used the Storefront API and are gone. Order creation is now **Create Draft Order** → **Complete Draft Order**; customer sign-up is **Create Customer**.
 
 **Can the agent take payments?**
-No. It can build a cart and return a checkout URL, but the shopper completes payment on Shopify's secure checkout.
+No. It can produce a draft order with an invoice URL, and the buyer pays through Shopify's checkout.
 
-**Why do I need two tokens?**
-Product search and newsletter sign-up use the **Admin API**, while cart creation uses the **Storefront API**. Each has its own token.
+**Can I connect more than one store?**
+Yes. Add one connection per store, and use `shop_domain` on a step when you need to be explicit about which one it targets.
+
+**Which API version is this?**
+Admin GraphQL `2026-07`. The REST Admin API isn't used — it's been legacy since October 2024 and unavailable to new custom apps since April 2025.
 
 ## 10. References
 
-- Shopify custom apps guide: https://help.shopify.com/en/manual/apps/app-types/custom-apps
-- Admin API access token reference: https://shopify.dev/docs/api/admin-graphql
-- Storefront API (carts) reference: https://shopify.dev/docs/api/storefront
+- Shopify Admin GraphQL API: [https://shopify.dev/docs/api/admin-graphql](https://shopify.dev/docs/api/admin-graphql)
+- Custom distribution apps: [https://shopify.dev/docs/apps/launch/distribution](https://shopify.dev/docs/apps/launch/distribution)
+- Client credentials grant: [https://shopify.dev/docs/apps/build/authentication-authorization/client-credentials](https://shopify.dev/docs/apps/build/authentication-authorization/client-credentials)
+- Admin API access scopes: [https://shopify.dev/docs/api/usage/access-scopes](https://shopify.dev/docs/api/usage/access-scopes)

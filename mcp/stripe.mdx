@@ -1,0 +1,249 @@
+---
+title: "Stripe"
+icon: "https://cdn.simpleicons.org/stripe"
+description: "Let your UnleashX agent look up Stripe customers, payments, invoices and subscriptions, and issue refunds."
+tags: [mcp, stripe, payments, billing, integration]
+---
+
+# Stripe
+
+> **In one line:** Connect Stripe so your UnleashX agent can answer "did that payment go through?", pull up a customer's invoices and subscriptions, issue a refund, and start a workflow the moment money moves.
+
+| | |
+|---|---|
+| **Category** | Dev Tools & Automation |
+| **Authentication** | Secret API key |
+| **Setup time** | ~2 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Support and finance teams who want payment answers in the conversation instead of in the Stripe Dashboard |
+
+## 1. Overview
+
+Stripe handles payments, invoices, and subscriptions. Everything hangs off the **customer**: charges and payment intents record money taken, invoices and subscriptions record money owed on a schedule, and refunds send money back.
+
+Once connected to UnleashX, your agent can list and search customers, read charges and payment intents, create a payment intent, pull up invoices and subscriptions, cancel a subscription, issue full or partial refunds, read your product catalog and prices, and check the account balance.
+
+Four polling triggers let a workflow start on its own — a new customer, a new charge, a new invoice, or a new subscription.
+
+Connecting Stripe to UnleashX puts billing answers where the conversation already is: a customer asks why they were charged, the agent finds the charge and refunds it if that's the call, and finance sees it happen without anyone opening the Dashboard.
+
+## 2. What you'll need
+
+- A **Stripe account** with access to the Dashboard.
+- A **secret API key** (`sk_live_…` or `sk_test_…`) — or, better, a **restricted key** scoped to what the agent actually needs.
+- An UnleashX agent where you'll add the connector.
+
+<Warning>
+A live secret key can move real money. Read Section 3's note on restricted keys before you paste a full-access `sk_live_` key into anything.
+</Warning>
+
+## 3. Get your credentials
+
+Stripe authenticates with a **secret key** sent as a bearer token. There's no OAuth flow — Stripe Connect exists, but it's for platforms billing on behalf of other businesses, which isn't what this connector does.
+
+<Steps>
+<Step title="Sign in to the Stripe Dashboard">
+Go to [dashboard.stripe.com](https://dashboard.stripe.com/) and sign in.
+</Step>
+<Step title="Decide test or live">
+Use the **test mode** toggle while you're setting the workflow up. A `sk_test_…` key behaves identically but touches no real money — switch to `sk_live_…` once the workflow does what you expect.
+</Step>
+<Step title="Open API keys">
+Go to **Developers → API keys**. Your publishable and secret keys are listed here.
+</Step>
+<Step title="Create a restricted key (recommended)">
+Click **Create restricted key**, name it "UnleashX", and grant only the permissions in the table below. A restricted key can't be escalated later, which is the point.
+</Step>
+<Step title="Copy the key">
+<Warning>
+The secret value is shown once, at creation. Copy it now and store it in your secret manager. If you lose it, roll the key and use the new one.
+</Warning>
+</Step>
+</Steps>
+
+### Permissions this key needs
+
+| Resource | Permission | Why UnleashX needs it |
+|---|---|---|
+| Customers | Read + Write | List, search, create, and update customers. |
+| Charges | Read | Read completed card payments. |
+| PaymentIntents | Read + Write | Read payments and create a new payment intent. |
+| Invoices | Read | List and read invoices. |
+| Subscriptions | Read + Write | Read subscriptions and cancel one. |
+| Products / Prices | Read | Read the catalog behind your billing. |
+| Refunds | Read + Write | List refunds and issue new ones. |
+| Balance | Read | Report available and pending funds. |
+
+<Tip>
+If the agent only answers questions, grant **Read** everywhere and leave every Write off. The write permissions are needed only for **Create Customer**, **Update Customer**, **Create Payment Intent**, **Cancel Subscription**, and **Create Refund**.
+</Tip>
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Sign in at [https://www.tryunleashx.com](https://www.tryunleashx.com) and open the agent you want to connect.
+</Step>
+<Step title="Open Data Connectors">
+In the agent, go to **Data Connectors** and find **Stripe**.
+</Step>
+<Step title="Add your key">
+Click **Connect** / **Add** / **Configure**, paste the **secret key**, and give the connection an **Account Name** — useful if you connect a test account and a live one.
+</Step>
+<Step title="Confirm">
+Save. The status will switch to a **Connected** badge.
+</Step>
+</Steps>
+
+{/* workflow-usage-section */}
+### Use Stripe in a Workflow
+
+Once connected, you can add **Stripe** to any automation from the **Workflows** builder. Its triggers and tools appear in the Apps panel, marked with an **MCP** badge.
+
+<Steps>
+<Step title="Add a trigger node">
+Open **Workflows → New Workflow**. On the canvas, click **+ Add Trigger**. In the **Paths** panel, open the **Apps** tab and select **Stripe** — its **Triggers** are listed underneath. Use the search box if you have many connectors.
+</Step>
+<Step title="Add an action node">
+Click the **+** below any node to add a step, then pick **Stripe** again — this time the panel lists its **Actions**.
+</Step>
+<Step title="Configure the step">
+Fill in the fields for the trigger or action you picked. Required fields are marked with a red asterisk (*).
+</Step>
+<Step title="Add or select your account">
+Under **Selected account**, choose an already-connected account, or click **Add Account** to connect one now.
+</Step>
+<Step title="Save and test">
+Click **Save**. Use **Test** to verify the step, then toggle **Publish** when the workflow is ready.
+</Step>
+</Steps>
+
+<Note>
+The steps are the same for every connector. For the full workflow builder guide, see [Using MCP in Workflows](/mcp/workflows).
+</Note>
+
+## 5. Available tools
+
+<Warning>
+**Amounts are in the currency's smallest unit.** `1000` with currency `usd` means **$10.00**, not $1,000. Same for refunds. Getting this wrong is the single most expensive mistake available here.
+</Warning>
+
+Names match the **Workflows** Apps panel, which lists them alphabetically; they're grouped here by what they act on. The **Tool ID** is what the agent calls behind the scenes.
+
+**Customers**
+
+| Tool | Tool ID | What it does | Required | Changes data? |
+|---|---|---|---|---|
+| List Customers | `stripe_list_customers` | Lists customers, newest first; filterable by `email` | — | No |
+| Get Customer | `stripe_get_customer` | Gets a single customer | `customer_id` | No |
+| Create Customer | `stripe_create_customer` | Creates a customer | — | ✏️ Yes |
+| Update Customer | `stripe_update_customer` | Updates a customer; omitted fields are left unchanged | `customer_id` | ✏️ Yes |
+
+**Payments**
+
+| Tool | Tool ID | What it does | Required | Changes data? |
+|---|---|---|---|---|
+| List Charges | `stripe_list_charges` | Lists completed card payments, newest first | — | No |
+| Get Charge | `stripe_get_charge` | Gets a single charge | `charge_id` | No |
+| List Payment Intents | `stripe_list_payment_intents` | Lists payment intents, newest first | — | No |
+| Get Payment Intent | `stripe_get_payment_intent` | Gets a single payment intent | `payment_intent_id` | No |
+| Create Payment Intent | `stripe_create_payment_intent` | Creates a payment intent | `amount`, `currency` | ✏️ Yes |
+
+**Billing**
+
+| Tool | Tool ID | What it does | Required | Changes data? |
+|---|---|---|---|---|
+| List Invoices | `stripe_list_invoices` | Lists invoices, newest first; filterable by customer and `status` | — | No |
+| Get Invoice | `stripe_get_invoice` | Gets a single invoice | `invoice_id` | No |
+| List Subscriptions | `stripe_list_subscriptions` | Lists subscriptions, newest first | — | No |
+| Get Subscription | `stripe_get_subscription` | Gets a single subscription | `subscription_id` | No |
+| Cancel Subscription | `stripe_cancel_subscription` | Cancels immediately, or at period end with `at_period_end` | `subscription_id` | ⚠️ Yes |
+
+**Catalog**
+
+| Tool | Tool ID | What it does | Required | Changes data? |
+|---|---|---|---|---|
+| List Products | `stripe_list_products` | Lists products, newest first | — | No |
+| Get Product | `stripe_get_product` | Gets a single product | `product_id` | No |
+| List Prices | `stripe_list_prices` | Lists prices, optionally for one product | — | No |
+
+**Refunds and balance**
+
+| Tool | Tool ID | What it does | Required | Changes data? |
+|---|---|---|---|---|
+| Create Refund | `stripe_create_refund` | Refunds a charge or payment intent; omit `amount` for a full refund | `charge_id` **or** `payment_intent_id` | ⚠️ Yes |
+| List Refunds | `stripe_list_refunds` | Lists refunds, newest first | — | No |
+| Get Balance | `stripe_get_balance` | Returns funds available now and funds still pending | — | No |
+
+**Triggers**
+
+| Trigger | Trigger ID | Fires when |
+|---|---|---|
+| On New Customer | `stripe_on_new_customer` | A customer is created |
+| On New Charge | `stripe_on_new_charge` | A charge is created |
+| On New Invoice | `stripe_on_new_invoice` | An invoice is created |
+| On New Subscription | `stripe_on_new_subscription` | A subscription is created |
+
+## 6. Example usage
+
+**"Did jane@acme.com pay last month's invoice?"**
+Runs **List Customers** filtered by email → **List Invoices** for that customer.
+
+**"Refund order #1042 — the customer never received it."**
+Runs **List Charges** or **Get Payment Intent** to find the payment, then **Create Refund** for the full amount.
+
+**"Cancel their subscription at the end of the billing period, not today."**
+Runs **List Subscriptions** → **Cancel Subscription** with `at_period_end` set.
+
+**"When a new charge comes in, post it to the #revenue Slack channel."**
+A workflow starts on the **On New Charge** trigger and chains into your messaging connector.
+
+## 7. Permissions & data access
+
+**UnleashX CAN:**
+- Read customers, charges, payment intents, invoices, subscriptions, products, prices, refunds, and the balance.
+- Create and update customers, create payment intents, cancel subscriptions, and issue refunds — if the key grants those writes.
+- Start workflows on new customers, charges, invoices, and subscriptions.
+
+**UnleashX CANNOT:**
+- Do anything the key's permissions don't allow — a read-only restricted key can't refund.
+- Move money to a different destination, change payout settings, or alter your Stripe account configuration.
+- See card numbers. Stripe never returns them.
+
+**To disconnect:** In UnleashX, open your agent → **Data Connectors** → **Stripe** → **Disconnect**. To fully revoke access, roll or delete the key in **Developers → API keys**. Either action stops access immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| `401 Unauthorized` | The key is wrong, was rolled, or was deleted | Copy the current key from **Developers → API keys** and reconnect |
+| `403` / "not permitted" on a write | A restricted key is missing that resource's Write permission | Create a new restricted key with the permission — existing keys can't be widened |
+| The refund is 100× too small or too large | The amount was sent in the wrong unit | Amounts are in the smallest unit: `1000` = $10.00 |
+| Nothing found, but it's visible in the Dashboard | The key is in the other mode | A `sk_test_` key sees only test data, `sk_live_` only live data |
+| `resource_missing` | The ID belongs to the other mode, or to a different account | Re-fetch the ID with the same connected key |
+| A trigger fires for old records on first run | The first poll has no previous snapshot to compare against | Expected — later polls only report what's genuinely new |
+
+For general connector issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Is my payment data stored by UnleashX?**
+No. Tools call the Stripe API live with your key and return the result. UnleashX keeps only the bookkeeping a polling trigger needs to know what it has already seen.
+
+**Can the agent charge a customer's card?**
+It can create a payment intent, which is the object a payment is completed against. It can't complete a payment without the customer's authorisation.
+
+**Can I connect test and live at the same time?**
+Yes. Add each key as its own connection and tell them apart by **Account Name**.
+
+**Does it work with Stripe Connect?**
+No. This connector authenticates as your own account. Connect is for platforms billing on behalf of others.
+
+**How do I rotate the key?**
+Create the replacement in **Developers → API keys**, update it in UnleashX, then roll the old one.
+
+## 10. References
+
+- Stripe API reference: [https://docs.stripe.com/api](https://docs.stripe.com/api)
+- API keys and restricted keys: [https://docs.stripe.com/keys](https://docs.stripe.com/keys)
+- Amounts and zero-decimal currencies: [https://docs.stripe.com/currencies#zero-decimal](https://docs.stripe.com/currencies#zero-decimal)
