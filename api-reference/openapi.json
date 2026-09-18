@@ -3844,6 +3844,96 @@
         }
       }
     },
+    "/create-workspace": {
+      "post": {
+        "summary": "Create workspace (API token)",
+        "description": "Create a workspace under the API token's company. Delegates to the same internal logic as /api/company/create-workspace, so the two entry points can never drift.",
+        "tags": [
+          "Workspaces"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "workspace_name": {
+                    "type": "string",
+                    "description": "Name for the new workspace. Must be unique within the token's company."
+                  }
+                },
+                "required": [
+                  "workspace_name"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Workspace created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "WORKSPACE_CREATED_SUCCESSFULLY"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "WORKSPACE_ID": {
+                          "type": "integer"
+                        },
+                        "WORKSPACE_NAME": {
+                          "type": "string"
+                        },
+                        "COMPANY_ID": {
+                          "type": "integer"
+                        },
+                        "OWNER_ID": {
+                          "type": "integer"
+                        },
+                        "CONCURRENCY": {
+                          "type": "integer"
+                        },
+                        "WORKSPACE_STATUS": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "WORKSPACE_NAME_ALREADY_EXISTS — an active workspace with this name already exists for the company"
+          }
+        }
+      }
+    },
     "/user": {
       "post": {
         "summary": "Create user",
