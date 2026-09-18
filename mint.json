@@ -38,7 +38,8 @@
     {
       "group": "Workspaces",
       "pages": [
-        "api-reference/workspaces/workspace-list"
+        "api-reference/workspaces/workspace-list",
+        "api-reference/workspaces/create-workspace"
       ]
     },
     {
