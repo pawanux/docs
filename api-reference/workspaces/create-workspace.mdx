@@ -1,0 +1,86 @@
+---
+title: Create Workspace (API Token)
+openapi: "api-reference/openapi.json POST /create-workspace"
+---
+
+Create a new workspace under your API token's company. This delegates to the
+same internal controller used by the company-side `/api/company/create-workspace`
+endpoint, so both entry points always stay in sync.
+
+## API Endpoint
+
+**POST** `/api/v1/global/create-workspace`
+
+**Base URL:** `https://www.tryunleashx.com`
+
+**Authentication:** Required (Token header: `token` or `api_access_token`)
+
+## Request Body
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `workspace_name` | string | Yes | Name for the new workspace. Must be unique among active workspaces in the token's company. |
+
+## Success Response
+
+**Status Code:** `200 OK`
+
+```json
+{
+  "error": false,
+  "code": 200,
+  "message": "",
+  "timestamp": 1769243432947,
+  "data": {
+    "message": "WORKSPACE_CREATED_SUCCESSFULLY",
+    "data": {
+      "WORKSPACE_ID": 301,
+      "WORKSPACE_NAME": "Growth Team",
+      "COMPANY_ID": 42,
+      "OWNER_ID": 7,
+      "CONCURRENCY": 5,
+      "WORKSPACE_STATUS": 1
+    }
+  }
+}
+```
+
+## Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `WORKSPACE_ID` | integer | Unique identifier of the newly created workspace |
+| `WORKSPACE_NAME` | string | Name of the workspace |
+| `COMPANY_ID` | integer | Company the workspace belongs to |
+| `OWNER_ID` | integer | User who created the workspace |
+| `CONCURRENCY` | integer | Default concurrent-call limit for the workspace |
+| `WORKSPACE_STATUS` | integer | `1` = active |
+
+## Access Control
+
+The token resolves to a user and a company; the workspace is always created
+under that company. Creating a workspace also seeds its default settings, adds
+the creator (and the company owner, if different) as a workspace admin, seeds
+the creator's domain whitelist entry, and triggers the same `workspace_created`
+notification email as the company-side endpoint.
+
+## Errors
+
+| Status | Message | Cause |
+|--------|---------|-------|
+| `422` | `WORKSPACE_NAME_ALREADY_EXISTS` | An active workspace with this name already exists for the company |
+
+## Example cURL
+
+```bash
+curl -X POST "https://www.tryunleashx.com/api/v1/global/create-workspace" \
+  -H "token: <api_key>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "workspace_name": "Growth Team"
+  }'
+```
+
+## Related Operations
+
+- [List Workspaces](/api-reference/workspaces/workspace-list) — fetch the newly created `workspace_id`
