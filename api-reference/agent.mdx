@@ -1,46 +1,28 @@
 ---
-title: Agent APIs
+title: Overview
+description: Create and manage agents across Voice, Chat, Telephony, and General types
 ---
 
-Manage agents in UnleashX.
+The Agent API is the general-purpose way to create and manage agents in UnleashX. Unlike [Create Voice Agent](/api-reference/voice-ai/create-voice-agent), which only creates voice agents, this API supports all agent types through a single endpoint:
 
-## List agents
+- **Voice** (`agent_type: 1`)
+- **Chat** (`agent_type: 2`)
+- **Telephony** (`agent_type: 3`)
+- **General** (`agent_type: 4`)
 
-```
-GET https://www.tryunleashx.com/v2/agent/all
-Headers:
-  Authorization: Bearer <api_key>
-```
+Use it to configure an agent's basic details, prompt, voice/transcriber settings, knowledge base, calling numbers, denied words, dispositions, guardrails, and metadata — all in a single `multipart/form-data` request.
 
-### Try it (curl)
-
-```bash
-curl -X GET 'https://www.tryunleashx.com/v2/agent/all' \
-  -H 'Authorization: Bearer <api_key>'
-```
-
-## Create agent
-
-```
-POST https://www.tryunleashx.com/v2/agent
-Headers:
-  Authorization: Bearer <api_key>
-  Content-Type: application/json
-Body:
-  {
-    "name": "Sales Assistant",
-    "language": "en"
-  }
-```
-
-### Try it (curl)
-
-```bash
-curl -X POST 'https://www.tryunleashx.com/v2/agent' \
-  -H 'Authorization: Bearer <api_key>' \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "name": "Sales Assistant",
-    "language": "en"
-  }'
-``` 
+<CardGroup cols={2}>
+  <Card title="Create Agent" href="/api-reference/agents/create-agent" icon="plus">
+    Create a new agent of any type.
+  </Card>
+  <Card title="Update Agent" href="/api-reference/agents/update-agent" icon="pen">
+    Partially update an existing agent's settings.
+  </Card>
+  <Card title="Delete Agent" href="/api-reference/agents/delete-agent" icon="trash">
+    Soft-delete an agent.
+  </Card>
+  <Card title="Agent Activity Logs" href="/api-reference/agents/agent-activity-logs" icon="chart-line">
+    Evaluate agent call activity.
+  </Card>
+</CardGroup>

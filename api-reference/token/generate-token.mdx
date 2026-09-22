@@ -1,171 +1,28 @@
 ---
 title: Generate API Token
-openapi: "api-reference/openapi.json POST /generate-token"
+description: API tokens are generated from the UnleashX portal, not via an API call
 ---
 
-Generate a new API access token using your login token. API tokens are long-lived access tokens (no expiry) that can be used to authenticate API requests. These tokens are generated from your login session token and are tied to your user account, company, and workspace.
+There is no API endpoint to generate an API token — it's done from the **UnleashX portal**.
 
-## API Endpoint
+### UnleashX Portal
 
-**Endpoint:** `POST /api/v1/global/generate-token`
+1. Sign in to the UnleashX portal at [`https://www.tryunleashx.com/login`](https://www.tryunleashx.com/login).
+2. Open **Profile & Settings** → **API Key** (or **API Key** under your profile).
+3. Click **Generate API Token** (or **Create API Key**). Copy the generated token value.
+4. Store the token securely. Treat it like a password — do not share or check it into source control.
 
-**Content-Type:** `application/json`
+Notes:
+- Tokens generated in the portal are persistent and do not expire by default (rotate them if compromised).
+- Use the `token` header when calling APIs (some endpoints also accept `api_access_token`).
 
-**Authentication:** Required (Login token in `token` header)
-
-## Authentication
-
-This endpoint requires a **login token** to authenticate your requests.
-
-### Obtaining Your Login Token
-
-You will receive a login token when you:
-- **Log in** to your account
-- **Create a new account**
-
-After logging in or creating your account, the login token is available in the **request header** of any API call you make. When you make authenticated API requests, the login token is sent in the request header as:
-
-```
-token: <your_login_token>
-```
-
-This token is your session token that identifies your authenticated session and is automatically included in request headers for authenticated API calls.
-
-**Important:** The token must be provided in the `token` request header. Request body or query parameters are not supported.
-
-## Request Headers
-
-```
-Content-Type: application/json
-token: <your_login_token>
-```
-
-**Required:** The `token` header must contain your login token.
-
-## Request Body
-
-No request body is required. You can send an empty body:
-
-```json
-{}
-```
-
-## cURL Example
-
-```bash
-curl -X POST https://www.tryunleashx.com/api/v1/global/generate-token \
-  -H "Content-Type: application/json" \
-  -H "token: your_login_token_here" \
-  -d '{}'
-```
-
-## Response
-
-### Success Response
-
-**Status Code:** `200 OK`
+Successful response (example):
 
 ```json
 {
   "message": "API token generated successfully",
-  "token": "359b83f43a5f5702cfbdedad269bd4f1d726fc576c48cdc65b594ce57896f0f9"
+  "token": "your_api_token_here"
 }
 ```
 
-### Error Responses
-
-#### Missing Login Token
-
-**Status Code:** `400 Bad Request`
-
-```json
-{
-  "error": true,
-  "message": "LOGIN_TOKEN_REQUIRED"
-}
-```
-
-#### Invalid or Expired Login Token
-
-**Status Code:** `401 Unauthorized`
-
-```json
-{
-  "error": true,
-  "message": "INVALID_LOGIN_TOKEN"
-}
-```
-
-or
-
-```json
-{
-  "error": true,
-  "message": "SESSIONEXPIRED"
-}
-```
-
-## Error Codes
-
-| Status Code | Error Code | Description |
-|------------|------------|-------------|
-| 200 | - | Success |
-| 400 | LOGIN_TOKEN_REQUIRED | Login token is missing in request header |
-| 401 | INVALID_LOGIN_TOKEN | Invalid or expired login token |
-| 401 | SESSIONEXPIRED | Login session has expired |
-
-## Important Notes
-
-- Each call generates a **new** API token
-- API tokens **never expire** (no expiry date)
-- The token is tied to your user account, company, and workspace
-- Store the returned token securely as it cannot be retrieved later (you can generate a new one)
-- The token must be provided in the `token` request header, not in the request body or query parameters
-
-## Workflow Example
-
-### Step 1: Login or Create Account to Get Login Token
-
-```bash
-# Login endpoint (example)
-curl -X POST https://www.tryunleashx.com/api/login \
-  -H "Content-Type: application/json" \
-  -d '{
-    "username": "user@example.com",
-    "otp: "otp received on your mail"
-  }'
-
-# Response includes login token in response body
-{
-  "auth": {...},
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "message": "LOGGEDIN"
-}
-```
-**Note:** To generate the OTP, invoke the login API using only the username. After receiving the OTP, invoke the login API again with both the username and the OTP
-
-**Note:** After logging in or creating your account, when you make any authenticated API call, the login token will be available in the **request header** (`token`) of that API call. You can extract it from the request header to use with this token generation endpoint.
-
-### Step 2: Generate API Token
-
-```bash
-curl -X POST https://www.tryunleashx.com/api/v1/global/generate-token \
-  -H "Content-Type: application/json" \
-  -H "token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
-  -d '{}'
-
-# Response
-{
-  "message": "API token generated successfully",
-  "token": "359b83f43a5f5702cfbdedad269bd4f1d726fc576c48cdc65b594ce57896f0f9"
-}
-```
-
-### Step 3: Use API Token for Authenticated Requests
-
-```bash
-curl -X POST https://www.tryunleashx.com/api/v1/global/verify \
-  -H "Content-Type: application/json" \
-  -H "token: 359b83f43a5f5702cfbdedad269bd4f1d726fc576c48cdc65b594ce57896f0f9" \
-  -d '{}'
-```
+Use that returned value as your API token (`token` header) for subsequent API calls. See [Authentication](/api-reference/authentication) for details.
