@@ -19,39 +19,207 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Documentation",
-        "pages": [
+        "tab": "API Reference",
+        "groups": [
           {
-            "group": "Getting started",
+            "group": "Overview",
             "pages": [
-              "index",
-              "quickstart",
-              "development"
+              "api-reference/introduction"
             ]
           },
           {
-            "group": "Pricing",
+            "group": "Auth & User",
             "pages": [
-              "pricing/call-pricing",
-              "pricing/concurrency-tiers"
+              "api-reference/authentication",
+              {
+                "group": "Users",
+                "pages": [
+                  "api-reference/users/onboard-user",
+                  "api-reference/users/get-token-by-customerid"
+                ]
+              },
+              {
+                "group": "Workspaces",
+                "pages": [
+                  "api-reference/workspaces/workspace-list",
+                  "api-reference/workspaces/create-workspace"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Voice AI",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "api-reference/voice-ai"
             ]
           },
           {
-            "group": "Enterprise",
+            "group": "Voice",
             "pages": [
-              "enterprise/enterprise-plan"
+              "api-reference/voice-ai/create-voice-agent",
+              "api-reference/voice-ai/update-voice-agent",
+              "api-reference/voice-ai/delete-voice-agent",
+              "api-reference/voice-ai/list-voice-agents",
+              "api-reference/voice-ai/get-agent-by-id",
+              "api-reference/voice-ai/attach-phone-number",
+              "api-reference/voice-ai/make-call",
+              "api-reference/voice-ai/list-voices",
+              {
+                "group": "Phone Numbers",
+                "pages": [
+                  "api-reference/phone-numbers/list-phone-numbers"
+                ]
+              },
+              {
+                "group": "Call Logs",
+                "pages": [
+                  "api-reference/call-logs",
+                  "api-reference/call-logs/call-summary",
+                  "api-reference/call-logs/call-cost"
+                ]
+              }
             ]
           },
           {
-            "group": "Multilingual Voice agents",
+            "group": "Campaigns",
             "pages": [
-              "multilingual-voice-agents/supported-languages",
-              "multilingual-voice-agents/prompts-for-non-english"
+              "api-reference/campaigns",
+              "api-reference/campaigns/create-campaign",
+              "api-reference/campaigns/update-campaign",
+              "api-reference/campaigns/campaign-force-completed",
+              "api-reference/campaigns/campaign-list",
+              "api-reference/campaigns/campaign-summary-list",
+              "api-reference/campaigns/campaign-consumption",
+              "api-reference/campaigns/campaign-details",
+              "api-reference/campaigns/audience-list",
+              "api-reference/campaigns/audience-format",
+              "api-reference/campaigns/update-knowledgebase-status",
+              "api-reference/campaigns/campaign-audience-stats",
+              "api-reference/campaigns/delete-audience",
+              "api-reference/campaigns/export-campaign-data",
+              "api-reference/campaigns/export-campaign-audience-data",
+              "api-reference/campaigns/attach-campaign-sources",
+              "api-reference/campaigns/campaign-connected-contacts"
             ]
           },
-          "voice-agent-function-calls/introduction",
           {
-            "group": "MCP Servers",
+            "group": "Audience",
+            "pages": [
+              "api-reference/audience",
+              "api-reference/audience/create-audience",
+              "api-reference/audience/update-audience",
+              "api-reference/audience/list-audiences",
+              "api-reference/audience/audience-summary-list",
+              "api-reference/audience/audience-details",
+              "api-reference/audience/list-audience-contacts",
+              "api-reference/audience/export-audience-contacts",
+              "api-reference/audience/delete-audience-contacts",
+              "api-reference/audience/download-audience-template",
+              {
+                "group": "Segment",
+                "pages": [
+                  "api-reference/segment",
+                  "api-reference/segment/create-segment",
+                  "api-reference/segment/preview-segment",
+                  "api-reference/segment/list-segments",
+                  "api-reference/segment/segment-summary-list",
+                  "api-reference/segment/segment-details",
+                  "api-reference/segment/update-segment",
+                  "api-reference/segment/list-segment-contacts",
+                  "api-reference/segment/export-segment-contacts"
+                ]
+              },
+              {
+                "group": "Input Variables",
+                "pages": [
+                  "api-reference/input-variables",
+                  "api-reference/input-variables/create-input-variable",
+                  "api-reference/input-variables/list-input-variables",
+                  "api-reference/input-variables/update-input-variable"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Click to Call",
+            "pages": [
+              "api-reference/click-to-dial/trigger-call",
+              "api-reference/click-to-dial/call-history",
+              "api-reference/click-to-dial/live-status"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Evaluation",
+        "groups": [
+          {
+            "group": "Evaluation",
+            "pages": [
+              "api-reference/evaluation"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Workflows",
+        "groups": [
+          {
+            "group": "Workflows",
+            "pages": [
+              "api-reference/workflows"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Chatbots",
+        "groups": [
+          {
+            "group": "Chatbots",
+            "pages": [
+              "api-reference/chatbots"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Apps & Data",
+        "groups": [
+          {
+            "group": "Forms",
+            "pages": [
+              "api-reference/forms"
+            ]
+          },
+          {
+            "group": "Apps",
+            "pages": [
+              "api-reference/apps"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Integrations",
+        "groups": [
+          {
+            "group": "Providers",
+            "pages": [
+              "integrations/introduction",
+              "integrations/large-language-models",
+              "integrations/synthesizers-voices",
+              "integrations/transcribers",
+              "features/connect-providers"
+            ]
+          },
+          {
+            "group": "Integrations",
             "pages": [
               "mcp/introduction",
               "mcp/integrations",
@@ -190,163 +358,6 @@
                 ]
               }
             ]
-          },
-          {
-            "group": "Features",
-            "pages": [
-              "features/connect-providers"
-            ]
-          },
-          {
-            "group": "Phone calls using UnleashX",
-            "pages": [
-              "phone-calls/supported-telephony",
-              "phone-calls/purchase-phone-numbers",
-              "phone-calls/making-outgoing-calls",
-              "phone-calls/receive-incoming-calls",
-              "phone-calls/batch-calling",
-              "phone-calls/hangup-termination",
-              "phone-calls/list-of-call-status",
-              "phone-calls/list-of-hangup-call-status"
-            ]
-          },
-          {
-            "group": "Resources",
-            "pages": [
-              "resources/faqs"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "API reference",
-        "groups": [
-          {
-            "group": "API Documentation",
-            "pages": [
-              "api-reference/introduction",
-              "api-reference/authentication"
-            ]
-          },
-          {
-            "group": "Phone Numbers",
-            "pages": [
-              "api-reference/phone-numbers/list-phone-numbers"
-            ]
-          },
-          {
-            "group": "Voice AI",
-            "pages": [
-              "api-reference/voice-ai/create-voice-agent",
-              "api-reference/voice-ai/update-voice-agent",
-              "api-reference/voice-ai/delete-voice-agent",
-              "api-reference/voice-ai/list-voice-agents",
-              "api-reference/voice-ai/get-agent-by-id",
-              "api-reference/voice-ai/list-voices",
-              "api-reference/voice-ai/make-call",
-              "api-reference/voice-ai/attach-phone-number"
-            ]
-          },
-          {
-            "group": "Click to Call",
-            "pages": [
-              "api-reference/click-to-dial/trigger-call",
-              "api-reference/click-to-dial/call-history",
-              "api-reference/click-to-dial/live-status"
-            ]
-          },
-          {
-            "group": "Call Logs",
-            "pages": [
-              "api-reference/call-logs",
-              "api-reference/call-logs/call-summary",
-              "api-reference/call-logs/call-cost"
-            ]
-          },
-          {
-            "group": "Campaigns",
-            "pages": [
-              "api-reference/campaigns",
-              "api-reference/campaigns/create-campaign",
-              "api-reference/campaigns/update-campaign",
-              "api-reference/campaigns/campaign-force-completed",
-              "api-reference/campaigns/campaign-list",
-              "api-reference/campaigns/campaign-summary-list",
-              "api-reference/campaigns/campaign-consumption",
-              "api-reference/campaigns/campaign-details",
-              "api-reference/campaigns/audience-list",
-              "api-reference/campaigns/audience-format",
-              "api-reference/campaigns/update-knowledgebase-status",
-              "api-reference/campaigns/campaign-audience-stats",
-              "api-reference/campaigns/delete-audience",
-              "api-reference/campaigns/export-campaign-data",
-              "api-reference/campaigns/export-campaign-audience-data",
-              "api-reference/campaigns/attach-campaign-sources",
-              "api-reference/campaigns/campaign-connected-contacts"
-            ]
-          },
-          {
-            "group": "Audience",
-            "pages": [
-              "api-reference/audience",
-              "api-reference/audience/create-audience",
-              "api-reference/audience/update-audience",
-              "api-reference/audience/list-audiences",
-              "api-reference/audience/audience-summary-list",
-              "api-reference/audience/audience-details",
-              "api-reference/audience/list-audience-contacts",
-              "api-reference/audience/export-audience-contacts",
-              "api-reference/audience/delete-audience-contacts",
-              "api-reference/audience/download-audience-template"
-            ]
-          },
-          {
-            "group": "Segment",
-            "pages": [
-              "api-reference/segment",
-              "api-reference/segment/create-segment",
-              "api-reference/segment/preview-segment",
-              "api-reference/segment/list-segments",
-              "api-reference/segment/segment-summary-list",
-              "api-reference/segment/segment-details",
-              "api-reference/segment/update-segment",
-              "api-reference/segment/list-segment-contacts",
-              "api-reference/segment/export-segment-contacts"
-            ]
-          },
-          {
-            "group": "Input Variables",
-            "pages": [
-              "api-reference/input-variables",
-              "api-reference/input-variables/create-input-variable",
-              "api-reference/input-variables/list-input-variables",
-              "api-reference/input-variables/update-input-variable"
-            ]
-          },
-          {
-            "group": "Workspaces",
-            "pages": [
-              "api-reference/workspaces/workspace-list",
-              "api-reference/workspaces/create-workspace"
-            ]
-          },
-          {
-            "group": "Users",
-            "pages": [
-              "api-reference/users/onboard-user",
-              "api-reference/users/get-token-by-customerid"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "Changelog",
-        "groups": [
-          {
-            "group": "Changelog",
-            "pages": [
-              "changelog/releases"
-            ]
           }
         ]
       },
@@ -365,6 +376,17 @@
               "faqs/agent-evaluation",
               "faqs/billing",
               "faqs/api"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Changelog",
+        "groups": [
+          {
+            "group": "Changelog",
+            "pages": [
+              "changelog/releases"
             ]
           }
         ]
