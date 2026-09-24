@@ -107,17 +107,22 @@
                 "pages": [
                   "mcp/hubspot",
                   "mcp/zoho-crm",
-                  "mcp/zoho-desk",
                   "mcp/zoho-books",
                   "mcp/pipedrive",
                   "mcp/intercom",
                   "mcp/activecampaign",
-                  "mcp/freshdesk",
                   "mcp/brevo",
                   "mcp/sendgrid",
                   "mcp/shopify",
                   "mcp/woocommerce",
                   "mcp/mailchimp"
+                ]
+              },
+              {
+                "group": "Customer Support",
+                "pages": [
+                  "mcp/freshdesk",
+                  "mcp/zoho-desk"
                 ]
               },
               {
