@@ -104,6 +104,22 @@ For every integration below, use this pattern:
 **Direct tool names:** Send Email, Create List, Add Contact, List Campaigns, List Contacts.  
 **Authentication:** SendGrid API key + sender context, via headers/session.  
 
+### Close CRM
+**Direct tool names:** List Leads, Create Lead, Create Contact, Create Opportunity, Create Task, Create Note.  
+**Authentication:** Close API key as Basic username (empty password); session fallback (`closecrm`).  
+
+### Dropbox
+**Direct tool names:** List Folder, Search, Upload, Create Shared Link, List Revisions, Get Current Account.  
+**Authentication:** OAuth2 bearer, minted and refreshed per connection; session fallback (`dropbox`).  
+
+### Flodesk
+**Direct tool names:** List Subscribers, Upsert Subscriber, Add Subscriber To Segments, Create Segment, Add Subscriber To Workflow.  
+**Authentication:** Flodesk API key as Basic username (empty password); paid plans only; session fallback (`flodesk`).  
+
+### GREEN-API WhatsApp
+**Direct tool names:** Send Message, Send File By URL, Check Whatsapp, Get Chat History, Create Group, Get State Instance.  
+**Authentication:** instance id + instance API token + per-instance API host, carried in the request path.  
+
 ### Shopify
 **Direct tool names:** Search Orders, Refund Order, Create Fulfillment, Search Products, Adjust Inventory, Create Draft Order.  
 **Authentication:** Custom app Client ID + Client Secret with shop domain; token minted per connection.  
@@ -285,6 +301,34 @@ For every integration below, use this pattern:
     **Authentication:** API key via header/payload (`sendgrid_api_key`, `api_key`, bearer) + sender context for send flows; session fallback (`sendgrid`).
 
     **Links:** [MCP doc](/mcp/sendgrid) · [SendGrid API](https://www.twilio.com/docs/sendgrid/api-reference)
+  </Accordion>
+  <Accordion title="Close CRM">
+    **Main operations:** leads, contacts, opportunities, tasks, note/call/email activities, org config (users, pipelines, statuses, custom fields) and the change feed; triggers on new lead, contact, opportunity and task.
+
+    **Authentication:** API key as HTTP Basic username with an empty password; session fallback (`closecrm`). `PUT` behaves as a partial update; `_limit` capped at 200.
+
+    **Links:** [MCP doc](/mcp/close-crm) · [Close API](https://developer.close.com/)
+  </Accordion>
+  <Accordion title="Dropbox">
+    **Main operations:** browse, search, create/move/copy/delete, upload from URL, download and thumbnails, revisions and restore, shared links and file members, account and space usage; cursor-based trigger on new or changed files.
+
+    **Authentication:** OAuth2 bearer, refreshed per connection; session fallback (`dropbox`). Content routes use `content.dropboxapi.com` with a `Dropbox-API-Arg` header.
+
+    **Links:** [MCP doc](/mcp/dropbox) · [Dropbox API v2](https://www.dropbox.com/developers/documentation/http/documentation)
+  </Accordion>
+  <Accordion title="Flodesk">
+    **Main operations:** subscribers (including batch upsert), segments, custom fields, workflow enrolment, campaign listing, webhooks; trigger on new subscriber.
+
+    **Authentication:** API key as HTTP Basic username with an empty password; session fallback (`flodesk`). API keys require a paid Flodesk plan.
+
+    **Links:** [MCP doc](/mcp/flodesk) · [Flodesk API](https://developers.flodesk.com/)
+  </Accordion>
+  <Accordion title="GREEN-API WhatsApp">
+    **Main operations:** send text/file/location/contact/poll/buttons, forward, chat history and journals, contacts and WhatsApp checks, group management, instance state; triggers on new message and new incoming call.
+
+    **Authentication:** `id_instance` + `api_token_instance` + per-instance `api_url`, assembled into the request path rather than sent as a header.
+
+    **Links:** [MCP doc](/mcp/green-api) · [GREEN-API docs](https://green-api.com/en/docs/)
   </Accordion>
   <Accordion title="Shopify">
     **Main operations:** orders, refunds and invoices, fulfillment with tracking, products and variants, inventory by location, customers, collections, pages and articles, tags, metafields, draft orders; eight triggers covering new/paid/cancelled orders, refunds, customers, products, draft orders and pages.

@@ -1,0 +1,253 @@
+---
+title: "Dropbox"
+icon: "https://cdn.simpleicons.org/dropbox"
+description: "Let your UnleashX agent browse, search, upload, share and version files in Dropbox."
+tags: [mcp, dropbox, storage, files, integration]
+---
+
+# Dropbox
+
+> **In one line:** Connect Dropbox so your UnleashX agent can find a file, put a new one where it belongs, share it with a link, restore last week's version, and start a workflow the moment something lands in a folder.
+
+| | |
+|---|---|
+| **Category** | Storage |
+| **Authentication** | OAuth (Dropbox sign-in) |
+| **Setup time** | ~2 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Teams whose documents live in Dropbox and who want an agent filing, fetching and sharing them |
+
+## 1. Overview
+
+Dropbox is cloud file storage. Everything is addressed by **path** (`/Clients/Acme/contract.pdf`), files keep a revision history, and access is granted with shared links or by inviting members.
+
+Once connected to UnleashX, your agent can list and search the account, read metadata, create folders, move, copy and delete, upload from a URL, download small files inline, fetch thumbnails and temporary download links, list and restore revisions, create and revoke shared links, invite people to files, share folders, and report the account and its storage usage.
+
+One trigger fires when files are added or changed in a folder.
+
+Connecting Dropbox to UnleashX means the agent can treat your file store as part of a workflow: a signed contract arrives, gets filed under the right client, and a shareable link goes back to the team.
+
+## 2. What you'll need
+
+- A **Dropbox account** (personal or Business).
+- Permission to authorize UnleashX against it.
+- An UnleashX agent where you'll add the connector.
+
+<Note>
+On a Dropbox Business team, an admin may need to allow third-party apps before authorization will succeed.
+</Note>
+
+## 3. Get your credentials
+
+Dropbox uses **OAuth 2.0**. There's no key to create or paste — UnleashX sends you to Dropbox, you sign in once, and Dropbox issues a token that UnleashX refreshes automatically.
+
+<Steps>
+<Step title="Start the connection in UnleashX">
+In your agent's **Data Connectors**, find **Dropbox** and click **Connect** (see Section 4).
+</Step>
+<Step title="Sign in with Dropbox">
+Choose the Dropbox account whose files the agent should work with.
+</Step>
+<Step title="Review and approve access">
+Approve the requested permissions and you'll be returned to UnleashX.
+</Step>
+</Steps>
+
+<Info>
+There's no key to copy. Access can be revoked at any time from [Dropbox → Settings → Connected apps](https://www.dropbox.com/account/connected_apps).
+</Info>
+
+### Access this grants UnleashX
+
+| Access | Why UnleashX needs it |
+|---|---|
+| Read files and folders | List, search, and read metadata |
+| Write files and folders | Create folders, upload, move, copy, delete |
+| File revisions | List previous revisions and restore one |
+| Sharing | Create, list and revoke shared links; invite file members; share folders |
+| Account info | Report the connected account and its storage usage |
+
+<Warning>
+If a call fails with a scope error, ticking the scope in the Dropbox App Console **isn't enough on its own** — you also have to reconnect. A token already issued doesn't gain scopes retroactively.
+</Warning>
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Sign in at [https://www.tryunleashx.com](https://www.tryunleashx.com) and open the agent you want to connect.
+</Step>
+<Step title="Open Data Connectors">
+In the agent, go to **Data Connectors** and find **Dropbox**.
+</Step>
+<Step title="Authorize">
+Click **Connect**, sign in with Dropbox, and approve access.
+</Step>
+<Step title="Confirm">
+You'll return to UnleashX and the connector will show a **Connected** badge.
+</Step>
+</Steps>
+
+{/* workflow-usage-section */}
+### Use Dropbox in a Workflow
+
+Once connected, you can add **Dropbox** to any automation from the **Workflows** builder. Its trigger and tools appear in the Apps panel, marked with an **MCP** badge.
+
+<Steps>
+<Step title="Open the Apps panel">
+Open **Workflows → New Workflow**. On the canvas, click the **+** below a node, then open the **Apps** tab in the **Paths** panel and select **Dropbox** — its **Actions** are listed underneath. Use the search box if you have many connectors.
+
+![Dropbox actions in the Apps panel](/images/mcp/dropbox/workflows/07-apps-actions.png)
+</Step>
+<Step title="Pick the action and account">
+Choose the action from **Select Action**, then pick the connected account under **Select Account** — or click **Add Account** to authorize one now.
+
+![Configuring a Dropbox action step](/images/mcp/dropbox/workflows/08-configure-action.png)
+</Step>
+<Step title="Fill in the fields">
+Required fields are marked with a red asterisk (*). Most tools take a **path** like `/Clients/Acme/contract.pdf`.
+</Step>
+<Step title="Save and test">
+Click **Save**. Use **Test** to verify the step, then toggle **Publish** when the workflow is ready.
+</Step>
+</Steps>
+
+<Note>
+The steps are the same for every connector. For the full workflow builder guide, see [Using MCP in Workflows](/mcp/workflows).
+</Note>
+
+## 5. Available tools
+
+Paths start at the account root and use forward slashes — `/Invoices/2026/march.pdf`. An empty path means the root folder.
+
+Names match the **Workflows** Apps panel, which lists them alphabetically; they're grouped here by what they do. The **Tool ID** is what the agent calls behind the scenes.
+
+**Browsing and organising**
+
+| Tool | Tool ID | What it does | Required | Changes data? |
+|---|---|---|---|---|
+| List Folder | `dropbox_list_folder` | Lists files and folders at a path | — | No |
+| List Folder Continue | `dropbox_list_folder_continue` | Fetches the next page using the cursor from List Folder | `cursor` | No |
+| Get Metadata | `dropbox_get_metadata` | Size, rev, modified time and id for one file or folder | `path` | No |
+| Search | `dropbox_search` | Searches the account by name or content | `query` | No |
+| Create Folder | `dropbox_create_folder` | Creates a folder | `path` | ✏️ Yes |
+| Move | `dropbox_move` | Moves or renames a file or folder | `from_path`, `to_path` | ✏️ Yes |
+| Copy | `dropbox_copy` | Copies a file or folder | `from_path`, `to_path` | ✏️ Yes |
+| Delete | `dropbox_delete` | Deletes a file or folder — it goes to the trash and is restorable | `path` | ⚠️ Yes |
+
+**Getting files in and out**
+
+| Tool | Tool ID | What it does | Required | Changes data? |
+|---|---|---|---|---|
+| Upload | `dropbox_upload` | Uploads to Dropbox from a publicly reachable URL | `path`, `source_url` | ✏️ Yes |
+| Save URL | `dropbox_save_url` | Has Dropbox fetch a URL server-side and save it, with no size limit | `path`, `url` | ✏️ Yes |
+| Download | `dropbox_download` | Returns a small file's contents inline, as text and base64 — capped at 10 MB | `path` | No |
+| Get Temporary Link | `dropbox_get_temporary_link` | A direct download URL, valid for four hours | `path` | No |
+| Get Thumbnail | `dropbox_get_thumbnail` | A base64 JPEG thumbnail of an image or document | `path` | No |
+
+<Tip>
+For anything large, use **Save URL** — Dropbox pulls the bytes itself and nothing is size-capped. **Upload** and **Download** move the bytes through the request, which is why Download stops at 10 MB.
+</Tip>
+
+**Versions**
+
+| Tool | Tool ID | What it does | Required | Changes data? |
+|---|---|---|---|---|
+| List Revisions | `dropbox_list_revisions` | Previous revisions of a file | `path` | No |
+| Restore | `dropbox_restore` | Restores a file to an earlier revision | `path`, `rev` | ⚠️ Yes |
+
+**Sharing**
+
+| Tool | Tool ID | What it does | Required | Changes data? |
+|---|---|---|---|---|
+| Create Shared Link | `dropbox_create_shared_link` | Creates a shareable link to a file or folder | `path` | ✏️ Yes |
+| List Shared Links | `dropbox_list_shared_links` | Lists existing shared links | — | No |
+| Get Shared Link Metadata | `dropbox_get_shared_link_metadata` | Looks up what a shared link points at | `url` | No |
+| Revoke Shared Link | `dropbox_revoke_shared_link` | Revokes a link so it stops working | `url` | ⚠️ Yes |
+| Add File Member | `dropbox_add_file_member` | Invites people to a file by email | `file_id`, `emails` | ✏️ Yes |
+| List File Members | `dropbox_list_file_members` | Lists who has access to a file | `file_id` | No |
+| Share Folder | `dropbox_share_folder` | Turns a folder into a shared folder | `path` | ✏️ Yes |
+| List Shared Folders | `dropbox_list_shared_folders` | Lists shared folders this account belongs to | — | No |
+
+**Account**
+
+| Tool | Tool ID | What it does | Required | Changes data? |
+|---|---|---|---|---|
+| Get Current Account | `dropbox_get_current_account` | Name, email and account id of the connected account | — | No |
+| Get Space Usage | `dropbox_get_space_usage` | Storage used and the account's quota | — | No |
+
+**Triggers**
+
+| Trigger | Trigger ID | Fires when |
+|---|---|---|
+| On New File | `dropbox_on_new_file` | A file is added or changed in the watched folder |
+
+<Note>
+**On New File is exact, not a re-scan.** Dropbox has a real cursor model, so the trigger asks "what changed since this cursor" rather than re-listing the folder and diffing. Nothing is missed between polls and nothing is reported twice. Each watched folder keeps its own cursor, so two workflows watching different paths don't interfere.
+</Note>
+
+## 6. Example usage
+
+**"File this signed contract under the Acme folder and send me a link."**
+Runs **Save URL** into `/Clients/Acme/`, then **Create Shared Link**.
+
+**"Find the March invoice."**
+Runs **Search**, then **Get Temporary Link** for a direct download.
+
+**"Someone overwrote the pricing sheet — put back Friday's version."**
+Runs **List Revisions** → **Restore** with the right `rev`.
+
+**"When a file lands in /Inbox, extract the data and log it."**
+A workflow starts on **On New File** and chains into [PDF.co](/mcp/pdfco) or [OCR](/mcp/ocr).
+
+## 7. Permissions & data access
+
+**UnleashX CAN:**
+- List, search and read files and folders in the connected account.
+- Create, upload, move, copy, delete and restore.
+- Create, list and revoke shared links, invite file members, and share folders.
+- Report the connected account and its storage usage.
+
+**UnleashX CANNOT:**
+- Reach any Dropbox account other than the one you authorized.
+- Permanently erase anything — deletes go to the Dropbox trash.
+- Act beyond the scopes granted at authorization.
+
+**To disconnect:** In UnleashX, open your agent → **Data Connectors** → **Dropbox** → **Disconnect**, or revoke at [Dropbox → Connected apps](https://www.dropbox.com/account/connected_apps). Revoking takes effect immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| `401 Unauthorized` | The token expired or access was revoked | Reconnect Dropbox in **Data Connectors** |
+| `403` mentioning a scope | The app's token lacks that permission | Tick the scope in the Dropbox App Console **and** reconnect — an existing token won't gain it |
+| `path/not_found` | The path is wrong, or it's missing its leading slash | Confirm with **List Folder** or **Search** |
+| An accented or emoji filename fails with an opaque `400` | Dropbox requires ASCII in its argument header | Handled automatically by the connector — if you still hit it, report the exact path |
+| Download returns nothing for a big file | **Download** is capped at 10 MB | Use **Get Temporary Link**, or **Save URL** in the other direction |
+| A folder listing looks truncated | Listings page | Follow the cursor with **List Folder Continue** |
+| The trigger reports nothing after a path change | The cursor is per watched path | Expected — a new path starts a fresh cursor |
+
+For general connector issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Does UnleashX store my files?**
+No. Tools call the Dropbox API live. Only **Download** returns file contents, and only inline into that workflow run.
+
+**Can it upload a file from my computer?**
+Not directly — **Upload** and **Save URL** both take a publicly reachable URL. Put the bytes somewhere fetchable first, or pass a link produced by an earlier workflow step.
+
+**Are deletes permanent?**
+No. They go to the Dropbox trash and can be restored from Dropbox.
+
+**Can I connect more than one account?**
+Yes. Authorize each account as its own connection.
+
+**Does it work with Dropbox Business team folders?**
+It works with what the authorized account can see. Team-wide admin operations aren't covered.
+
+## 10. References
+
+- Dropbox API v2 reference: [https://www.dropbox.com/developers/documentation/http/documentation](https://www.dropbox.com/developers/documentation/http/documentation)
+- OAuth scopes: [https://developers.dropbox.com/oauth-guide](https://developers.dropbox.com/oauth-guide)
+- Connected apps: [https://www.dropbox.com/account/connected_apps](https://www.dropbox.com/account/connected_apps)
