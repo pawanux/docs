@@ -65,6 +65,7 @@
                   "mcp/zoho-mail",
                   "mcp/whatsapp-business",
                   "mcp/whatsapp-web",
+                  "mcp/green-api",
                   "mcp/kwiqreply",
                   "mcp/zoom",
                   "mcp/google-chat",
@@ -99,6 +100,7 @@
                 "group": "Storage",
                 "pages": [
                   "mcp/google-drive",
+                  "mcp/dropbox",
                   "mcp/firebase"
                 ]
               },
@@ -106,12 +108,14 @@
                 "group": "CRM & Marketing",
                 "pages": [
                   "mcp/hubspot",
+                  "mcp/close-crm",
                   "mcp/zoho-crm",
                   "mcp/zoho-books",
                   "mcp/pipedrive",
                   "mcp/intercom",
                   "mcp/activecampaign",
                   "mcp/brevo",
+                  "mcp/flodesk",
                   "mcp/sendgrid",
                   "mcp/shopify",
                   "mcp/woocommerce",

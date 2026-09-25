@@ -1,0 +1,260 @@
+---
+title: "GREEN-API WhatsApp"
+icon: "https://cdn.simpleicons.org/whatsapp"
+description: "Let your UnleashX agent send and read WhatsApp messages through a real WhatsApp number using GREEN-API."
+tags: [mcp, green-api, whatsapp, messaging, integration]
+---
+
+# GREEN-API WhatsApp
+
+> **In one line:** Connect GREEN-API so your UnleashX agent can send WhatsApp messages, files, locations, polls and buttons from a real WhatsApp number, read the conversation back, and start a workflow when someone replies.
+
+| | |
+|---|---|
+| **Category** | Communication |
+| **Authentication** | Instance ID + instance API token |
+| **Setup time** | ~10 minutes (including QR scan) |
+| **Difficulty** | Medium |
+| **Best for** | Teams who want an agent on an ordinary WhatsApp number, without going through the WhatsApp Business Platform |
+
+## 1. Overview
+
+GREEN-API connects a real WhatsApp number to an HTTP API. You create an **instance**, link it to a phone by scanning a QR code, and from then on that number can be driven programmatically.
+
+Once connected to UnleashX, your agent can send text, files by URL, locations, contact cards, polls and interactive buttons; read chat history and the message journals; check whether a number is even on WhatsApp before messaging it; manage groups and participants; and check that the instance is still authorized.
+
+Two polling triggers let a workflow start on its own — an incoming message, or an incoming call.
+
+Connecting GREEN-API to UnleashX puts an agent on the channel customers already use, on a number they may already have saved, with none of the template approval that the official Business Platform requires.
+
+<Note>
+This is different from [WhatsApp Business](/mcp/whatsapp-business), which uses Meta's official Cloud API with approved templates and a verified business number. GREEN-API drives an ordinary WhatsApp account. Pick based on which account you're sending from.
+</Note>
+
+## 2. What you'll need
+
+- A **GREEN-API account** — sign up at [green-api.com](https://green-api.com/).
+- A **WhatsApp number** you can scan a QR code with, and keep online.
+- An **instance** created in the GREEN-API console, in the **authorized** state.
+- Its **ID Instance**, **API Token Instance**, and **API URL** — all three on the instance card.
+
+<Warning>
+The linked phone must stay reachable. If the WhatsApp session is unlinked from the phone, or the number gets banned by WhatsApp for behaving like a bot, the instance stops working. Send at a human pace and only to people who expect to hear from you.
+</Warning>
+
+## 3. Get your credentials
+
+GREEN-API doesn't use a header token. The credentials sit **in the request URL**, which is why there are three values instead of one, and why all three are per-instance.
+
+<Steps>
+<Step title="Create an instance">
+Sign in at [console.green-api.com](https://console.green-api.com/) and create an instance on the plan you want.
+</Step>
+<Step title="Link your WhatsApp number">
+Open the instance and scan the QR code from the phone you're sending from — **WhatsApp → Linked devices → Link a device**.
+</Step>
+<Step title="Confirm it's authorized">
+The instance card should show the state **authorized**. Anything else (`notAuthorized`, `blocked`, `starting`) means no call will succeed yet.
+</Step>
+<Step title="Copy all three values">
+From the instance card, copy:
+
+| Value | Looks like |
+|---|---|
+| **ID Instance** | a numeric id, e.g. `1101234567` |
+| **API Token Instance** | a long hex secret |
+| **API URL** | the host for your instance, e.g. `https://1101.api.green-api.com` |
+
+<Warning>
+The API Token Instance is the password for that WhatsApp number. Anyone holding it can send messages as you.
+</Warning>
+</Step>
+</Steps>
+
+<Info>
+The **API URL** is per-instance — instances are spread across hosts, so don't copy another instance's host. It's printed on the same card.
+</Info>
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Sign in at [https://www.tryunleashx.com](https://www.tryunleashx.com) and open the agent you want to connect.
+</Step>
+<Step title="Open Data Connectors">
+In the agent, go to **Data Connectors** and find **GREEN-API WhatsApp**.
+</Step>
+<Step title="Enter the three values">
+Click **Connect** / **Add** / **Configure** and enter the **ID Instance**, **API Token Instance** and **API URL** from Section 3, plus an **Account Name** to label the connection.
+</Step>
+<Step title="Confirm">
+Save, then run **Get State Instance** once — `authorized` means the number is live and ready.
+</Step>
+</Steps>
+
+{/* workflow-usage-section */}
+### Use GREEN-API in a Workflow
+
+Once connected, you can add **GREEN-API WhatsApp** to any automation from the **Workflows** builder. Its triggers and tools appear in the Apps panel, marked with an **MCP** badge.
+
+<Steps>
+<Step title="Open the Apps panel">
+Open **Workflows → New Workflow**. On the canvas, click the **+** below a node, then open the **Apps** tab in the **Paths** panel and select **GREEN-API WhatsApp** — its **Actions** are listed underneath. Use the search box if you have many connectors.
+
+![GREEN-API WhatsApp actions in the Apps panel](/images/mcp/green-api/workflows/07-apps-actions.png)
+</Step>
+<Step title="Pick the action and account">
+Choose the action from **Select Action**, then pick the connected account under **Select Account** — or click **Add Account** to connect one now.
+
+![Configuring a Send Message step](/images/mcp/green-api/workflows/08-configure-action.png)
+</Step>
+<Step title="Fill in the fields">
+Required fields are marked with a red asterisk (*). **Select Chat** resolves the WhatsApp chat for you, so you don't have to type a raw chat id.
+</Step>
+<Step title="Save and test">
+Click **Save**. Use **Test** to verify the step, then toggle **Publish** when the workflow is ready.
+</Step>
+</Steps>
+
+<Note>
+The steps are the same for every connector. For the full workflow builder guide, see [Using MCP in Workflows](/mcp/workflows).
+</Note>
+
+## 5. Available tools
+
+Names match the **Workflows** Apps panel, which lists them alphabetically; they're grouped here by what they do. The **Tool ID** is what the agent calls behind the scenes.
+
+**Sending**
+
+| Tool | Tool ID | What it does | Required | Changes data? |
+|---|---|---|---|---|
+| Send Message | `greenapi_send_message` | Sends a WhatsApp text message | `chat_id`, `message` | ✏️ Yes |
+| Send File By URL | `greenapi_send_file_by_url` | Sends an image, video, audio or document by public URL | `chat_id`, `url_file`, `file_name` | ✏️ Yes |
+| Send Location | `greenapi_send_location` | Sends a location pin | `chat_id`, `latitude`, `longitude` | ✏️ Yes |
+| Send Contact | `greenapi_send_contact` | Sends a contact card | `chat_id`, `phone_contact` | ✏️ Yes |
+| Send Poll | `greenapi_send_poll` | Sends a poll | `chat_id`, `message`, `options` | ✏️ Yes |
+| Send Interactive Buttons | `greenapi_send_interactive_buttons` | Sends a message with up to 3 buttons | `chat_id`, `body`, `buttons` | ✏️ Yes |
+| Forward Messages | `greenapi_forward_messages` | Forwards messages from one chat to another | `chat_id`, `chat_id_from`, `messages` | ✏️ Yes |
+| Upload File By URL | `greenapi_upload_file_by_url` | Uploads a file to GREEN-API storage and returns a reusable link | `url_file` | ✏️ Yes |
+
+**Reading**
+
+| Tool | Tool ID | What it does | Required | Changes data? |
+|---|---|---|---|---|
+| Get Chat History | `greenapi_get_chat_history` | Recent messages from one chat | `chat_id` | No |
+| Get Message | `greenapi_get_message` | A single message by id | `chat_id`, `id_message` | No |
+| Last Incoming Messages | `greenapi_last_incoming_messages` | Incoming messages from the journal, newest first | — | No |
+| Last Outgoing Messages | `greenapi_last_outgoing_messages` | Outgoing messages with their delivery status | — | No |
+| Last Incoming Calls | `greenapi_last_incoming_calls` | Incoming calls from the journal | — | No |
+| Read Chat | `greenapi_read_chat` | Marks a chat as read | `chat_id` | ✏️ Yes |
+
+**Contacts**
+
+| Tool | Tool ID | What it does | Required | Changes data? |
+|---|---|---|---|---|
+| Get Contacts | `greenapi_get_contacts` | Lists the account's contacts | — | No |
+| Get Contact Info | `greenapi_get_contact_info` | One contact's profile details | `chat_id` | No |
+| Check Whatsapp | `greenapi_check_whatsapp` | Checks whether a number has WhatsApp, before sending | `phone_number` | No |
+| Get Avatar | `greenapi_get_avatar` | A contact's or group's profile picture URL | `chat_id` | No |
+
+<Tip>
+Run **Check Whatsapp** before a send to a number you're unsure about. Messaging numbers that aren't on WhatsApp is one of the patterns that gets an account flagged.
+</Tip>
+
+**Groups**
+
+| Tool | Tool ID | What it does | Required | Changes data? |
+|---|---|---|---|---|
+| Create Group | `greenapi_create_group` | Creates a WhatsApp group | `group_name`, `chat_ids` | ✏️ Yes |
+| Get Group Data | `greenapi_get_group_data` | Group name, owner and participants | `group_id` | No |
+| Add Group Participant | `greenapi_add_group_participant` | Adds someone to a group | `group_id`, `participant_chat_id` | ✏️ Yes |
+| Remove Group Participant | `greenapi_remove_group_participant` | Removes someone from a group | `group_id`, `participant_chat_id` | ⚠️ Yes |
+| Leave Group | `greenapi_leave_group` | Leaves a group | `group_id` | ⚠️ Yes |
+
+**Instance**
+
+| Tool | Tool ID | What it does | Required | Changes data? |
+|---|---|---|---|---|
+| Get State Instance | `greenapi_get_state_instance` | Whether the instance is authorized and online | — | No |
+| Get Settings | `greenapi_get_settings` | Instance settings, including the configured webhook URL | — | No |
+
+**Triggers**
+
+| Trigger | Trigger ID | Fires when |
+|---|---|---|
+| On New Message | `greenapi_on_new_message` | An incoming message appears that the previous poll didn't see |
+| On New Incoming Call | `greenapi_on_new_incoming_call` | An incoming call appears that the previous poll didn't see |
+
+<Note>
+**Triggers read the journals, not the notification queue.** That matters in three ways: any number of workflows can poll the same instance without consuming each other's messages, your own GREEN-API webhooks keep working, and nothing is destroyed by being read. The trade-off is up to about **2 minutes** before a message reaches the journal — schedule these triggers at **5 minutes or slower**.
+</Note>
+
+<Warning>
+The journal is a rolling window — by default the last **1440 minutes** and at most **10,000 messages**. A trigger paused longer than its window will miss whatever fell off the back.
+</Warning>
+
+## 6. Example usage
+
+**"Message +91 98765 43210 that their order shipped."**
+Runs **Check Whatsapp** to confirm the number, then **Send Message**.
+
+**"Send the invoice PDF to that chat."**
+Runs **Send File By URL** with the document's public URL.
+
+**"When someone messages us on WhatsApp, look them up in the CRM and draft a reply."**
+A workflow starts on **On New Message** and chains into your CRM connector.
+
+**"Ask the group to pick a slot."**
+Runs **Send Poll** with the options, or **Send Interactive Buttons** for up to three choices.
+
+## 7. Permissions & data access
+
+**UnleashX CAN:**
+- Send messages, files, locations, contacts, polls and buttons from the linked number.
+- Read chat history, message journals and delivery status.
+- Manage groups and participants, and mark chats read.
+- Check instance state and settings.
+
+**UnleashX CANNOT:**
+- Act on any WhatsApp account other than the linked instance.
+- Recover messages older than the journal window.
+- Bypass WhatsApp's own rules — spam behaviour still gets the number banned.
+
+**To disconnect:** In UnleashX, open your agent → **Data Connectors** → **GREEN-API WhatsApp** → **Disconnect**. To fully revoke, log out the instance or delete it in the GREEN-API console.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| Every call fails | The instance isn't authorized, or the values are wrong | Run **Get State Instance**; if it isn't `authorized`, re-scan the QR |
+| `notAuthorized` after it was working | The device was unlinked from the phone | Re-scan the QR in the GREEN-API console |
+| Wrong host errors | The API URL belongs to a different instance | Copy the **API URL** from this instance's own card |
+| "Message cannot be received because custom webhook url is set" | Something is calling `ReceiveNotification` while a webhook is configured | The triggers here don't use that queue — check for other integrations polling the same instance |
+| Trigger misses messages | It was paused longer than the journal window, or polls faster than the journal fills | Poll at 5 minutes or slower, and don't leave it paused past 1440 minutes |
+| Messages send but never arrive | The recipient isn't on WhatsApp, or the number is blocked | Confirm with **Check Whatsapp** |
+| The number got banned | WhatsApp flagged the sending pattern | This is enforced by WhatsApp, not GREEN-API — reduce volume and only message people who opted in |
+
+For general connector issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Is this the official WhatsApp API?**
+No. It drives an ordinary WhatsApp account through GREEN-API. For Meta's official Cloud API with approved templates, use [WhatsApp Business](/mcp/whatsapp-business).
+
+**Does my phone need to stay on?**
+The WhatsApp session must stay linked. Treat it like any other linked device.
+
+**Can I connect more than one number?**
+Yes. Create an instance per number and add each as its own connection.
+
+**Why is my trigger slow?**
+Journal latency is up to about two minutes by design — it's the trade-off for triggers that don't consume messages or break your webhooks.
+
+**Do templates need approval?**
+No. That's a Business Platform requirement, not a GREEN-API one.
+
+## 10. References
+
+- GREEN-API documentation: [https://green-api.com/en/docs/](https://green-api.com/en/docs/)
+- GREEN-API console: [https://console.green-api.com/](https://console.green-api.com/)
+- Journal methods (LastIncomingMessages): [https://green-api.com/en/docs/api/journals/LastIncomingMessages/](https://green-api.com/en/docs/api/journals/LastIncomingMessages/)
