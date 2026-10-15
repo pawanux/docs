@@ -1,0 +1,199 @@
+---
+title: "Slack Bot"
+icon: "https://a.slack-edge.com/80588/marketing/img/meta/favicon-32.png"
+description: "Deploy your UnleashX chatbot into Slack as a named bot that answers mentions and direct messages."
+tags: [mcp, slack, chatbot, deployment, integration]
+---
+
+# Slack Bot
+
+> **In one line:** Create a Slack bot named after your chatbot, drop it into your workspace, and let it answer when someone mentions it in a channel or messages it directly.
+
+| | |
+|---|---|
+| **Category** | Deployment channel |
+| **Authentication** | Slack App Configuration Token (used once) + OAuth install |
+| **Setup time** | ~5 minutes |
+| **Difficulty** | Easy |
+| **Best for** | Teams who want their chatbot answering questions inside Slack, under its own name |
+
+<Note>
+**This is not the [Slack](/mcp/slack) connector.** That one gives an agent *tools* — send a message, read channels — as steps inside a workflow. This page is about **deploying a chatbot into Slack** so people can talk to it. They're independent: you can use either, or both.
+</Note>
+
+## 1. Overview
+
+Slack Bot creates a real Slack app in your workspace, named after your chatbot, and wires it to UnleashX. From then on the bot listens for two things: **@mentions in a channel** and **direct messages**. Either one is passed to your chatbot, and the answer is posted back — in-thread when it was a mention.
+
+The bot is created from a **Slack App Configuration Token** you generate once. UnleashX uses it a single time to build the app, then the app runs on its own credentials.
+
+Connecting Slack this way means your chatbot lives where your team already works — no new window, no portal to log into, just `@yourbot` in the channel where the question came up.
+
+## 2. What you'll need
+
+- A **Slack workspace** you can sign in to and install an app on.
+- A **chatbot (or agent) in UnleashX** with **Slack** selected as one of its channels.
+- A **Slack App Configuration Token**, generated in Section 3.
+
+<Warning>
+If the **Slack** section doesn't appear on the Deploy step, Slack isn't selected as a channel for this chatbot. Go back to the chatbot's basic details, add **Slack** to its channels, then return to Deploy.
+</Warning>
+
+<Note>
+An agent has **one Slack bot at a time**. Creating a new one replaces the current bot, which you can reconnect later.
+</Note>
+
+## 3. Get your Slack App Configuration Token
+
+These are the steps exactly as they appear in the **Slack setup** dialog:
+
+<Steps>
+<Step title="Open api.slack.com/apps">
+Open [api.slack.com/apps](https://api.slack.com/apps) and sign in to your workspace.
+</Step>
+<Step title="Generate a token">
+Scroll to **Your App Configuration Tokens** and click **Generate Token**.
+</Step>
+<Step title="Copy the access token">
+Pick your workspace, click **Generate**, and copy the **Access Token** (starts with `xoxe.xoxp-`).
+</Step>
+<Step title="Paste it into UnleashX">
+Paste it below and click **Connect Slack**. The token lasts 12 hours and is used only once to create the bot.
+</Step>
+</Steps>
+
+<Info>
+Because the token is used **only once, at creation**, it doesn't need to be stored or rotated. It expires by itself after 12 hours. If setup fails and the token has gone stale, just generate a fresh one and start again.
+</Info>
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open the Deploy step">
+Open your chatbot in UnleashX and go to the **Deploy** step.
+</Step>
+<Step title="Expand Slack">
+Find the **Slack** section — "Connect Slack to reply to messages in your workspace with this chatbot." It shows **Setup required** until it's connected.
+</Step>
+<Step title="Click Connect Slack">
+This opens the **Slack setup** dialog.
+</Step>
+<Step title="Name the bot and paste the token">
+Fill in the two fields:
+
+| Field | What to enter |
+|---|---|
+| **Bot name** | What the bot is called in Slack. Defaults to the chatbot's name. |
+| **Slack App Configuration Token** | The `xoxe.xoxp-…` token from Section 3. |
+
+Then click **Connect Slack**.
+</Step>
+<Step title="Approve the install in Slack">
+A Slack window opens. Click **Allow** to install the bot into your workspace.
+</Step>
+<Step title="Choose channels">
+Once it connects, pick the public channels for the bot to join — or **Skip** and invite it yourself later.
+
+Only **public** channels are listed. For a private channel, invite the bot from Slack.
+</Step>
+</Steps>
+
+<Tip>
+The Slack section switches to a **Connected** badge when it's done. If the window didn't open, check your browser's pop-up blocker — the Slack consent screen opens in a new window.
+</Tip>
+
+## 5. Talk to the bot in Slack
+
+Once connected, there are two ways to reach it:
+
+| Where | How | Reply lands |
+|---|---|---|
+| **A channel** | Mention it: `@yourbot what's our refund policy?` | In a thread on your message |
+| **A direct message** | Message the bot directly | In the DM |
+
+The bot must be **in the channel** before a mention reaches it. If you skipped the channel picker, invite it with:
+
+```
+/invite @yourbot
+```
+
+<Note>
+The bot only responds when it's mentioned or messaged directly. It doesn't read everything said in a channel it belongs to.
+</Note>
+
+## 6. Reconnect an existing bot
+
+Disconnecting keeps the Slack app, so a bot you created before can be brought back without a new token.
+
+<Steps>
+<Step title="Open the Slack setup dialog">
+On the Deploy step, click **Connect Slack**.
+</Step>
+<Step title="Switch to Reconnect existing bot">
+If you have a previously created bot, a **Reconnect existing bot** option appears next to **Create new bot**. Pick it, then select the bot from the list.
+
+Each entry shows its name, its workspace, and why it stopped — *removed from Slack* or *access revoked*.
+</Step>
+<Step title="Approve in Slack">
+Click **Allow** in the Slack window to turn it back on. **No token is needed** for a reconnect.
+</Step>
+</Steps>
+
+<Warning>
+If Slack shows an error during a reconnect, the bot was deleted in Slack. Choose **Create new bot** and set up a fresh one with a new configuration token.
+</Warning>
+
+## 7. Permissions & data access
+
+**The bot CAN:**
+- Receive @mentions in channels it has been added to, and direct messages.
+- Post replies in those channels (in-thread) and DMs.
+- List the workspace's public channels during setup, and join the ones you pick.
+
+**The bot CANNOT:**
+- Read messages in a channel that don't mention it.
+- See private channels it hasn't been invited to.
+- Act in any workspace other than the one the app was installed in.
+
+**To disconnect:** On the Deploy step, open **Slack** and click **Disconnect**. The bot stops responding, but its Slack app and credentials are kept so you can reconnect it later. To remove it entirely, delete the app from [api.slack.com/apps](https://api.slack.com/apps).
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| No **Slack** section on the Deploy step | Slack isn't selected as a channel for this chatbot | Add **Slack** to the chatbot's channels, then return to Deploy |
+| Setup fails after pasting the token | The token expired — they last 12 hours | Generate a fresh token at [api.slack.com/apps](https://api.slack.com/apps) and retry |
+| The token is rejected immediately | It isn't a configuration token | It must start with `xoxe.xoxp-`. A bot token (`xoxb-`) or user token (`xoxp-`) won't work |
+| The Slack consent window never appeared | A pop-up blocker stopped it | Allow pop-ups for UnleashX and click **Connect Slack** again |
+| The bot doesn't answer a channel mention | It isn't in that channel | Run `/invite @yourbot` in the channel |
+| A private channel isn't in the picker | Only public channels are listed | Invite the bot from inside the private channel |
+| Reconnect fails with a Slack error | The app was deleted in Slack | Use **Create new bot** with a new configuration token |
+| The bot answers DMs but not mentions | It was never added to the channel | Invite it, then mention it again |
+
+For general connector issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Is my configuration token stored?**
+It's used once, at creation, to build the Slack app. After that the bot runs on its own app credentials, and the token expires on its own after 12 hours.
+
+**Can I rename the bot later?**
+The name is set at creation from the **Bot name** field. To change it, rename the app in Slack, or create a new bot — which replaces the current one.
+
+**Can one chatbot have bots in two workspaces?**
+No. An agent has one Slack bot at a time. Creating a new one replaces the current bot, which can be reconnected later.
+
+**Do I need to be a Slack admin?**
+You need to be able to generate a configuration token and approve the install. On workspaces that restrict app installs, an admin has to approve it.
+
+**How is this different from the [Slack](/mcp/slack) connector?**
+This deploys your chatbot *into* Slack so people can talk to it. The Slack connector gives an agent Slack *tools* — sending messages, reading channels — to use inside a workflow.
+
+**Does it reply in a thread?**
+Yes, for channel mentions. Direct messages are answered in the DM.
+
+## 10. References
+
+- Slack apps dashboard: [https://api.slack.com/apps](https://api.slack.com/apps)
+- App configuration tokens: [https://api.slack.com/authentication/config-tokens](https://api.slack.com/authentication/config-tokens)
+- Slack Events API: [https://api.slack.com/apis/connections/events-api](https://api.slack.com/apis/connections/events-api)

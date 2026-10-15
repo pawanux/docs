@@ -228,6 +228,7 @@
                 "group": "Communication",
                 "pages": [
                   "mcp/slack",
+                  "mcp/slack-bot",
                   "mcp/gmail",
                   "mcp/outlook",
                   "mcp/zoho-mail",

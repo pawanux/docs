@@ -128,6 +128,10 @@ For every integration below, use this pattern:
 **Direct tool names:** List Customers, List Charges, Create Payment Intent, List Invoices, Cancel Subscription, Create Refund.  
 **Authentication:** Stripe secret key as bearer; session fallback (`stripe`).  
 
+### Slack Bot
+**What it is:** a deployment channel, not a tool server - creates a named Slack app for a chatbot that answers @mentions and DMs.  
+**Authentication:** Slack App Configuration Token (`xoxe.xoxp-`, used once to create the app) + OAuth install; per-app signing secret thereafter.  
+
 ### Slack
 **Direct tool names:** Send Message, Read Channels, Read Messages, Update Message, Trigger Checks.  
 **Authentication:** Slack token in headers or session auth.  
@@ -343,6 +347,13 @@ For every integration below, use this pattern:
     **Authentication:** secret key (`sk_live_` / `sk_test_`) as `Authorization: Bearer`; form-encoded request bodies; session fallback (`stripe`).
 
     **Links:** [MCP doc](/mcp/stripe) · [Stripe API](https://docs.stripe.com/api)
+  </Accordion>
+  <Accordion title="Slack Bot">
+    **What it does:** deploys a chatbot into Slack as its own named app via the Manifest API, subscribed to `app_mention` and `message.im`. No MCP tools - it is a channel, not a tool server.
+
+    **Authentication:** a Slack App Configuration Token creates the app once; each created app then carries its own client and signing secrets, resolved per `api_app_id`.
+
+    **Links:** [MCP doc](/mcp/slack-bot) · [Slack Events API](https://api.slack.com/apis/connections/events-api)
   </Accordion>
   <Accordion title="Slack">
     **Main operations:** channel/user/message actions plus Slack event-style utility flows.
