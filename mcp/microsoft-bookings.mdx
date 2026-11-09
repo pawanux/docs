@@ -1,0 +1,200 @@
+---
+title: "Microsoft Bookings"
+icon: "https://cdn-icons-png.flaticon.com/512/2693/2693507.png"
+description: "Let your UnleashX agent manage your Microsoft Bookings businesses, staff, services, customers, and appointments."
+tags: [mcp, microsoft-bookings, integration]
+---
+
+# Microsoft Bookings
+
+> **In one line:** Connect your Microsoft Bookings business so your UnleashX agent can check availability, book and reschedule appointments, and manage staff, services, and customers for you.
+
+| | |
+|---|---|
+| **Category** | Productivity & Scheduling |
+| **Authentication** | OAuth (Microsoft 365 / Microsoft Graph) |
+| **Setup time** | ~2 minutes |
+| **Difficulty** | Moderate |
+| **Best for** | Businesses that take appointments (salons, clinics, consultants, repair shops) who want an AI agent to handle booking, rescheduling, and availability checks |
+
+## 1. Overview
+
+Microsoft Bookings is Microsoft 365's online scheduling service for businesses. It holds one or more "booking businesses," each with its own staff, bookable services, customer list, and appointment calendar.
+
+Once connected to UnleashX, your agent can look up a business's services and staff, check availability, create or reschedule appointments, cancel them, and manage the underlying staff/service/customer records — all in plain language. Instead of opening the Bookings page to add a new customer appointment, you can ask "book Priya in for a 30-minute consultation on Thursday at 2pm" and the agent finds an open slot and creates it.
+
+<Warning>
+Microsoft Bookings is a **shared, organization-level** feature — it only works with a **work or school Microsoft 365 account** on a plan that includes Bookings (e.g. Microsoft 365 Business Premium). It does **not** support personal Microsoft accounts (`@outlook.com`, `@hotmail.com`, `@live.com`) at all — not with reduced functionality, but not at all. If you try to connect with a personal account, authorization will fail outright.
+</Warning>
+
+## 2. What you'll need
+
+- A **Microsoft 365 work or school account** on a plan that includes Bookings (Business Premium and most E-series plans qualify).
+- A Bookings business already set up (or set one up at [outlook.office.com/bookings](https://outlook.office.com/bookings) after connecting — "Create booking page" under Shared booking pages, not the newer "Personal booking page" feature, which is a different, unrelated scheduling tool).
+- An UnleashX account with access to **Data Connectors**.
+
+<Note>
+No API key required. Microsoft Bookings uses OAuth — you click **Authorize** and sign in with your work/school Microsoft account.
+</Note>
+
+## 3. Get your credentials
+
+There's no key to copy. Authentication runs through Microsoft's secure OAuth sign-in.
+
+<Steps>
+<Step title="Start the connection in UnleashX">
+Connecting Microsoft Bookings (Section 4) opens a Microsoft **Authorize** window.
+</Step>
+<Step title="Sign in with your work or school Microsoft account">
+Sign in at `https://login.microsoftonline.com` with the Microsoft 365 account that has access to the Bookings business you want to connect, and complete MFA if prompted. A personal Microsoft account will not work here — see the warning above.
+</Step>
+<Step title="Review and accept the permissions">
+Microsoft displays exactly what UnleashX requests (see the scopes table). Click **Accept**.
+</Step>
+<Step title="Return to UnleashX">
+You're redirected back automatically and the connection is complete.
+</Step>
+</Steps>
+
+**Permissions (Microsoft Graph scopes) UnleashX requests:**
+
+| Scope | Why UnleashX needs it |
+|---|---|
+| `Bookings.ReadWrite.All` | Read and manage the Bookings business itself, plus its staff, services, and customers. |
+| `BookingsAppointment.ReadWrite.All` | Create, reschedule, and cancel appointments specifically. |
+| `offline_access` | Keep the connection active by refreshing access without repeated sign-ins. |
+
+<Note>
+These are standard Microsoft Graph delegated scopes, enforced by Microsoft. None of them require tenant admin consent by default — any user with access to the Bookings business can connect it themselves. (Some organizations lock down *all* third-party app consent tenant-wide regardless of the specific permission; if your sign-in is blocked at the consent screen, that's an org-wide policy your Microsoft 365 admin controls, not something UnleashX can work around.)
+</Note>
+
+## 4. Connect on UnleashX
+
+<Steps>
+<Step title="Open your agent">
+Go to [https://www.tryunleashx.com](https://www.tryunleashx.com) and open the agent you want to connect.
+</Step>
+<Step title="Open Data Connectors">
+Inside the agent, go to **Data Connectors**.
+</Step>
+<Step title="Find Microsoft Bookings">
+Locate **Microsoft Bookings** and click **Connect** (or **Add** / **Configure**).
+</Step>
+<Step title="Authorize with Microsoft">
+Click **Authorize**, sign in with your work/school Microsoft account, and accept the permissions.
+</Step>
+<Step title="Confirm success">
+You return to UnleashX and the connector shows a **Connected** badge.
+</Step>
+</Steps>
+
+{/* workflow-usage-section */}
+### Use Microsoft Bookings in a Workflow
+
+Once connected, you can add **Microsoft Bookings** to any automation from the **Workflows** builder. Its triggers and tools appear in the Apps panel, marked with an **MCP** badge.
+
+<Steps>
+<Step title="Add a trigger node">
+Open **Workflows → New Workflow**. On the canvas, click **+ Add Trigger**. In the **Paths** panel, open the **Apps** tab and select **Microsoft Bookings** — its **Triggers** are listed underneath. Use the search box if you have many connectors.
+</Step>
+<Step title="Add an action node">
+Click the **+** below any node to add a step, then pick **Microsoft Bookings** again — this time the panel lists its **Actions**.
+</Step>
+<Step title="Configure the step">
+Fill in the fields for the trigger or action you picked. Required fields are marked with a red asterisk (*). Fields like **Business Id**, **Service Id**, and **Appointment Id** are searchable dropdowns populated live from your connected account — you don't need to type raw IDs by hand.
+</Step>
+<Step title="Add or select your account">
+Under **Selected account**, choose an already-connected account, or click **Add Account** to connect one now.
+</Step>
+<Step title="Save and test">
+Click **Save**. Use **Test** to verify the step, then toggle **Publish** when the workflow is ready.
+</Step>
+</Steps>
+
+<Note>
+The steps are the same for every connector. For the full workflow builder guide, see [Using MCP in Workflows](/mcp/workflows).
+</Note>
+
+## 5. Available tools
+
+| Tool | What it does | Changes data? |
+|---|---|---|
+| List Businesses | Lists the Bookings businesses on your account. | No |
+| Get Business | Retrieves details of a single business. | No |
+| Create Business | Creates a new Bookings business. | ✏️ Yes |
+| Publish Business | Makes a business's booking page public. | ✏️ Yes |
+| Unpublish Business | Takes a business's booking page offline. | ✏️ Yes |
+| List Staff | Lists staff members of a business. | No |
+| Create Staff | Adds a staff member to a business. | ✏️ Yes |
+| List Services | Lists bookable services offered by a business. | No |
+| Create Service | Creates a new bookable service. | ✏️ Yes |
+| List Customers | Lists customers of a business. | No |
+| Create Customer | Creates a new customer record. | ✏️ Yes |
+| List Appointments | Lists appointments on a business. | No |
+| Get Appointment | Retrieves details of a single appointment. | No |
+| Create Appointment | Books a new appointment for a customer. | ✏️ Yes |
+| Update Appointment | Reschedules or reassigns an appointment. | ✏️ Yes |
+| Cancel Appointment | Cancels an appointment and notifies the customer. | ⚠️ Yes |
+| Delete Appointment | Deletes an appointment outright (no cancellation notice sent). | ⚠️ Yes |
+| Get Calendar View | Lists appointments within a date range. | No |
+| Get Staff Availability | Checks free/busy time for staff members. | No |
+| On New Appointment *(trigger)* | Fires when a new appointment appears since the last check. | No |
+
+## 6. Example usage
+
+**"Book Priya for a 30-minute consultation this Thursday at 2pm."**
+→ Runs Get Staff Availability or List Services to confirm the slot, then Create Appointment to book it.
+
+**"What appointments do we have at the downtown clinic next week?"**
+→ Runs Get Calendar View for that business across the date range.
+
+**"Move the 3pm haircut to Friday morning instead."**
+→ Runs List Appointments to find it, then Update Appointment to reschedule.
+
+## 7. Permissions & data access
+
+**UnleashX can:**
+- Read and manage your Bookings businesses, staff, services, and customers.
+- Create, reschedule, cancel, and delete appointments.
+- Check staff availability and calendar views.
+
+**UnleashX cannot:**
+- Access your email, Outlook calendar, or other Microsoft 365 services — only Bookings data within the approved scopes.
+- Connect using a personal Microsoft account — Bookings itself doesn't support it, regardless of UnleashX's configuration.
+- Change your Microsoft password or account security settings.
+
+**To disconnect:** In UnleashX, open **Data Connectors → Microsoft Bookings → Disconnect**. You can also revoke access at `https://account.microsoft.com/privacy/app-access` (or your org's My Apps portal for work accounts). Disconnecting revokes access immediately.
+
+## 8. Troubleshooting
+
+| Problem | What it means | How to fix it |
+|---|---|---|
+| **"The scope ... does not exist" at sign-in** | You tried to authorize with a **personal** Microsoft account. Bookings' delegated permissions simply don't resolve for personal accounts — this isn't a temporary error. | Reconnect and sign in with a **work/school** Microsoft 365 account that has Bookings on its plan. |
+| **401 Unauthorized** | Your Microsoft sign-in expired or the token is invalid. | Reconnect Microsoft Bookings in **Data Connectors** and sign in again. |
+| **403 Forbidden / consent blocked** | Your organization's tenant-wide policy blocks third-party app consent, even though these specific scopes don't normally require admin approval. | Ask your Microsoft 365 admin to approve UnleashX, or adjust the org's user-consent settings. |
+| **No businesses show up / "No Microsoft Bookings business found"** | The signed-in account's tenant has no Bookings business created yet. | Go to [outlook.office.com/bookings](https://outlook.office.com/bookings), create a booking page under **Shared booking pages**, then try again. |
+| **Appointment action fails right after creating a new business** | A just-created Bookings business can take a short while to fully propagate on Microsoft's side. | Wait a few minutes and retry. |
+
+For general MCP issues, see [/mcp/integrations](/mcp/integrations).
+
+## 9. Frequently asked questions
+
+**Can I use my personal Outlook/Hotmail account?**
+No. Microsoft Bookings is a shared, organization-level feature and Microsoft does not support personal accounts for it at all — this is a Microsoft limitation, not an UnleashX one.
+
+**Is my Bookings data stored by UnleashX?**
+No. UnleashX reads and writes through Microsoft Graph live for each request; it doesn't keep a copy of your businesses, appointments, or customer data.
+
+**Can multiple team members connect their own Bookings accounts?**
+Yes. Each person authorizes their own Microsoft 365 account, so the agent works against each user's own accessible businesses.
+
+**What happens if my Bookings business has more than one location/business?**
+Most actions let you pick which business from a dropdown. If you only have one, you can leave the Business field empty and UnleashX will use it automatically.
+
+## 10. References
+
+- Microsoft Bookings API overview: https://learn.microsoft.com/en-us/graph/api/resources/booking-api-overview
+- Microsoft Bookings concept overview: https://learn.microsoft.com/en-us/graph/booking-concept-overview
+- Microsoft Graph permissions reference: https://learn.microsoft.com/en-us/graph/permissions-reference
+- Manage app access / revoke (personal): https://account.microsoft.com/privacy/app-access
+- Microsoft sign-in: https://login.microsoftonline.com

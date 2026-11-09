@@ -248,6 +248,7 @@
                 "pages": [
                   "mcp/google-calendar",
                   "mcp/outlook-calendar",
+                  "mcp/microsoft-bookings",
                   "mcp/calcom",
                   "mcp/calendly",
                   "mcp/google-sheets",
