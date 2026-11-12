@@ -1,0 +1,40 @@
+---
+title: Click to Call
+description: Connect your team to customers over the phone with one click, from your own app or your CRM
+---
+
+Click to Call bridges a call between your team member and a customer through your UnleashX number (DID). Trigger it from your own system with the APIs below, or from inside HubSpot or Zoho CRM. Every call is recorded and appears in **Voice AI › Click to Call › Call Logs**.
+
+<CardGroup cols={2}>
+  <Card title="Trigger a Call" icon="phone-arrow-up-right" href="/api-reference/click-to-dial/trigger-call">
+    Start a call between a customer and your agent's phone.
+  </Card>
+  <Card title="Call History" icon="clock-rotate-left" href="/api-reference/click-to-dial/call-history">
+    List your workspace's calls with their recordings.
+  </Card>
+  <Card title="Live Status" icon="signal" href="/api-reference/click-to-dial/live-status">
+    Check a call's status in real time, or today's calls at a glance.
+  </Card>
+  <Card title="HubSpot" icon="hubspot" href="/api-reference/click-to-dial/hubspot">
+    Call HubSpot contacts and companies, logged back in HubSpot.
+  </Card>
+  <Card title="Zoho CRM" icon="phone" href="/api-reference/click-to-dial/zoho-crm">
+    Call Zoho CRM leads, contacts, accounts and deals, logged back in Zoho.
+  </Card>
+</CardGroup>
+
+## APIs
+
+| Endpoint | What it does |
+|---|---|
+| `POST /api/v1/global/click-to-dial` | Trigger a call |
+| `GET /api/v1/global/click-to-dial/history` | List call history |
+| `GET /api/v1/global/c2c-live-status/{call_id}` | Live status of one call, or of today's calls when `call_id` is left out |
+
+## Authentication
+
+All Click to Call endpoints require a valid API token. See [Authentication](/api-reference/authentication) for how to generate and pass your token.
+
+## CRM integrations
+
+The HubSpot and Zoho CRM integrations need no code. An UnleashX admin sets them up in **Voice AI › Click to Call › CRM Integrations** and chooses which CRM users can call.
