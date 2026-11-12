@@ -1,0 +1,123 @@
+---
+title: "Click to Call for Zoho CRM"
+sidebarTitle: "Zoho CRM"
+icon: "https://www.zoho.com/favicon.ico"
+description: "Call Zoho CRM leads, contacts, accounts and deals through UnleashX, with every call logged back in Zoho."
+---
+
+> **In one line:** Add the UnleashX call panel to Zoho CRM, so your team clicks the phone icon on any lead, contact, account or deal and the call is bridged through your UnleashX number (DID).
+
+| | |
+|---|---|
+| **Where it lives** | UnleashX: **Voice AI › Click to Call › CRM Integrations** · Zoho CRM: **Setup › Channels › Telephony** and the UnleashX panel at the bottom of Zoho CRM |
+| **Who sets it up** | A Zoho CRM admin (once per Zoho account) and an UnleashX admin with **Manage Click to Call** permission |
+| **Setup time** | ~10 minutes |
+| **Recording** | Every call is recorded |
+
+## How a call works
+
+1. A Zoho CRM user clicks the phone icon on a record, or dials from the UnleashX panel.
+2. UnleashX rings **the user's own phone first**.
+3. When the user answers, UnleashX dials the contact. The contact sees your UnleashX DID as the caller ID.
+4. When the call ends, UnleashX adds a Call record to the record's timeline in Zoho CRM.
+5. The user can type a note in the panel and click **Save note to Zoho**.
+
+## Before you start
+
+- Click to Call is set up and **Active** in **Voice AI › Click to Call**, with at least one DID number.
+- You are an UnleashX admin with the **Manage Click to Call** permission.
+- Your UnleashX role has **Make Calls**. Calls placed from Zoho are made as the admin who enabled each Zoho user, so the call log's **Called By** and the credits are that admin's.
+- A Zoho CRM admin is available to install the extension.
+
+## Set it up
+
+There are two ways to link your Zoho CRM account. Pick one.
+
+<Tabs>
+<Tab title="From the Zoho Marketplace (recommended)">
+No Zoho connection is needed in UnleashX, and it works in any Zoho data center.
+
+<Steps>
+<Step title="Install UnleashX in Zoho CRM">
+A Zoho CRM admin installs **UnleashX** from the Zoho Marketplace, or from the install link shown in **Click to Call › CRM Integrations**. Choose **All users**. This is done once for the whole Zoho account.
+</Step>
+<Step title="Pick UnleashX as the telephony provider">
+In Zoho CRM, go to **Setup › Channels › Telephony** and select **UnleashX**.
+</Step>
+<Step title="Sign in from the panel">
+Open the UnleashX phone panel at the bottom of Zoho CRM and click **Sign in to UnleashX**. Sign in as an UnleashX admin and confirm. This links your Zoho org to your UnleashX workspace.
+
+<Note>
+A Zoho org can be linked to only one UnleashX workspace. To move it, disconnect it in the other workspace first.
+</Note>
+</Step>
+<Step title="Enable the Zoho users who can call">
+Zoho users appear in **Click to Call › CRM Integrations** once they have opened the UnleashX panel. Select the users who may call and save. You can add each user's phone number here, or let them enter it in the panel.
+</Step>
+<Step title="Add Zoho CRM to Modules">
+Go to **Click to Call › Edit Settings › Modules** and turn on **Zoho CRM**.
+</Step>
+</Steps>
+</Tab>
+<Tab title="Connect Zoho, then add the widget">
+<Steps>
+<Step title="Connect Zoho CRM">
+In **Voice AI › Click to Call › CRM Integrations**, click **Connect** on Zoho CRM and approve the requested permissions. UnleashX needs access to your Zoho organization. If setup asks you to reconnect, do so and approve everything.
+</Step>
+<Step title="Enable the Zoho users who can call">
+In the **Map Users** step, select the Zoho CRM users who may call and save. Users you don't select are turned off.
+</Step>
+<Step title="Add the panel to Zoho CRM">
+Either install UnleashX from the Zoho Marketplace and pick it in **Setup › Channels › Telephony**, or add the widget by hand: in Zoho CRM, go to **Setup › Developer Hub › Widgets**, create a **Web Tab** widget with **External** hosting, and paste the **Widget URL** shown in **Click to Call › CRM Integrations**.
+</Step>
+<Step title="Add Zoho CRM to Modules">
+Go to **Click to Call › Edit Settings › Modules** and turn on **Zoho CRM**.
+</Step>
+</Steps>
+</Tab>
+</Tabs>
+
+## Make a call from Zoho CRM
+
+<Steps>
+<Step title="Save your number (first time only)">
+The UnleashX panel asks: *Enter the phone number to ring for your calls.* Enter your number with its country code (10–15 digits) and click **Save number**. The panel then shows **Calls ring ••••1234 first · Change**.
+</Step>
+<Step title="Call">
+Click the phone icon on a lead, contact, account or deal, or use the panel's **Keypad**. Your phone rings first. Answer it, and UnleashX connects you to the contact.
+</Step>
+<Step title="Add a note">
+Type in **Add a note for this call** and click **Save note to Zoho**.
+</Step>
+</Steps>
+
+The panel also has a contact search and **Recents** for your latest calls. If your company has phone-number masking turned on, the dialled number is hidden in the panel during the call.
+
+## What gets logged
+
+| Where | What |
+|---|---|
+| Zoho CRM record timeline | An outbound Call record with its duration, plus any note you saved |
+| UnleashX **Click to Call › Call Logs** | The call, with Zoho CRM as its source and the record it was dialled from |
+| UnleashX **Click to Call › Logs** | Setup changes: Zoho linked, users enabled or updated, disconnected |
+
+## Disconnect
+
+In **Click to Call › CRM Integrations**, click **Disconnect** on Zoho CRM. This turns off every enabled Zoho user, unlinks a Marketplace-linked org, and removes Zoho CRM from Modules. A Zoho connection used by other UnleashX features stays in place.
+
+## Troubleshooting
+
+| Message | What to do |
+|---|---|
+| *Calling isn't enabled for this Zoho user.* | An admin enables the user in **Click to Call › CRM Integrations**. The user must open the panel once first if the org was linked from the Marketplace. |
+| *Add your phone number in this panel before calling.* | Save your number in the panel, or ask the admin to set it. |
+| *Click to Call is turned off for this workspace* | An admin sets Click to Call to **Active**. |
+| *Click to Call is not enabled for Zoho CRM* | An admin turns on Zoho CRM in **Edit Settings › Modules**. |
+| *You don't have permission to make calls. Contact your admin.* | The admin who enabled you needs **Make Calls** on their role. |
+| *No display number (DID) is configured for Click to Call* | An admin adds a DID in Click to Call settings. |
+| *This Zoho CRM organization is already linked to another workspace.* | Disconnect Zoho CRM in that workspace first. |
+| *Reconnect Zoho CRM to finish setup* | Reconnect Zoho CRM and approve access to your organization. |
+
+<Note>
+For your team's safety, each enabled Zoho user can place one call every 5 seconds and up to 200 calls a day.
+</Note>

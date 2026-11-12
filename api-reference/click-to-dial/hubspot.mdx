@@ -1,0 +1,99 @@
+---
+title: "Click to Call for HubSpot"
+sidebarTitle: "HubSpot"
+icon: "https://www.hubspot.com/favicon.ico"
+description: "Call HubSpot contacts and companies through UnleashX, with every call logged and recorded back in HubSpot."
+---
+
+> **In one line:** Add UnleashX as a calling provider in HubSpot, so your team clicks **Call** on any contact or company and the call is bridged through your UnleashX number (DID).
+
+| | |
+|---|---|
+| **Where it lives** | UnleashX: **Voice AI › Click to Call › CRM Integrations** · HubSpot: the **Call from** provider list |
+| **Who sets it up** | An UnleashX admin with **Manage Click to Call** permission |
+| **Setup time** | ~10 minutes |
+| **Recording** | Every call is recorded and playable on the HubSpot call record |
+
+## How a call works
+
+1. A HubSpot user clicks **Call** on a contact or company and picks **UnleashX** as the provider.
+2. UnleashX rings **the user's own phone first**.
+3. When the user answers, UnleashX dials the contact. The contact sees your UnleashX DID as the caller ID.
+4. When the call ends, UnleashX updates the HubSpot call record with the status, duration and recording.
+5. The user can add a call outcome, direction, notes and a follow-up task from the panel, then click **Log call**.
+
+## Before you start
+
+- Click to Call is set up and **Active** in **Voice AI › Click to Call**, with at least one DID number.
+- You are an UnleashX admin with the **Manage Click to Call** permission.
+- Your UnleashX role has **Make Calls**. Calls placed from HubSpot are made as the admin who enabled each HubSpot user, so the call log's **Called By** and the credits are that admin's.
+- You can connect HubSpot with an account that can approve app permissions in your HubSpot portal.
+
+## Set it up
+
+<Steps>
+<Step title="Connect HubSpot">
+In UnleashX, open **Voice AI › Click to Call › CRM Integrations** and click **Connect** on HubSpot. Sign in to HubSpot and approve every permission requested.
+
+<Note>
+UnleashX needs permission to read your HubSpot users so you can choose who may call. If HubSpot was connected before that permission existed, the user list fails to load. Reconnect HubSpot and approve all permissions.
+</Note>
+</Step>
+<Step title="Enable the HubSpot users who can call">
+In the **Map Users** step, select the HubSpot users allowed to call through UnleashX and save.
+
+- You can add each user's phone number here. If you leave it blank, the user is asked for it the first time they open the panel in HubSpot.
+- A HubSpot user can be enabled in only one UnleashX workspace at a time.
+- Users you don't select are turned off.
+</Step>
+<Step title="Add HubSpot to Modules">
+Go to **Click to Call › Edit Settings › Modules** and turn on **HubSpot**. Calls from HubSpot are refused until this is on.
+</Step>
+<Step title="Pick UnleashX in HubSpot">
+Each enabled user opens any contact in HubSpot, clicks **Call**, and chooses **UnleashX** under **Call from**.
+</Step>
+</Steps>
+
+## Make a call from HubSpot
+
+<Steps>
+<Step title="Save your number (first time only)">
+The UnleashX panel asks: *Enter the phone number to ring for your calls.* Enter your number with its country code (10–15 digits) and click **Save number**. The panel then shows **Calls ring ••••1234 first · Change**.
+</Step>
+<Step title="Call">
+Click **Call via UnleashX**. Your phone rings first. Answer it, and UnleashX connects you to the contact.
+</Step>
+<Step title="Log the call">
+When the call ends, choose a **Call outcome** and **Call direction**, set the **Activity date**, add notes, and tick **Create a task to follow up** if you need one. Click **Log call**.
+</Step>
+</Steps>
+
+The panel also has a **Keypad** to dial any number, a contact search, and **Recents** for your latest calls.
+
+## What gets logged
+
+| Where | What |
+|---|---|
+| HubSpot contact timeline | A Call record with status, duration, recording, outcome, direction, notes and any follow-up task |
+| UnleashX **Click to Call › Call Logs** | The call, with HubSpot as its source and the record it was dialled from |
+| UnleashX **Click to Call › Logs** | Setup changes: HubSpot connected, users enabled or updated, disconnected |
+
+## Disconnect
+
+In **Click to Call › CRM Integrations**, click **Disconnect** on HubSpot. This turns off every enabled HubSpot user and removes HubSpot from Modules. Your HubSpot connection stays in place for the other UnleashX features that use it.
+
+## Troubleshooting
+
+| Message in the panel | What to do |
+|---|---|
+| *Calling isn't enabled for this HubSpot user.* | An admin enables the user in **Click to Call › CRM Integrations**. |
+| *Add your phone number in this panel before calling.* | Save your number in the panel, or ask the admin to set it. |
+| *Click to Call is turned off for this workspace* | An admin sets Click to Call to **Active**. |
+| *Click to Call is not enabled for HubSpot* | An admin turns on HubSpot in **Edit Settings › Modules**. |
+| *You don't have permission to make calls. Contact your admin.* | The admin who enabled you needs **Make Calls** on their role. |
+| *No display number (DID) is configured for Click to Call* | An admin adds a DID in Click to Call settings. |
+| *…is already enabled in another workspace.* | Turn the user off in the other workspace first. |
+
+<Note>
+For your team's safety, each enabled HubSpot user can place one call every 5 seconds and up to 200 calls a day.
+</Note>
