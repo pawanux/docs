@@ -5940,7 +5940,7 @@
             }
           },
           "400": {
-            "description": "mobile_no is required \u2014 please include the mobile_no variable"
+            "description": "mobile_no is required — please include the mobile_no variable"
           },
           "401": {
             "description": "Unauthorized"
@@ -5954,7 +5954,7 @@
     "/segment/create": {
       "post": {
         "summary": "Create segment",
-        "description": "Create a Segment \u2014 a saved filter over either an audience's contacts (source_type=audience, SOURCE_TYPE=1) or a campaign's dial results (source_type=campaign, SOURCE_TYPE=2). Matching contacts are evaluated immediately and materialized into the segment's contact mapping.",
+        "description": "Create a Segment — a saved filter over either an audience's contacts (source_type=audience, SOURCE_TYPE=1) or a campaign's dial results (source_type=campaign, SOURCE_TYPE=2). Matching contacts are evaluated immediately and materialized into the segment's contact mapping.",
         "tags": [
           "Segment"
         ],
@@ -6825,7 +6825,7 @@
     "/campaign/attach-sources": {
       "post": {
         "summary": "Attach campaign sources",
-        "description": "Connect Audiences and/or Segments to a campaign. Only the links are stored in campaign_audience_sources; no contacts are copied at attach time \u2014 connected contacts are materialized in the background.",
+        "description": "Connect Audiences and/or Segments to a campaign. Only the links are stored in campaign_audience_sources; no contacts are copied at attach time — connected contacts are materialized in the background.",
         "tags": [
           "Campaigns"
         ],
@@ -7397,6 +7397,1007 @@
           },
           "404": {
             "description": "Input variable not found"
+          }
+        }
+      }
+    },
+    "/evaluation/create-update-config": {
+      "post": {
+        "summary": "Update evaluation",
+        "description": "Update an existing evaluation configuration. Pass eval_id and only the fields you want to change.",
+        "tags": [
+          "Evaluation"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "eval_id"
+                ],
+                "properties": {
+                  "eval_id": {
+                    "type": "integer",
+                    "description": "Pass to update an existing evaluation"
+                  },
+                  "eval_name": {
+                    "type": "string",
+                    "description": "Evaluation name"
+                  },
+                  "call_source": {
+                    "type": "string",
+                    "description": "`agent`, `app`, `recording`, `api` or `webhook`"
+                  },
+                  "agent_id": {
+                    "type": "string",
+                    "description": "Agent(s) to evaluate (agent source)"
+                  },
+                  "app_id": {
+                    "type": "string",
+                    "description": "App to evaluate (app source)"
+                  },
+                  "source_config": {
+                    "type": "object",
+                    "description": "Source-specific config (api / webhook)"
+                  },
+                  "system_prompt": {
+                    "type": "string",
+                    "description": "Evaluation system prompt"
+                  },
+                  "llm_provider": {
+                    "type": "string",
+                    "description": "LLM provider name, e.g. `openai`. See the list of providers and models below."
+                  },
+                  "llm_model": {
+                    "type": "string",
+                    "description": "LLM model name of the chosen provider, e.g. `gpt-4o-mini`. See the list of providers and models below."
+                  },
+                  "fallback_provider": {
+                    "type": "string",
+                    "description": "Fallback LLM provider name. See the list of providers and models below."
+                  },
+                  "fallback_model": {
+                    "type": "string",
+                    "description": "Fallback model name of the chosen fallback provider. See the list of providers and models below."
+                  },
+                  "transcription_provider": {
+                    "type": "string",
+                    "description": "Transcription provider name (recording source), e.g. `deepgram`. See the list of providers and models below."
+                  },
+                  "transcription_model": {
+                    "type": "string",
+                    "description": "Transcription model name of the chosen provider, e.g. `nova-2`. See the list of providers and models below."
+                  },
+                  "temperature": {
+                    "type": "integer",
+                    "description": "Sampling temperature"
+                  },
+                  "skip_shorter_than": {
+                    "type": "integer",
+                    "description": "Skip calls shorter than this many seconds"
+                  },
+                  "run_on_all_past_and_future_calls": {
+                    "type": "boolean",
+                    "description": "Evaluate past calls as well as future ones"
+                  },
+                  "ground_truth_sources": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Ground-truth sources"
+                  },
+                  "cron_expression": {
+                    "type": "string",
+                    "description": "Schedule for recurring evaluation"
+                  },
+                  "status": {
+                    "type": "integer",
+                    "description": "Evaluation status"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/evaluation/generate-webhook-url": {
+      "post": {
+        "summary": "Generate Evaluation Webhook URL",
+        "description": "Generate the webhook token/URL for an evaluation with `call_source = webhook`. Idempotent: an existing token is reused.",
+        "tags": [
+          "Evaluation"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "eval_id"
+                ],
+                "properties": {
+                  "eval_id": {
+                    "type": "integer",
+                    "description": "Evaluation ID"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/evaluation/upload-recordings": {
+      "post": {
+        "summary": "Upload Recordings",
+        "description": "Upload a recording file (zip, mp3 or wav) for evaluation. Progress is streamed back as server-sent events (started, processing, completed, error).",
+        "tags": [
+          "Evaluation"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "file"
+                ],
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Recording file: zip, mp3 or wav"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Server-sent event stream with upload progress",
+            "content": {
+              "text/event-stream": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/evaluation/list": {
+      "get": {
+        "summary": "List Evaluations",
+        "description": "Paginated list of evaluations in the workspace with call counts. The response contains only `datalist` and `pagination` (no table `headers`).",
+        "tags": [
+          "Evaluation"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Page number (default `1`)"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Records per page (default `10`)"
+          },
+          {
+            "name": "eval_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Return only this evaluation"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/evaluation/details": {
+      "get": {
+        "summary": "Evaluation Details",
+        "description": "Full details of one evaluation configuration.",
+        "tags": [
+          "Evaluation"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "eval_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Evaluation ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/evaluation/activities": {
+      "get": {
+        "summary": "List Evaluation Activities",
+        "description": "Paginated per-call evaluation results. The response contains only `datalist` and `pagination` (no table `headers`).",
+        "tags": [
+          "Evaluation"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "eval_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Filter by evaluation"
+          },
+          {
+            "name": "agent",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Comma-separated agent IDs"
+          },
+          {
+            "name": "call_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by call ID"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Comma-separated activity statuses"
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Date filter (e.g. `today`, `week`)"
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Start date"
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "End date"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Page number (default `1`)"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Records per page (default `10`)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/evaluation/activities/export": {
+      "get": {
+        "summary": "Export Evaluation Activities",
+        "description": "Export evaluation activities as an Excel report. Same filters as [List Evaluation Activities](/api-reference/evaluation/list-activities).",
+        "tags": [
+          "Evaluation"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "eval_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Filter by evaluation"
+          },
+          {
+            "name": "agent",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Comma-separated agent IDs"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Comma-separated activity statuses"
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Date filter"
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Start date"
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "End date"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/evaluation/dashboard": {
+      "get": {
+        "summary": "Evaluation Dashboard",
+        "description": "Dashboard aggregates. Table `headers` are not included in the response.",
+        "tags": [
+          "Evaluation"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dashboard_type",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "`total_data`, `top_agent`, `bottom_agent` or `criteria_list`"
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Date filter"
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Start date"
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "End date"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/evaluation/criteria/create-update": {
+      "post": {
+        "summary": "Update evaluation criteria",
+        "description": "Update an existing criteria. Pass criteria_id and eval_id along with the fields you want to change.",
+        "tags": [
+          "Evaluation"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "eval_id",
+                  "criteria_id"
+                ],
+                "properties": {
+                  "eval_id": {
+                    "type": "integer",
+                    "description": "Evaluation ID"
+                  },
+                  "criteria_id": {
+                    "type": "integer",
+                    "description": "Pass to update an existing criteria"
+                  },
+                  "criteria": {
+                    "type": "string",
+                    "enum": [
+                      "Empathy",
+                      "Language Switch",
+                      "Turn Taking",
+                      "Context Awareness",
+                      "Recovery From Errors",
+                      "Intent Recognition",
+                      "Greeting Accuracy",
+                      "Intent Confirmation",
+                      "Probing Questions",
+                      "Call Closing",
+                      "No Offensive Content",
+                      "No Misrepresentation",
+                      "Privacy Compliance",
+                      "Confidence Level",
+                      "Input Metadata Consistency"
+                    ],
+                    "description": "Criteria to score, picked from the list. When creating and `evaluation_prompt` is not sent, the default prompt of this criteria is used."
+                  },
+                  "evaluation_prompt": {
+                    "type": "string",
+                    "description": "Prompt for this criteria. Optional when creating: the default prompt of the chosen criteria is used."
+                  },
+                  "scoring_rubric": {
+                    "type": "string",
+                    "description": "Optional free text that explains how to score this criteria (for example what a 90+ vs a 50 looks like). It is saved with the criteria. The in-app UI does not set it, so you can leave it out."
+                  },
+                  "pass_above": {
+                    "type": "integer",
+                    "description": "Score (0-100) at or above which the call passes this criteria (UI: \"Pass ≥\"). UI default 70.",
+                    "minimum": 0,
+                    "maximum": 100
+                  },
+                  "review_below": {
+                    "type": "integer",
+                    "description": "Highest score (0-100) that still counts as \"Review\". The Review band is the scores between fail_below and pass_above. The UI sets it automatically to pass_above - 1, so you can usually leave it out. UI default 69.",
+                    "minimum": 0,
+                    "maximum": 100
+                  },
+                  "fail_below": {
+                    "type": "integer",
+                    "description": "Score (0-100) below which the call fails this criteria (UI: \"Fail <\"). UI default 40.",
+                    "minimum": 0,
+                    "maximum": 100
+                  },
+                  "accuracy_percentage": {
+                    "type": "integer",
+                    "description": "Weight of this criteria in the overall score (UI: \"Weight\"). Minimum 1; UI default 10. It is relative: with weights 10, 10 and 20 the criteria count for 25%, 25% and 50% of the overall score.",
+                    "minimum": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/evaluation/criteria/list": {
+      "post": {
+        "summary": "List Evaluation Criteria",
+        "description": "List criteria of an evaluation. The response contains only `datalist` and `pagination` (no `headers`).",
+        "tags": [
+          "Evaluation"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "eval_id"
+                ],
+                "properties": {
+                  "eval_id": {
+                    "type": "integer",
+                    "description": "Evaluation ID"
+                  },
+                  "page": {
+                    "type": "integer",
+                    "description": "Page number (default `1`)"
+                  },
+                  "limit": {
+                    "type": "integer",
+                    "description": "Records per page (default `1000`)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/evaluation/create-update-config/": {
+      "post": {
+        "summary": "Create evaluation",
+        "description": "Create a new evaluation configuration.",
+        "tags": [
+          "Evaluation"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "eval_name",
+                  "call_source"
+                ],
+                "properties": {
+                  "eval_name": {
+                    "type": "string",
+                    "description": "Evaluation name"
+                  },
+                  "call_source": {
+                    "type": "string",
+                    "description": "`agent`, `app`, `recording`, `api` or `webhook`"
+                  },
+                  "agent_id": {
+                    "type": "string",
+                    "description": "Agent(s) to evaluate (agent source)"
+                  },
+                  "app_id": {
+                    "type": "string",
+                    "description": "App to evaluate (app source)"
+                  },
+                  "source_config": {
+                    "type": "object",
+                    "description": "Source-specific config (api / webhook)"
+                  },
+                  "system_prompt": {
+                    "type": "string",
+                    "description": "Evaluation system prompt"
+                  },
+                  "llm_provider": {
+                    "type": "string",
+                    "description": "LLM provider name, e.g. `openai`. See the list of providers and models below."
+                  },
+                  "llm_model": {
+                    "type": "string",
+                    "description": "LLM model name of the chosen provider, e.g. `gpt-4o-mini`. See the list of providers and models below."
+                  },
+                  "fallback_provider": {
+                    "type": "string",
+                    "description": "Fallback LLM provider name. See the list of providers and models below."
+                  },
+                  "fallback_model": {
+                    "type": "string",
+                    "description": "Fallback model name of the chosen fallback provider. See the list of providers and models below."
+                  },
+                  "transcription_provider": {
+                    "type": "string",
+                    "description": "Transcription provider name (recording source), e.g. `deepgram`. See the list of providers and models below."
+                  },
+                  "transcription_model": {
+                    "type": "string",
+                    "description": "Transcription model name of the chosen provider, e.g. `nova-2`. See the list of providers and models below."
+                  },
+                  "temperature": {
+                    "type": "integer",
+                    "description": "Sampling temperature"
+                  },
+                  "skip_shorter_than": {
+                    "type": "integer",
+                    "description": "Skip calls shorter than this many seconds"
+                  },
+                  "run_on_all_past_and_future_calls": {
+                    "type": "boolean",
+                    "description": "Evaluate past calls as well as future ones"
+                  },
+                  "ground_truth_sources": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Ground-truth sources"
+                  },
+                  "cron_expression": {
+                    "type": "string",
+                    "description": "Schedule for recurring evaluation"
+                  },
+                  "status": {
+                    "type": "integer",
+                    "description": "Evaluation status"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/evaluation/criteria/create-update/": {
+      "post": {
+        "summary": "Create evaluation criteria",
+        "description": "Create a criteria mapped to an evaluation config.",
+        "tags": [
+          "Evaluation"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "required": true,
+            "description": "API token for authentication",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "eval_id"
+                ],
+                "properties": {
+                  "eval_id": {
+                    "type": "integer",
+                    "description": "Evaluation ID"
+                  },
+                  "criteria": {
+                    "type": "string",
+                    "enum": [
+                      "Empathy",
+                      "Language Switch",
+                      "Turn Taking",
+                      "Context Awareness",
+                      "Recovery From Errors",
+                      "Intent Recognition",
+                      "Greeting Accuracy",
+                      "Intent Confirmation",
+                      "Probing Questions",
+                      "Call Closing",
+                      "No Offensive Content",
+                      "No Misrepresentation",
+                      "Privacy Compliance",
+                      "Confidence Level",
+                      "Input Metadata Consistency"
+                    ],
+                    "description": "Criteria to score, picked from the list. When creating and `evaluation_prompt` is not sent, the default prompt of this criteria is used."
+                  },
+                  "evaluation_prompt": {
+                    "type": "string",
+                    "description": "Prompt for this criteria. Optional when creating: the default prompt of the chosen criteria is used."
+                  },
+                  "scoring_rubric": {
+                    "type": "string",
+                    "description": "Optional free text that explains how to score this criteria (for example what a 90+ vs a 50 looks like). It is saved with the criteria. The in-app UI does not set it, so you can leave it out."
+                  },
+                  "pass_above": {
+                    "type": "integer",
+                    "description": "Score (0-100) at or above which the call passes this criteria (UI: \"Pass ≥\"). UI default 70.",
+                    "minimum": 0,
+                    "maximum": 100
+                  },
+                  "review_below": {
+                    "type": "integer",
+                    "description": "Highest score (0-100) that still counts as \"Review\". The Review band is the scores between fail_below and pass_above. The UI sets it automatically to pass_above - 1, so you can usually leave it out. UI default 69.",
+                    "minimum": 0,
+                    "maximum": 100
+                  },
+                  "fail_below": {
+                    "type": "integer",
+                    "description": "Score (0-100) below which the call fails this criteria (UI: \"Fail <\"). UI default 40.",
+                    "minimum": 0,
+                    "maximum": 100
+                  },
+                  "accuracy_percentage": {
+                    "type": "integer",
+                    "description": "Weight of this criteria in the overall score (UI: \"Weight\"). Minimum 1; UI default 10. It is relative: with weights 10, 10 and 20 the criteria count for 25%, 25% and 50% of the overall score.",
+                    "minimum": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
           }
         }
       }
