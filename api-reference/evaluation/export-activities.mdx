@@ -1,0 +1,27 @@
+---
+title: Export Evaluation Activities
+openapi: "api-reference/openapi.json GET /evaluation/activities/export"
+---
+
+Export evaluation activities as an Excel report. Same filters as [List Evaluation Activities](/api-reference/evaluation/list-activities).
+
+## Endpoint
+
+**GET** `/evaluation/activities/export`
+
+**Authentication:** API token in the `token` header.
+
+## Query Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `eval_id` | number | No | Filter by evaluation |
+| `agent` | string | No | Comma-separated agent IDs |
+| `status` | string | No | Comma-separated activity statuses |
+| `filter` | string | No | Date filter |
+| `from` | string | No | Start date |
+| `to` | string | No | End date |
+
+## Response
+
+Same response as the in-app evaluation API.
