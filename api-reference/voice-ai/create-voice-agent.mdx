@@ -45,7 +45,7 @@ The Create Voice Agent API allows you to create and configure AI voice agents wi
   },
   "llm": {
     "llm": "openai",
-    "model": "gpt-5.4-mini"
+    "model": "gpt-4o"
   },
   "configurations": {
     "confidence_threshold": 0.8,
@@ -499,8 +499,8 @@ Configuration for voicemail detection and handling:
       "language": "english"
     },
     "llm": {
-      "llm": "openai",
-      "model": "gpt-5.4-mini"
+      "llm": "gpt-4o",
+      "model": "gpt-4o"
     }
   },
   "created_at": 1706745600
@@ -614,8 +614,8 @@ curl -X POST https://api.yourdomain.com/create-agent \
       "language": "english"
     },
     "llm": {
-      "llm": "openai",
-      "model": "gpt-5.4-mini"
+      "llm": "gpt-4o",
+      "model": "gpt-4o"
     },
     "configurations": {
       "confidence_threshold": 0.8,
@@ -642,10 +642,6 @@ curl -X POST https://api.yourdomain.com/create-agent \
   }'
 ```
 
-
-## Multi-language agents
-
-An agent can serve extra languages besides its default one. See [Multi-Language Agents](/api-reference/voice-ai/multi-language-agents) for the `multi_languages` field and the switching settings.
 
 ## Important Notes
 

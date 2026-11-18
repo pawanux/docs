@@ -40,8 +40,8 @@ The Update Voice Agent API uses the same request/response shape as Create Voice 
     "language": "english"
   },
   "llm": {
-    "llm": "openai",
-    "model": "gpt-5.4-mini"
+    "llm": "gpt-4o",
+    "model": "gpt-4o"
   },
   "configurations": {
     "confidence_threshold": 0.8,
@@ -187,10 +187,6 @@ curl -X POST https://www.tryunleashx.com/api/v1/global/create-agent \
     "status": 1
   }'
 ```
-
-## Multi-language agents
-
-An agent can serve extra languages besides its default one. See [Multi-Language Agents](/api-reference/voice-ai/multi-language-agents) for the `multi_languages` field and the switching settings.
 
 ## Notes
 
