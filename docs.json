@@ -413,6 +413,8 @@
               "faqs/voice-agents",
               "faqs/twilio-integration",
               "faqs/plivo-integration",
+              "faqs/vonage-integration",
+              "faqs/telnyx-integration",
               "faqs/campaigns",
               "faqs/agent-evaluation",
               "faqs/billing",
