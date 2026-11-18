@@ -1,0 +1,30 @@
+---
+title: List Evaluation Criteria
+openapi: "api-reference/openapi.json POST /evaluation/criteria/list"
+---
+
+List criteria of an evaluation. The response contains only `datalist` and `pagination` (no `headers`).
+
+## Endpoint
+
+**POST** `/evaluation/criteria/list`
+
+**Authentication:** API token in the `token` header.
+
+## Body Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `eval_id` | number | Yes | Evaluation ID |
+| `page` | number | No | Page number (default `1`) |
+| `limit` | number | No | Records per page (default `1000`) |
+
+## Response
+
+```json
+{
+  "message": "Call Evaluation criteria fetched successfully",
+  "datalist": [],
+  "pagination": {}
+}
+```

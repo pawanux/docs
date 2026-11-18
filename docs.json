@@ -179,7 +179,19 @@
           {
             "group": "Evaluation",
             "pages": [
-              "api-reference/evaluation"
+              "api-reference/evaluation",
+              "api-reference/evaluation/create-config",
+              "api-reference/evaluation/update-config",
+              "api-reference/evaluation/generate-webhook-url",
+              "api-reference/evaluation/upload-recordings",
+              "api-reference/evaluation/list-evaluations",
+              "api-reference/evaluation/evaluation-details",
+              "api-reference/evaluation/list-activities",
+              "api-reference/evaluation/export-activities",
+              "api-reference/evaluation/dashboard",
+              "api-reference/evaluation/create-criteria",
+              "api-reference/evaluation/update-criteria",
+              "api-reference/evaluation/list-criteria"
             ]
           }
         ]

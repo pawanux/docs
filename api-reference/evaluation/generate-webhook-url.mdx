@@ -1,0 +1,22 @@
+---
+title: Generate Evaluation Webhook URL
+openapi: "api-reference/openapi.json POST /evaluation/generate-webhook-url"
+---
+
+Generate the webhook token/URL for an evaluation with `call_source = webhook`. Idempotent: an existing token is reused.
+
+## Endpoint
+
+**POST** `/evaluation/generate-webhook-url`
+
+**Authentication:** API token in the `token` header.
+
+## Body Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `eval_id` | number | Yes | Evaluation ID |
+
+## Response
+
+Same response as the in-app evaluation API.

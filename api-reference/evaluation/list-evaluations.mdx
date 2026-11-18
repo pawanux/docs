@@ -1,0 +1,32 @@
+---
+title: List Evaluations
+openapi: "api-reference/openapi.json GET /evaluation/list"
+---
+
+Paginated list of evaluations in the workspace with call counts. The response contains only `datalist` and `pagination` (no table `headers`).
+
+## Endpoint
+
+**GET** `/evaluation/list`
+
+**Authentication:** API token in the `token` header.
+
+## Query Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `page` | number | No | Page number (default `1`) |
+| `limit` | number | No | Records per page (default `10`) |
+| `eval_id` | number | No | Return only this evaluation |
+
+## Response
+
+```json
+{
+  "message": "Call Evaluation data fetched successfully",
+  "datalist": [],
+  "custom_criteria_option": [],
+  "custom_insight_option": [],
+  "pagination": {}
+}
+```

@@ -1,0 +1,25 @@
+---
+title: Evaluation Dashboard
+openapi: "api-reference/openapi.json GET /evaluation/dashboard"
+---
+
+Dashboard aggregates. Table `headers` are not included in the response.
+
+## Endpoint
+
+**GET** `/evaluation/dashboard`
+
+**Authentication:** API token in the `token` header.
+
+## Query Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `dashboard_type` | string | Yes | `total_data`, `top_agent`, `bottom_agent` or `criteria_list` |
+| `filter` | string | No | Date filter |
+| `from` | string | No | Start date |
+| `to` | string | No | End date |
+
+## Response
+
+Same response as the in-app evaluation API.
