@@ -1,0 +1,106 @@
+---
+title: Multi-Language Agents
+description: Give one voice agent several languages, each with its own speech-to-text, voice and hand-in message.
+---
+
+A voice agent has one **default language** and, optionally, **extra languages**. The default language is configured exactly as before (`speech_to_text`, `voice`, `prompt`, `greeting`). Extra languages are sent in a new optional `multi_languages` array on [Create Voice Agent](/api-reference/voice-ai/create-voice-agent) and [Update Voice Agent](/api-reference/voice-ai/update-voice-agent).
+
+If you do not send `multi_languages` (or the switching fields below), nothing changes for your agent.
+
+## Request fields
+
+Add these to the body of `POST /create-agent` or `POST /agents/update`.
+
+| Field | Type | Description |
+|---|---|---|
+| `multi_languages` | array | **Full list** of extra (non-default) languages. Omitted = untouched. `[]` = the agent becomes single-language. |
+| `language_switch_mode` | integer | How the agent switches language: `1` on request, `2` auto-detect, `3` both (default). Invalid values fall back to `3`. |
+| `allow_language_switch_back` | boolean | Allow switching back to the default language. |
+| `default_language_agent_name` | string | Agent name used in the hand-in message for the default language. |
+| `default_language_handin_message` | string | Hand-in message when switching back to the default language. |
+
+### `multi_languages[]`
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `language_id` | integer | Yes | Language ID (see [Supported languages](/multilingual-voice-agents/supported-languages)). Must be a positive integer. |
+| `transcriber_provider` | integer | No | Speech-to-text provider ID. |
+| `transcriber_model` | integer | No | Speech-to-text model ID. |
+| `voice_provider` | integer | No | Voice (TTS) provider ID. |
+| `voice_tts_model` | string | No | TTS model name. |
+| `voice_id` | string | No | Voice ID. |
+| `voice_settings` | object | No | Voice settings. Falls back to the agent's settings. |
+| `agent_name` | string | No | Name used in the hand-in message. |
+| `handin_message` | string | No | Message spoken when handing over to this language. |
+| `welcome_message` | string | No | Greeting in this language. Falls back to the default language greeting. |
+| `prompt_override` | string | No | Prompt for this language. Falls back to the agent prompt. |
+
+## Example
+
+```bash
+curl -X POST "https://www.tryunleashx.com/api/v1/global/create-agent" \
+  -H "token: YOUR_API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "agent_name": "Support Agent",
+    "prompt": "You are a helpful support agent.",
+    "speech_to_text": { "provider": "deepgram", "model": "nova-2", "language": "hindi" },
+    "language_switch_mode": 3,
+    "allow_language_switch_back": true,
+    "default_language_agent_name": "Riya",
+    "default_language_handin_message": "Let me connect you with Riya who speaks Hindi.",
+    "multi_languages": [
+      {
+        "language_id": 1,
+        "transcriber_provider": 14,
+        "transcriber_model": 66,
+        "voice_provider": 8,
+        "voice_tts_model": "eleven_flash_v2_5",
+        "voice_id": "YOUR_VOICE_ID",
+        "agent_name": "Emma",
+        "handin_message": "Let me connect you with Emma who speaks English."
+      }
+    ]
+  }'
+```
+
+## Update rules
+
+`multi_languages` is a **full replacement list**, applied in one transaction:
+
+- Language already on the agent → updated with the fields you send.
+- New language → added.
+- Language missing from the list → removed.
+- A language equal to the agent's default language is ignored.
+- Duplicate `language_id` entries → the last one wins.
+- An invalid `language_id` (missing, zero, negative, not a number) fails the whole request; nothing is saved.
+
+### Changing the default language
+
+Send the **new** default language in the normal default fields (`speech_to_text`, `voice`, ...) and send `multi_languages` with the **old** default added and the new default removed.
+
+| Before | After |
+|---|---|
+| Default Hindi, extra English | Default English, extra Hindi |
+
+### Removing all extra languages
+
+```json
+{ "agent_id": 123, "multi_languages": [] }
+```
+
+## Reading the configuration
+
+[Get Agent Details by ID](/api-reference/voice-ai/get-agent-by-id) returns the multi-language data:
+
+- `basic_details.multi_language_support` — `1` when the agent has extra languages, otherwise `0`.
+- `configuration.language_switch_mode`, `allow_language_switch_back`, `default_language_agent_name`, `default_language_handin_message`.
+- `multi_languages` — the extra languages, in the order you sent them.
+
+## Call payload
+
+When a call is triggered for a multi-language agent, the assistant configuration sent to the voice runtime carries two extra keys: `languages` (the default language plus each extra language, with its resolved speech-to-text and voice settings) and `language_switching` (`mode`: `request`, `detect` or `both`, and `allow_switch_back`). Single-language agents are unchanged.
+
+<Note>
+Language switching during a live call depends on voice-runtime support that is rolling out separately. Until then, the voice runtime ignores the new keys and the agent speaks its default language.
+</Note>
