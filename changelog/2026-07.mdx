@@ -1,0 +1,61 @@
+---
+title: "July 2026"
+description: "Releases 2026.07.1 – 2026.07.2"
+hideFooterPagination: true
+---
+
+<Update label="July 31, 2026" description="Release 2026.07.2" tags={["Evaluations", "Voice AI", "Platform"]} rss={{ title: "Evaluation transcripts, prompt snippets, domain-restricted invites" }}>
+
+## Evaluation transcripts and recordings
+
+Evaluation results now have a **Transcript** tab next to Analysis. It shows the full conversation with correct speaker labels, and you can play the call recording on the same screen. Reviewers can check a score against what was actually said without switching tools. You can export evaluation records in bulk, and model pricing appears while you set up an evaluation so its cost is clear upfront.
+
+## Prompt snippets
+
+Save frequently used prompt passages as snippets, then search for one and insert it into any voice agent, chatbot, or AI assistant prompt with **Insert into prompt**. Shared instructions such as compliance wording or tone guidelines stay consistent across agents.
+
+## Invites limited to approved domains
+
+Invitations are now checked against your company's whitelisted email domains, so only people with an approved email address can be invited. Admins can also remove members from a workspace, after a confirmation step.
+
+<Info>
+  **Moved:** the **Temperature** setting has moved from Guardrails → Relevance into each agent's **LLM Configuration**, next to the other model settings.
+</Info>
+
+### Apps
+
+**Configuration logs**: Settings now keeps a configuration log for each app, including the full JSON payload of each change. Use it to audit and troubleshoot integrations.
+
+**Click-to-call export**: Export click-to-call records for reporting.
+
+</Update>
+
+<Update label="July 15, 2026" description="Release 2026.07.1" tags={["Voice AI", "Evaluations", "Apps & Data"]} rss={{ title: "Click-to-call, centralised input variables, real-time voice, dispositions" }}>
+
+## Click-to-call
+
+Set up click-to-call from an app's settings, and your team can start AI-assisted calls straight from records. You can require a form to be filled in before a call is placed, so the agent starts with the context it needs. See [Click-to-call API](/api-reference/click-to-dial/overview).
+
+## Input variables, managed in one place
+
+Input variables are now defined once and shared across voice agents and chatbots, instead of being set up again for each one. Update a variable in one place and every agent that uses it picks up the change.
+
+## Real-time voice engine
+
+Voice agents can now run in a real-time engine mode, which streams speech directly for lower-latency, more natural conversations. Activity logs show which engine handled each call.
+
+### Voice AI
+
+**Dispositions and CSAT**: A new **Dispositions** tab records how each call ended. Call outputs now include a conversation CSAT score.
+
+**Smallest.ai voice speed**: Voices from Smallest.ai have a speed control in advanced voice settings.
+
+### Evaluations
+
+**Custom criteria**: Define custom scored criteria for evaluations, or pick insight criteria from a predefined list.
+
+### Automations
+
+**Google Sheets steps**: Automations can now create a Google Sheet as one of their steps.
+
+</Update>

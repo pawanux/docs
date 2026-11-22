@@ -1,74 +1,149 @@
 ---
 title: "Changelog"
-description: "Stay up to date with the latest UnleashX updates and improvements"
+sidebarTitle: "Overview"
+description: "New features, improvements, and fixes shipped to the UnleashX platform."
+rss: true
+hideFooterPagination: true
 ---
 
-# Changelog
+UnleashX ships continuously. Customer-facing changes are grouped into **two releases a month**, each labelled with its date and a calendar version: `2026.11.2` is the second release of November 2026.
 
-Welcome to the UnleashX changelog! Here you'll find all the latest updates, new features, improvements, and bug fixes.
+This page lists the highlights of every release. For full release notes, open a month in the sidebar.
 
-## Recent Updates
+<CardGroup cols={3}>
+  <Card title="Subscribe via RSS" icon="rss" href="/changelog/releases/rss.xml">
+    Get every release in your feed reader or Slack.
+  </Card>
+  <Card title="System status" icon="signal" href="https://unleashx.statuspage.io/">
+    Live uptime and incident history.
+  </Card>
+  <Card title="Contact support" icon="headset" href="mailto:cs@unleashx.ai">
+    Questions about a change? Reach the team.
+  </Card>
+</CardGroup>
 
-### Version 1.2.0 - December 2024
+<Accordion title="How to read this changelog" icon="book-open">
+  **Browse by month.** Each month in the sidebar has full release notes. On a month page, use the tags in the right-hand panel to filter by product area.
 
-#### 🚀 New Features
-- **Enhanced Voice AI Agents**: Improved conversation flow and response accuracy
-- **New API Endpoints**: Added comprehensive API support for Workflows, Users, and Workspaces
-- **Advanced Analytics**: Better call tracking and performance metrics
-- **Multilingual Support**: Expanded language support for voice agents
+  **What's included:** new features, new integrations and providers, renamed or moved settings, and changes to plans and billing.
 
-#### 🔧 Improvements
-- **API Performance**: 40% faster response times for API calls
-- **Documentation**: Completely redesigned documentation with interactive API playground
-- **Dashboard UI**: Enhanced user interface with better navigation
-- **Error Handling**: Improved error messages and debugging capabilities
+  **Each release** opens with its headline features, explained in a short paragraph. Smaller additions follow, grouped by product area.
 
-#### 🐛 Bug Fixes
-- Fixed voice synthesis issues with certain languages
-- Resolved API timeout problems for large batch operations
-- Corrected billing calculation for international calls
-- Fixed dashboard loading issues on mobile devices
+  **Callouts:** an **Info** box marks a rename or a setting that moved. A **Warning** box marks a change that needs action from you.
+</Accordion>
 
-### Version 1.1.0 - November 2024
+<Update label="November 21, 2026" description="Release 2026.11.2" rss={{ title: "Telnyx phone numbers" }}>
+  **Telnyx phone numbers**: Run voice agents on your existing Telnyx numbers.
 
-#### 🚀 New Features
-- **Chatbot Integration**: Added support for text-based conversational agents
-- **Form Builder**: New form creation and management capabilities
-- **Workflow Automation**: Advanced workflow management system
-- **Team Collaboration**: Enhanced workspace and user management
+  [Full release notes →](/changelog/2026-11)
+</Update>
 
-#### 🔧 Improvements
-- **API Documentation**: Interactive API reference with try-it functionality
-- **Call Quality**: Improved audio quality for voice calls
-- **Security**: Enhanced authentication and data protection
-- **Scalability**: Better handling of high-volume call operations
+<Update label="November 13, 2026" description="Release 2026.11.1" rss={{ title: "Bring your own S3 bucket, Vonage numbers, custom actions" }}>
+  **Store recordings in your own S3 bucket**: Keep recordings in storage your company controls, set at company or workspace level.
 
-### Version 1.0.0 - October 2024
+  **Vonage phone numbers**: Vonage joins the supported telephony providers.
 
-#### 🎉 Initial Release
-- **Voice AI Agents**: Core voice agent functionality
-- **Phone Integration**: Support for making and receiving calls
-- **API Access**: RESTful API for all platform features
-- **Dashboard**: Web-based management interface
-- **Documentation**: Comprehensive guides and API reference
+  **Custom actions on app records**: Create, update, archive, or send records with one click, with inputs collected first.
 
----
+  **Scheduler renamed to Tasks**: Only the name changed.
 
-## How to Stay Updated
+  [Full release notes →](/changelog/2026-11)
+</Update>
 
-- **Subscribe to Updates**: Get notified about new releases via email
-- **Follow our Blog**: Read detailed announcements on our blog
-- **Join our Community**: Connect with other users and get early access to features
-- **API Versioning**: We maintain backward compatibility for API changes
+<Update label="October 31, 2026" description="Release 2026.10.2" rss={{ title: "Recurring plan billing, promo codes, new WhatsApp partners" }}>
+  **Recurring billing for plans**: Plans renew automatically with no manual repurchase.
 
-## Reporting Issues
+  **Company-level promo codes**: One code covers every workspace in your company.
 
-Found a bug or have a feature request? We'd love to hear from you:
+  **Cunnekt and Watticks WhatsApp partners**: More ways to connect WhatsApp numbers.
 
-- **GitHub Issues**: Report bugs and request features
-- **Support Email**: Contact us at cs@unleashx.ai
-- **Community Forum**: Discuss with other users
+  [Full release notes →](/changelog/2026-10)
+</Update>
 
----
+<Update label="October 15, 2026" description="Release 2026.10.1" rss={{ title: "Workflows become Automations, Slack deployment, missed calls" }}>
+  **Workflows renamed to Automations**: Only the name changed. Existing automations are unaffected.
 
-*Last updated: December 2024*
+  **Deploy chatbots and AI assistants to Slack**: Guided setup from the Deploy step.
+
+  **Missed Calls tab in Voice AI**: See calls that didn't connect and export them for callbacks.
+
+  [Full release notes →](/changelog/2026-10)
+</Update>
+
+<Update label="September 30, 2026" description="Release 2026.09.2" rss={{ title: "Access request approvals, evaluation sources, click-to-call dashboard" }}>
+  **Approve or reject access requests**: Assign workspace, team, and role in one step.
+
+  **Evaluation sources and filters**: Score AI calls, click-to-call recordings, or uploads.
+
+  **Click-to-call dashboard**: Click-to-call activity on its own dashboard.
+
+  [Full release notes →](/changelog/2026-09)
+</Update>
+
+<Update label="September 15, 2026" description="Release 2026.09.1" rss={{ title: "Model deprecation notices, tool filler words, Integrations page" }}>
+  **Model deprecation notices**: Get warned before a model your agents use is retired.
+
+  **Filler words while tools run**: Agents keep talking while a tool or action runs.
+
+  **Settings → Integrations page**: Every connected integration in one place.
+
+  [Full release notes →](/changelog/2026-09)
+</Update>
+
+<Update label="August 31, 2026" description="Release 2026.08.2" rss={{ title: "Company roles and permissions, video agent dashboards" }}>
+  **Company roles and permissions**: Menus and actions follow each user's role.
+
+  **Video agent dashboards**: Track video conversations like voice calls.
+
+  **Realtime engine renamed to Speech-to-Speech**: Only the name changed.
+
+  [Full release notes →](/changelog/2026-08)
+</Update>
+
+<Update label="August 15, 2026" description="Release 2026.08.1" rss={{ title: "Introducing Video Agents, payment-failure alerts" }}>
+  **Introducing Video Agents**: AI agents for face-to-face conversations, shared by link.
+
+  **Payment failure alerts**: An app-wide banner with a retry link.
+
+  [Full release notes →](/changelog/2026-08)
+</Update>
+
+<Update label="July 31, 2026" description="Release 2026.07.2" rss={{ title: "Evaluation transcripts, prompt snippets, domain-restricted invites" }}>
+  **Evaluation transcripts and recordings**: Review the transcript and audio next to each score.
+
+  **Prompt snippets**: Reuse shared prompt passages across agents.
+
+  **Invites limited to approved domains**: Only approved email domains can be invited.
+
+  [Full release notes →](/changelog/2026-07)
+</Update>
+
+<Update label="July 15, 2026" description="Release 2026.07.1" rss={{ title: "Click-to-call, centralised input variables, real-time voice" }}>
+  **Click-to-call**: Start AI-assisted calls straight from app records.
+
+  **Input variables managed in one place**: Define variables once and share them across agents.
+
+  **Real-time voice engine**: Lower-latency, more natural conversations.
+
+  [Full release notes →](/changelog/2026-07)
+</Update>
+
+<Update label="June 30, 2026" description="Release 2026.06.2" rss={{ title: "Facebook Messenger for chatbots, emotion detection, Scheduler" }}>
+  **Deploy chatbots to Facebook Messenger**: Reply to chats on your Facebook Page.
+
+  **Emotion and unanswered-query detection**: See where conversations go wrong.
+
+  **Scheduler**: Schedule recurring work with a visual cron builder.
+
+  [Full release notes →](/changelog/2026-06)
+</Update>
+
+<Update label="June 15, 2026" description="Release 2026.06.1" rss={{ title: "New form editor, appointments in Apps, consumption reports" }}>
+  **New form editor in Apps**: A rebuilt editor for record forms.
+
+  **Consumption reports**: Usage broken down by workspace and agent.
+
+  **Appointments in Apps**: An Appointments tab whenever a calendar is enabled.
+
+  [Full release notes →](/changelog/2026-06)
+</Update>

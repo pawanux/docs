@@ -1,0 +1,43 @@
+---
+title: "November 2026"
+description: "Releases 2026.11.1 – 2026.11.2"
+hideFooterPagination: true
+---
+
+<Update label="November 21, 2026" description="Release 2026.11.2" tags={["Telephony"]} rss={{ title: "Telnyx phone numbers" }}>
+
+## Telnyx phone numbers
+
+Telnyx is now a supported telephony provider alongside Twilio, Plivo, and Vonage. Connect your Telnyx account, bring your existing numbers into UnleashX, and attach them to voice agents for inbound and outbound calling. If you already route traffic through Telnyx, you can now run your AI agents on it without changing carriers. See [Telnyx integration](/faqs/telnyx-integration).
+
+</Update>
+
+<Update label="November 13, 2026" description="Release 2026.11.1" tags={["Platform", "Telephony", "AI Assistants", "Apps & Data"]} rss={{ title: "Bring your own S3 bucket, Vonage numbers, custom actions, Scheduler renamed to Tasks" }}>
+
+## Store recordings in your own S3 bucket
+
+Admins can now point UnleashX at an Amazon S3 bucket their organisation owns. Enter the bucket name, access key ID, and secret access key once for the whole company in **Settings → General**, then override it for individual workspaces from **Workspace details** when a team needs its own bucket. Configurations can be updated or removed at any time. This keeps recordings inside storage you control, which helps with data-residency and retention policies.
+
+## Custom actions on app records
+
+Apps now support custom actions you can run directly on a record: create a related record, update fields, archive with a reason, or send the record to an external endpoint. Each field rule decides where the new value comes from: a fixed value, something the user types, or an addition to what's already there. When an action needs input, UnleashX asks for it with your own labels and helper text before the action runs.
+
+<Info>
+  **Renamed:** *Scheduler* is now **Tasks**. Only the name changed. Your existing schedules keep running as before.
+</Info>
+
+### Telephony
+
+**Vonage phone numbers**: Vonage is now a supported telephony provider. Connect your account and attach Vonage numbers to your voice agents. See [Vonage integration](/faqs/vonage-integration).
+
+### AI Assistants
+
+**Webhooks**: When a conversation finishes, an AI assistant can send its output to a webhook URL you provide. Use this to push results into your CRM, ticketing system, or data warehouse without polling.
+
+### Apps and integrations
+
+**Zoho CRM click-to-call**: Connect a Zoho account to place AI-assisted calls straight from Zoho CRM records. See [Zoho CRM click-to-call](/api-reference/click-to-dial/zoho-crm).
+
+**Automation run logs**: Every automation now has a run log, so you can see each run and trace what happened.
+
+</Update>
